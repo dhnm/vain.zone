@@ -35,6 +35,27 @@ class InputPanel extends React.Component {
           required
         />
         {JSON.stringify(this.state)}
+        <button type="submit" value="Search">
+          Search
+        </button>
+        <select id="modeSelect" onChange={this.handleInputChange}>
+          <option value="">Any</option>
+          <option value="5v5ranked">5v5 Ranked</option>
+          <option value="5v5casual">5v5 Casual</option>
+          <option value="ranked">3v3 Ranked</option>
+          <option value="casual">3v3 Casual</option>
+          <option value="br">Battle Royale</option>
+          <option value="blitz">Blitz</option>
+        </select>
+        <label>
+          Private
+          <input
+            type="checkbox"
+            name="private"
+            id="private"
+            onChange={this.handleInputChange}
+          />
+        </label>
       </form>
     );
   }
@@ -42,17 +63,9 @@ class InputPanel extends React.Component {
 
 const Player = ({ data }) => (
   <div>
-    <div>Rank</div>
-    <h2>{data.name}</h2>
-    <small>{data.guildTag}</small>
-    <p>{data.rank}</p>
-    <p>Level: {data.level}</p>
-    <div>
-      <h3>Played:</h3>
-      <p>{data.gamesPlayed.casual_5v5}x 5v5 Casuals</p>
-      <p>{data.gamesPlayed.total_3v3}x 3v3 Games</p>
-    </div>
-    <div>Karma</div>
+    Name: {data.name}
+    <br />
+    Rank: {data.rank}
   </div>
 );
 
@@ -80,14 +93,7 @@ Index.getInitialProps = async function() {
     data: {
       player: {
         name: "thisBoy",
-        rank: "Pinnacle of Awesome Bronze",
-        level: "32",
-        guildTag: "BAR",
-        karma: "Good Karma",
-        gamesPlayed: {
-          casual_5v5: 38,
-          total_3v3: 3000
-        }
+        rank: "10B"
       },
       matches: [
         {

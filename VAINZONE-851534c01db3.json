@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "vainzone-vg",
+  "private_key_id": "851534c01db3e8461feb8d1e06b0bd004e4faa22",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCy8/UZG54MN64S\n4cooOVDd6jfNFyHJOpxZ4HxOUftoG2GAPOuohjyCH/UtSPap3s6/6IlhKapdBdSU\nb05If8OdfxqZa7B3XlLAKPN0pwzIqNqSzih/eF74P1DSo/QiI9feNQHIJYwzz6av\nbuWYNoh/hXAWtLRGXzy+eXprhGmMwi3LGvrP0v7f67D9GcCsihlotzM7zgpkkHkI\nE/9jeTumuwQptsEEfrXWAWvb15QRKt8G2x2o9f00pK7ch6aBHL9ckn3F5sMgjvR6\nVEdFkn88mYWRJEJ30IN6anhX0KDjVJRVwpQVWPgk5uLq/cn+NWGreIqcGvHTsNDF\nGKeutB3/AgMBAAECggEAA0LTYH9My715GuBBMGEwGOJv3PkuquN0cn0FlW0+qpl1\n3PB5cc+PsRTP0uD7ahk79rvbzn0yhakTz9EE5NGBZj8RtagEdJWBLFsYgQUPBE6K\nU62hKsDFP13EX43tffxSIwDxMI1WnNCMLVVVA8GId24Snr6UFPjwmCqJ/+3yEEan\nM+aGw3wcMn7dAu7yxYgxH1Rklnm2dehUd+avkmw6Pz/ypmIjfqSphC5jr51nJOOE\nX1PXb3Yt4YOu9EBKZbrhKXRkCc/NIppPEGJX1pL87QWQnPbrM1wHyPeGNC1XGNyB\nUKL6tD38W3z4cRd7WJ4owQP6EVhAV37Lz5IA1IftoQKBgQDuFPe+KJH1rCfiw6/g\nSDMEVvjQka9Z/rgacVEqS0Cyfvi25Gf+w1XQFnQF/AUjmn4MfrsafilSsBbqjuco\nmhTzFv0UbmW7ggvPhK2fXkSGi/1YsTopLkbpu9GGTWgxiurMbdUGudKwU+dg44zl\nyitZOHONUMUkkqjpSMD3rOAAkQKBgQDAa8ZqJyeJh8KWDEpZ9ymih7lgHtc5guz2\n7WLu5DvSZt/YlwDWUHtZ+4Ou1R/GtW/tnOkmI8T0KooeqKMPvQQFafHZbSFDR5BU\nnMz6XtrzIk8B3tN6XrqPTNMnxY+VeiIH99gaGm06bLnWbuThnBGwi5KBWMprnsq/\nPpvYTv19jwKBgD+4FOYr7YSW4sXqIbQhHqZWsJkBpLCtX5CUK2jqYxJisSYh00N3\n/AuJNtwzKxzwSDQH5wOcKGsc/cUhIfTX6Ct3R5ykP04D7C1KET3J+QUZimCmbi5/\nWDNONTGAnhZEW7sC2jTGnwDaM97Wh+soRJnIZgS4TUsQhWyKMDsZZYpBAoGBALnh\nIvn2uvXbZLjoRIbmAZ1VOVlGUajn9huPNEwLxFI7OLAVJyTg+FfzZMDmdtzQ9r/2\nHS/Py/oGggid5W9Vq2XDc3MTPdetcRqbolOWgDHxCZuH8oi6q8O0diJscYj3Q5qo\n7GRC9RNEZr1jwMzEpD4EhlFXQat26OqYA5qQq8W3AoGAWu7lpmQjAF0ep7DSGUKE\nIWX112vR5Ociwen9OSGorRU8ob16Tw7JMX5szvUqvYwUjF6eGNHZi0h75d7m8owM\nO5Ghza2XQaIRNF9XkfrylL0T0ZIm74WPY2syJFgF09xDW/bcg42Q98D9QgxTyRyo\nDRu4SIg6QyYslYJKq4DfObk=\n-----END PRIVATE KEY-----\n",
+  "client_email": "vainzone-vg@appspot.gserviceaccount.com",
+  "client_id": "110881101317065629436",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/vainzone-vg%40appspot.gserviceaccount.com"
+}
