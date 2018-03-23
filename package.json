@@ -9,6 +9,7 @@
     "build": "next build",
     "start": "next start -p $PORT"
   },
+  "postinstall": "npm run build",
   "keywords": [],
   "author": "",
   "license": "ISC",
