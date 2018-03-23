@@ -52,16 +52,13 @@ app
     });
 
     server.get("/player/:IGN", (req, res) => {
-      console.log("I am here");
       var documentReference = db.collection("players").doc(req.params.IGN);
-      console.log(documentReference);
 
       var setPlayer = documentReference.set({
         IGN: req.params.IGN,
         retrieval: new Date(),
         rank: "Vainglorious Bronze"
       });
-      console.log(setPlayer);
     });
 
     // server.get("/p/:id", (req, res) => {
@@ -70,9 +67,9 @@ app
     //   app.render(req, res, actualPage, queryParams);
     // });
 
-    server.get("*", (req, res) => {
-      return handle(req, res);
-    });
+    // server.get("*", (req, res) => {
+    //   return handle(req, res);
+    // });
 
     server.listen(PORT, err => {
       if (err) throw err;
