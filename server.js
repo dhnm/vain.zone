@@ -52,13 +52,16 @@ app
     });
 
     server.get("/player/:IGN", (req, res) => {
+      console.log("I am here");
       var documentReference = db.collection("players").doc(req.params.IGN);
+      console.log(documentReference);
 
       var setPlayer = documentReference.set({
         IGN: req.params.IGN,
         retrieval: new Date(),
         rank: "Vainglorious Bronze"
       });
+      console.log(setPlayer);
     });
 
     // server.get("/p/:id", (req, res) => {
