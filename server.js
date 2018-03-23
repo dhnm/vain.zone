@@ -67,13 +67,13 @@ app
     //   app.render(req, res, actualPage, queryParams);
     // });
 
-    // server.get("*", (req, res) => {
-    //   return handle(req, res);
-    // });
+    server.get("*", (req, res) => {
+      return handle(req, res);
+    });
 
     server.listen(PORT, err => {
       if (err) throw err;
-      console.log("> Ready on http://localhost:" + PORT);
+      console.log("> d2 Ready on http://localhost:" + PORT);
     });
   })
   .catch(ex => {
