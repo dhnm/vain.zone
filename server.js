@@ -49,6 +49,8 @@ app
         .catch(err => {
           console.log("Error getting documents", err);
         });
+
+      app.render(req, res, "/", {});
     });
 
     server.get("/player/:IGN", (req, res) => {
@@ -59,6 +61,8 @@ app
         retrieval: new Date(),
         rank: "Vainglorious Bronze"
       });
+
+      app.render(req, res, "/", {});
     });
 
     // server.get("/p/:id", (req, res) => {
