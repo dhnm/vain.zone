@@ -1,4 +1,4 @@
-import Layout from "../components/MyLayout.js";
+import Layout from "../components/ExtensionLayout.js";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 
