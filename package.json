@@ -19,6 +19,7 @@
     "firebase-admin": "^5.11.0",
     "helmet": "^3.12.0",
     "isomorphic-unfetch": "^1.0.0",
+    "moment": "^2.21.0",
     "next": "^4.2.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",

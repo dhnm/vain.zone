@@ -33,19 +33,19 @@ app
 
     server.use(helmet());
 
-    // if (!dev) {
-    //   // Enforce SSL & HSTS in production
-    //   server.use(function(req, res, next) {
-    //     var proto = req.headers["x-forwarded-proto"];
-    //     if (proto === "https") {
-    //       res.set({
-    //         "Strict-Transport-Security": "max-age=31557600" // one-year
-    //       });
-    //       return next();
-    //     }
-    //     res.redirect("https://" + req.headers.host + req.url);
-    //   });
-    // }
+    if (!dev) {
+      // Enforce SSL & HSTS in production
+      server.use(function(req, res, next) {
+        var proto = req.headers["x-forwarded-proto"];
+        if (proto === "https") {
+          res.set({
+            "Strict-Transport-Security": "max-age=31557600" // one-year
+          });
+          return next();
+        }
+        res.redirect("https://" + req.headers.host + req.url);
+      });
+    }
 
     server.get("/", (req, res) => {
       app.render(req, res, "/extension/player", {});
@@ -528,7 +528,10 @@ const uploadMatches = matches => {
                   );
 
                   var customParticipantDataModel = {
-                    actor: participant.attributes.actor,
+                    actor: participant.attributes.actor.substring(
+                      1,
+                      participant.attributes.actor.length - 1
+                    ),
                     assists: participant.attributes.stats.assists,
                     crystalMineCaptures:
                       participant.attributes.stats.crystalMineCaptures,

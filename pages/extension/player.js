@@ -1,6 +1,7 @@
 import Layout from "../../components/ExtensionLayout.js";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";
+import moment from "moment";
 
 import {
   Form,
@@ -16,7 +17,8 @@ import {
   Popup,
   Progress,
   Grid,
-  Button
+  Button,
+  Icon
 } from "semantic-ui-react";
 
 class InputPanel extends React.Component {
@@ -45,7 +47,7 @@ class InputPanel extends React.Component {
       <Form onSubmit={this.handleSubmit}>
         <Form.Field>
           <Input
-            icon="user"
+            icon={<Icon name="search" />}
             type="search"
             onChange={this.handleInputChange}
             value={this.state["IGNInput"]}
@@ -187,7 +189,7 @@ const SkillTierPopup = ({ skillTier, rankPoints }) => {
         <Image
           floated="right"
           size="tiny"
-          src={`http://x.vainglory.eu/vg_extension2/assets/img/rank/c/${
+          src={`/static/img/rank/c/${
             skillTier.number
           }%20${skillTier.color.trim()}.png`}
           style={{ margin: 0, marginBottom: "-7px" }}
@@ -218,11 +220,7 @@ const Player = ({ player }) => (
       <Image
         style={{ height: "30px" }}
         spaced
-        src={
-          "http://x.vainglory.eu/vg_extension2/assets/img/karma/c/" +
-          player.karmaLevel +
-          ".png"
-        }
+        src={"/static/img/karma/c/" + player.karmaLevel + ".png"}
       />
     </Card.Content>
     <Card.Content>
@@ -251,49 +249,138 @@ const Player = ({ player }) => (
   </Card>
 );
 
-const MatchCard = ({ match, participant }) => (
-  <Card link fluid>
-    <Card.Content>
-      <Card.Header>
-        {participant.won} {match.gameMode}
-      </Card.Header>
-      <Card.Meta>Level: </Card.Meta>
-      <Label>label</Label>
-      <Image
-        style={{ height: "30px" }}
-        spaced
-        src={"http://x.vainglory.eu/vg_extension2/assets/img/karma/c/1.png"}
-      />
-    </Card.Content>
-    <Card.Content>
-      <strong>Experience:</strong>
-      <Grid columns="equal">
-        <Grid.Row>
-          <Grid.Column>
-            5v5 Casuals:
-            <div style={{ float: "right" }}>×</div>
-            <br />
-            BRAWL Games:
-            <div style={{ float: "right" }}>×</div>
-          </Grid.Column>
-          <Grid.Column>
-            3v3 Casuals:
-            <div style={{ float: "right" }}>x</div>
-            <br />
-            3v3 Rankeds:
-            <div style={{ float: "right" }}>×</div>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    </Card.Content>
-  </Card>
-);
+const MatchCard = ({
+  match,
+  playerInTheMatch,
+  playerInTheMatchWon,
+  converter
+}) => {
+  const { shortMatchConclusion, matchConclusionColors } = converter({
+    shortMatchConclusion: playerInTheMatchWon
+  }).shortMatchConclusion();
+  const humanGameMode = converter({ gameMode: match.gameMode }).humanGameMode();
+  const humanDuration = converter({ duration: match.duration }).humanDuration();
+
+  return (
+    <Card color={matchConclusionColors[1]} link fluid>
+      <Card.Content>
+        <Image
+          size="mini"
+          src={
+            "/static/img/heroes/c/" +
+            playerInTheMatch.actor.toLowerCase() +
+            ".jpg"
+          }
+          style={{ borderRadius: "25%", marginBottom: 0 }}
+          floated="right"
+        />
+        <Card.Header>
+          <span style={{ color: matchConclusionColors[0] }}>
+            {shortMatchConclusion.toUpperCase()}
+          </span>{" "}
+          {humanGameMode.toUpperCase()}
+        </Card.Header>
+        <Card.Meta>
+          {moment(match.createdAt).fromNow()} | {humanDuration}min game
+        </Card.Meta>
+      </Card.Content>
+      <Card.Content style={{ color: "black" }}>
+        <Grid columns="equal">
+          <Grid.Row>
+            <Grid.Column style={{ margin: "auto", padding: "0 0.5rem" }}>
+              <div style={{ margin: "auto" }}>
+                {match.rosters[0].participants.map(participant => {
+                  return (
+                    <Image
+                      avatar
+                      src={
+                        "/static/img/heroes/c/" +
+                        participant.actor.toLowerCase() +
+                        ".jpg"
+                      }
+                      style={{
+                        borderRadius: "25%",
+                        width: "22px",
+                        height: "22px",
+                        margin: "1px"
+                      }}
+                    />
+                  );
+                })}
+                <br />
+                vs<br />
+                {match.rosters[1].participants.map(participant => {
+                  return (
+                    <Image
+                      avatar
+                      src={
+                        "/static/img/heroes/c/" +
+                        participant.actor.toLowerCase() +
+                        ".jpg"
+                      }
+                      style={{
+                        borderRadius: "25%",
+                        width: "22px",
+                        height: "22px",
+                        margin: "1px"
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </Grid.Column>
+            <Grid.Column
+              style={{
+                textAlign: "center",
+                margin: "auto",
+                padding: "0 0.5rem"
+              }}
+            >
+              <div style={{ margin: "auto" }}>
+                1.25 KDA/min
+                <br />
+                200 Gold/min
+                <br />
+                {playerInTheMatch.items.map((item, index) => {
+                  if (
+                    match.gameMode.indexOf("5v5") !== -1 &&
+                    (index == 0 || index == 1)
+                  ) {
+                    return <div />;
+                  }
+
+                  return (
+                    <Image
+                      avatar
+                      src={
+                        "/static/img/items/c/" +
+                        item.replace(/ /g, "-").toLowerCase() +
+                        ".png"
+                      }
+                      style={{
+                        width: "21px",
+                        height: "21px",
+                        margin: 0,
+                        marginTop: "4px"
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </Card.Content>
+    </Card>
+  );
+};
 
 const MatchesSidebar = ({
   playerId,
   matches,
   sidebarVisible,
-  toggleSidebar
+  toggleSidebar,
+  converter
 }) => (
   <Sidebar
     as={Menu}
@@ -305,16 +392,29 @@ const MatchesSidebar = ({
     inverted
     vertical
   >
-    <Menu.Item>
+    <Menu.Item
+      style={{ padding: "10px", paddingBottom: "5px", textAlign: "right" }}
+    >
       <Button onClick={toggleSidebar}>Close</Button>
     </Menu.Item>
     {matches.map(match => {
-      const participant = identifyPlayerInTheMatch(playerId, match);
+      const { playerInTheMatch, playerInTheMatchWon } = converter({
+        playerId: playerId,
+        match: match
+      }).identifyPlayerInTheMatch();
 
       return (
-        <Menu.Item key={match.id}>
+        <Menu.Item
+          key={match.id}
+          style={{ padding: "10px", paddingBottom: "5px" }}
+        >
           <Link as={`/match/${match.id}`} href={`/match?id=${match.id}`}>
-            <MatchCard match={match} participant={participant} />
+            <MatchCard
+              match={match}
+              playerInTheMatch={playerInTheMatch}
+              playerInTheMatchWon={playerInTheMatchWon}
+              converter={converter}
+            />
           </Link>
         </Menu.Item>
       );
@@ -333,6 +433,81 @@ class Extension extends React.Component {
   toggleSidebar = () => {
     this.setState({ sidebarVisible: !this.state.sidebarVisible });
   };
+  converter = data => {
+    return {
+      identifyPlayerInTheMatch: () => {
+        for (
+          var rosterIndex = 0;
+          rosterIndex < data.match.rosters.length;
+          rosterIndex++
+        ) {
+          for (
+            var participantIndex = 0;
+            participantIndex <
+            data.match.rosters[rosterIndex].participants.length;
+            participantIndex++
+          ) {
+            if (
+              data.match.rosters[rosterIndex].participants[participantIndex]
+                .player.id === data.playerId
+            ) {
+              return {
+                playerInTheMatch:
+                  data.match.rosters[rosterIndex].participants[
+                    participantIndex
+                  ],
+                playerInTheMatchWon: data.match.rosters[rosterIndex].won
+              };
+            }
+          }
+        }
+      },
+
+      shortMatchConclusion: () => {
+        if (data.shortMatchConclusion == "true") {
+          return {
+            shortMatchConclusion: "WON",
+            matchConclusionColors: ["#0c5", "green"]
+          };
+        }
+        return {
+          shortMatchConclusion: "LOST",
+          matchConclusionColors: ["#ff5757", "red"]
+        };
+      },
+
+      humanGameMode: () => {
+        return {
+          "5v5_pvp_ranked": ["5v5 Ranked", false, "5v5ranked"],
+          "5v5_pvp_casual": ["5v5 Casual", false, "5v5casual"],
+          private_party_vg_5v5: ["5v5 Private Casual", true, "5v5casual"],
+          ranked: ["Ranked", false, "ranked"],
+          private_party_draft_match: ["Private Ranked", true, "ranked"],
+          casual: ["Casual", false, "casual"],
+          private: ["Private Casual", true, "casual"],
+          casual_aral: ["Battle Royale", false, "br"],
+          private_party_aral_match: ["Private Battle Royale", true, "br"],
+          blitz_pvp_ranked: ["Blitz", false, "blitz"],
+          private_party_blitz_match: ["Private Blitz", true, "blitz"],
+          blitz_rounds_pvp_casual: ["Onslaught", false, "onslaught"],
+          private_party_blitz_rounds_match: [
+            "Private Onslaught",
+            true,
+            "onslaught"
+          ]
+        }[data.gameMode][0];
+      },
+
+      humanDuration: () => {
+        var time = parseInt(data.duration / 60) + ":" + data.duration % 60;
+        time = time.split(":");
+        if (time[0].length < 2) time[0] = "0" + time[0];
+        if (time[1].length < 2) time[1] = "0" + time[1];
+
+        return time.join(":");
+      }
+    };
+  };
   render() {
     return (
       <Layout>
@@ -342,6 +517,7 @@ class Extension extends React.Component {
             matches={this.state.data.matches}
             sidebarVisible={this.state.sidebarVisible}
             toggleSidebar={this.toggleSidebar}
+            converter={this.converter}
           />
           <Sidebar.Pusher dimmed={this.state.sidebarVisible}>
             <Segment basic>
@@ -368,23 +544,3 @@ Extension.getInitialProps = async function({ query }) {
 };
 
 export default Extension;
-
-const identifyPlayerInTheMatch = (playerId, match) => {
-  for (var rosterIndex = 0; rosterIndex < match.rosters.length; rosterIndex++) {
-    for (
-      var participantIndex = 0;
-      participantIndex < match.rosters[rosterIndex].participants.length;
-      participantIndex++
-    ) {
-      if (
-        match.rosters[rosterIndex].participants[participantIndex].player.id ===
-        playerId
-      ) {
-        return {
-          data: match.rosters[rosterIndex].participants[participantIndex],
-          won: match.rosters[rosterIndex].won
-        };
-      }
-    }
-  }
-};
