@@ -1,5 +1,6 @@
 const express = require("express");
 const next = require("next");
+const helmet = require("helmet");
 
 const path = require("path");
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,8 @@ app
   .then(() => {
     const server = express();
 
+    server.use(helmet());
+
     // if (!dev) {
     //   // Enforce SSL & HSTS in production
     //   server.use(function(req, res, next) {
@@ -45,10 +48,10 @@ app
     // }
 
     server.get("/", (req, res) => {
-      app.render(req, res, "/extension", {});
+      app.render(req, res, "/extension/player", {});
     });
 
-    server.get("/extension", (req, res) => {
+    server.get("/extension/", (req, res) => {
       db
         .collection("players")
         .get()
@@ -80,23 +83,25 @@ app
         responseType: "json"
       })
         .then(response => {
-          app.render(req, res, "/extension", {
+          app.render(req, res, "/extension/player", {
             data: JSON.stringify(response.data)
           });
         })
         .catch(err =>
-          app.render(req, res, "/extension", { data: "error: " + err })
+          app.render(req, res, "/extension/player", { data: { error: err } })
         );
     });
 
-    server.get("/extension/:IGN", (req, res) => {
+    server.get("/extension/player/:IGN", (req, res) => {
       getData(req.params.IGN)
         .then(data => {
           console.log("in render");
-          app.render(req, res, "/extension", { data: JSON.stringify(data) });
+          app.render(req, res, "/extension/player", {
+            data: JSON.stringify(data)
+          });
         })
         .catch(error => {
-          app.render(req, res, "/extension", {
+          app.render(req, res, "/extension/player", {
             data: JSON.stringify(error)
           });
         });
@@ -338,7 +343,8 @@ const compareIDs = (APIData, DBData) => {
         } else {
           return getMatches("new", APIData);
         }
-      });
+      })
+      .catch(err => Promise.reject("id: 12 " + err));
   }
 };
 
@@ -362,7 +368,8 @@ const saveNonExist = IGN => {
       } else {
         db.collection("players").add(nonExistData);
       }
-    });
+    })
+    .catch(err => Promise.reject("id: 13 " + err));
 };
 
 // END PLAYER
