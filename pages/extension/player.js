@@ -208,45 +208,55 @@ const SkillTierPopup = ({ skillTier, rankPoints }) => {
 };
 
 const Player = ({ player }) => (
-  <Card link fluid>
-    <Card.Content>
-      <SkillTierPopup
-        skillTier={player.skillTier}
-        rankPoints={player.rank_3v3}
-      />
-      <Card.Header>{player.name}</Card.Header>
-      <Card.Meta>Level: {player.level}</Card.Meta>
-      <Label>{player.guildTag}</Label>
-      <Image
-        style={{ height: "30px" }}
-        spaced
-        src={"/static/img/karma/c/" + player.karmaLevel + ".png"}
-      />
-    </Card.Content>
-    <Card.Content>
-      <strong>Experience:</strong>
-      <Grid columns="equal">
-        <Grid.Row>
-          <Grid.Column>
-            5v5 Casuals:
-            <div style={{ float: "right" }}>{player.played_casual_5v5}×</div>
-            <br />
-            BRAWL Games:
-            <div style={{ float: "right" }}>
-              {player.played_aral + player.played_blitz}×
-            </div>
-          </Grid.Column>
-          <Grid.Column>
-            3v3 Casuals:
-            <div style={{ float: "right" }}>{player.played_casual}×</div>
-            <br />
-            3v3 Rankeds:
-            <div style={{ float: "right" }}>{player.played_ranked}×</div>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    </Card.Content>
-  </Card>
+  <div>
+    <Segment
+      basic
+      attached="top"
+      style={{ padding: 0, margin: "1em 0 0 -1px" }}
+    >
+      <Card fluid>
+        <Card.Content>
+          <SkillTierPopup
+            skillTier={player.skillTier}
+            rankPoints={player.rank_3v3}
+          />
+          <Card.Header>{player.name}</Card.Header>
+          <Card.Meta>Level: {player.level}</Card.Meta>
+          <Label>{player.guildTag}</Label>
+          <Image
+            style={{ height: "30px" }}
+            spaced
+            src={"/static/img/karma/c/" + player.karmaLevel + ".png"}
+          />
+        </Card.Content>
+        <Card.Content>
+          <strong>Experience:</strong>
+          <Grid columns="equal">
+            <Grid.Row>
+              <Grid.Column>
+                5v5 Casuals:
+                <div style={{ float: "right" }}>
+                  {player.played_casual_5v5}×
+                </div>
+                <br />
+                BRAWL Games:
+                <div style={{ float: "right" }}>
+                  {player.played_aral + player.played_blitz}×
+                </div>
+              </Grid.Column>
+              <Grid.Column>
+                3v3 Casuals:
+                <div style={{ float: "right" }}>{player.played_casual}×</div>
+                <br />
+                3v3 Rankeds:
+                <div style={{ float: "right" }}>{player.played_ranked}×</div>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Card.Content>
+      </Card>
+    </Segment>
+  </div>
 );
 
 const MatchCard = ({
@@ -275,8 +285,14 @@ const MatchCard = ({
           floated="right"
         />
         <Card.Header>
-          <span style={{ color: matchConclusionColors[0] }}>
-            {shortMatchConclusion.toUpperCase()}
+          <span>
+            <Label
+              color={matchConclusionColors[1]}
+              style={{ verticalAlign: "top" }}
+              horizontal
+            >
+              {shortMatchConclusion.toUpperCase()}
+            </Label>
           </span>{" "}
           {humanGameMode.toUpperCase()}
         </Card.Header>
@@ -385,6 +401,7 @@ const MatchesSidebar = ({
   <Sidebar
     as={Menu}
     animation="push"
+    direction="right"
     width="wide"
     visible={sidebarVisible}
     icon="labeled"
@@ -393,9 +410,19 @@ const MatchesSidebar = ({
     vertical
   >
     <Menu.Item
-      style={{ padding: "10px", paddingBottom: "5px", textAlign: "right" }}
+      style={{ padding: "10px", paddingBottom: "5px", textAlign: "left" }}
     >
-      <Button onClick={toggleSidebar}>Close</Button>
+      <Button onClick={toggleSidebar}>
+        <Icon name="chevron left" />Back
+      </Button>
+      <Button
+        onClick={() => window.alert("Filter option is coming soon!")}
+        floated="right"
+        disabled
+        style={{ display: "none" }}
+      >
+        <Icon name="filter" />Filter
+      </Button>
     </Menu.Item>
     {matches.map(match => {
       const { playerInTheMatch, playerInTheMatchWon } = converter({
@@ -523,7 +550,14 @@ class Extension extends React.Component {
             <Segment basic>
               <InputPanel />
               <Player player={this.state.data.player} />
-              <Button onClick={this.toggleSidebar}>Matches</Button>
+              <Button.Group attached="bottom">
+                <Button>
+                  <Icon name="send" />Send
+                </Button>
+                <Button onClick={this.toggleSidebar}>
+                  <Icon name="sidebar" /> Matches
+                </Button>
+              </Button.Group>
             </Segment>
           </Sidebar.Pusher>
         </Sidebar.Pushable>

@@ -16,7 +16,7 @@ const ExtensionLayout = props => (
 		{props.children}
 		<style jsx global>{`
 			body {
-				background-color: #45aaf2 !important;
+				background-color: #4b7bec !important;
 			}
 		`}</style>
 		<style jsx>{`
