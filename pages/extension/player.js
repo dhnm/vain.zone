@@ -427,7 +427,7 @@ const MatchesSidebar = ({
     {matches.map(match => {
       const { playerInTheMatch, playerInTheMatchWon } = converter({
         playerId: playerId,
-        match: match
+        rosters: match.rosters
       }).identifyPlayerInTheMatch();
 
       return (
@@ -449,13 +449,244 @@ const MatchesSidebar = ({
   </Sidebar>
 );
 
+class MatchDetailView extends React.Component {
+  render() {
+    const converter = this.props.converter,
+      match = this.props.match;
+    return (
+      <Segment
+        style={{
+          paddingTop: "1.6rem",
+          paddingLeft: "0.5em",
+          paddingRight: "0.5em"
+        }}
+      >
+        <Label attached="top">
+          <div style={{ marginBottom: "2px", padding: 0, textAlign: "center" }}>
+            {converter({ gameMode: match.gameMode })
+              .humanGameMode()
+              .toUpperCase()}
+          </div>
+          {converter({ duration: match.duration }).humanDuration() + "min"}
+          <span style={{ float: "right" }}>
+            {moment(match.createdAt).fromNow()}
+          </span>
+        </Label>
+        <Segment basic style={{ padding: 0, textAlign: "center" }}>
+          <Label
+            color={
+              converter({
+                rosterWon: match.rosters[0].won,
+                endGameReason: match.endGameReason
+              }).longMatchConclusion().matchConclusionColors[1]
+            }
+            style={{ width: "90px", textAlign: "center", float: "left" }}
+          >
+            {
+              converter({
+                rosterWon: match.rosters[0].won,
+                endGameReason: match.endGameReason
+              }).longMatchConclusion().longMatchConclusion
+            }
+          </Label>
+          <div
+            style={{
+              display: "inline-block",
+              margin: "auto",
+              fontSize: "1.4rem",
+              fontWeight: "bold",
+              marginTop: "3px",
+              width: "75px",
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)"
+            }}
+          >
+            {match.rosters[0].heroKills} ⚔️{match.rosters[1].heroKills}
+          </div>
+          <Label
+            color={
+              converter({
+                rosterWon: match.rosters[1].won,
+                endGameReason: match.endGameReason
+              }).longMatchConclusion().matchConclusionColors[1]
+            }
+            style={{
+              float: "right",
+              width: "90px",
+              textAlign: "center"
+            }}
+          >
+            {
+              converter({
+                rosterWon: match.rosters[1].won,
+                endGameReason: match.endGameReason
+              }).longMatchConclusion().longMatchConclusion
+            }
+          </Label>
+          <Grid columns="equal" style={{ clear: "both" }}>
+            <Grid.Row style={{ padding: "0.4rem 0 0 0" }}>
+              <Grid.Column textAlign="left">
+                {match.rosters[0].gold}&zwj;💰 {match.rosters[0].acesEarned}&zwj;🃏{" "}
+                {match.rosters[0].krakenCaptures}&zwj;🐲{" "}
+                {match.rosters[0].turretKills}&zwj;🗼
+              </Grid.Column>
+              <Grid.Column textAlign="right" style={{ paddingRight: "0.4rem" }}>
+                {match.rosters[1].gold}&zwj;💰 {match.rosters[1].acesEarned}&zwj;🃏{" "}
+                {match.rosters[1].krakenCaptures}&zwj;🐲{" "}
+                {match.rosters[1].turretKills}&zwj;🗼
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row style={{ paddingTop: "0.5rem", paddingBottom: "0.5rem" }}>
+              <Grid.Column textAlign="left" style={{ paddingRight: "0.1em" }}>
+                {match.rosters[0].participants.map(participant => {
+                  var kda =
+                    (participant.kills + participant.assists) /
+                    participant.deaths;
+                  if (participant.deaths == 0) {
+                    kda = participant.kills + participant.assists;
+                  }
+                  return (
+                    <Card link fluid>
+                      <Card.Content style={{ padding: "4px" }}>
+                        <Image
+                          size="mini"
+                          src={
+                            "/static/img/heroes/c/" +
+                            participant.actor.toLowerCase() +
+                            ".jpg"
+                          }
+                          style={{ borderRadius: "25%", margin: "0 4px 0 0" }}
+                          floated="left"
+                        />
+                        <strong
+                          style={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            fontSize: "1.1rem",
+                            display: "block"
+                          }}
+                        >
+                          {participant.player.name}
+                        </strong>
+                        <div style={{ fontSize: "0.9rem" }}>
+                          {participant.kills}/{participant.deaths}/{
+                            participant.assists
+                          }{" "}
+                          <span style={{ float: "right" }}>
+                            ({kda.toFixed(1)})
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            marginTop: "1px",
+                            marginBottom: "-4px"
+                          }}
+                        >
+                          <Progress
+                            value={35}
+                            total={50}
+                            size="small"
+                            color="yellow"
+                          />
+                          <div className="progressLabelWrapper">
+                            <span className="progressLabel">Gold/min</span>{" "}
+                            <span className="progressLabelValue">
+                              {(
+                                participant.gold /
+                                (match.duration / 60)
+                              ).toFixed(2)}
+                            </span>
+                          </div>
+                          <Progress
+                            value={35}
+                            total={50}
+                            size="small"
+                            color="teal"
+                          />
+                          <div className="progressLabelWrapper">
+                            <span className="progressLabel">CS/min</span>{" "}
+                            <span className="progressLabelValue">
+                              {(
+                                participant.farm /
+                                (match.duration / 60)
+                              ).toFixed(2)}
+                            </span>
+                          </div>
+                          <Progress
+                            value={35}
+                            total={50}
+                            size="small"
+                            color="orange"
+                          />
+                          <div className="progressLabelWrapper">
+                            <span className="progressLabel">DPS</span>{" "}
+                            <span className="progressLabelValue">561.23</span>
+                          </div>
+                        </div>
+                      </Card.Content>
+                    </Card>
+                  );
+                })}
+              </Grid.Column>
+              <Grid.Column textAlign="right" style={{ paddingLeft: "0.1em" }}>
+                <Card fluid>Hello</Card>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Segment>
+        <style jsx global>
+          {`
+            .progress {
+              margin: 0 0 2px 0 !important;
+              position: relative;
+              z-index: 0;
+            }
+          `}
+        </style>
+        <style jsx>
+          {`
+            .progressLabelWrapper {
+              font-size: 0.75rem;
+              font-weight: bold;
+              position: absolute;
+              width: 100%;
+              margin-top: -17px;
+              z-index: 1;
+              clear: both;
+            }
+
+            .progressLabel {
+              display: inline-block;
+              vertical-align: top;
+              margin-left: 1px;
+              float: left;
+            }
+
+            .progressLabelValue {
+              display: inline-block;
+              vertical-align: top;
+              float: right;
+              margin-right: 10px;
+            }
+          `}
+        </style>
+      </Segment>
+    );
+  }
+}
+
 class Extension extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       data: props.data,
-      sidebarVisible: false
+      sidebarVisible: false,
+      selectedMatch: 0
     };
+
+    this.toggleSidebar = this.toggleSidebar.bind(this);
+    this.converter = this.converter.bind(this);
   }
   toggleSidebar = () => {
     this.setState({ sidebarVisible: !this.state.sidebarVisible });
@@ -465,25 +696,22 @@ class Extension extends React.Component {
       identifyPlayerInTheMatch: () => {
         for (
           var rosterIndex = 0;
-          rosterIndex < data.match.rosters.length;
+          rosterIndex < data.rosters.length;
           rosterIndex++
         ) {
           for (
             var participantIndex = 0;
-            participantIndex <
-            data.match.rosters[rosterIndex].participants.length;
+            participantIndex < data.rosters[rosterIndex].participants.length;
             participantIndex++
           ) {
             if (
-              data.match.rosters[rosterIndex].participants[participantIndex]
-                .player.id === data.playerId
+              data.rosters[rosterIndex].participants[participantIndex].player
+                .id === data.playerId
             ) {
               return {
                 playerInTheMatch:
-                  data.match.rosters[rosterIndex].participants[
-                    participantIndex
-                  ],
-                playerInTheMatchWon: data.match.rosters[rosterIndex].won
+                  data.rosters[rosterIndex].participants[participantIndex],
+                playerInTheMatchWon: data.rosters[rosterIndex].won
               };
             }
           }
@@ -503,22 +731,61 @@ class Extension extends React.Component {
         };
       },
 
+      longMatchConclusion: () => {
+        if (data.rosterWon == "true") {
+          return {
+            longMatchConclusion: "VICTORY",
+            matchConclusionColors: ["#0c5", "green"]
+          };
+        } else if (data.endGameReason == "victory") {
+          return {
+            longMatchConclusion: "DEFEAT",
+            matchConclusionColors: ["#ff5757", "red"]
+          };
+        } else {
+          return {
+            longMatchConclusion: "SURRENDER",
+            matchConclusionColors: ["#fc0", "yellow"]
+          };
+        }
+      },
+
       humanGameMode: () => {
         return {
-          "5v5_pvp_ranked": ["5v5 Ranked", false, "5v5ranked"],
-          "5v5_pvp_casual": ["5v5 Casual", false, "5v5casual"],
-          private_party_vg_5v5: ["5v5 Private Casual", true, "5v5casual"],
-          ranked: ["Ranked", false, "ranked"],
-          private_party_draft_match: ["Private Ranked", true, "ranked"],
-          casual: ["Casual", false, "casual"],
-          private: ["Private Casual", true, "casual"],
-          casual_aral: ["Battle Royale", false, "br"],
-          private_party_aral_match: ["Private Battle Royale", true, "br"],
-          blitz_pvp_ranked: ["Blitz", false, "blitz"],
-          private_party_blitz_match: ["Private Blitz", true, "blitz"],
-          blitz_rounds_pvp_casual: ["Onslaught", false, "onslaught"],
+          "5v5_pvp_ranked": ["Sovereign's Rise Ranked", false, "5v5ranked"],
+          "5v5_pvp_casual": ["Sovereign's Rise Casual", false, "5v5casual"],
+          private_party_vg_5v5: [
+            "Sovereign's Rise Private Casual",
+            true,
+            "5v5casual"
+          ],
+          ranked: ["Halcyon Fold Ranked", false, "ranked"],
+          private_party_draft_match: [
+            "Halcyon Fold Private Ranked",
+            true,
+            "ranked"
+          ],
+          casual: ["Halcyon Fold Casual", false, "casual"],
+          private: ["Halcyon Fold Private Casual", true, "casual"],
+          casual_aral: ["Halcyon Fold Battle Royale", false, "br"],
+          private_party_aral_match: [
+            "Halcyon Fold Private Battle Royale",
+            true,
+            "br"
+          ],
+          blitz_pvp_ranked: ["Halcyon Fold Blitz", false, "blitz"],
+          private_party_blitz_match: [
+            "Halcyon Fold Private Blitz",
+            true,
+            "blitz"
+          ],
+          blitz_rounds_pvp_casual: [
+            "Halcyon Fold Onslaught",
+            false,
+            "onslaught"
+          ],
           private_party_blitz_rounds_match: [
-            "Private Onslaught",
+            "Halcyon Fold Private Onslaught",
             true,
             "onslaught"
           ]
@@ -558,6 +825,10 @@ class Extension extends React.Component {
                   <Icon name="sidebar" /> Matches
                 </Button>
               </Button.Group>
+              <MatchDetailView
+                match={this.state.data.matches[this.state.selectedMatch]}
+                converter={this.converter}
+              />
             </Segment>
           </Sidebar.Pusher>
         </Sidebar.Pushable>
