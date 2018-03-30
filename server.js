@@ -33,6 +33,30 @@ app
 
     server.use(helmet());
 
+    server.use((req, res, callback) => {
+      var allowedOrigins = [
+        "http://localhost:3000",
+        "https://localhost:3000",
+        "http://x.vainglory.eu",
+        "https://x.vainglory.eu",
+        "http://test.vainglory.eu",
+        "https://test.vainglory.eu",
+        "http://vain.zone",
+        "https://vain.zone",
+        "http://www.vain.zone",
+        "https://www.vain.zone"
+      ];
+      var origin = req.headers.origin;
+      if (allowedOrigins.indexOf(origin) > -1) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+      }
+      //res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+      res.header("Access-Control-Allow-Headers", "Content-Type");
+      //res.header('Access-Control-Allow-Credentials', true);
+
+      return callback();
+    });
+
     server.get("/", (req, res) => {
       app.render(req, res, "/extension/player", {});
     });
@@ -90,6 +114,63 @@ app
           app.render(req, res, "/extension/player", {
             data: JSON.stringify(error)
           });
+        });
+    });
+
+    server.get("/api/telemetry", (req, res) => {
+      axios({
+        method: "get",
+        url: req.query.telemetryURL,
+        headers: {
+          "Content-Encoding": "gzip",
+          "Content-Type": "application/json",
+          "User-Agent": "js/vainglory",
+          "X-TITLE-ID": "semc-vainglory",
+          Accept: "application/json"
+        },
+        responseType: "json"
+      })
+        .then(response => {
+          console.log("obtaining telemetry with status", response.status);
+          return response.data;
+        })
+        .then(telemetryData => {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.write(JSON.stringify(telemetryData));
+          res.end();
+        })
+        .catch(function(error) {
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.write(JSON.stringify({ error: "Error retrieving telemetry" }));
+          res.end();
+
+          if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+
+            if (error.response.status == 404) {
+              console.log(
+                `${JSON.stringify(error.response.data)} ${
+                  error.response.status
+                } ${JSON.stringify(error.response.headers)}`
+              );
+            }
+
+            console.log(
+              `${JSON.stringify(error.response.data)} ${
+                error.response.status
+              } ${JSON.stringify(error.response.headers)}`
+            );
+          } else if (error.request) {
+            // The request was made but no response was received
+            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+            // http.ClientRequest in node.js
+            console.log(error.request);
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            console.log("Error", error.message);
+          }
+          console.log(error.config);
         });
     });
 
@@ -458,7 +539,6 @@ const uploadMatches = matches => {
             if (doc.exists) {
               return Promise.resolve(match.id);
             } else {
-              console.log("1", match.id);
               var customMatchDataModel = {
                 id: match.id,
                 createdAt: new Date(match.attributes.createdAt),
@@ -467,9 +547,33 @@ const uploadMatches = matches => {
                 patchVersion: match.attributes.patchVersion,
                 shardId: match.attributes.shardId,
                 endGameReason: match.attributes.stats.endGameReason,
-                rosters: []
+                spectators: [],
+                rosters: [],
+                telemetryURL: matches.included.find(
+                  e => e.id === match.relationships.assets.data[0].id
+                ).attributes.URL
               };
-              //telemetry (asset), roster, rounds, spectator
+
+              for (
+                var spectatorIndex = 0;
+                spectatorIndex < match.relationships.spectators.data.length;
+                spectatorIndex++
+              ) {
+                const spectatorParticipant = matches.included.find(
+                  e =>
+                    e.id ===
+                    match.relationships.spectators.data[spectatorIndex].id
+                );
+                const spectatorPlayer = matches.included.find(
+                  e =>
+                    e.id === spectatorParticipant.relationships.player.data.id
+                );
+
+                customMatchDataModel.spectators.push({
+                  id: spectatorPlayer.id,
+                  name: spectatorPlayer.attributes.name
+                });
+              }
 
               for (
                 var rosterIndex = 0;
@@ -478,10 +582,6 @@ const uploadMatches = matches => {
               ) {
                 const roster = matches.included.find(
                   e => e.id === match.relationships.rosters.data[rosterIndex].id
-                );
-                console.log(
-                  "2",
-                  match.relationships.rosters.data[rosterIndex].id
                 );
 
                 var customRosterDataModel = {

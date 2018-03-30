@@ -177,10 +177,10 @@ const SkillTierPopup = ({ skillTier, rankPoints }) => {
 
     if (rawRankPoints >= rankPointLimits[rankPointLimits.length - 1]) {
       rankProgress = 1;
-      return { value: rawRankPoints, progress: rankProgress };
+      return { value: rawRankPoints, progress: rankProgress * 100 };
     }
 
-    return { value: rawRankPoints, progress: rankProgress };
+    return { value: rawRankPoints, progress: rankProgress * 100 };
   })(rankPoints);
 
   return (
@@ -271,6 +271,28 @@ const MatchCard = ({
   const humanGameMode = converter({ gameMode: match.gameMode }).humanGameMode();
   const humanDuration = converter({ duration: match.duration }).humanDuration();
 
+  var items = playerInTheMatch.items.slice();
+  if (match.gameMode.indexOf("5v5") !== -1) {
+    items.splice(0, 2);
+  }
+  for (var i = 0; i < 6; i++) {
+    if (!items[i]) {
+      items.push("empty");
+    }
+  }
+
+  var kdaPerTenMinutes =
+    (playerInTheMatch.kills + playerInTheMatch.assists) /
+    playerInTheMatch.deaths /
+    (match.duration / 600);
+  if (playerInTheMatch.deaths == 0) {
+    kdaPerTenMinutes =
+      (playerInTheMatch.kills + playerInTheMatch.assists) /
+      (match.duration / 600);
+  }
+
+  const goldPerMinute = playerInTheMatch.gold / (match.duration / 60);
+
   return (
     <Card color={matchConclusionColors[1]} link fluid>
       <Card.Content>
@@ -305,7 +327,7 @@ const MatchCard = ({
           <Grid.Row>
             <Grid.Column style={{ margin: "auto", padding: "0 0.5rem" }}>
               <div style={{ margin: "auto" }}>
-                {match.rosters[0].participants.map(participant => {
+                {match.rosters[0].participants.map((participant, index) => {
                   return (
                     <Image
                       avatar
@@ -320,12 +342,13 @@ const MatchCard = ({
                         height: "22px",
                         margin: "1px"
                       }}
+                      key={index}
                     />
                   );
                 })}
                 <br />
                 vs<br />
-                {match.rosters[1].participants.map(participant => {
+                {match.rosters[1].participants.map((participant, index) => {
                   return (
                     <Image
                       avatar
@@ -340,6 +363,7 @@ const MatchCard = ({
                         height: "22px",
                         margin: "1px"
                       }}
+                      key={index}
                     />
                   );
                 })}
@@ -353,25 +377,19 @@ const MatchCard = ({
               }}
             >
               <div style={{ margin: "auto" }}>
-                1.25 KDA/min
+                <strong>{kdaPerTenMinutes.toFixed(1)}</strong> KDA Score
                 <br />
-                200 Gold/min
+                <strong>{goldPerMinute.toFixed(2)}</strong> Gold/min
                 <br />
-                {playerInTheMatch.items.map((item, index) => {
-                  if (
-                    match.gameMode.indexOf("5v5") !== -1 &&
-                    (index == 0 || index == 1)
-                  ) {
-                    return <div />;
-                  }
-
+                {items.map((item, index) => {
                   return (
                     <Image
                       avatar
                       src={
                         "/static/img/items/c/" +
                         item.replace(/ /g, "-").toLowerCase() +
-                        ".png"
+                        ".png?index=" +
+                        index
                       }
                       style={{
                         width: "21px",
@@ -379,6 +397,7 @@ const MatchCard = ({
                         margin: 0,
                         marginTop: "4px"
                       }}
+                      key={"matchcard" + item + index}
                     />
                   );
                 })}
@@ -392,11 +411,14 @@ const MatchCard = ({
 };
 
 const MatchesSidebar = ({
+  data,
+  playerName,
   playerId,
   matches,
   sidebarVisible,
   toggleSidebar,
-  converter
+  converter,
+  setSelectedMatch
 }) => (
   <Sidebar
     as={Menu}
@@ -412,7 +434,7 @@ const MatchesSidebar = ({
     <Menu.Item
       style={{ padding: "10px", paddingBottom: "5px", textAlign: "left" }}
     >
-      <Button onClick={toggleSidebar}>
+      <Button onClick={toggleSidebar} style={{ width: "100%" }}>
         <Icon name="chevron left" />Back
       </Button>
       <Button
@@ -424,7 +446,7 @@ const MatchesSidebar = ({
         <Icon name="filter" />Filter
       </Button>
     </Menu.Item>
-    {matches.map(match => {
+    {matches.map((match, index) => {
       const { playerInTheMatch, playerInTheMatchWon } = converter({
         playerId: playerId,
         rosters: match.rosters
@@ -435,24 +457,196 @@ const MatchesSidebar = ({
           key={match.id}
           style={{ padding: "10px", paddingBottom: "5px" }}
         >
-          <Link as={`/match/${match.id}`} href={`/match?id=${match.id}`}>
+          <button
+            style={{ margin: 0, padding: 0, appearance: "none", width: "100%" }}
+            onClick={() => {
+              setSelectedMatch(index);
+            }}
+          >
             <MatchCard
+              key={index}
               match={match}
               playerInTheMatch={playerInTheMatch}
               playerInTheMatchWon={playerInTheMatchWon}
               converter={converter}
             />
-          </Link>
+          </button>
         </Menu.Item>
       );
     })}
   </Sidebar>
 );
 
+class ParticipantCard extends React.Component {
+  render() {
+    const matchDuration = this.props.matchDuration;
+    const participant = this.props.participant;
+    const side = this.props.side;
+    const maxParticipantValues = this.props.maxParticipantValues;
+
+    var items = participant.items.slice();
+    if (this.props.gameMode.indexOf("5v5") !== -1) {
+      items.splice(0, 2);
+    }
+    for (var i = 0; i < 6; i++) {
+      if (!items[i]) {
+        items.push("empty");
+      }
+    }
+
+    var kdaPerTenMinutes =
+      (participant.kills + participant.assists) /
+      participant.deaths /
+      (matchDuration / 600);
+    if (participant.deaths == 0) {
+      kdaPerTenMinutes =
+        (participant.kills + participant.assists) / (matchDuration / 600);
+    }
+
+    return (
+      <Card link fluid style={{ margin: "3px 1px 3px 0" }}>
+        <Card.Content style={{ padding: "4px" }}>
+          <Image
+            size="mini"
+            src={
+              "/static/img/heroes/c/" + participant.actor.toLowerCase() + ".jpg"
+            }
+            style={{ borderRadius: "25%", margin: "0 2px" }}
+            floated={side}
+          />
+          <strong
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              fontSize: "1.1rem",
+              display: "block"
+            }}
+          >
+            {participant.player.name}
+          </strong>
+          <div style={{ fontSize: "0.9rem" }}>
+            {participant.kills}/{participant.deaths}/{participant.assists}{" "}
+            <span style={{ float: { right: "left", left: "right" }[side] }}>
+              ({kdaPerTenMinutes.toFixed(1)})
+            </span>
+          </div>
+          <Grid style={{ margin: 0, marginBottom: "2px" }} columns={6}>
+            <Grid.Row style={{ padding: 0 }}>
+              {items.map((item, index) => {
+                return (
+                  <Grid.Column
+                    key={"participantcard" + index}
+                    style={{ padding: 0, textAlign: "center" }}
+                  >
+                    <Image
+                      fluid
+                      src={
+                        "/static/img/items/c/" +
+                        item.replace(/ /g, "-").toLowerCase() +
+                        ".png?index=" +
+                        index
+                      }
+                      style={{
+                        maxWidth: "3.5rem",
+                        margin: "0"
+                      }}
+                      key={"participantcard" + item + index}
+                    />
+                  </Grid.Column>
+                );
+              })}
+            </Grid.Row>
+          </Grid>
+          <div
+            style={{
+              marginTop: "1px",
+              marginBottom: "-4px"
+            }}
+          >
+            <Progress
+              value={participant.gold}
+              total={maxParticipantValues.maxGold}
+              size="small"
+              color="yellow"
+            />
+            <div className="progressLabelWrapper">
+              <span className="progressLabel">Gold/min</span>{" "}
+              <span className="progressLabelValue">
+                {(participant.gold / (matchDuration / 60)).toFixed(2)}
+              </span>
+            </div>
+            <Progress
+              value={participant.farm}
+              total={maxParticipantValues.maxFarm}
+              size="small"
+              color="teal"
+            />
+            <div className="progressLabelWrapper">
+              <span className="progressLabel">CS/min</span>{" "}
+              <span className="progressLabelValue">
+                {(participant.farm / (matchDuration / 60)).toFixed(2)}
+              </span>
+            </div>
+            <Progress value={35} total={50} size="small" color="orange" />
+            <div className="progressLabelWrapper">
+              <span className="progressLabel">DPS</span>{" "}
+              <span className="progressLabelValue">561.23</span>
+            </div>
+          </div>
+        </Card.Content>
+        <style jsx global>
+          {`
+            .progress {
+              margin: 0 0 2px 0 !important;
+              position: relative;
+              z-index: 0;
+            }
+          `}
+        </style>
+        <style jsx>
+          {`
+            .progressLabelWrapper {
+              font-size: 0.75rem;
+              font-weight: bold;
+              position: absolute;
+              width: 100%;
+              margin-top: -17px;
+              z-index: 1;
+              clear: both;
+            }
+
+            .progressLabel {
+              display: inline-block;
+              vertical-align: top;
+              margin-left: 1px;
+              float: left;
+            }
+
+            .progressLabelValue {
+              display: inline-block;
+              vertical-align: top;
+              float: right;
+              margin-right: 10px;
+            }
+          `}
+        </style>
+      </Card>
+    );
+  }
+}
+
 class MatchDetailView extends React.Component {
+  componentDidUpdate() {
+    console.log("ahoj");
+  }
   render() {
     const converter = this.props.converter,
       match = this.props.match;
+
+    const maxParticipantValues = converter({
+      rosters: this.props.match.rosters
+    }).getMaxParticipantValues();
+
     return (
       <Segment
         style={{
@@ -524,7 +718,7 @@ class MatchDetailView extends React.Component {
               }).longMatchConclusion().longMatchConclusion
             }
           </Label>
-          <Grid columns="equal" style={{ clear: "both" }}>
+          <Grid columns={2} style={{ clear: "both" }}>
             <Grid.Row style={{ padding: "0.4rem 0 0 0" }}>
               <Grid.Column textAlign="left">
                 {match.rosters[0].gold}&zwj;💰 {match.rosters[0].acesEarned}&zwj;🃏{" "}
@@ -539,138 +733,32 @@ class MatchDetailView extends React.Component {
             </Grid.Row>
             <Grid.Row style={{ paddingTop: "0.5rem", paddingBottom: "0.5rem" }}>
               <Grid.Column textAlign="left" style={{ paddingRight: "0.1em" }}>
-                {match.rosters[0].participants.map(participant => {
-                  var kda =
-                    (participant.kills + participant.assists) /
-                    participant.deaths;
-                  if (participant.deaths == 0) {
-                    kda = participant.kills + participant.assists;
-                  }
-                  return (
-                    <Card link fluid>
-                      <Card.Content style={{ padding: "4px" }}>
-                        <Image
-                          size="mini"
-                          src={
-                            "/static/img/heroes/c/" +
-                            participant.actor.toLowerCase() +
-                            ".jpg"
-                          }
-                          style={{ borderRadius: "25%", margin: "0 4px 0 0" }}
-                          floated="left"
-                        />
-                        <strong
-                          style={{
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            fontSize: "1.1rem",
-                            display: "block"
-                          }}
-                        >
-                          {participant.player.name}
-                        </strong>
-                        <div style={{ fontSize: "0.9rem" }}>
-                          {participant.kills}/{participant.deaths}/{
-                            participant.assists
-                          }{" "}
-                          <span style={{ float: "right" }}>
-                            ({kda.toFixed(1)})
-                          </span>
-                        </div>
-                        <div
-                          style={{
-                            marginTop: "1px",
-                            marginBottom: "-4px"
-                          }}
-                        >
-                          <Progress
-                            value={35}
-                            total={50}
-                            size="small"
-                            color="yellow"
-                          />
-                          <div className="progressLabelWrapper">
-                            <span className="progressLabel">Gold/min</span>{" "}
-                            <span className="progressLabelValue">
-                              {(
-                                participant.gold /
-                                (match.duration / 60)
-                              ).toFixed(2)}
-                            </span>
-                          </div>
-                          <Progress
-                            value={35}
-                            total={50}
-                            size="small"
-                            color="teal"
-                          />
-                          <div className="progressLabelWrapper">
-                            <span className="progressLabel">CS/min</span>{" "}
-                            <span className="progressLabelValue">
-                              {(
-                                participant.farm /
-                                (match.duration / 60)
-                              ).toFixed(2)}
-                            </span>
-                          </div>
-                          <Progress
-                            value={35}
-                            total={50}
-                            size="small"
-                            color="orange"
-                          />
-                          <div className="progressLabelWrapper">
-                            <span className="progressLabel">DPS</span>{" "}
-                            <span className="progressLabelValue">561.23</span>
-                          </div>
-                        </div>
-                      </Card.Content>
-                    </Card>
-                  );
-                })}
+                {match.rosters[0].participants.map((participant, index) => (
+                  <ParticipantCard
+                    matchDuration={match.duration}
+                    participant={participant}
+                    gameMode={match.gameMode}
+                    maxParticipantValues={maxParticipantValues}
+                    side={"left"}
+                    key={index}
+                  />
+                ))}
               </Grid.Column>
               <Grid.Column textAlign="right" style={{ paddingLeft: "0.1em" }}>
-                <Card fluid>Hello</Card>
+                {match.rosters[1].participants.map((participant, index) => (
+                  <ParticipantCard
+                    matchDuration={match.duration}
+                    participant={participant}
+                    gameMode={match.gameMode}
+                    maxParticipantValues={maxParticipantValues}
+                    side={"right"}
+                    key={index}
+                  />
+                ))}
               </Grid.Column>
             </Grid.Row>
           </Grid>
         </Segment>
-        <style jsx global>
-          {`
-            .progress {
-              margin: 0 0 2px 0 !important;
-              position: relative;
-              z-index: 0;
-            }
-          `}
-        </style>
-        <style jsx>
-          {`
-            .progressLabelWrapper {
-              font-size: 0.75rem;
-              font-weight: bold;
-              position: absolute;
-              width: 100%;
-              margin-top: -17px;
-              z-index: 1;
-              clear: both;
-            }
-
-            .progressLabel {
-              display: inline-block;
-              vertical-align: top;
-              margin-left: 1px;
-              float: left;
-            }
-
-            .progressLabelValue {
-              display: inline-block;
-              vertical-align: top;
-              float: right;
-              margin-right: 10px;
-            }
-          `}
-        </style>
       </Segment>
     );
   }
@@ -682,7 +770,7 @@ class Extension extends React.Component {
     this.state = {
       data: props.data,
       sidebarVisible: false,
-      selectedMatch: 0
+      selectedMatch: props.selectedMatch
     };
 
     this.toggleSidebar = this.toggleSidebar.bind(this);
@@ -690,6 +778,28 @@ class Extension extends React.Component {
   }
   toggleSidebar = () => {
     this.setState({ sidebarVisible: !this.state.sidebarVisible });
+  };
+  setSelectedMatch = async index => {
+    this.toggleSidebar();
+    this.setState({ selectedMatch: index });
+
+    const params = {
+      telemetryURL: this.state.data.matches[index].telemetryURL
+    };
+    const esc = encodeURIComponent;
+    const query = Object.keys(params)
+      .map(k => esc(k) + "=" + esc(params[k]))
+      .join("&");
+
+    return new Promise((reject, resolve) => {
+      fetch("/api/telemetry?" + query)
+        .then(res => res.json())
+        .then(telemetry => {
+          resolve(telemetry);
+          console.log("telemetry", telemetry);
+        })
+        .catch(err => reject(err));
+    });
   };
   converter = data => {
     return {
@@ -755,18 +865,18 @@ class Extension extends React.Component {
           "5v5_pvp_ranked": ["Sovereign's Rise Ranked", false, "5v5ranked"],
           "5v5_pvp_casual": ["Sovereign's Rise Casual", false, "5v5casual"],
           private_party_vg_5v5: [
-            "Sovereign's Rise Private Casual",
+            "Sovereign's Rise Private Blind",
             true,
             "5v5casual"
           ],
           ranked: ["Halcyon Fold Ranked", false, "ranked"],
           private_party_draft_match: [
-            "Halcyon Fold Private Ranked",
+            "Halcyon Fold Private Draft",
             true,
             "ranked"
           ],
           casual: ["Halcyon Fold Casual", false, "casual"],
-          private: ["Halcyon Fold Private Casual", true, "casual"],
+          private: ["Halcyon Fold Private Blind", true, "casual"],
           casual_aral: ["Halcyon Fold Battle Royale", false, "br"],
           private_party_aral_match: [
             "Halcyon Fold Private Battle Royale",
@@ -799,6 +909,35 @@ class Extension extends React.Component {
         if (time[1].length < 2) time[1] = "0" + time[1];
 
         return time.join(":");
+      },
+
+      getMaxParticipantValues: () => {
+        var goldArray = [];
+        var farmArray = [];
+
+        for (
+          var rosterIndex = 0;
+          rosterIndex < data.rosters.length;
+          rosterIndex++
+        ) {
+          for (
+            var participantIndex = 0;
+            participantIndex < data.rosters[rosterIndex].participants.length;
+            participantIndex++
+          ) {
+            goldArray.push(
+              data.rosters[rosterIndex].participants[participantIndex].gold
+            );
+            farmArray.push(
+              data.rosters[rosterIndex].participants[participantIndex].farm
+            );
+          }
+        }
+
+        return {
+          maxGold: Math.max(...goldArray),
+          maxFarm: Math.max(...farmArray)
+        };
       }
     };
   };
@@ -807,11 +946,14 @@ class Extension extends React.Component {
       <Layout>
         <Sidebar.Pushable style={{ minHeight: "100vh" }}>
           <MatchesSidebar
+            data={this.state.data}
+            playerName={this.state.data.player.name}
             playerId={this.state.data.player.id}
             matches={this.state.data.matches}
             sidebarVisible={this.state.sidebarVisible}
             toggleSidebar={this.toggleSidebar}
             converter={this.converter}
+            setSelectedMatch={this.setSelectedMatch}
           />
           <Sidebar.Pusher dimmed={this.state.sidebarVisible}>
             <Segment basic>
@@ -843,8 +985,14 @@ Extension.getInitialProps = async function({ query }) {
 
   const data = JSON.parse(query.data);
 
+  var selectedMatch = 0;
+  if (query.selectedMatch) {
+    selectedMatch = parseInt(query.selectedMatch);
+  }
+
   return {
-    data: data
+    data: data,
+    selectedMatch: selectedMatch
   };
 };
 
