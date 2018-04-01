@@ -103,6 +103,7 @@ app
     });
 
     server.get("/extension/player/:IGN", (req, res) => {
+      console.log("here");
       getData(req.params.IGN)
         .then(data => {
           console.log("in render");
