@@ -457,8 +457,8 @@ const MatchesSidebar = ({
           key={match.id}
           style={{ padding: "10px", paddingBottom: "5px" }}
         >
-          <button
-            style={{ margin: 0, padding: 0, appearance: "none", width: "100%" }}
+          <div
+            style={{}}
             onClick={() => {
               setSelectedMatch(index);
             }}
@@ -470,7 +470,7 @@ const MatchesSidebar = ({
               playerInTheMatchWon={playerInTheMatchWon}
               converter={converter}
             />
-          </button>
+          </div>
         </Menu.Item>
       );
     })}
@@ -770,7 +770,8 @@ class Extension extends React.Component {
     this.state = {
       data: props.data,
       sidebarVisible: false,
-      selectedMatch: props.selectedMatch
+      selectedMatch: props.selectedMatch,
+      telemetry: props.telemetry
     };
 
     this.toggleSidebar = this.toggleSidebar.bind(this);
@@ -787,14 +788,15 @@ class Extension extends React.Component {
       telemetryURL: this.state.data.matches[index].telemetryURL
     };
     const esc = encodeURIComponent;
-    const query = Object.keys(params)
+    const telemetryQueryString = Object.keys(params)
       .map(k => esc(k) + "=" + esc(params[k]))
       .join("&");
 
     return new Promise((reject, resolve) => {
-      fetch("/api/telemetry?" + query)
+      fetch("/api/telemetry?" + telemetryQueryString)
         .then(res => res.json())
         .then(telemetry => {
+          this.setState({ telemetry: telemetry });
           resolve(telemetry);
           console.log("telemetry", telemetry);
         })
@@ -990,9 +992,23 @@ Extension.getInitialProps = async function({ query }) {
     selectedMatch = parseInt(query.selectedMatch);
   }
 
+  const params = {
+    telemetryURL: data.matches[selectedMatch].telemetryURL
+  };
+  const esc = encodeURIComponent;
+  const telemetryQueryString = Object.keys(params)
+    .map(k => esc(k) + "=" + esc(params[k]))
+    .join("&");
+
+  const requestTelemetry = await fetch(
+    "/api/telemetry?" + telemetryQueryString
+  );
+  const telemetry = await requestTelemetry.json();
+
   return {
     data: data,
-    selectedMatch: selectedMatch
+    selectedMatch: selectedMatch,
+    telemetry: telemetry
   };
 };
 
