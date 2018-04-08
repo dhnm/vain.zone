@@ -486,10 +486,9 @@ class ParticipantCard extends React.Component {
     const participant = this.props.participant;
     const side = this.props.side;
     const maxParticipantValues = this.props.maxParticipantValues;
-    const telemetry = this.props.telemetry;
     const telemetryLoading = this.props.telemetryLoading;
-    const totalDamage = this.props.damage;
     const highestDamage = this.props.highestDamage;
+    const totalDamage = this.props.damage;
 
     var items = participant.items.slice();
     if (this.props.gameMode.indexOf("5v5") !== -1) {
@@ -656,17 +655,12 @@ class MatchDetailView extends React.Component {
   render() {
     const converter = this.props.converter,
       match = this.props.match,
-      telemetry = this.props.telemetry,
+      TLDamagesData = this.props.TLDamagesData,
       telemetryLoading = this.props.telemetryLoading;
 
     const maxParticipantValues = converter({
       rosters: this.props.match.rosters
     }).getMaxParticipantValues();
-
-    const damagesData = converter({
-      rosters: match.rosters,
-      telemetry: telemetry
-    }).damages();
 
     return (
       <Segment
@@ -762,10 +756,9 @@ class MatchDetailView extends React.Component {
                     maxParticipantValues={maxParticipantValues}
                     side={"left"}
                     key={index}
-                    telemetry={telemetry}
                     telemetryLoading={telemetryLoading}
-                    damage={damagesData.rosters[0][participant.actor]}
-                    highestDamage={damagesData.highest}
+                    damage={TLDamagesData.rosters[0][participant.actor]}
+                    highestDamage={TLDamagesData.highest}
                   />
                 ))}
               </Grid.Column>
@@ -778,10 +771,9 @@ class MatchDetailView extends React.Component {
                     maxParticipantValues={maxParticipantValues}
                     side={"right"}
                     key={index}
-                    telemetry={telemetry}
                     telemetryLoading={telemetryLoading}
-                    damage={damagesData.rosters[1][participant.actor]}
-                    highestDamage={damagesData.highest}
+                    damage={TLDamagesData.rosters[1][participant.actor]}
+                    highestDamage={TLDamagesData.highest}
                   />
                 ))}
               </Grid.Column>
@@ -800,7 +792,7 @@ class Extension extends React.Component {
       data: props.data,
       sidebarVisible: false,
       selectedMatch: props.selectedMatch,
-      telemetry: props.telemetry,
+      TLDamagesData: props.TLDamagesData,
       telemetryLoading: props.telemetryLoading
     };
 
@@ -827,8 +819,11 @@ class Extension extends React.Component {
 
     fetch("/api/telemetry?" + telemetryQueryString)
       .then(res => res.json())
-      .then(telemetry => {
-        that.setState({ telemetry: telemetry, telemetryLoading: false });
+      .then(processedTelemetry => {
+        that.setState({
+          TLDamagesData: processedTelemetry.damagesData,
+          telemetryLoading: false
+        });
       })
       .catch(err => that.setState({ telemetryLoading: false }));
   };
@@ -969,46 +964,6 @@ class Extension extends React.Component {
           maxGold: Math.max(...goldArray),
           maxFarm: Math.max(...farmArray)
         };
-      },
-
-      damages: () => {
-        const rosters = [{}, {}];
-        var highest = 0;
-
-        for (
-          var rosterIndex = 0;
-          rosterIndex < data.rosters.length;
-          rosterIndex++
-        ) {
-          for (
-            var participantIndex = 0;
-            participantIndex < data.rosters[rosterIndex].participants.length;
-            participantIndex++
-          ) {
-            const totalDamage = data.telemetry
-              .filter(
-                e =>
-                  e.type === "DealDamage" &&
-                  e.payload.Actor ===
-                    "*" +
-                      data.rosters[rosterIndex].participants[participantIndex]
-                        .actor +
-                      "*"
-              )
-              .map(e => e.payload.Dealt)
-              .reduce((a, b) => a + b, 0);
-
-            if (totalDamage > highest) {
-              highest = totalDamage;
-            }
-
-            rosters[rosterIndex][
-              data.rosters[rosterIndex].participants[participantIndex].actor
-            ] = totalDamage;
-          }
-        }
-
-        return { rosters: rosters, highest: highest };
       }
     };
   };
@@ -1041,7 +996,7 @@ class Extension extends React.Component {
               <MatchDetailView
                 match={this.state.data.matches[this.state.selectedMatch]}
                 converter={this.converter}
-                telemetry={this.state.telemetry}
+                TLDamagesData={this.state.TLDamagesData}
                 telemetryLoading={this.state.telemetryLoading}
               />
             </Segment>
@@ -1071,15 +1026,15 @@ Extension.getInitialProps = async function({ query }) {
     .map(k => esc(k) + "=" + esc(params[k]))
     .join("&");
 
-  const requestTelemetry = await fetch(
-    "https://test.vainglory.eu/api/telemetry?" + telemetryQueryString
+  const requestProcessedTelemetry = await fetch(
+    "https://localhost:3000/api/telemetry?" + telemetryQueryString
   );
-  const telemetry = await requestTelemetry.json();
+  const processedTelemetry = await requestProcessedTelemetry.json();
 
   return {
     data: data,
     selectedMatch: selectedMatch,
-    telemetry: telemetry,
+    TLDamagesData: processedTelemetry.damagesData,
     telemetryLoading: false
   };
 };

@@ -136,8 +136,11 @@ app
           return response.data;
         })
         .then(telemetryData => {
+          const damagesData = calculateDamagesFromTelemetry(telemetryData);
+          console.log(damagesData);
+
           res.writeHead(200, { "Content-Type": "application/json" });
-          res.write(JSON.stringify(telemetryData));
+          res.write(JSON.stringify({ damagesData: damagesData }));
           res.end();
         })
         .catch(function(error) {
@@ -194,6 +197,41 @@ app
     console.error(ex.stack);
     process.exit(1);
   });
+
+const calculateDamagesFromTelemetry = telemetry => {
+  const rosters = [{}, {}];
+  var highest = 0;
+
+  for (var rosterIndex = 0; rosterIndex < data.rosters.length; rosterIndex++) {
+    for (
+      var participantIndex = 0;
+      participantIndex < data.rosters[rosterIndex].participants.length;
+      participantIndex++
+    ) {
+      const totalDamage = data.telemetry
+        .filter(
+          e =>
+            e.type === "DealDamage" &&
+            e.payload.Actor ===
+              "*" +
+                data.rosters[rosterIndex].participants[participantIndex].actor +
+                "*"
+        )
+        .map(e => e.payload.Dealt)
+        .reduce((a, b) => a + b, 0);
+
+      if (totalDamage > highest) {
+        highest = totalDamage;
+      }
+
+      rosters[rosterIndex][
+        data.rosters[rosterIndex].participants[participantIndex].actor
+      ] = totalDamage;
+    }
+  }
+
+  return { rosters: rosters, highest: highest };
+};
 
 const getData = IGN => {
   return new Promise((resolve, reject) => {
