@@ -18,7 +18,9 @@ import {
   Progress,
   Grid,
   Button,
-  Icon
+  Icon,
+  Loader,
+  Dimmer
 } from "semantic-ui-react";
 
 class InputPanel extends React.Component {
@@ -41,6 +43,7 @@ class InputPanel extends React.Component {
   handleSubmit = event => {
     this.setState({ loading: true });
     event.preventDefault();
+    window.location.href = "/extension/player/" + this.state.IGNInput;
   };
   render() {
     return (
@@ -483,6 +486,10 @@ class ParticipantCard extends React.Component {
     const participant = this.props.participant;
     const side = this.props.side;
     const maxParticipantValues = this.props.maxParticipantValues;
+    const telemetry = this.props.telemetry;
+    const telemetryLoading = this.props.telemetryLoading;
+    const totalDamage = this.props.damage;
+    const highestDamage = this.props.highestDamage;
 
     var items = participant.items.slice();
     if (this.props.gameMode.indexOf("5v5") !== -1) {
@@ -505,6 +512,9 @@ class ParticipantCard extends React.Component {
 
     return (
       <Card link fluid style={{ margin: "3px 1px 3px 0" }}>
+        <Dimmer active={telemetryLoading} inverted>
+          <Loader />
+        </Dimmer>
         <Card.Content style={{ padding: "4px" }}>
           <Image
             size="mini"
@@ -587,10 +597,17 @@ class ParticipantCard extends React.Component {
                 {(participant.farm / (matchDuration / 60)).toFixed(2)}
               </span>
             </div>
-            <Progress value={35} total={50} size="small" color="orange" />
+            <Progress
+              value={totalDamage}
+              total={highestDamage}
+              size="small"
+              color="orange"
+            />
             <div className="progressLabelWrapper">
-              <span className="progressLabel">DPS</span>{" "}
-              <span className="progressLabelValue">561.23</span>
+              <span className="progressLabel">Dmg/min</span>{" "}
+              <span className="progressLabelValue">
+                {(totalDamage / (matchDuration / 60)).toFixed(2)}
+              </span>
             </div>
           </div>
         </Card.Content>
@@ -636,16 +653,20 @@ class ParticipantCard extends React.Component {
 }
 
 class MatchDetailView extends React.Component {
-  componentDidUpdate() {
-    console.log("ahoj");
-  }
   render() {
     const converter = this.props.converter,
-      match = this.props.match;
+      match = this.props.match,
+      telemetry = this.props.telemetry,
+      telemetryLoading = this.props.telemetryLoading;
 
     const maxParticipantValues = converter({
       rosters: this.props.match.rosters
     }).getMaxParticipantValues();
+
+    const damagesData = converter({
+      rosters: match.rosters,
+      telemetry: telemetry
+    }).damages();
 
     return (
       <Segment
@@ -741,6 +762,10 @@ class MatchDetailView extends React.Component {
                     maxParticipantValues={maxParticipantValues}
                     side={"left"}
                     key={index}
+                    telemetry={telemetry}
+                    telemetryLoading={telemetryLoading}
+                    damage={damagesData.rosters[0][participant.actor]}
+                    highestDamage={damagesData.highest}
                   />
                 ))}
               </Grid.Column>
@@ -753,6 +778,10 @@ class MatchDetailView extends React.Component {
                     maxParticipantValues={maxParticipantValues}
                     side={"right"}
                     key={index}
+                    telemetry={telemetry}
+                    telemetryLoading={telemetryLoading}
+                    damage={damagesData.rosters[1][participant.actor]}
+                    highestDamage={damagesData.highest}
                   />
                 ))}
               </Grid.Column>
@@ -771,18 +800,20 @@ class Extension extends React.Component {
       data: props.data,
       sidebarVisible: false,
       selectedMatch: props.selectedMatch,
-      telemetry: props.telemetry
+      telemetry: props.telemetry,
+      telemetryLoading: props.telemetryLoading
     };
 
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.converter = this.converter.bind(this);
+    this.setSelectedMatch = this.setSelectedMatch.bind(this);
   }
   toggleSidebar = () => {
     this.setState({ sidebarVisible: !this.state.sidebarVisible });
   };
-  setSelectedMatch = async index => {
+  setSelectedMatch = index => {
     this.toggleSidebar();
-    this.setState({ selectedMatch: index });
+    this.setState({ selectedMatch: index, telemetryLoading: true });
 
     const params = {
       telemetryURL: this.state.data.matches[index].telemetryURL
@@ -792,16 +823,14 @@ class Extension extends React.Component {
       .map(k => esc(k) + "=" + esc(params[k]))
       .join("&");
 
-    return new Promise((reject, resolve) => {
-      fetch("/api/telemetry?" + telemetryQueryString)
-        .then(res => res.json())
-        .then(telemetry => {
-          this.setState({ telemetry: telemetry });
-          resolve(telemetry);
-          console.log("telemetry", telemetry);
-        })
-        .catch(err => reject(err));
-    });
+    const that = this;
+
+    fetch("/api/telemetry?" + telemetryQueryString)
+      .then(res => res.json())
+      .then(telemetry => {
+        that.setState({ telemetry: telemetry, telemetryLoading: false });
+      })
+      .catch(err => that.setState({ telemetryLoading: false }));
   };
   converter = data => {
     return {
@@ -940,6 +969,46 @@ class Extension extends React.Component {
           maxGold: Math.max(...goldArray),
           maxFarm: Math.max(...farmArray)
         };
+      },
+
+      damages: () => {
+        const rosters = [{}, {}];
+        var highest = 0;
+
+        for (
+          var rosterIndex = 0;
+          rosterIndex < data.rosters.length;
+          rosterIndex++
+        ) {
+          for (
+            var participantIndex = 0;
+            participantIndex < data.rosters[rosterIndex].participants.length;
+            participantIndex++
+          ) {
+            const totalDamage = data.telemetry
+              .filter(
+                e =>
+                  e.type === "DealDamage" &&
+                  e.payload.Actor ===
+                    "*" +
+                      data.rosters[rosterIndex].participants[participantIndex]
+                        .actor +
+                      "*"
+              )
+              .map(e => e.payload.Dealt)
+              .reduce((a, b) => a + b, 0);
+
+            if (totalDamage > highest) {
+              highest = totalDamage;
+            }
+
+            rosters[rosterIndex][
+              data.rosters[rosterIndex].participants[participantIndex].actor
+            ] = totalDamage;
+          }
+        }
+
+        return { rosters: rosters, highest: highest };
       }
     };
   };
@@ -972,6 +1041,8 @@ class Extension extends React.Component {
               <MatchDetailView
                 match={this.state.data.matches[this.state.selectedMatch]}
                 converter={this.converter}
+                telemetry={this.state.telemetry}
+                telemetryLoading={this.state.telemetryLoading}
               />
             </Segment>
           </Sidebar.Pusher>
@@ -1008,7 +1079,8 @@ Extension.getInitialProps = async function({ query }) {
   return {
     data: data,
     selectedMatch: selectedMatch,
-    telemetry: telemetry
+    telemetry: telemetry,
+    telemetryLoading: false
   };
 };
 
