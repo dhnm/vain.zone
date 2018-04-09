@@ -591,7 +591,12 @@ class ParticipantCard extends React.Component {
     }
 
     return (
-      <Card link fluid style={{ margin: "3px 1px 3px 0" }}>
+      <Card
+        link
+        fluid
+        style={{ margin: "3px 1px 3px 0", color: "black" }}
+        href={"/extension/player/" + participant.player.name}
+      >
         <Dimmer active={telemetryLoading} inverted>
           <Loader />
         </Dimmer>
