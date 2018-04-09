@@ -222,7 +222,8 @@ const calculateDamagesFromTelemetry = (telemetry, match) => {
             e.payload.Actor ===
               "*" +
                 data.rosters[rosterIndex].participants[participantIndex].actor +
-                "*"
+                "*" &&
+            e.payload.Team == ["Left", "Right"][rosterIndex]
         )
         .map(e => e.payload.Dealt)
         .reduce((a, b) => a + b, 0);
