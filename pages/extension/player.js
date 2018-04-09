@@ -1026,7 +1026,7 @@ Extension.getInitialProps = async function({ query }) {
     .join("&");
 
   const requestProcessedTelemetry = await fetch(
-    "http://localhost:3000/api/telemetry?" + telemetryQueryString
+    "http://test.vainglory.eu/api/telemetry?" + telemetryQueryString
   );
 
   const processedTelemetry = await requestProcessedTelemetry.json();
