@@ -113,7 +113,7 @@ app
         })
         .catch(error => {
           app.render(req, res, "/extension/player", {
-            data: JSON.stringify(error)
+            data: JSON.stringify({ error: true, errorMessage: error })
           });
         });
     });
@@ -257,7 +257,11 @@ const formatDataPopulateMatches = playerData => {
       .getAll(...playerData.matchRefs.slice(0, 12))
       .then(docs => {
         delete playerData.matchRefs;
-        resolve({ player: playerData, matches: docs.map(doc => doc.data()) });
+        resolve({
+          player: playerData,
+          matches: docs.map(doc => doc.data()),
+          error: false
+        });
       })
       .catch(err => reject("id: 11 " + err));
   });

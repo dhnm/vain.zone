@@ -210,57 +210,138 @@ const SkillTierPopup = ({ skillTier, rankPoints }) => {
   );
 };
 
-const Player = ({ player }) => (
-  <div>
-    <Segment
-      basic
-      attached="top"
-      style={{ padding: 0, margin: "1em 0 0 -1px" }}
-    >
-      <Card fluid>
-        <Card.Content>
-          <SkillTierPopup
-            skillTier={player.skillTier}
-            rankPoints={player.rank_3v3}
-          />
-          <Card.Header>{player.name}</Card.Header>
-          <Card.Meta>Level: {player.level}</Card.Meta>
-          <Label>{player.guildTag}</Label>
-          <Image
-            style={{ height: "30px" }}
-            spaced
-            src={"/static/img/karma/c/" + player.karmaLevel + ".png"}
-          />
-        </Card.Content>
-        <Card.Content>
-          <strong>Experience:</strong>
-          <Grid columns="equal">
-            <Grid.Row>
-              <Grid.Column>
-                5v5 Casuals:
-                <div style={{ float: "right" }}>
-                  {player.played_casual_5v5}×
-                </div>
-                <br />
-                BRAWL Games:
-                <div style={{ float: "right" }}>
-                  {player.played_aral + player.played_blitz}×
-                </div>
-              </Grid.Column>
-              <Grid.Column>
-                3v3 Casuals:
-                <div style={{ float: "right" }}>{player.played_casual}×</div>
-                <br />
-                3v3 Rankeds:
-                <div style={{ float: "right" }}>{player.played_ranked}×</div>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Card.Content>
-      </Card>
-    </Segment>
-  </div>
-);
+class Player extends React.Component {
+  render() {
+    const player = this.props.player;
+    const experienceHours =
+      (player.played_casual_5v5 * 25 +
+        player.played_aral * 10 +
+        player.played_blitz * 5 +
+        player.played_casual * 18 +
+        player.played_ranked * 22) /
+      60;
+
+    const addictivenessRatingDict = {
+      "0": "",
+      "20": "There’s a new sheriff in town.",
+      "40": "Lacks match practice.",
+      "80": "This is quite fun.",
+      "120": "Promising star.",
+      "160": "I’m just getting started.",
+      "240": "Remember, eating gives you the strength to keep on playing.",
+      "320": "Better order another takeaway pizza.",
+      "400": "Mildly addicted.",
+      "480": "No-one can accuse me of lacking commitment.",
+      "560": "I am now a Vainglory expert.",
+      "640":
+        "Congratulations from everyone at VAIN.ZONE. We didn't actually think you'd make it this far.",
+      "720": "I think I should include Vainglory in my CV.",
+      "880": "Time to change underwear.",
+      "1040": "Turning your underwear inside out saves on washing.",
+      "1200": "Just one more game I promise.",
+      "1360": "Real Vainglorious don't need food.",
+      "1520":
+        "I can give up this game whenever I like. I just don't want to yet...",
+      "1780": "Sleeping is for sissies.",
+      "1940": "Remember to call for another sickday.",
+      "2100": "It's not really addictive - I just can’t stop playing.",
+      "2420": "Repetitive Hand Injury anyone?",
+      "2740": "This is my life and I do what I want with it.",
+      "3060": "Your friendships have now expired.",
+      "3380": "It's been a while since I had any human contact.",
+      "3700": "What are humans?",
+      "4340": "6 months worth of game time? Check.",
+      "4980": "L3oN? Is that you?"
+    };
+    const addictivenessRatingDictKeys = Object.keys(addictivenessRatingDict)
+      .map(e => parseInt(e))
+      .sort((a, b) => a - b);
+    var addictivenessRating = "";
+    for (var i = 0; i < addictivenessRatingDictKeys.length; i++) {
+      if (
+        experienceHours >=
+        addictivenessRatingDictKeys[addictivenessRatingDictKeys.length - 1]
+      ) {
+        addictivenessRating =
+          addictivenessRatingDict[
+            addictivenessRatingDictKeys[addictivenessRatingDictKeys.length - 1]
+          ];
+        break;
+      } else if (
+        experienceHours >= addictivenessRatingDictKeys[i] &&
+        experienceHours < addictivenessRatingDictKeys[i + 1]
+      ) {
+        addictivenessRating =
+          addictivenessRatingDict[addictivenessRatingDictKeys[i]];
+        break;
+      }
+    }
+
+    return (
+      <div>
+        <Segment
+          basic
+          attached="top"
+          style={{ padding: 0, margin: "1em 0 0 -1px" }}
+        >
+          <Card fluid>
+            <Card.Content>
+              <SkillTierPopup
+                skillTier={player.skillTier}
+                rankPoints={player.rank_3v3}
+              />
+              <Card.Header>{player.name}</Card.Header>
+              <Card.Meta>Level: {player.level}</Card.Meta>
+              <Label>{player.guildTag}</Label>
+              <Image
+                style={{ height: "30px" }}
+                spaced
+                src={"/static/img/karma/c/" + player.karmaLevel + ".png"}
+              />
+            </Card.Content>
+            <Card.Content>
+              <Grid columns={2}>
+                <Grid.Row style={{ paddingBottom: 0 }}>
+                  <Grid.Column width={16} style={{ textAlign: "center" }}>
+                    Experience Level
+                    <h2 style={{ margin: 0 }}>
+                      {experienceHours.toFixed(0)} hours
+                    </h2>
+                    <em>“{addictivenessRating}”</em>
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                  <Grid.Column>
+                    5v5 Casuals:
+                    <div style={{ float: "right" }}>
+                      {player.played_casual_5v5}×
+                    </div>
+                    <br />
+                    BRAWL Games:
+                    <div style={{ float: "right" }}>
+                      {player.played_aral + player.played_blitz}×
+                    </div>
+                  </Grid.Column>
+                  <Grid.Column>
+                    3v3 Casuals:
+                    <div style={{ float: "right" }}>
+                      {player.played_casual}×
+                    </div>
+                    <br />
+                    3v3 Rankeds:
+                    <div style={{ float: "right" }}>
+                      {player.played_ranked}×
+                    </div>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Card.Content>
+          </Card>
+        </Segment>
+      </div>
+    );
+  }
+}
 
 const MatchCard = ({
   match,
@@ -382,7 +463,7 @@ const MatchCard = ({
               <div style={{ margin: "auto" }}>
                 <strong>{kdaPerTenMinutes.toFixed(1)}</strong> KDA Score
                 <br />
-                <strong>{goldPerMinute.toFixed(2)}</strong> Gold/min
+                <strong>{goldPerMinute.toFixed(0)}</strong> Gold/min
                 <br />
                 {items.map((item, index) => {
                   return (
@@ -581,7 +662,7 @@ class ParticipantCard extends React.Component {
             <div className="progressLabelWrapper">
               <span className="progressLabel">Gold/min</span>{" "}
               <span className="progressLabelValue">
-                {(participant.gold / (matchDuration / 60)).toFixed(2)}
+                {(participant.gold / (matchDuration / 60)).toFixed(0)}
               </span>
             </div>
             <Progress
@@ -605,7 +686,7 @@ class ParticipantCard extends React.Component {
             <div className="progressLabelWrapper">
               <span className="progressLabel">Dmg/min</span>{" "}
               <span className="progressLabelValue">
-                {(totalDamage / (matchDuration / 60)).toFixed(2)}
+                {(totalDamage / (matchDuration / 60)).toFixed(0)}
               </span>
             </div>
           </div>
@@ -785,6 +866,66 @@ class MatchDetailView extends React.Component {
   }
 }
 
+class MainLayout extends React.Component {
+  render() {
+    return (
+      <Layout>
+        <Sidebar.Pushable style={{ minHeight: "100vh" }}>
+          <MatchesSidebar
+            data={this.props.data}
+            playerName={this.props.data.player.name}
+            playerId={this.props.data.player.id}
+            matches={this.props.data.matches}
+            sidebarVisible={this.props.sidebarVisible}
+            toggleSidebar={this.props.toggleSidebar}
+            converter={this.props.converter}
+            setSelectedMatch={this.props.setSelectedMatch}
+          />
+          <Sidebar.Pusher dimmed={this.props.sidebarVisible}>
+            <Segment basic>
+              <InputPanel />
+              <Player player={this.props.data.player} />
+              <Button.Group attached="bottom">
+                <Button>
+                  <Icon name="send" />Send
+                </Button>
+                <Button onClick={this.props.toggleSidebar}>
+                  <Icon name="sidebar" /> Matches
+                </Button>
+              </Button.Group>
+              <MatchDetailView
+                match={this.props.data.matches[this.props.selectedMatch]}
+                converter={this.props.converter}
+                TLDamagesData={this.props.TLDamagesData}
+                telemetryLoading={this.props.telemetryLoading}
+              />
+            </Segment>
+          </Sidebar.Pusher>
+        </Sidebar.Pushable>
+      </Layout>
+    );
+  }
+}
+
+const ErrorLayout = () => {
+  return (
+    <Layout>
+      <Segment basic>
+        <InputPanel />
+        <Segment>
+          <p>We couldn't find anything :(</p>
+          <ol>
+            <li>Please check the spelling of the nick.</li>
+            <li>If the player hasn't played this mode</li>
+            for a long time, we don't have data for them.
+            <li>Maybe the player has changed their nick?</li>
+          </ol>
+        </Segment>
+      </Segment>
+    </Layout>
+  );
+};
+
 class Extension extends React.Component {
   constructor(props) {
     super(props);
@@ -793,7 +934,9 @@ class Extension extends React.Component {
       sidebarVisible: false,
       selectedMatch: props.selectedMatch,
       TLDamagesData: props.TLDamagesData,
-      telemetryLoading: props.telemetryLoading
+      telemetryLoading: props.telemetryLoading,
+      error: props.error,
+      errorMessage: props.errorMessage
     };
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.converter = this.converter.bind(this);
@@ -967,42 +1110,21 @@ class Extension extends React.Component {
     };
   };
   render() {
-    return (
-      <Layout>
-        <Sidebar.Pushable style={{ minHeight: "100vh" }}>
-          <MatchesSidebar
-            data={this.state.data}
-            playerName={this.state.data.player.name}
-            playerId={this.state.data.player.id}
-            matches={this.state.data.matches}
-            sidebarVisible={this.state.sidebarVisible}
-            toggleSidebar={this.toggleSidebar}
-            converter={this.converter}
-            setSelectedMatch={this.setSelectedMatch}
-          />
-          <Sidebar.Pusher dimmed={this.state.sidebarVisible}>
-            <Segment basic>
-              <InputPanel />
-              <Player player={this.state.data.player} />
-              <Button.Group attached="bottom">
-                <Button>
-                  <Icon name="send" />Send
-                </Button>
-                <Button onClick={this.toggleSidebar}>
-                  <Icon name="sidebar" /> Matches
-                </Button>
-              </Button.Group>
-              <MatchDetailView
-                match={this.state.data.matches[this.state.selectedMatch]}
-                converter={this.converter}
-                TLDamagesData={this.state.TLDamagesData}
-                telemetryLoading={this.state.telemetryLoading}
-              />
-            </Segment>
-          </Sidebar.Pusher>
-        </Sidebar.Pushable>
-      </Layout>
-    );
+    if (!this.state.error) {
+      return (
+        <MainLayout
+          data={this.state.data}
+          sidebarVisible={this.state.sidebarVisible}
+          toggleSidebar={this.toggleSidebar}
+          converter={this.converter}
+          setSelectedMatch={this.setSelectedMatch}
+          selectedMatch={this.state.selectedMatch}
+          TLDamagesData={this.state.TLDamagesData}
+          telemetryLoading={this.state.telemetryLoading}
+        />
+      );
+    }
+    return <ErrorLayout />;
   }
 }
 
@@ -1012,33 +1134,44 @@ Extension.getInitialProps = async function({ query }) {
 
   const data = JSON.parse(query.data);
 
-  var selectedMatch = 0;
-  if (query.selectedMatch) {
-    selectedMatch = parseInt(query.selectedMatch);
+  if (!data.error) {
+    var selectedMatch = 0;
+    if (query.selectedMatch) {
+      selectedMatch = parseInt(query.selectedMatch);
+    }
+
+    const params = {
+      match: JSON.stringify(data.matches[selectedMatch])
+    };
+    const esc = encodeURIComponent;
+    const telemetryQueryString = Object.keys(params)
+      .map(k => esc(k) + "=" + esc(params[k]))
+      .join("&");
+
+    const requestProcessedTelemetry = await fetch(
+      "http://test.vainglory.eu/api/telemetry?" + telemetryQueryString
+    );
+
+    const processedTelemetry = await requestProcessedTelemetry.json();
+
+    return {
+      data: data,
+      selectedMatch: selectedMatch,
+      TLDamagesData: processedTelemetry.damagesData,
+      telemetryLoading: false,
+      error: false,
+      errorMessage: null
+    };
+  } else {
+    return {
+      data: null,
+      selectedMatch: null,
+      TLDamagesData: null,
+      telemetryLoading: null,
+      error: true,
+      errorMessage: data.errorMessage
+    };
   }
-
-  const params = {
-    match: JSON.stringify(data.matches[selectedMatch])
-  };
-  const esc = encodeURIComponent;
-  const telemetryQueryString = Object.keys(params)
-    .map(k => esc(k) + "=" + esc(params[k]))
-    .join("&");
-
-  const requestProcessedTelemetry = await fetch(
-    "http://test.vainglory.eu/api/telemetry?" + telemetryQueryString
-  );
-
-  const processedTelemetry = await requestProcessedTelemetry.json();
-
-  console.log(processedTelemetry);
-
-  return {
-    data: data,
-    selectedMatch: selectedMatch,
-    TLDamagesData: processedTelemetry.damagesData,
-    telemetryLoading: false
-  };
 };
 
 export default Extension;
