@@ -795,7 +795,6 @@ class Extension extends React.Component {
       TLDamagesData: props.TLDamagesData,
       telemetryLoading: props.telemetryLoading
     };
-
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.converter = this.converter.bind(this);
     this.setSelectedMatch = this.setSelectedMatch.bind(this);
@@ -808,7 +807,7 @@ class Extension extends React.Component {
     this.setState({ selectedMatch: index, telemetryLoading: true });
 
     const params = {
-      telemetryURL: this.state.data.matches[index].telemetryURL
+      match: JSON.stringify(this.state.data.matches[index])
     };
     const esc = encodeURIComponent;
     const telemetryQueryString = Object.keys(params)
@@ -1019,7 +1018,7 @@ Extension.getInitialProps = async function({ query }) {
   }
 
   const params = {
-    telemetryURL: data.matches[selectedMatch].telemetryURL
+    match: JSON.stringify(data.matches[selectedMatch])
   };
   const esc = encodeURIComponent;
   const telemetryQueryString = Object.keys(params)
@@ -1027,9 +1026,12 @@ Extension.getInitialProps = async function({ query }) {
     .join("&");
 
   const requestProcessedTelemetry = await fetch(
-    "https://localhost:3000/api/telemetry?" + telemetryQueryString
+    "http://localhost:3000/api/telemetry?" + telemetryQueryString
   );
+
   const processedTelemetry = await requestProcessedTelemetry.json();
+
+  console.log(processedTelemetry);
 
   return {
     data: data,

@@ -121,7 +121,7 @@ app
     server.get("/api/telemetry", (req, res) => {
       axios({
         method: "get",
-        url: req.query.telemetryURL,
+        url: JSON.parse(req.query.match).telemetryURL,
         headers: {
           "Content-Encoding": "gzip",
           "Content-Type": "application/json",
@@ -136,7 +136,10 @@ app
           return response.data;
         })
         .then(telemetryData => {
-          const damagesData = calculateDamagesFromTelemetry(telemetryData);
+          const damagesData = calculateDamagesFromTelemetry(
+            telemetryData,
+            JSON.parse(req.query.match)
+          );
           console.log(damagesData);
 
           res.writeHead(200, { "Content-Type": "application/json" });
@@ -198,7 +201,11 @@ app
     process.exit(1);
   });
 
-const calculateDamagesFromTelemetry = telemetry => {
+const calculateDamagesFromTelemetry = (telemetry, match) => {
+  const data = {};
+  data.rosters = match.rosters;
+  data.telemetry = telemetry;
+
   const rosters = [{}, {}];
   var highest = 0;
 
