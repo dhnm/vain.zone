@@ -17,9 +17,21 @@ const ExtensionLayout = props => (
 		<style jsx global>{`
 			body {
 				background-color: black !important;
-				background: linear-gradient(to right, #396afc, #2948ff);
 				max-width: 414px;
 				margin: auto;
+
+				background-image: linear-gradient(
+						hsla(0, 0%, 0%, 0.4),
+						hsla(0, 0%, 0%, 0.4),
+						hsla(0, 0%, 0%, 0.4),
+						hsla(227, 32%, 9%, 0.5),
+						hsla(227, 32%, 9%, 1)
+					),
+					url("../img/bg.jpg");
+				background-repeat: no-repeat;
+				background-position: top center;
+				background-attachment: fixed;
+				background-size: 165vw calc(165vw * (9/16));
 			}
 		`}</style>
 		<style jsx>{`

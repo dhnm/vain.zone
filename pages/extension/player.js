@@ -874,37 +874,22 @@ class MatchDetailView extends React.Component {
 class MainLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      debugMessage: "x"
-    };
   }
-  debug = message => {
-    this.setState(prevState => {
-      debugMessage: prevState.debugMessage + " " + message;
-    });
-  };
   componentDidMount() {
     const FBLoaded = () => {
       if (this.props.extension) {
-        this.debug("one");
         this.identifyExtensionUser()
           .then(IGN => {
-            this.debug("two");
             try {
-              this.debug(three);
               window.location.replace("/extension/player/" + IGN);
             } catch (e) {
-              this.debug("four");
               window.location = "/extension/player/" + IGN;
             }
           })
           .catch(err => {
-            this.debug("six");
             try {
-              this.debug("seven");
               window.location.replace("https://m.me/VAIN.ZONE");
             } catch (e) {
-              this.debug("eight");
               window.location = "https://m.me/VAIN.ZONE";
             }
           });
@@ -935,15 +920,11 @@ class MainLayout extends React.Component {
           fetch("https://high-angle.glitch.me/api")
             .then(res => res.json())
             .then(res => {
-              this.debug("nine");
               if (res.recipients[psid]) {
-                this.debug("ten");
                 //document.getElementById("FBButton").style.display = "inline-block";
                 if (res.recipients[psid].IGN) {
-                  this.debug("eleven");
                   resolve(res.recipients[psid].IGN);
                 } else {
-                  this.debug("twelve");
                   resolve(genericUsername);
                 }
               } else {
@@ -951,13 +932,11 @@ class MainLayout extends React.Component {
               }
             })
             .catch(err => {
-              this.debug("thirteen");
               console.log(err);
               resolve(genericUsername);
             });
         },
         err => {
-          this.debug("fourteen");
           console.log("Couldn't get context:", err);
           resolve(genericUsername);
         }
@@ -966,7 +945,7 @@ class MainLayout extends React.Component {
   };
   render() {
     if (this.props.extension) {
-      return <div>{this.state.debugMessage}</div>;
+      return <div />;
     }
     return (
       <Layout>
