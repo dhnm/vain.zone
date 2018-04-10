@@ -887,11 +887,10 @@ class MainLayout extends React.Component {
       if (this.props.extension) {
         this.identifyExtensionUser()
           .then(IGN => {
-            try {
-              window.location.replace("/extension/player/" + IGN);
-            } catch (e) {
-              window.location = "/extension/player/" + IGN;
-            }
+            Router.replace(
+              "/extension/player?IGN=" + IGN,
+              "/extension/player/" + IGN
+            );
           })
           .catch(err => {
             try {
