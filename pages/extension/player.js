@@ -875,39 +875,36 @@ class MainLayout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      debugOne: "x",
-      debugTwo: "x",
-      debugThree: "x",
-      debugFour: "x",
-      debugFive: "x",
-      debugSix: "x",
-      Seven: "x",
-      Eight: "x",
-      Nine: "x"
+      debugMessage: "x"
     };
   }
+  debug = message => {
+    this.setState(prevState => {
+      debugMessage: prevState.debugMessage + " " + message;
+    });
+  };
   componentDidMount() {
     const FBLoaded = () => {
       if (this.props.extension) {
-        this.setState({ Eight: "here" }); //this runs
+        this.debug("one");
         this.identifyExtensionUser()
           .then(IGN => {
-            this.setState({ debugOne: "here2" });
+            this.debug("two");
             try {
-              this.setState({ debugTwo: "here2" });
+              this.debug(three);
               window.location.replace("/extension/player/" + IGN);
             } catch (e) {
-              this.setState({ debugThree: "here2" });
+              this.debug("four");
               window.location = "/extension/player/" + IGN;
             }
           })
           .catch(err => {
-            this.setState({ debugFour: "here" });
+            this.debug("six");
             try {
-              this.setState({ debugFive: "here" });
+              this.debug("seven");
               window.location.replace("https://m.me/VAIN.ZONE");
             } catch (e) {
-              this.setState({ debugSix: "here" });
+              this.debug("eight");
               window.location = "https://m.me/VAIN.ZONE";
             }
           });
@@ -938,11 +935,15 @@ class MainLayout extends React.Component {
           fetch("https://high-angle.glitch.me/api")
             .then(res => res.json())
             .then(res => {
+              this.debug("nine");
               if (res.recipients[psid]) {
+                this.debug("ten");
                 //document.getElementById("FBButton").style.display = "inline-block";
                 if (res.recipients[psid].IGN) {
+                  this.debug("eleven");
                   resolve(res.recipients[psid].IGN);
                 } else {
+                  this.debug("twelve");
                   resolve(genericUsername);
                 }
               } else {
@@ -950,11 +951,13 @@ class MainLayout extends React.Component {
               }
             })
             .catch(err => {
+              this.debug("thirteen");
               console.log(err);
               resolve(genericUsername);
             });
         },
         err => {
+          this.debug("fourteen");
           console.log("Couldn't get context:", err);
           resolve(genericUsername);
         }
