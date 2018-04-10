@@ -887,11 +887,9 @@ class MainLayout extends React.Component {
     };
   }
   componentDidMount() {
-    this.setState({ Nine: "here" });
     const FBLoaded = () => {
-      this.setState({ Seven: "here" });
       if (this.props.extension) {
-        this.setState({ Eight: "here" });
+        this.setState({ Eight: "here" }); //this runs
         this.identifyExtensionUser()
           .then(IGN => {
             this.setState({ debugOne: "here2" });
@@ -937,23 +935,24 @@ class MainLayout extends React.Component {
         "617200295335676",
         thread_context => {
           var psid = thread_context.psid;
-          getChatbotUsers("https://high-angle.glitch.me/api", (err, res) => {
-            if (err) {
+          fetch("https://high-angle.glitch.me/api")
+            .then(res => res.json())
+            .then(res => {
+              if (res.recipients[psid]) {
+                //document.getElementById("FBButton").style.display = "inline-block";
+                if (res.recipients[psid].IGN) {
+                  resolve(res.recipients[psid].IGN);
+                } else {
+                  resolve(genericUsername);
+                }
+              } else {
+                reject("User has not yet interacted with the bot.");
+              }
+            })
+            .catch(err => {
               console.log(err);
               resolve(genericUsername);
-            }
-
-            if (res.recipients[psid]) {
-              //document.getElementById("FBButton").style.display = "inline-block";
-              if (res.recipients[psid].IGN) {
-                resolve(res.recipients[psid].IGN);
-              } else {
-                resolve(genericUsername);
-              }
-            } else {
-              reject("User has not yet interacted with the bot.");
-            }
-          });
+            });
         },
         err => {
           console.log("Couldn't get context:", err);
