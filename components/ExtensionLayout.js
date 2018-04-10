@@ -27,7 +27,7 @@ const ExtensionLayout = props => (
 						hsla(227, 32%, 9%, 0.5),
 						hsla(227, 32%, 9%, 1)
 					),
-					url("../img/bg.jpg");
+					url("https://x.vainglory.eu/vg_extension2/assets/img/bg.jpg");
 				background-repeat: no-repeat;
 				background-position: top center;
 				background-attachment: fixed;
