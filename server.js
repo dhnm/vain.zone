@@ -80,12 +80,12 @@ app
       getData(req.params.IGN)
         .then(data => {
           res.writeHead(200, { "Content-Type": "application/json" });
-          res.write(data);
+          res.write(JSON.stringify(data));
           res.end();
         })
         .catch(error => {
           res.writeHead(404, { "Content-Type": "application/json" });
-          res.write({ error: true, errorMessage: error });
+          res.write(JSON.stringify({ error: true, errorMessage: error }));
           res.end();
         });
     });

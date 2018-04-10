@@ -1212,6 +1212,7 @@ class Extension extends React.Component {
   };
   render() {
     if (this.props.error) {
+      console.log(this.props.errorMessage);
       return (
         <ErrorLayout
           appLoading={this.state.appLoading}
@@ -1244,9 +1245,18 @@ Extension.getInitialProps = async function({ query }) {
   if (!query.error) {
     if (!query.extension) {
       const requestMatches = await fetch(
-        "https://test.vainglory.eu/api/matches/" + query.IGN
+        "http://localhost:3000/api/matches/" + query.IGN
       );
       const data = await requestMatches.json();
+
+      if (data.error) {
+        return {
+          data: null,
+          TLDamagesData: null,
+          extension: false,
+          error: true
+        };
+      }
 
       const params = {
         match: JSON.stringify(data.matches[0])
