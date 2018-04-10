@@ -63,13 +63,16 @@ app
 
     server.get("/extension/", (req, res) => {
       app.render(req, res, "/extension/player", {
-        data: JSON.stringify({ error: false, extension: true })
+        error: false,
+        extension: true
       });
     });
 
     server.get("/extension/player/:IGN", (req, res) => {
       app.render(req, res, "/extension/player", {
-        IGN: req.params.IGN
+        IGN: req.params.IGN,
+        error: false,
+        extension: false
       });
     });
 
@@ -77,12 +80,12 @@ app
       getData(req.params.IGN)
         .then(data => {
           res.writeHead(200, { "Content-Type": "application/json" });
-          res.write(JSON.stringify(data));
+          res.write(data);
           res.end();
         })
         .catch(error => {
           res.writeHead(404, { "Content-Type": "application/json" });
-          res.write(JSON.stringify({ error: true, errorMessage: error }));
+          res.write({ error: true, errorMessage: error });
           res.end();
         });
     });

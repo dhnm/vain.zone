@@ -888,7 +888,7 @@ class MainLayout extends React.Component {
         this.identifyExtensionUser()
           .then(IGN => {
             Router.replace(
-              "/extension/player?IGN=" + IGN,
+              "/extension/player?error=false&extension=false&IGN=" + IGN,
               "/extension/player/" + IGN
             );
           })
@@ -995,14 +995,11 @@ class MainLayout extends React.Component {
   }
 }
 
-const ErrorLayout = () => {
+const ErrorLayout = ({ appLoading, appLoadingOn }) => {
   return (
     <Layout>
       <Segment basic>
-        <InputPanel
-          appLoading={this.props.appLoading}
-          appLoadingOn={this.props.appLoadingOn}
-        />
+        <InputPanel appLoading={appLoading} appLoadingOn={appLoadingOn} />
         <Segment>
           <p>We couldn't find anything :(</p>
           <ol>
@@ -1215,7 +1212,12 @@ class Extension extends React.Component {
   };
   render() {
     if (this.props.error) {
-      return <ErrorLayout />;
+      return (
+        <ErrorLayout
+          appLoading={this.state.appLoading}
+          appLoadingOn={this.appLoadingOn}
+        />
+      );
     }
     return (
       <MainLayout
@@ -1239,13 +1241,13 @@ Extension.getInitialProps = async function({ query }) {
   //const res = await fetch('http://api.tvmaze.com/search/shows?q=batman')
   //const data = await res.json()
 
-  const requestMatches = await fetch(
-    "https://test.vainglory.eu/api/matches/" + query.IGN
-  );
-  const data = await requestMatches.json();
+  if (!query.error) {
+    if (!query.extension) {
+      const requestMatches = await fetch(
+        "https://test.vainglory.eu/api/matches/" + query.IGN
+      );
+      const data = await requestMatches.json();
 
-  if (!data.error) {
-    if (!data.extension) {
       const params = {
         match: JSON.stringify(data.matches[0])
       };
@@ -1280,7 +1282,7 @@ Extension.getInitialProps = async function({ query }) {
       TLDamagesData: null,
       extension: false,
       error: true,
-      errorMessage: data.errorMessage
+      errorMessage: query.errorMessage
     };
   }
 };
