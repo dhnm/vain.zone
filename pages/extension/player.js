@@ -872,7 +872,69 @@ class MatchDetailView extends React.Component {
 }
 
 class MainLayout extends React.Component {
+  componentDidMount() {
+    const FBLoaded = () => {
+      if (this.props.extension) {
+        this.identifyExtensionUser()
+          .then(IGN => {
+            window.location.replace("/extension/player/" + IGN);
+          })
+          .catch(err => {
+            window.location.replace("https://m.me/VAIN.ZONE");
+          });
+      }
+    };
+    window.extAsyncInit = FBLoaded.bind(this);
+
+    // Load the SDK asynchronously
+    (function(d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {
+        return;
+      }
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    })(document, "script", "Messenger");
+  }
+  identifyExtensionUser = () => {
+    const genericUsername = "L3oN";
+    return new Promise((resolve, reject) => {
+      MessengerExtensions.getContext(
+        "617200295335676",
+        thread_context => {
+          var psid = thread_context.psid;
+          getChatbotUsers("https://high-angle.glitch.me/api", (err, res) => {
+            if (err) {
+              console.log(err);
+              resolve(genericUsername);
+            }
+
+            if (res.recipients[psid]) {
+              //document.getElementById("FBButton").style.display = "inline-block";
+              if (res.recipients[psid].IGN) {
+                resolve(res.recipients[psid].IGN);
+              } else {
+                resolve(genericUsername);
+              }
+            } else {
+              reject("User has not yet interacted with the bot.");
+            }
+          });
+        },
+        err => {
+          console.log("Couldn't get context:", err);
+          resolve(genericUsername);
+        }
+      );
+    });
+  };
   render() {
+    if (this.props.extension) {
+      return <div />;
+    }
     return (
       <Layout>
         <Sidebar.Pushable style={{ minHeight: "100vh" }}>
@@ -891,8 +953,8 @@ class MainLayout extends React.Component {
               <InputPanel />
               <Player player={this.props.data.player} />
               <Button.Group attached="bottom">
-                <Button>
-                  <Icon name="send" />Send
+                <Button disabled>
+                  <Icon name="send" />Coming soon
                 </Button>
                 <Button onClick={this.props.toggleSidebar}>
                   <Icon name="sidebar" /> Matches
@@ -937,11 +999,9 @@ class Extension extends React.Component {
     this.state = {
       data: props.data,
       sidebarVisible: false,
-      selectedMatch: props.selectedMatch,
+      selectedMatch: 0,
       TLDamagesData: props.TLDamagesData,
-      telemetryLoading: props.telemetryLoading,
-      error: props.error,
-      errorMessage: props.errorMessage
+      telemetryLoading: false
     };
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.converter = this.converter.bind(this);
@@ -1115,21 +1175,22 @@ class Extension extends React.Component {
     };
   };
   render() {
-    if (!this.state.error) {
-      return (
-        <MainLayout
-          data={this.state.data}
-          sidebarVisible={this.state.sidebarVisible}
-          toggleSidebar={this.toggleSidebar}
-          converter={this.converter}
-          setSelectedMatch={this.setSelectedMatch}
-          selectedMatch={this.state.selectedMatch}
-          TLDamagesData={this.state.TLDamagesData}
-          telemetryLoading={this.state.telemetryLoading}
-        />
-      );
+    if (this.props.error) {
+      return <ErrorLayout />;
     }
-    return <ErrorLayout />;
+    return (
+      <MainLayout
+        data={this.state.data}
+        sidebarVisible={this.state.sidebarVisible}
+        toggleSidebar={this.toggleSidebar}
+        converter={this.converter}
+        setSelectedMatch={this.setSelectedMatch}
+        selectedMatch={this.state.selectedMatch}
+        TLDamagesData={this.state.TLDamagesData}
+        telemetryLoading={this.state.telemetryLoading}
+        extension={this.props.extension}
+      />
+    );
   }
 }
 
@@ -1140,39 +1201,40 @@ Extension.getInitialProps = async function({ query }) {
   const data = JSON.parse(query.data);
 
   if (!data.error) {
-    var selectedMatch = 0;
-    if (query.selectedMatch) {
-      selectedMatch = parseInt(query.selectedMatch);
+    if (!data.extension) {
+      const params = {
+        match: JSON.stringify(data.matches[0])
+      };
+      const esc = encodeURIComponent;
+      const telemetryQueryString = Object.keys(params)
+        .map(k => esc(k) + "=" + esc(params[k]))
+        .join("&");
+
+      const requestProcessedTelemetry = await fetch(
+        "http://test.vainglory.eu/api/telemetry?" + telemetryQueryString
+      );
+
+      const processedTelemetry = await requestProcessedTelemetry.json();
+
+      return {
+        data: data,
+        TLDamagesData: processedTelemetry.damagesData,
+        extension: false,
+        error: false
+      };
+    } else {
+      return {
+        data: null,
+        TLDamagesData: null,
+        extension: true,
+        error: false
+      };
     }
-
-    const params = {
-      match: JSON.stringify(data.matches[selectedMatch])
-    };
-    const esc = encodeURIComponent;
-    const telemetryQueryString = Object.keys(params)
-      .map(k => esc(k) + "=" + esc(params[k]))
-      .join("&");
-
-    const requestProcessedTelemetry = await fetch(
-      "http://test.vainglory.eu/api/telemetry?" + telemetryQueryString
-    );
-
-    const processedTelemetry = await requestProcessedTelemetry.json();
-
-    return {
-      data: data,
-      selectedMatch: selectedMatch,
-      TLDamagesData: processedTelemetry.damagesData,
-      telemetryLoading: false,
-      error: false,
-      errorMessage: null
-    };
   } else {
     return {
       data: null,
-      selectedMatch: null,
       TLDamagesData: null,
-      telemetryLoading: null,
+      extension: false,
       error: true,
       errorMessage: data.errorMessage
     };

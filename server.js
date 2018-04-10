@@ -62,44 +62,9 @@ app
     });
 
     server.get("/extension/", (req, res) => {
-      db
-        .collection("players")
-        .get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            console.log(doc.id, "=>", doc.data());
-          });
-        })
-        .catch(err => {
-          throw new Error("id: 6 Error getting documents" + err);
-        });
-
-      axios({
-        method: "get",
-        url:
-          "https://api.dc01.gamelockerapp.com/shards/" + "eu" + "/" + "players",
-        params: {
-          "filter[playerNames]": "thisBoy"
-        },
-        headers: {
-          "Content-Encoding": "gzip",
-          "Content-Type": "application/json",
-          "User-Agent": "js/vainglory",
-          Authorization:
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI3ZmVlYTMwMC1mMTU3LTAxMzQtYzgzZS0wMjQyYWMxMTAwMDMiLCJpc3MiOiJnYW1lbG9ja2VyIiwib3JnIjoiZnN0dHItaWNsb3VkLWNvbSIsImFwcCI6IjdmZWJlM2UwLWYxNTctMDEzNC1jODNkLTAyNDJhYzExMDAwMyIsInB1YiI6InNlbWMiLCJ0aXRsZSI6InZhaW5nbG9yeSIsInNjb3BlIjoiY29tbXVuaXR5IiwibGltaXQiOjEwfQ.KA8RH66EdM6lC6qqBZiJTbLDwHk-bsrOweA14A-L6OU",
-          "X-TITLE-ID": "semc-vainglory",
-          Accept: "application/vnd.api+json"
-        },
-        responseType: "json"
-      })
-        .then(response => {
-          app.render(req, res, "/extension/player", {
-            data: JSON.stringify(response.data)
-          });
-        })
-        .catch(err =>
-          app.render(req, res, "/extension/player", { data: { error: err } })
-        );
+      app.render(req, res, "/extension/player", {
+        data: JSON.stringify({ error: false, extension: true })
+      });
     });
 
     server.get("/extension/player/:IGN", (req, res) => {
@@ -261,7 +226,8 @@ const formatDataPopulateMatches = playerData => {
         resolve({
           player: playerData,
           matches: docs.map(doc => doc.data()),
-          error: false
+          error: false,
+          extension: false
         });
       })
       .catch(err => reject("id: 11 " + err));
