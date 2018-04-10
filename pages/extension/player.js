@@ -1240,7 +1240,7 @@ Extension.getInitialProps = async function({ query }) {
   //const data = await res.json()
 
   const requestMatches = await fetch(
-    "http://localhost:3000/api/matches/" + query.IGN
+    "https://test.vainglory.eu/api/matches/" + query.IGN
   );
   const data = await requestMatches.json();
 
