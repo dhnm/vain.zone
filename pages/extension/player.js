@@ -966,13 +966,7 @@ class MainLayout extends React.Component {
   };
   render() {
     if (this.props.extension) {
-      return (
-        <div>
-          {this.state.debugOne} {this.state.debugTwo} {this.state.debugThree}{" "}
-          {this.state.debugFour} {this.state.debugFive} {this.state.debugSix}{" "}
-          {this.state.Seven} {this.state.Eight} {this.state.Nine}
-        </div>
-      );
+      return <div>{this.state.debugMessage}</div>;
     }
     return (
       <Layout>
