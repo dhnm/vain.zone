@@ -880,12 +880,18 @@ class MainLayout extends React.Component {
       debugThree: "x",
       debugFour: "x",
       debugFive: "x",
-      debugSix: "x"
+      debugSix: "x",
+      Seven: "x",
+      Eight: "x",
+      Nine: "x"
     };
   }
   componentDidMount() {
+    this.setState({ Nine: "here" });
     const FBLoaded = () => {
+      this.setState({ Seven: "here" });
       if (this.props.extension) {
+        this.setState({ Eight: "here" });
         this.identifyExtensionUser()
           .then(IGN => {
             this.setState({ debugOne: "here2" });
@@ -961,7 +967,8 @@ class MainLayout extends React.Component {
       return (
         <div>
           {this.state.debugOne} {this.state.debugTwo} {this.state.debugThree}{" "}
-          {this.state.debugFour} {this.state.debugFive} {this.state.debugSix}
+          {this.state.debugFour} {this.state.debugFive} {this.state.debugSix}{" "}
+          {this.state.Seven} {this.state.Eight} {this.state.Nine}
         </div>
       );
     }
