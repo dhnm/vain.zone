@@ -875,20 +875,22 @@ class MainLayout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      debugOne: "",
-      debugTwo: ""
+      debugOne: "x",
+      debugTwo: "x",
+      debugThree: "x"
     };
   }
   componentDidMount() {
-    this.setState({ debugOne: "here" });
     const FBLoaded = () => {
-      this.setState({ debugTwo: "here" });
       if (this.props.extension) {
         this.identifyExtensionUser()
           .then(IGN => {
+            this.setState({ debugOne: "here2" });
             try {
+              this.setState({ debugTwo: "here2" });
               window.location.replace("/extension/player/" + IGN);
             } catch (e) {
+              this.setState({ debugThree: "here2" });
               window.location = "/extension/player/" + IGN;
             }
           })
@@ -952,7 +954,7 @@ class MainLayout extends React.Component {
     if (this.props.extension) {
       return (
         <div>
-          {this.state.debugOne} {this.state.debugTwo}
+          {this.state.debugOne} {this.state.debugTwo} {this.state.debugThree}
         </div>
       );
     }
