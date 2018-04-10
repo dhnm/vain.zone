@@ -25,9 +25,9 @@ import {
 } from "semantic-ui-react";
 
 class InputPanel extends React.Component {
-  constructor() {
-    super();
-    this.state = { IGNInput: "", loading: false };
+  constructor(props) {
+    super(props);
+    this.state = { IGNInput: "", loading: props.appLoading };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -42,14 +42,15 @@ class InputPanel extends React.Component {
     });
   };
   handleSubmit = event => {
-    this.setState({ loading: true });
+    this.props.appLoadingOn();
     event.preventDefault();
     //window.location.href = "/extension/player/" + this.state.IGNInput;
 
-    Router.push({
-      pathname: "/extension/player",
-      query: { IGN: this.state.IGNInput }
-    });
+    Router.push(
+      "/extension/player?IGN=" + this.state.IGNInput,
+      "/extension/player/" + this.state.IGNInput,
+      { shallow: false }
+    );
   };
   render() {
     return (
@@ -63,7 +64,7 @@ class InputPanel extends React.Component {
             id="IGNInput"
             placeholder="In-Game Name"
             required
-            loading={this.state.loading}
+            loading={this.props.appLoading}
           />
         </Form.Field>
       </Form>
@@ -968,7 +969,10 @@ class MainLayout extends React.Component {
           />
           <Sidebar.Pusher dimmed={this.props.sidebarVisible}>
             <Segment basic>
-              <InputPanel />
+              <InputPanel
+                appLoading={this.props.appLoading}
+                appLoadingOn={this.props.appLoadingOn}
+              />
               <Player player={this.props.data.player} />
               <Button.Group attached="bottom">
                 <Button disabled>
@@ -996,7 +1000,10 @@ const ErrorLayout = () => {
   return (
     <Layout>
       <Segment basic>
-        <InputPanel />
+        <InputPanel
+          appLoading={this.props.appLoading}
+          appLoadingOn={this.props.appLoadingOn}
+        />
         <Segment>
           <p>We couldn't find anything :(</p>
           <ol>
@@ -1019,12 +1026,27 @@ class Extension extends React.Component {
       sidebarVisible: false,
       selectedMatch: 0,
       TLDamagesData: props.TLDamagesData,
-      telemetryLoading: false
+      telemetryLoading: false,
+      appLoading: false
     };
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.converter = this.converter.bind(this);
     this.setSelectedMatch = this.setSelectedMatch.bind(this);
+    this.appLoadingOn = this.appLoadingOn.bind(this);
   }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      data: nextProps.data,
+      sidebarVisible: false,
+      selectedMatch: 0,
+      TLDamagesData: nextProps.TLDamagesData,
+      telemetryLoading: false,
+      appLoading: false
+    });
+  }
+  appLoadingOn = () => {
+    this.setState({ appLoading: true });
+  };
   toggleSidebar = () => {
     this.setState({ sidebarVisible: !this.state.sidebarVisible });
   };
@@ -1207,6 +1229,8 @@ class Extension extends React.Component {
         TLDamagesData={this.state.TLDamagesData}
         telemetryLoading={this.state.telemetryLoading}
         extension={this.props.extension}
+        appLoading={this.state.appLoading}
+        appLoadingOn={this.appLoadingOn}
       />
     );
   }

@@ -27,7 +27,7 @@ const ExtensionLayout = props => (
 						hsla(227, 32%, 9%, 0.5),
 						hsla(227, 32%, 9%, 1)
 					),
-					url("/static/img/bg.jpg");
+					url("/static/img/bg.jpg") !important;
 				background-repeat: no-repeat;
 				background-position: center center;
 				background-attachment: fixed;
