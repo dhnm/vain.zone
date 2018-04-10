@@ -1210,7 +1210,10 @@ Extension.getInitialProps = async function({ query }) {
   //const res = await fetch('http://api.tvmaze.com/search/shows?q=batman')
   //const data = await res.json()
 
-  const data = JSON.parse(query.data);
+  const requestMatches = await fetch(
+    "http://localhost:3000/api/matches/" + query.IGN
+  );
+  const data = await requestMatches.json();
 
   if (!data.error) {
     if (!data.extension) {
@@ -1223,7 +1226,7 @@ Extension.getInitialProps = async function({ query }) {
         .join("&");
 
       const requestProcessedTelemetry = await fetch(
-        "http://test.vainglory.eu/api/telemetry?" + telemetryQueryString
+        "https://test.vainglory.eu/api/telemetry?" + telemetryQueryString
       );
 
       const processedTelemetry = await requestProcessedTelemetry.json();

@@ -68,18 +68,22 @@ app
     });
 
     server.get("/extension/player/:IGN", (req, res) => {
-      console.log("here");
+      app.render(req, res, "/extension/player", {
+        IGN: req.params.IGN
+      });
+    });
+
+    server.get("/api/matches/:IGN", (req, res) => {
       getData(req.params.IGN)
         .then(data => {
-          console.log("in render");
-          app.render(req, res, "/extension/player", {
-            data: JSON.stringify(data)
-          });
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.write(JSON.stringify(data));
+          res.end();
         })
         .catch(error => {
-          app.render(req, res, "/extension/player", {
-            data: JSON.stringify({ error: true, errorMessage: error })
-          });
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.write(JSON.stringify({ error: true, errorMessage: error }));
+          res.end();
         });
     });
 
