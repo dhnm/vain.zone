@@ -938,7 +938,7 @@ class MainLayout extends React.Component {
               }
             })
             .catch(err => {
-              console.log(err);
+              console.log("err", err);
               resolve(genericUsername);
             });
         },
@@ -1212,7 +1212,7 @@ class Extension extends React.Component {
   };
   render() {
     if (this.props.error) {
-      console.log(this.props.errorMessage);
+      console.log("errorMessage", this.props.errorMessage);
       return (
         <ErrorLayout
           appLoading={this.state.appLoading}
@@ -1241,14 +1241,14 @@ class Extension extends React.Component {
 Extension.getInitialProps = async function({ query }) {
   //const res = await fetch('http://api.tvmaze.com/search/shows?q=batman')
   //const data = await res.json()
-
-  if (!query.error) {
-    if (!query.extension) {
+  if (query.error == false || query.error == "false") {
+    if (query.extension == false || query.error == "false") {
+      console.log(query.IGN);
       const requestMatches = await fetch(
         "http://localhost:3000/api/matches/" + query.IGN
       );
       const data = await requestMatches.json();
-
+      console.log("data", data);
       if (data.error) {
         return {
           data: null,
