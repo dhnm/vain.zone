@@ -877,7 +877,10 @@ class MainLayout extends React.Component {
     this.state = {
       debugOne: "x",
       debugTwo: "x",
-      debugThree: "x"
+      debugThree: "x",
+      debugFour: "x",
+      debugFive: "x",
+      debugSix: "x"
     };
   }
   componentDidMount() {
@@ -895,9 +898,12 @@ class MainLayout extends React.Component {
             }
           })
           .catch(err => {
+            this.setState({ debugFour: "here" });
             try {
+              this.setState({ debugFive: "here" });
               window.location.replace("https://m.me/VAIN.ZONE");
             } catch (e) {
+              this.setState({ debugSix: "here" });
               window.location = "https://m.me/VAIN.ZONE";
             }
           });
@@ -954,7 +960,8 @@ class MainLayout extends React.Component {
     if (this.props.extension) {
       return (
         <div>
-          {this.state.debugOne} {this.state.debugTwo} {this.state.debugThree}
+          {this.state.debugOne} {this.state.debugTwo} {this.state.debugThree}{" "}
+          {this.state.debugFour} {this.state.debugFive} {this.state.debugSix}
         </div>
       );
     }
