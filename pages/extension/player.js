@@ -872,15 +872,32 @@ class MatchDetailView extends React.Component {
 }
 
 class MainLayout extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      debugOne: "",
+      debugTwo: ""
+    };
+  }
   componentDidMount() {
+    this.setState({ debugOne: "here" });
     const FBLoaded = () => {
+      this.setState({ debugTwo: "here" });
       if (this.props.extension) {
         this.identifyExtensionUser()
           .then(IGN => {
-            window.location.replace("/extension/player/" + IGN);
+            try {
+              window.location.replace("/extension/player/" + IGN);
+            } catch (e) {
+              window.location = "/extension/player/" + IGN;
+            }
           })
           .catch(err => {
-            window.location.replace("https://m.me/VAIN.ZONE");
+            try {
+              window.location.replace("https://m.me/VAIN.ZONE");
+            } catch (e) {
+              window.location = "https://m.me/VAIN.ZONE";
+            }
           });
       }
     };
@@ -933,7 +950,11 @@ class MainLayout extends React.Component {
   };
   render() {
     if (this.props.extension) {
-      return <div />;
+      return (
+        <div>
+          {this.state.debugOne} {this.state.debugTwo}
+        </div>
+      );
     }
     return (
       <Layout>
