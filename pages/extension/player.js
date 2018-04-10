@@ -1241,8 +1241,8 @@ class Extension extends React.Component {
 Extension.getInitialProps = async function({ query }) {
   //const res = await fetch('http://api.tvmaze.com/search/shows?q=batman')
   //const data = await res.json()
-  if (query.error == false || query.error == "false") {
-    if (query.extension == false || query.error == "false") {
+  if (!JSON.parse(query.error)) {
+    if (!JSON.parse(query.extension)) {
       console.log(query.IGN);
       const requestMatches = await fetch(
         "http://localhost:3000/api/matches/" + query.IGN
