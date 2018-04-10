@@ -2,6 +2,7 @@ import Layout from "../../components/ExtensionLayout.js";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import moment from "moment";
+import Router from "next/router";
 
 import {
   Form,
@@ -43,7 +44,12 @@ class InputPanel extends React.Component {
   handleSubmit = event => {
     this.setState({ loading: true });
     event.preventDefault();
-    window.location.href = "/extension/player/" + this.state.IGNInput;
+    //window.location.href = "/extension/player/" + this.state.IGNInput;
+
+    Router.push({
+      pathname: "/extension/player",
+      query: { IGN: this.state.IGNInput }
+    });
   };
   render() {
     return (
