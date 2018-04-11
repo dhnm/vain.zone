@@ -363,7 +363,7 @@ class PlayerDetailView extends React.Component {
         </Segment>
         <Button.Group attached="bottom">
           <Button onClick={this.generatePlayerDetailImage} disabled>
-            <Icon name="send" />Image <Label color="yellow">Beta</Label>
+            <Icon name="send" />Share <Label color="yellow">Beta</Label>
           </Button>
           <Button onClick={this.props.toggleSidebar}>
             <Icon name="sidebar" /> Matches
@@ -1007,7 +1007,10 @@ class MainLayout extends React.Component {
                 appLoading={this.props.appLoading}
                 appLoadingOn={this.props.appLoadingOn}
               />
-              <PlayerDetailView player={this.props.data.player} />
+              <PlayerDetailView
+                player={this.props.data.player}
+                toggleSidebar={this.props.toggleSidebar}
+              />
               <MatchDetailView
                 match={this.props.data.matches[this.props.selectedMatch]}
                 converter={this.props.converter}
