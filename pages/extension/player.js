@@ -221,122 +221,7 @@ const SkillTierPopup = ({ skillTier, rankPoints }) => {
 class PlayerDetailView extends React.Component {
   constructor(props) {
     super(props);
-    this.generatePlayerDetailImage = this.generatePlayerDetailImage.bind(this);
   }
-  generatePlayerDetailImage = () => {
-    html2canvas(document.getElementById("playerDetailView"), {
-      backgroundColor: null
-    })
-      .then(canvas => {
-        document.getElementById("debugConsole").value += "\ncompleted canvas";
-
-        var img = document.createElement("img");
-        img.src = canvas.toDataURL("image/png");
-
-        const image_data = atob(img.src.split(",")[1]);
-        const arraybuffer = new ArrayBuffer(image_data.length);
-        const view = new Uint8Array(arraybuffer);
-        for (var i = 0; i < image_data.length; i++) {
-          view[i] = image_data.charCodeAt(i);
-        }
-        return new Blob([view], { type: "image/png" });
-      })
-      .then(blob => {
-        document.getElementById("debugConsole").value += "\nmade blob";
-
-        var formData = new FormData();
-        formData.append("imageFile", blob);
-
-        return new Promise((resolve, reject) => {
-          fetch("https://high-angle.glitch.me/upload", {
-            method: "POST",
-            body: formData
-            // headers: new Headers({
-            //   "Content-Type": "multipart/form-data"
-            // })
-          })
-            .then(res => {
-              document.getElementById("debugConsole").value +=
-                "\ngot response from image upload";
-              resolve(res.json());
-            })
-            .catch(err => {
-              document.getElementById("debugConsole").value +=
-                "\nerror uploading image " + err;
-
-              reject(err);
-            });
-        });
-      })
-      .then(res => {
-        document.getElementById("debugConsole").value +=
-          "\nprocessing response";
-
-        let message = {
-          attachment: {
-            type: "template",
-            payload: {
-              template_type: "media",
-              elements: [
-                {
-                  media_type: "image",
-                  attachment_id: res.attachmentId,
-                  buttons: [
-                    {
-                      type: "web_url",
-                      url: window.location.href,
-                      title: "Open",
-                      webview_height_ratio: "full",
-                      messenger_extensions: true
-                    }
-                  ]
-                }
-              ]
-            }
-          }
-        };
-
-        MessengerExtensions.beginShareFlow(
-          function(share_response) {
-            // User dismissed without error, but did they share the message?
-            if (share_response.is_sent) {
-              // The user actually did share.
-              // Perhaps close the window w/ requestCloseBrowser().
-
-              MessengerExtensions.requestCloseBrowser(
-                function success() {
-                  console.log("vebview closed");
-                },
-                function error(err) {
-                  console.log(err);
-                }
-              );
-            } else {
-              console.log("Neodesláno.");
-              // handle not send here
-            }
-          },
-          function(errorCode, errorMessage) {
-            document.getElementById("debugConsole").value +=
-              "\nError opening share window: " + errorCode + " " + errorMessage;
-
-            console.log(errorCode, errorMessage);
-            alert(
-              "Error! Please contact the developers." +
-                errorCode +
-                " " +
-                errorMessage
-            );
-            // handle error in ui here
-          },
-          message,
-          "broadcast"
-        );
-      })
-      .catch(err => {
-        document.getElementById("debugConsole").value += "\nError L " + err;
-      });
-  };
   render() {
     const player = this.props.player;
     const experienceHours =
@@ -464,19 +349,6 @@ class PlayerDetailView extends React.Component {
             </Card.Content>
           </Card>
         </Segment>
-        <Button.Group attached="bottom">
-          <Button onClick={this.generatePlayerDetailImage}>
-            <Icon name="send" />Share <Label color="yellow">Beta</Label>
-          </Button>
-          <Button onClick={this.props.toggleSidebar}>
-            <Icon name="sidebar" /> Matches
-          </Button>
-        </Button.Group>
-        <textarea
-          id="debugConsole"
-          style={{ width: "100%", height: "120px", display: "none" }}
-          value="Debugging"
-        />
       </div>
     );
   }
@@ -901,6 +773,7 @@ class MatchDetailView extends React.Component {
           paddingLeft: "0.5em",
           paddingRight: "0.5em"
         }}
+        attached="top"
       >
         <Label attached="top">
           <div style={{ marginBottom: "2px", padding: 0, textAlign: "center" }}>
@@ -1020,6 +893,9 @@ class MatchDetailView extends React.Component {
 class MainLayout extends React.Component {
   constructor(props) {
     super(props);
+
+    this.identifyExtensionUser = this.identifyExtensionUser.bind(this);
+    this.generateImage = this.generateImage.bind(this);
   }
   componentDidMount() {
     const FBLoaded = () => {
@@ -1088,6 +964,107 @@ class MainLayout extends React.Component {
       );
     });
   };
+  generateImage = elementId => {
+    html2canvas(document.getElementById(elementId), {
+      backgroundColor: null
+    })
+      .then(canvas => {
+        var img = document.createElement("img");
+        img.src = canvas.toDataURL("image/png");
+
+        const image_data = atob(img.src.split(",")[1]);
+        const arraybuffer = new ArrayBuffer(image_data.length);
+        const view = new Uint8Array(arraybuffer);
+        for (var i = 0; i < image_data.length; i++) {
+          view[i] = image_data.charCodeAt(i);
+        }
+        return new Blob([view], { type: "image/png" });
+      })
+      .then(blob => {
+        var formData = new FormData();
+        formData.append("imageFile", blob);
+
+        return new Promise((resolve, reject) => {
+          fetch("https://high-angle.glitch.me/upload", {
+            method: "POST",
+            body: formData
+            // headers: new Headers({
+            //   "Content-Type": "multipart/form-data"
+            // })
+          })
+            .then(res => {
+              resolve(res.json());
+            })
+            .catch(err => {
+              document.getElementById("debugConsole").value +=
+                "\nerror uploading image " + err;
+              reject(err);
+            });
+        });
+      })
+      .then(res => {
+        let message = {
+          attachment: {
+            type: "template",
+            payload: {
+              template_type: "media",
+              elements: [
+                {
+                  media_type: "image",
+                  attachment_id: res.attachmentId,
+                  buttons: [
+                    {
+                      type: "web_url",
+                      url: window.location.href,
+                      title: "Open",
+                      webview_height_ratio: "full",
+                      messenger_extensions: true
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        };
+
+        MessengerExtensions.beginShareFlow(
+          function(share_response) {
+            // User dismissed without error, but did they share the message?
+            // if (share_response.is_sent) {
+            //   // The user actually did share.
+            //   // Perhaps close the window w/ requestCloseBrowser().
+            //   MessengerExtensions.requestCloseBrowser(
+            //     function success() {
+            //       console.log("vebview closed");
+            //     },
+            //     function error(err) {
+            //       document.getElementById("debugConsole").value += "\n" + err;
+            //     }
+            //   );
+            // } else {
+            //   document.getElementById("debugConsole").value += "\nNeodesláno";
+            //   // handle not send here
+            // }
+          },
+          function(errorCode, errorMessage) {
+            document.getElementById("debugConsole").value +=
+              "\nError opening share window: " + errorCode + " " + errorMessage;
+            alert(
+              "Error! Please contact the developers." +
+                errorCode +
+                " " +
+                errorMessage
+            );
+            // handle error in ui here
+          },
+          message,
+          "broadcast"
+        );
+      })
+      .catch(err => {
+        document.getElementById("debugConsole").value += "\nError L " + err;
+      });
+  };
   render() {
     if (this.props.extension) {
       return (
@@ -1112,9 +1089,19 @@ class MainLayout extends React.Component {
           <Sidebar.Pusher dimmed={this.props.sidebarVisible}>
             <Segment basic>
               <InputPanel appLoading={this.props.appLoading} />
-              <PlayerDetailView
-                player={this.props.data.player}
-                toggleSidebar={this.props.toggleSidebar}
+              <PlayerDetailView player={this.props.data.player} />
+              <Button.Group attached="bottom">
+                <Button onClick={e => this.generateImage("playerDetailView")}>
+                  <Icon name="send" />Share <Label color="yellow">Beta</Label>
+                </Button>
+                <Button onClick={this.props.toggleSidebar}>
+                  <Icon name="sidebar" /> Matches
+                </Button>
+              </Button.Group>
+              <textarea
+                id="debugConsole"
+                style={{ width: "100%", height: "120px", display: "none" }}
+                value="Debugging"
               />
               <MatchDetailView
                 match={this.props.data.matches[this.props.selectedMatch]}
@@ -1122,6 +1109,12 @@ class MainLayout extends React.Component {
                 TLDamagesData={this.props.TLDamagesData}
                 telemetryLoading={this.props.telemetryLoading}
               />
+              <Button
+                onClick={e => this.generateImage("matchDetailView")}
+                attached="bottom"
+              >
+                <Icon name="send" />Share <Label color="yellow">Beta</Label>
+              </Button>
             </Segment>
           </Sidebar.Pusher>
         </Sidebar.Pushable>
