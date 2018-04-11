@@ -3,6 +3,7 @@ import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import moment from "moment";
 import Router from "next/router";
+import html2canvas from "html2canvas";
 
 import {
   Form,
@@ -218,7 +219,21 @@ const SkillTierPopup = ({ skillTier, rankPoints }) => {
   );
 };
 
-class Player extends React.Component {
+class PlayerDetailView extends React.Component {
+  constructor(props) {
+    super(props);
+    this.generatePlayerDetailImage = this.generatePlayerDetailImage.bind(this);
+  }
+  generatePlayerDetailImage = () => {
+    html2canvas(document.getElementById("playerDetailView"), {
+      backgroundColor: null
+    }).then(canvas => {
+      var img = document.createElement("img");
+      img.src = canvas.toDataURL("image/png");
+
+      document.body.appendChild(img);
+    });
+  };
   render() {
     const player = this.props.player;
     const experienceHours =
@@ -292,7 +307,7 @@ class Player extends React.Component {
           attached="top"
           style={{ padding: 0, margin: "1em 0 0 -1px" }}
         >
-          <Card fluid>
+          <Card fluid id="playerDetailView">
             <Card.Content>
               <SkillTierPopup
                 skillTier={player.skillTier}
@@ -346,6 +361,14 @@ class Player extends React.Component {
             </Card.Content>
           </Card>
         </Segment>
+        <Button.Group attached="bottom">
+          <Button onClick={this.generatePlayerDetailImage} disabled>
+            <Icon name="send" />Image <Label color="yellow">Beta</Label>
+          </Button>
+          <Button onClick={this.props.toggleSidebar}>
+            <Icon name="sidebar" /> Matches
+          </Button>
+        </Button.Group>
       </div>
     );
   }
@@ -764,6 +787,7 @@ class MatchDetailView extends React.Component {
 
     return (
       <Segment
+        id="matchDetailView"
         style={{
           paddingTop: "1.6rem",
           paddingLeft: "0.5em",
@@ -958,7 +982,11 @@ class MainLayout extends React.Component {
   };
   render() {
     if (this.props.extension) {
-      return <div />;
+      return (
+        <Layout>
+          <div />
+        </Layout>
+      );
     }
     return (
       <Layout>
@@ -979,15 +1007,7 @@ class MainLayout extends React.Component {
                 appLoading={this.props.appLoading}
                 appLoadingOn={this.props.appLoadingOn}
               />
-              <Player player={this.props.data.player} />
-              <Button.Group attached="bottom">
-                <Button disabled>
-                  <Icon name="send" />Coming soon
-                </Button>
-                <Button onClick={this.props.toggleSidebar}>
-                  <Icon name="sidebar" /> Matches
-                </Button>
-              </Button.Group>
+              <PlayerDetailView player={this.props.data.player} />
               <MatchDetailView
                 match={this.props.data.matches[this.props.selectedMatch]}
                 converter={this.props.converter}
