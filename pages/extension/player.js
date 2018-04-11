@@ -250,20 +250,19 @@ class PlayerDetailView extends React.Component {
         return new Promise((resolve, reject) => {
           fetch("https://high-angle.glitch.me/upload", {
             method: "POST",
-            body: formData,
-            headers: new Headers({
-              "Content-Type": "multipart/form-data"
-            })
+            body: formData
+            // headers: new Headers({
+            //   "Content-Type": "multipart/form-data"
+            // })
           })
             .then(res => {
               document.getElementById("debugConsole").value +=
                 "\ngot response from image upload";
-
-              resolve(JSON.parse(res));
+              resolve(res.json());
             })
             .catch(err => {
               document.getElementById("debugConsole").value +=
-                "\nerror uploading image";
+                "\nerror uploading image " + err;
 
               reject(err);
             });
