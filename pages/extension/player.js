@@ -47,7 +47,8 @@ class InputPanel extends React.Component {
     //window.location.href = "/extension/player/" + this.state.IGNInput;
 
     Router.push(
-      "/extension/player?IGN=" + this.state.IGNInput,
+      "/extension/player?error=false&extension=false&IGN=" +
+        this.state.IGNInput,
       "/extension/player/" + this.state.IGNInput,
       { shallow: false }
     );
@@ -598,148 +599,154 @@ class ParticipantCard extends React.Component {
     }
 
     return (
-      <Card
-        link
-        fluid
-        style={{ margin: "3px 1px 3px 0", color: "black" }}
-        href={"/extension/player/" + participant.player.name}
+      <Link
+        prefetch
+        href={
+          "/extension/player?error=false&extension=false&IGN=" +
+          participant.player.name
+        }
+        as={"/extension/player/" + participant.player.name}
       >
-        <Dimmer active={telemetryLoading} inverted>
-          <Loader />
-        </Dimmer>
-        <Card.Content style={{ padding: "4px" }}>
-          <Image
-            size="mini"
-            src={
-              "/static/img/heroes/c/" + participant.actor.toLowerCase() + ".jpg"
-            }
-            style={{ borderRadius: "25%", margin: "0 2px" }}
-            floated={side}
-          />
-          <strong
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              fontSize: "1.1rem",
-              display: "block"
-            }}
-          >
-            {participant.player.name}
-          </strong>
-          <div style={{ fontSize: "0.9rem" }}>
-            {participant.kills}/{participant.deaths}/{participant.assists}{" "}
-            <span style={{ float: { right: "left", left: "right" }[side] }}>
-              ({kdaPerTenMinutes.toFixed(1)})
-            </span>
-          </div>
-          <Grid style={{ margin: 0, marginBottom: "2px" }} columns={6}>
-            <Grid.Row style={{ padding: 0 }}>
-              {items.map((item, index) => {
-                return (
-                  <Grid.Column
-                    key={"participantcard" + index}
-                    style={{ padding: 0, textAlign: "center" }}
-                  >
-                    <Image
-                      fluid
-                      src={
-                        "/static/img/items/c/" +
-                        item.replace(/ /g, "-").toLowerCase() +
-                        ".png?index=" +
-                        index
-                      }
-                      style={{
-                        maxWidth: "3.5rem",
-                        margin: "0"
-                      }}
-                      key={"participantcard" + item + index}
-                    />
-                  </Grid.Column>
-                );
-              })}
-            </Grid.Row>
-          </Grid>
-          <div
-            style={{
-              marginTop: "1px",
-              marginBottom: "-4px"
-            }}
-          >
-            <Progress
-              value={participant.gold}
-              total={maxParticipantValues.maxGold}
-              size="small"
-              color="yellow"
+        <Card link fluid style={{ margin: "3px 1px 3px 0", color: "black" }}>
+          <Dimmer active={telemetryLoading} inverted>
+            <Loader />
+          </Dimmer>
+          <Card.Content style={{ padding: "4px" }}>
+            <Image
+              size="mini"
+              src={
+                "/static/img/heroes/c/" +
+                participant.actor.toLowerCase() +
+                ".jpg"
+              }
+              style={{ borderRadius: "25%", margin: "0 2px" }}
+              floated={side}
             />
-            <div className="progressLabelWrapper">
-              <span className="progressLabel">Gold/min</span>{" "}
-              <span className="progressLabelValue">
-                {(participant.gold / (matchDuration / 60)).toFixed(0)}
+            <strong
+              style={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                fontSize: "1.1rem",
+                display: "block"
+              }}
+            >
+              {participant.player.name}
+            </strong>
+            <div style={{ fontSize: "0.9rem" }}>
+              {participant.kills}/{participant.deaths}/{participant.assists}{" "}
+              <span style={{ float: { right: "left", left: "right" }[side] }}>
+                ({kdaPerTenMinutes.toFixed(1)})
               </span>
             </div>
-            <Progress
-              value={participant.farm}
-              total={maxParticipantValues.maxFarm}
-              size="small"
-              color="teal"
-            />
-            <div className="progressLabelWrapper">
-              <span className="progressLabel">CS/min</span>{" "}
-              <span className="progressLabelValue">
-                {(participant.farm / (matchDuration / 60)).toFixed(2)}
-              </span>
+            <Grid style={{ margin: 0, marginBottom: "2px" }} columns={6}>
+              <Grid.Row style={{ padding: 0 }}>
+                {items.map((item, index) => {
+                  return (
+                    <Grid.Column
+                      key={"participantcard" + index}
+                      style={{ padding: 0, textAlign: "center" }}
+                    >
+                      <Image
+                        fluid
+                        src={
+                          "/static/img/items/c/" +
+                          item.replace(/ /g, "-").toLowerCase() +
+                          ".png?index=" +
+                          index
+                        }
+                        style={{
+                          maxWidth: "3.5rem",
+                          margin: "0"
+                        }}
+                        key={"participantcard" + item + index}
+                      />
+                    </Grid.Column>
+                  );
+                })}
+              </Grid.Row>
+            </Grid>
+            <div
+              style={{
+                marginTop: "1px",
+                marginBottom: "-4px"
+              }}
+            >
+              <Progress
+                value={participant.gold}
+                total={maxParticipantValues.maxGold}
+                size="small"
+                color="yellow"
+              />
+              <div className="progressLabelWrapper">
+                <span className="progressLabel">Gold/min</span>{" "}
+                <span className="progressLabelValue">
+                  {(participant.gold / (matchDuration / 60)).toFixed(0)}
+                </span>
+              </div>
+              <Progress
+                value={participant.farm}
+                total={maxParticipantValues.maxFarm}
+                size="small"
+                color="teal"
+              />
+              <div className="progressLabelWrapper">
+                <span className="progressLabel">CS/min</span>{" "}
+                <span className="progressLabelValue">
+                  {(participant.farm / (matchDuration / 60)).toFixed(2)}
+                </span>
+              </div>
+              <Progress
+                value={totalDamage}
+                total={highestDamage}
+                size="small"
+                color="orange"
+              />
+              <div className="progressLabelWrapper">
+                <span className="progressLabel">Dmg/min</span>{" "}
+                <span className="progressLabelValue">
+                  {(totalDamage / (matchDuration / 60)).toFixed(0)}
+                </span>
+              </div>
             </div>
-            <Progress
-              value={totalDamage}
-              total={highestDamage}
-              size="small"
-              color="orange"
-            />
-            <div className="progressLabelWrapper">
-              <span className="progressLabel">Dmg/min</span>{" "}
-              <span className="progressLabelValue">
-                {(totalDamage / (matchDuration / 60)).toFixed(0)}
-              </span>
-            </div>
-          </div>
-        </Card.Content>
-        <style jsx global>
-          {`
-            .progress {
-              margin: 0 0 2px 0 !important;
-              position: relative;
-              z-index: 0;
-            }
-          `}
-        </style>
-        <style jsx>
-          {`
-            .progressLabelWrapper {
-              font-size: 0.75rem;
-              font-weight: bold;
-              position: absolute;
-              width: 100%;
-              margin-top: -17px;
-              z-index: 1;
-              clear: both;
-            }
+          </Card.Content>
+          <style jsx global>
+            {`
+              .progress {
+                margin: 0 0 2px 0 !important;
+                position: relative;
+                z-index: 0;
+              }
+            `}
+          </style>
+          <style jsx>
+            {`
+              .progressLabelWrapper {
+                font-size: 0.75rem;
+                font-weight: bold;
+                position: absolute;
+                width: 100%;
+                margin-top: -17px;
+                z-index: 1;
+                clear: both;
+              }
 
-            .progressLabel {
-              display: inline-block;
-              vertical-align: top;
-              margin-left: 1px;
-              float: left;
-            }
+              .progressLabel {
+                display: inline-block;
+                vertical-align: top;
+                margin-left: 1px;
+                float: left;
+              }
 
-            .progressLabelValue {
-              display: inline-block;
-              vertical-align: top;
-              float: right;
-              margin-right: 10px;
-            }
-          `}
-        </style>
-      </Card>
+              .progressLabelValue {
+                display: inline-block;
+                vertical-align: top;
+                float: right;
+                margin-right: 10px;
+              }
+            `}
+          </style>
+        </Card>
+      </Link>
     );
   }
 }
@@ -1040,6 +1047,13 @@ class Extension extends React.Component {
       appLoading: false
     });
   }
+  componentDidMount() {
+    Router.onRouteChangeStart = () =>
+      this.setState({ telemetryLoading: true, appLoading: true });
+    //Router.onRouteChangeComplete = () => console.log("Complete");
+    Router.onRouteChangeError = () =>
+      this.setState({ telemetryLoading: false, appLoading: false });
+  }
   appLoadingOn = () => {
     this.setState({ appLoading: true });
   };
@@ -1243,12 +1257,10 @@ Extension.getInitialProps = async function({ query }) {
   //const data = await res.json()
   if (!JSON.parse(query.error)) {
     if (!JSON.parse(query.extension)) {
-      console.log(query.IGN);
       const requestMatches = await fetch(
         "https://test.vainglory.eu/api/matches/" + query.IGN
       );
       const data = await requestMatches.json();
-      console.log("data", data);
       if (data.error) {
         return {
           data: null,
