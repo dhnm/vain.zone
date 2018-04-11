@@ -17,8 +17,6 @@ const ExtensionLayout = props => (
 		<style jsx global>{`
 			body {
 				background-color: black !important;
-				max-width: 414px;
-				margin: auto;
 
 				background-image: linear-gradient(
 						hsla(0, 0%, 0%, 0.4),
@@ -37,6 +35,9 @@ const ExtensionLayout = props => (
 		<style jsx>{`
 			#container {
 				min-height: 100vh;
+
+				max-width: 414px;
+				margin: auto;
 			}
 		`}</style>
 	</div>
