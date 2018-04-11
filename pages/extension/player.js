@@ -228,6 +228,8 @@ class PlayerDetailView extends React.Component {
       backgroundColor: null
     })
       .then(canvas => {
+        document.getElementById("debugConsole").value += "\ncompleted canvas";
+
         var img = document.createElement("img");
         img.src = canvas.toDataURL("image/png");
 
@@ -240,6 +242,8 @@ class PlayerDetailView extends React.Component {
         return new Blob([view], { type: "image/png" });
       })
       .then(blob => {
+        document.getElementById("debugConsole").value += "\nmade blob";
+
         var formData = new FormData();
         formData.append("imageFile", blob);
 
@@ -251,11 +255,24 @@ class PlayerDetailView extends React.Component {
               "Content-Type": "multipart/form-data"
             })
           })
-            .then(res => resolve(JSON.parse(res)))
-            .catch(err => reject(err));
+            .then(res => {
+              document.getElementById("debugConsole").value +=
+                "\ngot response from image upload";
+
+              resolve(JSON.parse(res));
+            })
+            .catch(err => {
+              document.getElementById("debugConsole").value +=
+                "\nerror uploading image";
+
+              reject(err);
+            });
         });
       })
       .then(res => {
+        document.getElementById("debugConsole").value +=
+          "\nprocessing response";
+
         let message = {
           attachment: {
             type: "template",
@@ -301,6 +318,9 @@ class PlayerDetailView extends React.Component {
             }
           },
           function(errorCode, errorMessage) {
+            document.getElementById("debugConsole").value +=
+              "\nError opening share window: " + errorCode + " " + errorMessage;
+
             console.log(errorCode, errorMessage);
             alert(
               "Error! Please contact the developers." +
@@ -313,6 +333,9 @@ class PlayerDetailView extends React.Component {
           message,
           "broadcast"
         );
+      })
+      .catch(err => {
+        document.getElementById("debugConsole").value += "\nError L " + err;
       });
   };
   render() {
@@ -450,6 +473,11 @@ class PlayerDetailView extends React.Component {
             <Icon name="sidebar" /> Matches
           </Button>
         </Button.Group>
+        <textarea
+          id="debugConsole"
+          style={{ width: "100%", height: "120px" }}
+          value="Debugging"
+        />
       </div>
     );
   }
