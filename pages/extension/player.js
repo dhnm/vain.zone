@@ -43,7 +43,6 @@ class InputPanel extends React.Component {
     });
   };
   handleSubmit = event => {
-    this.props.appLoadingOn();
     event.preventDefault();
     //window.location.href = "/extension/player/" + this.state.IGNInput;
 
@@ -227,12 +226,94 @@ class PlayerDetailView extends React.Component {
   generatePlayerDetailImage = () => {
     html2canvas(document.getElementById("playerDetailView"), {
       backgroundColor: null
-    }).then(canvas => {
-      var img = document.createElement("img");
-      img.src = canvas.toDataURL("image/png");
+    })
+      .then(canvas => {
+        var img = document.createElement("img");
+        img.src = canvas.toDataURL("image/png");
 
-      document.body.appendChild(img);
-    });
+        const image_data = atob(img.src.split(",")[1]);
+        const arraybuffer = new ArrayBuffer(image_data.length);
+        const view = new Uint8Array(arraybuffer);
+        for (var i = 0; i < image_data.length; i++) {
+          view[i] = image_data.charCodeAt(i);
+        }
+        return new Blob([view], { type: "image/png" });
+      })
+      .then(blob => {
+        var formData = new FormData();
+        formData.append("imageFile", blob);
+
+        return new Promise((resolve, reject) => {
+          fetch("https://high-angle.glitch.me/upload", {
+            method: "POST",
+            body: formData,
+            headers: new Headers({
+              "Content-Type": "multipart/form-data"
+            })
+          })
+            .then(res => resolve(JSON.parse(res)))
+            .catch(err => reject(err));
+        });
+      })
+      .then(res => {
+        let message = {
+          attachment: {
+            type: "template",
+            payload: {
+              template_type: "media",
+              elements: [
+                {
+                  media_type: "image",
+                  attachment_id: res.attachmentId,
+                  buttons: [
+                    {
+                      type: "web_url",
+                      url: window.location.href,
+                      title: "Open",
+                      webview_height_ratio: "full",
+                      messenger_extensions: true
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        };
+
+        MessengerExtensions.beginShareFlow(
+          function(share_response) {
+            // User dismissed without error, but did they share the message?
+            if (share_response.is_sent) {
+              // The user actually did share.
+              // Perhaps close the window w/ requestCloseBrowser().
+
+              MessengerExtensions.requestCloseBrowser(
+                function success() {
+                  console.log("vebview closed");
+                },
+                function error(err) {
+                  console.log(err);
+                }
+              );
+            } else {
+              console.log("Neodesláno.");
+              // handle not send here
+            }
+          },
+          function(errorCode, errorMessage) {
+            console.log(errorCode, errorMessage);
+            alert(
+              "Error! Please contact the developers." +
+                errorCode +
+                " " +
+                errorMessage
+            );
+            // handle error in ui here
+          },
+          message,
+          "broadcast"
+        );
+      });
   };
   render() {
     const player = this.props.player;
@@ -362,7 +443,7 @@ class PlayerDetailView extends React.Component {
           </Card>
         </Segment>
         <Button.Group attached="bottom">
-          <Button onClick={this.generatePlayerDetailImage} disabled>
+          <Button onClick={this.generatePlayerDetailImage}>
             <Icon name="send" />Share <Label color="yellow">Beta</Label>
           </Button>
           <Button onClick={this.props.toggleSidebar}>
@@ -1003,10 +1084,7 @@ class MainLayout extends React.Component {
           />
           <Sidebar.Pusher dimmed={this.props.sidebarVisible}>
             <Segment basic>
-              <InputPanel
-                appLoading={this.props.appLoading}
-                appLoadingOn={this.props.appLoadingOn}
-              />
+              <InputPanel appLoading={this.props.appLoading} />
               <PlayerDetailView
                 player={this.props.data.player}
                 toggleSidebar={this.props.toggleSidebar}
