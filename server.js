@@ -227,7 +227,7 @@ const getData = IGN => {
 const formatDataPopulateMatches = playerData => {
   return new Promise((resolve, reject) => {
     db
-      .getAll(...playerData.matchRefs.slice(0, 12))
+      .getAll(...playerData.matchRefs.slice(0, 24))
       .then(docs => {
         delete playerData.matchRefs;
         resolve({
