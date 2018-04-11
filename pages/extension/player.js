@@ -417,7 +417,7 @@ class PlayerDetailView extends React.Component {
                 rankPoints={player.rank_3v3}
               />
               <Card.Header>{player.name}</Card.Header>
-              <Card.Meta>Level: {player.level}</Card.Meta>
+              <Card.Meta>{"Level: " + player.level}</Card.Meta>
               <Label>{player.guildTag}</Label>
               <Image
                 style={{ height: "30px" }}
@@ -474,7 +474,7 @@ class PlayerDetailView extends React.Component {
         </Button.Group>
         <textarea
           id="debugConsole"
-          style={{ width: "100%", height: "120px" }}
+          style={{ width: "100%", height: "120px", display: "none" }}
           value="Debugging"
         />
       </div>
