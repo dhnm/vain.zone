@@ -638,7 +638,7 @@ class ParticipantCard extends React.Component {
             <div style={{ fontSize: "0.9rem" }}>
               {participant.kills}/{participant.deaths}/{participant.assists}{" "}
               <span style={{ float: { right: "left", left: "right" }[side] }}>
-                ({kdaPerTenMinutes.toFixed(1)})
+                {"(" + kdaPerTenMinutes.toFixed(1) + ")"}
               </span>
             </div>
             <Grid style={{ margin: 0, marginBottom: "2px" }} columns={6}>
@@ -1015,8 +1015,9 @@ class MainLayout extends React.Component {
                   buttons: [
                     {
                       type: "web_url",
+                      webview_share_button: "hide",
                       url: window.location.href,
-                      title: "Open",
+                      title: "Open profile",
                       webview_height_ratio: "full",
                       messenger_extensions: true
                     }
