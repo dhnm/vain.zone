@@ -543,7 +543,6 @@ const MatchesSidebar = ({
     </Menu.Item>
     {matches.map((match, index) => {
       const { playerInTheMatch, playerInTheMatchWon } = converter({
-        playerId: playerId,
         rosters: match.rosters
       }).identifyPlayerInTheMatch();
 
@@ -574,13 +573,14 @@ const MatchesSidebar = ({
 
 class ParticipantCard extends React.Component {
   render() {
-    const matchDuration = this.props.matchDuration;
-    const participant = this.props.participant;
-    const side = this.props.side;
-    const maxParticipantValues = this.props.maxParticipantValues;
-    const telemetryLoading = this.props.telemetryLoading;
-    const highestDamage = this.props.highestDamage;
-    const totalDamage = this.props.damage;
+    const matchDuration = this.props.matchDuration,
+      participant = this.props.participant,
+      side = this.props.side,
+      maxParticipantValues = this.props.maxParticipantValues,
+      telemetryLoading = this.props.telemetryLoading,
+      highestDamage = this.props.highestDamage,
+      totalDamage = this.props.damage,
+      playerInTheMatch = this.props.playerInTheMatch;
 
     var items = participant.items.slice();
     if (this.props.gameMode.indexOf("5v5") !== -1) {
@@ -601,6 +601,11 @@ class ParticipantCard extends React.Component {
         (participant.kills + participant.assists) / (matchDuration / 600);
     }
 
+    var cardBg = "white";
+    if (participant.player.id === playerInTheMatch.player.id) {
+      cardBg = "#f6f6f6";
+    }
+
     return (
       <Link
         prefetch
@@ -610,7 +615,15 @@ class ParticipantCard extends React.Component {
         }
         as={"/extension/player/" + participant.player.name}
       >
-        <Card link fluid style={{ margin: "3px 1px 3px 0", color: "black" }}>
+        <Card
+          link
+          fluid
+          style={{
+            margin: "3px 1px 3px 0",
+            color: "black",
+            backgroundColor: cardBg
+          }}
+        >
           <Dimmer active={telemetryLoading} inverted>
             <Loader />
           </Dimmer>
@@ -765,6 +778,10 @@ class MatchDetailView extends React.Component {
       rosters: this.props.match.rosters
     }).getMaxParticipantValues();
 
+    const playerInTheMatch = converter({
+      rosters: match.rosters
+    }).identifyPlayerInTheMatch().playerInTheMatch;
+
     return (
       <Segment
         id="matchDetailView"
@@ -855,6 +872,7 @@ class MatchDetailView extends React.Component {
               <Grid.Column textAlign="left" style={{ paddingRight: "0.1em" }}>
                 {match.rosters[0].participants.map((participant, index) => (
                   <ParticipantCard
+                    playerInTheMatch={playerInTheMatch}
                     matchDuration={match.duration}
                     participant={participant}
                     gameMode={match.gameMode}
@@ -870,6 +888,7 @@ class MatchDetailView extends React.Component {
               <Grid.Column textAlign="right" style={{ paddingLeft: "0.1em" }}>
                 {match.rosters[1].participants.map((participant, index) => (
                   <ParticipantCard
+                    playerInTheMatch={playerInTheMatch}
                     matchDuration={match.duration}
                     participant={participant}
                     gameMode={match.gameMode}
@@ -1017,7 +1036,7 @@ class MainLayout extends React.Component {
                       type: "web_url",
                       webview_share_button: "hide",
                       url: window.location.href,
-                      title: "Open profile",
+                      title: "Open",
                       webview_height_ratio: "full",
                       messenger_extensions: true
                     }
@@ -1221,7 +1240,7 @@ class Extension extends React.Component {
           ) {
             if (
               data.rosters[rosterIndex].participants[participantIndex].player
-                .id === data.playerId
+                .id === this.state.data.player.id
             ) {
               return {
                 playerInTheMatch:
@@ -1234,7 +1253,7 @@ class Extension extends React.Component {
       },
 
       shortMatchConclusion: () => {
-        if (data.shortMatchConclusion == "true") {
+        if (data.shortMatchConclusion || data.shortMatchConclusion == "true") {
           return {
             shortMatchConclusion: "WON",
             matchConclusionColors: ["#0c5", "green"]
@@ -1247,7 +1266,7 @@ class Extension extends React.Component {
       },
 
       longMatchConclusion: () => {
-        if (data.rosterWon == "true") {
+        if (data.rosterWon || data.rosterWon == "true") {
           return {
             longMatchConclusion: "VICTORY",
             matchConclusionColors: ["#0c5", "green"]
@@ -1377,13 +1396,18 @@ class Extension extends React.Component {
 Extension.getInitialProps = async function({ query }) {
   //const res = await fetch('http://api.tvmaze.com/search/shows?q=batman')
   //const data = await res.json()
+  var urlPath = "https://test.vainglory.eu";
+  if (process.env.NODE_ENV !== "production") {
+    urlPath = "http://localhost:3000";
+  }
+
   if (!JSON.parse(query.error)) {
     if (!JSON.parse(query.extension)) {
-      const requestMatches = await fetch(
-        "https://test.vainglory.eu/api/matches/" + query.IGN
-      );
+      const requestMatches = await fetch(urlPath + "/api/matches/" + query.IGN);
       const data = await requestMatches.json();
+
       if (data.error) {
+        console.log(JSON.stringify(data));
         return {
           data: null,
           TLDamagesData: null,
@@ -1401,7 +1425,7 @@ Extension.getInitialProps = async function({ query }) {
         .join("&");
 
       const requestProcessedTelemetry = await fetch(
-        "https://test.vainglory.eu/api/telemetry?" + telemetryQueryString
+        urlPath + "/api/telemetry?" + telemetryQueryString
       );
 
       const processedTelemetry = await requestProcessedTelemetry.json();
