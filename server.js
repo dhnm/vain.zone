@@ -274,7 +274,9 @@ const getData = IGN => {
 
 const formatDataPopulateMatches = playerData => {
   return new Promise((resolve, reject) => {
-    Match.find({ id: { $in: [...playerData.matchRefs.slice(0, 12)] } })
+    Match.find({ id: { $in: [...playerData.matchRefs.slice(0, 12)] } }, null, {
+      sort: { createdAt: -1 }
+    })
       .exec()
       .then(matches => {
         delete playerData.matchRefs;
@@ -603,10 +605,8 @@ const uploadMatches = matches => {
     .then(existingMatches => {
       const existingMatchesIds = existingMatches.map(e => e.id);
 
-      return matches.data.map(match => {
-        if (existingMatchesIds.indexOf(match.id) > -1) {
-          return match.id;
-        } else {
+      matches.data.forEach(match => {
+        if (existingMatchesIds.indexOf(match.id) <= -1) {
           var customMatchDataModel = {
             id: match.id,
             createdAt: new Date(match.attributes.createdAt),
@@ -658,7 +658,7 @@ const uploadMatches = matches => {
               side: roster.attributes.stats.side,
               turretKills: roster.attributes.stats.turretKills,
               turretsRemaining: roster.attributes.stats.turretsRemaining,
-              won: JSON.stringify(roster.attributes.won),
+              won: JSON.parse(roster.attributes.won),
               participants: []
             };
 
@@ -724,16 +724,16 @@ const uploadMatches = matches => {
             customMatchDataModel.rosters.push(customRosterDataModel);
           }
 
-          newMatches.push(customMatchDataModel);
-
-          return match.id;
+          newMatches.push(new Match(customMatchDataModel));
         }
-
-        Match.insertMany(newMatches, { ordered: false })
-          .exec()
-          .then(m => console.log("Inserted " + m.length + " matches."))
-          .catch(err => console.error("Error inserting matches."));
       });
+
+      Match.insertMany(newMatches, { ordered: false })
+        .then(m => console.log("Inserted " + m.length + " matches."))
+        .catch(err => console.error("Error inserting matches."));
+
+      //console.log("equal?", matchRefs == retrievedMatchesIds);
+      return retrievedMatchesIds;
     })
     .catch(err => {
       throw new Error("id: 15 " + err);
