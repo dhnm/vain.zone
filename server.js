@@ -51,6 +51,10 @@ dbm.once("open", () => {
   //   .catch(err => console.log("err1" + err));
 });
 
+setInterval(() => {
+  console.log("Ping");
+}, 25 * 60 * 1000);
+
 app
   .prepare()
   .then(() => {
