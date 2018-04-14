@@ -273,6 +273,20 @@ const getData = IGN => {
 };
 
 const formatDataPopulateMatches = playerData => {
+  // City.find({})
+  //   .populate({
+  //     path: "Articles",
+  //     options: {
+  //       limit: 2,
+  //       sort: { created: -1 },
+  //       skip: req.params.pageIndex * 2
+  //     }
+  //   })
+  //   .exec(function(err, cities) {
+  //     if (err) return handleError(res, err);
+  //     return res.status(200).json(cities);
+  //   });
+
   return new Promise((resolve, reject) => {
     Match.find({ id: { $in: [...playerData.matchRefs.slice(0, 12)] } }, null, {
       sort: { createdAt: -1 }

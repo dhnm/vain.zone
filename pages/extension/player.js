@@ -1155,6 +1155,10 @@ const ErrorLayout = ({ appLoading, appLoadingOn }) => {
             <li>If the player hasn't played this mode</li>
             for a long time, we don't have data for them.
             <li>Maybe the player has changed their nick?</li>
+            <li>
+              There might be also an issue on SEMC side (developers of
+              Vainglory). You can try again in 10 minutes.
+            </li>
           </ol>
         </Segment>
       </Segment>
