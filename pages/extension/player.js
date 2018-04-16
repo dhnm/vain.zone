@@ -1,7 +1,6 @@
 import Layout from "../../components/ExtensionLayout.js";
 import Link from "next/link";
-import fetch from "isomorphic-unfetch";
-import axios from "axios"
+import axios from "axios";
 import moment from "moment";
 import Router from "next/router";
 import html2canvas from "html2canvas";
@@ -834,7 +833,7 @@ class MatchDetailView extends React.Component {
             telemetryLoading = this.props.telemetryLoading;
 
         const maxParticipantValues = converter({
-            rosters: this.props.match.rosters
+            rosters: match.rosters
         }).getMaxParticipantValues();
 
         const playerInTheMatch = converter({
@@ -1066,8 +1065,16 @@ class MainLayout extends React.Component {
                 "617200295335676",
                 thread_context => {
                     var psid = thread_context.psid;
-                    fetch("/api/botuser?psid=" + psid)
-                        .then(res => res.json())
+                    axios({
+                        method: "get",
+                        url: "/api/botuser",
+                        params: {
+                            psid: psid
+                        }
+                    })
+                        .then(res => {
+                            return res.data;
+                        })
                         .then(user => {
                             if (user.currentUser) {
                                 //document.getElementById("FBButton").style.display = "inline-block";
@@ -1116,12 +1123,14 @@ class MainLayout extends React.Component {
                 });
 
                 return new Promise((resolve, reject) => {
-                    fetch("/api/uploadtofb", {
-                        method: "POST",
-                        body: formData
+                    axios({
+                        method: "post",
+                        url: "/api/uploadtofb",
+                        data: formData,
+                        headers: formData.getHeaders()
                     })
                         .then(res => {
-                            return res.json();
+                            return res.data;
                         })
                         .then(resJson => {
                             if (resJson.error) {
@@ -1301,9 +1310,7 @@ const ErrorLayout = ({ appLoading, appLoadingOn }) => {
                         for a long time, we don't have data for them.
                         <li>Maybe the player has changed their nick?</li>
                         <li>
-                            There might be also an issue on SEMC side
-                            (developers of Vainglory). You can try again in 10
-                            minutes.
+                            There might also be an issue in our data source (SEMC). In that case, please try again in 2 minutes.
                         </li>
                     </ol>
                 </Segment>
@@ -1353,22 +1360,32 @@ class Extension extends React.Component {
     };
     setSelectedMatch = index => {
         this.toggleSidebar();
-        this.setState({ selectedMatch: index, telemetryLoading: true });
+        this.setState({ telemetryLoading: true });
 
         const that = this;
 
-        fetch(
-            "/api/telemetry?match=" +
-                JSON.stringify(this.state.data.matches[index])
-        )
-            .then(res => res.json())
+        axios({
+            method: "get",
+            url: "/api/telemetry",
+            params: {
+                match: this.state.data.matches[index]
+            }
+        })
+            .then(res => {
+                return res.data;
+            })
             .then(processedTelemetry => {
                 that.setState({
+                    selectedMatch: index,
                     TLDamagesData: processedTelemetry.damagesData,
                     telemetryLoading: false
                 });
             })
-            .catch(err => that.setState({ telemetryLoading: false }));
+            .catch(err => {
+                that.setState({ telemetryLoading: false });
+                alert("Error retrieving telemetry data.");
+                console.log(err);
+            });
     };
     converter = data => {
         return {
@@ -1561,8 +1578,6 @@ class Extension extends React.Component {
 }
 
 Extension.getInitialProps = async function({ query }) {
-    //const res = await fetch('http://api.tvmaze.com/search/shows?q=batman')
-    //const data = await res.json()
     var urlPath = "https://test.vainglory.eu";
     if (process.env.NODE_ENV !== "production") {
         urlPath = "http://localhost:3000";
@@ -1570,10 +1585,15 @@ Extension.getInitialProps = async function({ query }) {
 
     if (!JSON.parse(query.error)) {
         if (!JSON.parse(query.extension)) {
-            const requestMatches = await fetch(
-                urlPath + "/api/matches?IGN=" + query.IGN
-            );
-            const data = await requestMatches.json();
+            const requestMatches = await axios({
+                method: "get",
+                url: urlPath + "/api/matches",
+                params: {
+                    IGN: query.IGN
+                }
+            });
+
+            const data = await requestMatches.data;
 
             if (data.error) {
                 console.log(JSON.stringify(data));
@@ -1585,13 +1605,15 @@ Extension.getInitialProps = async function({ query }) {
                 };
             }
 
-            const requestProcessedTelemetry = await fetch(
-                urlPath +
-                    "/api/telemetry?match=" +
-                    JSON.stringify(data.matches[0])
-            );
+            const requestProcessedTelemetry = await axios({
+                method: "get",
+                url: urlPath + "/api/telemetry",
+                params: {
+                    match: data.matches[0]
+                }
+            });
 
-            const processedTelemetry = await requestProcessedTelemetry.json();
+            const processedTelemetry = await requestProcessedTelemetry.data;
 
             return {
                 data: data,

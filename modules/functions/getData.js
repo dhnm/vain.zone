@@ -3,6 +3,8 @@ const axios = require("axios");
 const Player = require("./../../models/Player");
 const Match = require("./../../models/Match");
 
+const mongoose = require("mongoose"); // for id generation
+
 module.exports = IGN => {
     return new Promise((resolve, reject) => {
         getPlayer(IGN)
@@ -164,11 +166,14 @@ const getPlayerAPI = (IGN, dbRegion) => {
                 })
                 .catch(err => {
                     if (regionIndex + 1 == regions.length) {
-                        saveNonExist(IGN);
-                        reject(err);
+                        if (err == 404) {
+                            saveNonExist(IGN);
+                            reject("Player was not found on any server.");
+                        }
+                        reject(err + " error while retrieving player.");
                     } else {
-                        regionIndex += 1;
                         console.log("Not Found.", IGN, regions[regionIndex]);
+                        regionIndex += 1;
                         tryRegion(regions[regionIndex]);
                     }
                 });
@@ -222,7 +227,8 @@ const getMatches = (command, playerData) => {
                 throw new Error("No matches found.");
             } else {
                 throw new Error(
-                    "Error retrieven matches: " + JSON.stringify(matches.errors)
+                    "Error retrieving matches: " +
+                        JSON.stringify(matches.errors)
                 );
             }
         })
@@ -259,29 +265,42 @@ const axiosAPI = options => {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-
                 if (error.response.status == 404) {
-                    return Promise.reject(
-                        `${JSON.stringify(error.response.data)} ${
-                            error.response.status
-                        } ${JSON.stringify(error.response.headers)}`
+                    console.log("axiosAPI: 404 Not Found");
+                } else if (error.response.status == 429) {
+                    console.log(
+                        "axiosAPI: 429 Request Limit Reached",
+                        error.response.data
+                    );
+                } else {
+                    console.error(
+                        "axiosAPI: " + error.response.status + " Error",
+                        error.response.data
                     );
                 }
 
-                return Promise.reject(
-                    `${JSON.stringify(error.response.data)} ${
-                        error.response.status
-                    } ${JSON.stringify(error.response.headers)}`
-                );
+                return Promise.reject(error.response.status);
             } else if (error.request) {
                 // The request was made but no response was received
                 // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
                 // http.ClientRequest in node.js
+                console.error(
+                    "Error occured while fetching API. CMD+F this line to inspect the error.",
+                    error.request
+                );
                 return Promise.reject(error.request);
             } else {
                 // Something happened in setting up the request that triggered an Error
-                return Promise.reject("Error", error.message);
+                console.error(
+                    "Error occured while fetching API. CMD+F this line to inspect the error.",
+                    error.message
+                );
+                return Promise.reject(error.message);
             }
+            console.error(
+                "Error occured while fetching API. CMD+F this line to inspect the error.",
+                error.config
+            );
             return Promise.reject(error.config);
         });
 };
@@ -443,12 +462,18 @@ const uploadMatches = matches => {
                 }
             });
 
-            Match.insertMany(newMatches, { ordered: false })
-                .then(m => console.log("Inserted " + m.length + " matches."))
-                .catch(err => console.error("Error inserting matches."));
-
-            //console.log("equal?", matchRefs == retrievedMatchesIds);
-            return retrievedMatchesIds;
+            return Promise.resolve(newMatches);
+        })
+        .then(newMatches => {
+            return Match.insertMany(newMatches, { ordered: false })
+                .then(m => {
+                    console.log("Inserted " + m.length + " matches.");
+                    return Promise.resolve(retrievedMatchesIds);
+                })
+                .catch(err => {
+                    console.error("Error inserting matches.");
+                    return Promise.reject("Error inserting matches");
+                });
         })
         .catch(err => {
             throw new Error("id: 15 " + err);
@@ -468,7 +493,7 @@ const updatePlayerDB = (command, customPlayerDataModel, matchRefs) => {
             newPlayer
                 .save()
                 .then(newPlayerData => {
-                    console.log("Successfuly uploaded");
+                    console.log("Successfuly saved new player");
                     resolve(customPlayerDataModel);
                 })
                 .catch(err => {
@@ -504,7 +529,11 @@ const saveNonExist = IGN => {
 
     Player.findOneAndUpdate({ name: IGN }, nonExistData, {
         upsert: true
-    }).catch(err => Promise.reject("id: 13 " + err));
+    })
+        .then(() => {
+            console.log("Saved " + IGN + " as nonexist.");
+        })
+        .catch(err => console.error("Could not save/update nonexist " + err));
 
     // var colRef = db.collection("players");
     // var query = colRef

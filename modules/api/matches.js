@@ -15,7 +15,8 @@ router.get("/", (req, res) => {
             res.end();
         })
         .catch(error => {
-            res.writeHead(404, {
+            res.writeHead(200, {
+                // 200 to handle error myself, otherwise it renders 404 page
                 "Content-Type": "application/json"
             });
             res.write(
