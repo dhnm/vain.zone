@@ -16,6 +16,8 @@ const handle = app.getRequestHandler();
 const axios = require("axios");
 
 const mongoose = require("mongoose");
+const Match = require("./models/Match");
+const Player = require("./models/Player");
 mongoose.connect(
     "mongodb://user_thisBoy:r8LspGn5jpZJIfCP@vainzone-shard-00-00-jem9k.mongodb.net:27017,vainzone-shard-00-01-jem9k.mongodb.net:27017,vainzone-shard-00-02-jem9k.mongodb.net:27017/VAINZONE?ssl=true&replicaSet=VAINZONE-shard-0&authSource=admin"
 );
@@ -23,6 +25,31 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
     console.log("We're connected!");
+
+    // var counter = 0;
+    // Player.find({ createdAt: { $type: "string" } })
+    //     .exec()
+    //     .then(ps => {
+    //         console.log("length", ps.length)
+    //         ps.forEach(p => {
+    //             p.createdAt = new Date(p.createdAt); // convert field to date
+    //             p.save().then(() => {
+    //                 counter++;
+    //             console.log("counter", counter);
+    //             });
+    //         });
+    //     });
+
+    // const startTimer = new Date();
+    // Match.find({})
+    //     .exec()
+    //     .then(allMatches => {
+    //         console.log(
+    //             "Done. Retrieved %s matches in %sms.",
+    //             allMatches.length,
+    //             new Date() - startTimer
+    //         );
+    //     });
 
     // BotUser.insertMany(transformedData, { ordered: true })
     //     .then(u => console.log("Inserted " + u.length + " users."))

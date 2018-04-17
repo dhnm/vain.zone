@@ -15,23 +15,29 @@ router.get("/", (req, res) => {
             "User-Agent": "js/vainglory",
             "X-TITLE-ID": "semc-vainglory",
             Accept: "application/json"
-        },
-        responseType: "json"
+        }
     })
         .then(response => {
             console.log("obtaining telemetry with status", response.status);
             return response.data;
         })
         .then(telemetryData => {
-            const damagesData = calculateDamagesFromTelemetry(
+            const damageData = calculateDamagesFromTelemetry(
                 telemetryData,
                 JSON.parse(req.query.match)
             );
 
+            const banData = detectBans(telemetryData);
+
+            const outputData = {
+                damageData: damageData,
+                banData: banData
+            };
+
             res.writeHead(200, {
                 "Content-Type": "application/json"
             });
-            res.write(JSON.stringify({ damagesData: damagesData }));
+            res.write(JSON.stringify(outputData));
             res.end();
         })
         .catch(function(error) {
@@ -80,8 +86,8 @@ const calculateDamagesFromTelemetry = (telemetry, match) => {
     data.rosters = match.rosters;
     data.telemetry = telemetry;
 
-    const rosters = [{}, {}];
-    var highest = 0;
+    const rostersDamage = [{}, {}];
+    var highestDamage = 0;
 
     for (
         var rosterIndex = 0;
@@ -108,15 +114,27 @@ const calculateDamagesFromTelemetry = (telemetry, match) => {
                 .map(e => e.payload.Dealt)
                 .reduce((a, b) => a + b, 0);
 
-            if (totalDamage > highest) {
-                highest = totalDamage;
+            if (totalDamage > highestDamage) {
+                highestDamage = totalDamage;
             }
 
-            rosters[rosterIndex][
+            rostersDamage[rosterIndex][
                 data.rosters[rosterIndex].participants[participantIndex].actor
             ] = totalDamage;
         }
     }
 
-    return { rosters: rosters, highest: highest };
+    return { rosters: rostersDamage, highest: highestDamage };
+};
+
+const detectBans = telemetry => {
+    var rostersBans = [[], []];
+
+    telemetry.filter(e => e.type == "HeroBan").forEach(e => {
+        rostersBans[parseInt(e.payload.Team) - 1].push(
+            e.payload.Hero.substring(1, e.payload.Hero.length - 1)
+        );
+    });
+
+    return { rosters: rostersBans };
 };

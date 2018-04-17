@@ -293,42 +293,29 @@ class PlayerDetailView extends React.Component {
             }
         }
 
-        return (
-            <div>
-                <Segment
-                    basic
-                    attached="top"
-                    style={{ padding: 0, margin: "1em 0 0 -1px" }}
-                >
+        return <div>
+                <Segment basic attached="top" style={{ padding: 0, margin: "1em 0 0 -1px" }}>
                     <Card fluid id="playerDetailView">
                         <Card.Content>
-                            <SkillTierPopup
-                                skillTier={player.skillTier}
-                                rankPoints={player.rank_3v3}
-                            />
+                            <SkillTierPopup skillTier={player.skillTier} rankPoints={player.rank_3v3} />
                             <Card.Header>{player.name}</Card.Header>
-                            <Card.Meta>{"Level: " + player.level}</Card.Meta>
-                            <Label>{player.guildTag}</Label>
-                            <Image
-                                style={{ height: "30px" }}
-                                spaced
-                                src={
-                                    "/static/img/karma/c/" +
-                                    player.karmaLevel +
-                                    ".png"
-                                }
-                            />
+                            <Card.Meta>
+                                {"Level: " + player.level}
+                            </Card.Meta>
+                            <Label content={player.shardId.toUpperCase()} />
+                            {(() => {
+                                if (player.guildTag) return <Label content={player.guildTag} />;
+                            })()}
+                            <Image style={{ height: "30px" }} spaced src={"/static/img/karma/c/" + player.karmaLevel + ".png"} />
                         </Card.Content>
                         <Card.Content>
                             <Grid columns={2}>
                                 <Grid.Row style={{ paddingBottom: 0 }}>
-                                    <Grid.Column
-                                        width={16}
-                                        style={{ textAlign: "center" }}
-                                    >
+                                    <Grid.Column width={16} style={{ textAlign: "center" }}>
                                         Experience Level
                                         <h2 style={{ margin: 0 }}>
-                                            {experienceHours.toFixed(0)} hours
+                                            {experienceHours.toFixed(0)}{" "}
+                                            hours
                                         </h2>
                                         <em>“{addictivenessRating}”</em>
                                     </Grid.Column>
@@ -362,8 +349,7 @@ class PlayerDetailView extends React.Component {
                         </Card.Content>
                     </Card>
                 </Segment>
-            </div>
-        );
+            </div>;
     }
 }
 
@@ -829,7 +815,7 @@ class MatchDetailView extends React.Component {
     render() {
         const converter = this.props.converter,
             match = this.props.match,
-            TLDamagesData = this.props.TLDamagesData,
+            TLData = this.props.TLData,
             telemetryLoading = this.props.telemetryLoading;
 
         const maxParticipantValues = converter({
@@ -862,8 +848,9 @@ class MatchDetailView extends React.Component {
                             .humanGameMode()
                             .toUpperCase()}
                     </div>
-                    {converter({ duration: match.duration }).humanDuration() +
-                        "min"}
+                    {converter({
+                        duration: match.duration
+                    }).humanDuration() + "min"}
                     <span style={{ float: "right" }}>
                         {moment(match.createdAt).fromNow()}
                     </span>
@@ -929,25 +916,42 @@ class MatchDetailView extends React.Component {
                     <Grid columns={2} style={{ clear: "both" }}>
                         <Grid.Row style={{ padding: "0.4rem 0 0 0" }}>
                             <Grid.Column textAlign="left">
-                                {match.rosters[0].gold}&zwj;💰{" "}
-                                {match.rosters[0].acesEarned}&zwj;🃏{" "}
-                                {match.rosters[0].krakenCaptures}&zwj;🐲{" "}
-                                {match.rosters[0].turretKills}&zwj;🗼
+                                💰&zwj;{match.rosters[0].gold} 🃏&zwj;{
+                                    match.rosters[0].acesEarned
+                                }{" "}
+                                🐲&zwj;{match.rosters[0].krakenCaptures} 🗼&zwj;{
+                                    match.rosters[0].turretKills
+                                }
+                                <br />
+                                {TLData.banData.rosters[0].map(b => (
+                                    <Label image style={{ margin: "0.2rem 0" }}>
+                                        <Image
+                                            src={`/static/img/heroes/c/${b.toLowerCase()}.jpg`}
+                                        />BAN
+                                    </Label>
+                                ))}
                             </Grid.Column>
-                            <Grid.Column
-                                textAlign="right"
-                                style={{ paddingRight: "0.4rem" }}
-                            >
-                                {match.rosters[1].gold}&zwj;💰{" "}
-                                {match.rosters[1].acesEarned}&zwj;🃏{" "}
-                                {match.rosters[1].krakenCaptures}&zwj;🐲{" "}
-                                {match.rosters[1].turretKills}&zwj;🗼
+                            <Grid.Column textAlign="right" style={{}}>
+                                💰&zwj;{match.rosters[1].gold} 🃏&zwj;{
+                                    match.rosters[1].acesEarned
+                                }{" "}
+                                🐲&zwj;{match.rosters[1].krakenCaptures} 🗼&zwj;{
+                                    match.rosters[1].turretKills
+                                }
+                                <br />
+                                {TLData.banData.rosters[1].map(b => (
+                                    <Label image style={{ margin: "0.2rem 0" }}>
+                                        <Image
+                                            src={`/static/img/heroes/c/${b.toLowerCase()}.jpg`}
+                                        />BAN
+                                    </Label>
+                                ))}
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row
                             style={{
-                                paddingTop: "0.5rem",
-                                paddingBottom: "0.5rem"
+                                paddingTop: "0.1rem",
+                                paddingBottom: "0"
                             }}
                         >
                             <Grid.Column
@@ -968,12 +972,12 @@ class MatchDetailView extends React.Component {
                                             key={index}
                                             telemetryLoading={telemetryLoading}
                                             damage={
-                                                TLDamagesData.rosters[0][
+                                                TLData.damageData.rosters[0][
                                                     participant.actor
                                                 ]
                                             }
                                             highestDamage={
-                                                TLDamagesData.highest
+                                                TLData.damageData.highest
                                             }
                                         />
                                     )
@@ -997,16 +1001,40 @@ class MatchDetailView extends React.Component {
                                             key={index}
                                             telemetryLoading={telemetryLoading}
                                             damage={
-                                                TLDamagesData.rosters[1][
+                                                TLData.damageData.rosters[1][
                                                     participant.actor
                                                 ]
                                             }
                                             highestDamage={
-                                                TLDamagesData.highest
+                                                TLData.damageData.highest
                                             }
                                         />
                                     )
                                 )}
+                            </Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row style={{ padding: "0 0.4em 0.1rem 0.4em" }}>
+                            <Grid.Column width={16}>
+                                {match.spectators.map(spectator => (
+                                    <Link
+                                        prefetch
+                                        href={
+                                            "/extension/player?error=false&extension=false&IGN=" +
+                                            spectator.name
+                                        }
+                                        as={
+                                            "/extension/player/" +
+                                            spectator.name
+                                        }
+                                    >
+                                        <Label
+                                            as="a"
+                                            style={{ margin: "0.2rem 0" }}
+                                            content={spectator.name}
+                                            detail="Spectator"
+                                        />
+                                    </Link>
+                                ))}
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
@@ -1271,7 +1299,7 @@ class MainLayout extends React.Component {
                                     ]
                                 }
                                 converter={this.props.converter}
-                                TLDamagesData={this.props.TLDamagesData}
+                                TLData={this.props.TLData}
                                 telemetryLoading={this.props.telemetryLoading}
                             />
                             <Button
@@ -1310,7 +1338,8 @@ const ErrorLayout = ({ appLoading, appLoadingOn }) => {
                         for a long time, we don't have data for them.
                         <li>Maybe the player has changed their nick?</li>
                         <li>
-                            There might also be an issue in our data source (SEMC). In that case, please try again in 2 minutes.
+                            There might also be an issue in our data source
+                            (SEMC). In that case, please try again in 2 minutes.
                         </li>
                     </ol>
                 </Segment>
@@ -1326,7 +1355,7 @@ class Extension extends React.Component {
             data: props.data,
             sidebarVisible: false,
             selectedMatch: 0,
-            TLDamagesData: props.TLDamagesData,
+            TLData: props.TLData,
             telemetryLoading: false,
             appLoading: false
         };
@@ -1340,7 +1369,7 @@ class Extension extends React.Component {
             data: nextProps.data,
             sidebarVisible: false,
             selectedMatch: 0,
-            TLDamagesData: nextProps.TLDamagesData,
+            TLData: nextProps.TLData,
             telemetryLoading: false,
             appLoading: false
         });
@@ -1377,7 +1406,7 @@ class Extension extends React.Component {
             .then(processedTelemetry => {
                 that.setState({
                     selectedMatch: index,
-                    TLDamagesData: processedTelemetry.damagesData,
+                    TLData: processedTelemetry,
                     telemetryLoading: false
                 });
             })
@@ -1567,7 +1596,7 @@ class Extension extends React.Component {
                 converter={this.converter}
                 setSelectedMatch={this.setSelectedMatch}
                 selectedMatch={this.state.selectedMatch}
-                TLDamagesData={this.state.TLDamagesData}
+                TLData={this.state.TLData}
                 telemetryLoading={this.state.telemetryLoading}
                 extension={this.props.extension}
                 appLoading={this.state.appLoading}
@@ -1599,7 +1628,7 @@ Extension.getInitialProps = async function({ query }) {
                 console.log(JSON.stringify(data));
                 return {
                     data: null,
-                    TLDamagesData: null,
+                    TLData: null,
                     extension: false,
                     error: true
                 };
@@ -1617,14 +1646,14 @@ Extension.getInitialProps = async function({ query }) {
 
             return {
                 data: data,
-                TLDamagesData: processedTelemetry.damagesData,
+                TLData: processedTelemetry,
                 extension: false,
                 error: false
             };
         } else {
             return {
                 data: null,
-                TLDamagesData: null,
+                TLData: null,
                 extension: true,
                 error: false
             };
@@ -1632,7 +1661,7 @@ Extension.getInitialProps = async function({ query }) {
     } else {
         return {
             data: null,
-            TLDamagesData: null,
+            TLData: null,
             extension: false,
             error: true,
             errorMessage: query.errorMessage
