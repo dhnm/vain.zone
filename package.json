@@ -1,33 +1,47 @@
 {
-  "name": "hello-next",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node server.js",
-    "build": "NODE_ENV=production next build",
-    "heroku-postbuild": "npm run build",
-    "start": "NODE_ENV=production node server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "axios": "^0.18.0",
-    "body-parser": "^1.18.2",
-    "express": "^4.15.2",
-    "firebase-admin": "^5.11.0",
-    "form-data": "^2.3.2",
-    "helmet": "^3.12.0",
-    "html2canvas": "^1.0.0-alpha.12",
-    "isomorphic-unfetch": "^1.0.0",
-    "moment": "^2.21.0",
-    "mongoose": "^5.0.14",
-    "multer": "^1.3.0",
-    "next": "^4.2.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "semantic-ui-react": "^0.79.0"
-  }
+    "name": "VAIN.ZONE",
+    "version": "0.1.0",
+    "description": "",
+    "main": "production-server/index.js",
+    "scripts": {
+        "dev": "nodemon server/index.ts",
+        "build":
+            "NODE_ENV=production next build && tsc --project tsconfig.server.json",
+        "heroku-postbuild": "npm run build",
+        "start": "NODE_ENV=production node production-server/index.js"
+    },
+    "keywords": [],
+    "author": "Dinh Huy Nhat Minh",
+    "license": "ISC",
+    "dependencies": {
+        "@zeit/next-typescript": "^0.1.1",
+        "axios": "^0.18.0",
+        "body-parser": "^1.18.2",
+        "express": "^4.15.2",
+        "firebase-admin": "^5.11.0",
+        "form-data": "^2.3.2",
+        "helmet": "^3.12.0",
+        "html2canvas": "^1.0.0-alpha.12",
+        "isomorphic-unfetch": "^1.0.0",
+        "moment": "^2.21.0",
+        "mongoose": "^5.0.14",
+        "multer": "^1.3.0",
+        "next": "^4.2.0",
+        "react": "^16.2.0",
+        "react-dom": "^16.2.0",
+        "semantic-ui-react": "^0.79.0",
+        "typescript": "^2.8.1"
+    },
+    "devDependencies": {
+        "@types/next": "^2.4.7",
+        "@types/react": "^16.0.36",
+        "nodemon": "^1.12.1",
+        "ts-node": "^4.1.0"
+    },
+    "nodemonConfig": {
+        "watch": ["server/**/*.ts"],
+        "execMap": {
+            "ts": "ts-node --compilerOptions '{\"module\":\"commonjs\"}'"
+        }
+    }
 }
