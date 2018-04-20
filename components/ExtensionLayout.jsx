@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-const ExtensionLayout = (props: any) => (
+const ExtensionLayout = props => (
     <div id="container">
         <Head>
             <title>VAIN.ZONE</title>
