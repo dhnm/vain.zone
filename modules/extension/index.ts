@@ -1,25 +1,25 @@
-const express = require("express");
-const router = express.Router();
+import { Router, Request, Response } from "express";
+const router = Router();
 
-const messenger = require("./messenger");
+import messenger from "./messenger";
 
-module.exports = app => {
-    router.get("/", (req, res) => {
-        app.render(req, res, "/extension/player", {
-            error: false,
-            extension: true
-        });
+export default (app: any): Router => {
+  router.get("/", (req: Request, res: Response) => {
+    app.render(req, res, "/extension/player", {
+      error: false,
+      extension: true
     });
+  });
 
-    router.get("/player/:IGN", (req, res) => {
-        app.render(req, res, "/extension/player", {
-            IGN: req.params.IGN,
-            error: false,
-            extension: false
-        });
+  router.get("/player/:IGN", (req, res) => {
+    app.render(req, res, "/extension/player", {
+      IGN: req.params.IGN,
+      error: false,
+      extension: false
     });
+  });
 
-    router.use("/messenger", messenger);
+  router.use("/messenger", messenger);
 
-    return router;
+  return router;
 };

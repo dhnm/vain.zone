@@ -1,48 +1,56 @@
-const axios = require("axios");
+// need to redo the entire logic - serve retrieved data directly, save to db asynchronously
 
-const Player = require("./../../models/Player");
-const Match = require("./../../models/Match");
+import axios, { AxiosResponse } from "axios";
 
-const mongoose = require("mongoose"); // for id generation
+import { Player, IPlayer } from "./../../models/Player";
+import { Match, IMatch } from "./../../models/Match";
+import { AsyncResource } from "async_hooks";
 
-module.exports = IGN => {
-    return new Promise((resolve, reject) => {
+export default (IGN: string): Promise<PlayerWithMatches> => {
+    return new Promise((resolve, reject): void => {
         getPlayer(IGN)
-            .then(playerData => formatDataPopulateMatches(playerData))
+            .then((playerData: IPlayer) =>
+                formatDataPopulateMatches(playerData)
+            )
             .then(playerAndMatchesData => resolve(playerAndMatchesData))
             .catch(error => {
-                reject("id: 10 " + error);
+                reject({ errorID: "10", error: error });
             });
     });
 };
 
-const getPlayer = IGN => {
+const getPlayer = (IGN: string): Promise<IPlayer> => {
     return new Promise((resolve, reject) => {
         Player.findOne({ name: IGN })
             .exec()
             .then(playerData => {
                 if (playerData) {
-                    if (new Date() - playerData.retrieval > 300) {
+                    if (
+                        new Date().getTime() -
+                            new Date(playerData.retrieval).getTime() >
+                        300000
+                    ) {
                         if (playerData.exists) {
                             return getPlayerAPI(
                                 playerData.name,
                                 playerData.shardId
                             )
-                                .then(APIData => {
+                                .then((APIData: any) => {
                                     return compareIDs(APIData, playerData);
                                 })
-                                .then(data => {
+                                .then((data: IPlayer) => {
                                     resolve(data);
                                 })
-                                .catch(err => {
+                                .catch((err: any) => {
                                     reject("id: 1 " + err);
                                 });
                         } else {
                             return getPlayerAPI(playerData.name)
                                 .then(APIData => {
-                                    return compareIDs(APIData, playerData).then(
-                                        data => {}
-                                    );
+                                    return compareIDs(APIData, playerData);
+                                })
+                                .then(data => {
+                                    resolve(data);
                                 })
                                 .catch(err => {
                                     reject("id: 2 " + err);
@@ -60,10 +68,10 @@ const getPlayer = IGN => {
                         .then(APIData => {
                             return getMatches("new", APIData);
                         })
-                        .then(data => {
+                        .then((data: any) => {
                             resolve(data);
                         })
-                        .catch(err => {
+                        .catch((err: any) => {
                             reject("id: 4 " + err);
                         });
                 }
@@ -72,7 +80,16 @@ const getPlayer = IGN => {
     });
 };
 
-const formatDataPopulateMatches = playerData => {
+export type PlayerWithMatches = {
+    player?: IPlayer;
+    matches?: IMatch[];
+    error: boolean;
+    extension?: boolean;
+};
+
+const formatDataPopulateMatches = (
+    playerData: IPlayer
+): Promise<PlayerWithMatches> => {
     // City.find({})
     //   .populate({
     //     path: "Articles",
@@ -89,7 +106,7 @@ const formatDataPopulateMatches = playerData => {
 
     return new Promise((resolve, reject) => {
         Match.find(
-            { id: { $in: [...playerData.matchRefs.slice(0, 12)] } },
+            { matchID: { $in: [...playerData.matchRefs.slice(0, 12)] } },
             null,
             {
                 sort: { createdAt: -1 }
@@ -124,24 +141,24 @@ const formatDataPopulateMatches = playerData => {
     // });
 };
 
-const getPlayerAPI = (IGN, dbRegion) => {
+const getPlayerAPI = (IGN: string, dbRegion?: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         const regions = ["na", "eu", "sg", "sa", "ea", "cn"];
-        var regionIndex = 0;
+        let regionIndex = 0;
 
-        const tryRegion = region => {
+        const tryRegion = (region: string) => {
             axiosAPI({
-                shardId: "eu",
+                shardId: region,
                 endPoint: "players",
                 params: { "filter[playerNames]": IGN }
             })
                 .then(player => {
                     const data = player.data[0];
 
-                    var customPlayerDataModel = {
+                    const customPlayerDataModel = {
                         exists: true,
                         retrieval: new Date(),
-                        id: data.id,
+                        playerID: data.id,
                         name: data.attributes.name,
                         shardId: data.attributes.shardId,
                         createdAt: new Date(data.attributes.createdAt),
@@ -152,10 +169,13 @@ const getPlayerAPI = (IGN, dbRegion) => {
                         played_ranked: data.attributes.stats.gamesPlayed.ranked,
                         played_casual_5v5:
                             data.attributes.stats.gamesPlayed.casual_5v5,
+                        played_ranked_5v5:
+                            data.attributes.stats.gamesPlayed.ranked_5v5,
                         guildTag: data.attributes.stats.guildTag,
                         karmaLevel: data.attributes.stats.karmaLevel,
                         level: data.attributes.stats.level,
                         rank_3v3: data.attributes.stats.rankPoints.ranked,
+                        rank_5v5: data.attributes.stats.rankPoints.ranked_5v5,
                         rank_blitz: data.attributes.stats.rankPoints.blitz,
                         skillTier: data.attributes.stats.skillTier,
                         wins: data.attributes.stats.wins,
@@ -173,7 +193,7 @@ const getPlayerAPI = (IGN, dbRegion) => {
                         reject(err + " error while retrieving player.");
                     } else {
                         console.log("Not Found.", IGN, regions[regionIndex]);
-                        regionIndex += 1;
+                        regionIndex++;
                         tryRegion(regions[regionIndex]);
                     }
                 });
@@ -188,12 +208,15 @@ const getPlayerAPI = (IGN, dbRegion) => {
     });
 };
 
-const compareIDs = (APIData, DBData) => {
-    if (APIData.id === DBData.id) {
+const compareIDs = (APIData: any, DBData: IPlayer): Promise<IPlayer> => {
+    if (APIData.playerID === DBData.playerID) {
         return getMatches("update", APIData);
     } else {
-        Player.update({ id: DBData.id }, { $set: { name: undefined } });
-        return Player.findOne({ id: APIData.id })
+        Player.update(
+            { playerID: DBData.playerID },
+            { $set: { name: undefined } }
+        );
+        return Player.findOne({ playerID: APIData.playerID })
             .exec()
             .then(playerData => {
                 if (playerData) {
@@ -207,7 +230,7 @@ const compareIDs = (APIData, DBData) => {
 
 // Match
 
-const getMatches = (command, playerData) => {
+const getMatches = (command: string, playerData: IPlayer): Promise<IPlayer> => {
     return axiosAPI({
         shardId: playerData.shardId,
         endPoint: "matches",
@@ -237,7 +260,11 @@ const getMatches = (command, playerData) => {
         });
 };
 
-const axiosAPI = options => {
+const axiosAPI = (options: {
+    shardId: string;
+    endPoint: string;
+    params: any;
+}) => {
     return axios({
         method: "get",
         url:
@@ -257,9 +284,9 @@ const axiosAPI = options => {
         },
         responseType: "json"
     })
-        .then(response => {
+        .then((response: AxiosResponse<any>) => {
             console.log("here1", response.status);
-            return Promise.resolve(response.data);
+            return response.data;
         })
         .catch(function(error) {
             if (error.response) {
@@ -279,7 +306,7 @@ const axiosAPI = options => {
                     );
                 }
 
-                return Promise.reject(error.response.status);
+                throw new Error(error.response.status);
             } else if (error.request) {
                 // The request was made but no response was received
                 // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -288,46 +315,51 @@ const axiosAPI = options => {
                     "Error occured while fetching API. CMD+F this line to inspect the error.",
                     error.request
                 );
-                return Promise.reject(error.request);
+                throw new Error(error.request);
             } else {
                 // Something happened in setting up the request that triggered an Error
                 console.error(
                     "Error occured while fetching API. CMD+F this line to inspect the error.",
                     error.message
                 );
-                return Promise.reject(error.message);
+                throw new Error(error.message);
             }
             console.error(
                 "Error occured while fetching API. CMD+F this line to inspect the error.",
                 error.config
             );
-            return Promise.reject(error.config);
+            throw new Error(error.config);
         });
 };
 
-const uploadMatches = matches => {
-    const retrievedMatchesIds = matches.data.map(match => match.id);
-    var newMatches = [];
+const uploadMatches = (matches: any) => {
+    const retrievedMatchesIds: string[] = matches.data.map(
+        (match: any) => match.id
+    );
+    const newMatches: IMatch[] = [];
 
-    return Match.find({ id: { $in: retrievedMatchesIds } })
+    return Match.find({ matchID: { $in: retrievedMatchesIds } })
         .exec()
         .then(existingMatches => {
-            const existingMatchesIds = existingMatches.map(e => e.id);
+            const existingMatchesIds: string[] = existingMatches.map(
+                e => e.matchID
+            );
 
-            matches.data.forEach(match => {
+            matches.data.forEach((match: any) => {
                 if (existingMatchesIds.indexOf(match.id) <= -1) {
                     var customMatchDataModel = {
-                        id: match.id,
+                        matchID: match.id,
                         createdAt: new Date(match.attributes.createdAt),
                         duration: match.attributes.duration,
                         gameMode: match.attributes.gameMode,
                         patchVersion: match.attributes.patchVersion,
                         shardId: match.attributes.shardId,
                         endGameReason: match.attributes.stats.endGameReason,
-                        spectators: [],
-                        rosters: [],
+                        spectators: new Array(),
+                        rosters: new Array(),
                         telemetryURL: matches.included.find(
-                            e => e.id === match.relationships.assets.data[0].id
+                            (e: any) =>
+                                e.id === match.relationships.assets.data[0].id
                         ).attributes.URL
                     };
 
@@ -338,14 +370,14 @@ const uploadMatches = matches => {
                         spectatorIndex++
                     ) {
                         const spectatorParticipant = matches.included.find(
-                            e =>
+                            (e: any) =>
                                 e.id ===
                                 match.relationships.spectators.data[
                                     spectatorIndex
                                 ].id
                         );
                         const spectatorPlayer = matches.included.find(
-                            e =>
+                            (e: any) =>
                                 e.id ===
                                 spectatorParticipant.relationships.player.data
                                     .id
@@ -363,7 +395,7 @@ const uploadMatches = matches => {
                         rosterIndex++
                     ) {
                         const roster = matches.included.find(
-                            e =>
+                            (e: any) =>
                                 e.id ===
                                 match.relationships.rosters.data[rosterIndex].id
                         );
@@ -379,7 +411,7 @@ const uploadMatches = matches => {
                             turretsRemaining:
                                 roster.attributes.stats.turretsRemaining,
                             won: JSON.parse(roster.attributes.won),
-                            participants: []
+                            participants: new Array()
                         };
 
                         for (
@@ -389,7 +421,7 @@ const uploadMatches = matches => {
                             participantIndex++
                         ) {
                             const participant = matches.included.find(
-                                e =>
+                                (e: any) =>
                                     e.id ===
                                     roster.relationships.participants.data[
                                         participantIndex
@@ -397,7 +429,7 @@ const uploadMatches = matches => {
                             );
 
                             const player = matches.included.find(
-                                e =>
+                                (e: any) =>
                                     e.id ===
                                     participant.relationships.player.data.id
                             );
@@ -407,6 +439,8 @@ const uploadMatches = matches => {
                                     1,
                                     participant.attributes.actor.length - 1
                                 ),
+                                skillTier:
+                                    participant.attributes.stats.skillTier,
                                 assists: participant.attributes.stats.assists,
                                 crystalMineCaptures:
                                     participant.attributes.stats
@@ -462,7 +496,7 @@ const uploadMatches = matches => {
                 }
             });
 
-            return Promise.resolve(newMatches);
+            return newMatches;
         })
         .then(newMatches => {
             return Match.insertMany(newMatches, { ordered: false })
@@ -471,8 +505,8 @@ const uploadMatches = matches => {
                     return Promise.resolve(retrievedMatchesIds);
                 })
                 .catch(err => {
-                    console.error("Error inserting matches.");
-                    return Promise.reject("Error inserting matches");
+                    console.error("Error inserting matches.", err);
+                    throw new Error("Error inserting matches.");
                 });
         })
         .catch(err => {
@@ -480,8 +514,13 @@ const uploadMatches = matches => {
         });
 };
 
-const updatePlayerDB = (command, customPlayerDataModel, matchRefs) => {
+const updatePlayerDB = (
+    command: string,
+    customPlayerDataModel: any,
+    matchRefs: string[]
+): Promise<IPlayer> => {
     return new Promise((resolve, reject) => {
+        console.log("command", command);
         if (command == "new") {
             if (matchRefs) {
                 customPlayerDataModel.matchRefs = matchRefs;
@@ -490,20 +529,26 @@ const updatePlayerDB = (command, customPlayerDataModel, matchRefs) => {
             }
 
             const newPlayer = new Player(customPlayerDataModel);
+
             newPlayer
                 .save()
                 .then(newPlayerData => {
                     console.log("Successfuly saved new player");
-                    resolve(customPlayerDataModel);
+                    resolve(newPlayerData);
                 })
                 .catch(err => {
-                    console.log("Failed to upload", err);
+                    console.error("Failed to upload", err);
                     reject(err);
                 });
         } else {
-            Player.findOne({ id: customPlayerDataModel.id })
+            Player.findOne({ playerID: customPlayerDataModel.playerID })
                 .exec()
                 .then(playerData => {
+                    if (!playerData) {
+                        console.log(playerData);
+                        throw new Error("System error. #tswai");
+                    }
+
                     const deduplicatedMatchRefs = [
                         ...new Set([...matchRefs, ...playerData.matchRefs])
                     ];
@@ -519,9 +564,8 @@ const updatePlayerDB = (command, customPlayerDataModel, matchRefs) => {
     });
 };
 
-const saveNonExist = IGN => {
+const saveNonExist = (IGN: string) => {
     var nonExistData = {
-        id: mongoose.Types.ObjectId().toHexString(),
         name: IGN,
         retrieval: new Date(),
         exists: false

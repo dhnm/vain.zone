@@ -1,14 +1,14 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
+const router: Router = Router();
 
-const uploadToFb = require("./fbattachment");
-const getBotUser = require("./botuser");
-const getMatches = require("./matches");
-const telemetry = require("./telemetry");
+import fbattachment from "./fbattachment";
+import botuser from "./botuser";
+import matches from "./matches";
+import telemetry from "./telemetry";
 
-module.exports = router;
+export default router;
 
-router.use("/fbattachment", uploadToFb);
-router.use("/botuser", getBotUser);
-router.use("/matches", getMatches);
+router.use("/fbattachment", fbattachment);
+router.use("/botuser", botuser);
+router.use("/matches", matches);
 router.use("/telemetry", telemetry);

@@ -1,34 +1,40 @@
-const express = require("express");
-const router = express.Router();
+import { Router, Response, Request } from "express";
+const router: Router = Router();
 
-const BotUser = require("./../../models/BotUser");
+import { BotUser, IBotUser } from "./../../models/BotUser";
 
-module.exports = router;
+export default router;
 
-router.get("/", (req, res) => {
+export type IOutput = {
+    currentUser: boolean;
+    defaultIGN?: string;
+};
+
+router.get("/", (req: Request, res: Response): void => {
     BotUser.findOne({ psid: req.query.psid })
         .exec()
-        .then(user => {
-            if (user) {
+        .then((botUser: IBotUser | null): any => {
+            if (botUser) {
+                const output: IOutput = {
+                    currentUser: true,
+                    defaultIGN: botUser.defaultIGN
+                };
                 res.writeHead(200, {
                     "Content-Type": "application/json"
                 });
-                res.write(
-                    JSON.stringify({
-                        currentUser: true,
-                        defaultIGN: user.defaultIGN
-                    })
-                );
+                res.write(JSON.stringify(output));
                 res.end();
             } else {
                 return Promise.reject("Not a current user.");
             }
         })
-        .catch(err => {
+        .catch((err: any): void => {
+            const output: IOutput = { currentUser: false };
+            console.log(err);
             res.writeHead(200, {
                 "Content-Type": "application/json"
             });
-            res.write(JSON.stringify({ currentUser: false }));
+            res.write(JSON.stringify(output));
             res.end();
         });
 });

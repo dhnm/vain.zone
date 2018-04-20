@@ -85,7 +85,7 @@ const Index = ({ data }) => (
   </Layout>
 );
 
-Index.getInitialProps = async function() {
+Index.getInitialProps = async function<P>(): Promise<P> {
   //const res = await fetch('http://api.tvmaze.com/search/shows?q=batman')
   //const data = await res.json()
 

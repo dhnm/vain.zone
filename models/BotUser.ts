@@ -1,8 +1,13 @@
-const mongoose = require("mongoose");
+import { Schema, model, Document } from "mongoose";
 
-const botUserSchema = mongoose.Schema({
+const botUserSchema = new Schema({
     defaultIGN: String,
     psid: { type: String, unique: true, required: true }
 });
 
-module.exports = mongoose.model("bot_users", botUserSchema);
+export type IBotUser = Document & {
+    defaultIGN?: string;
+    psid: string;
+};
+
+export const BotUser = model<IBotUser>("bot_users", botUserSchema);

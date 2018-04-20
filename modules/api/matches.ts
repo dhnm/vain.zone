@@ -1,30 +1,30 @@
-const express = require("express");
-const router = express.Router();
+import { Router, Response, Request } from "express";
+const router: Router = Router();
 
-const getData = require("./../functions/getData");
+import getData from "./../functions/getData";
 
-module.exports = router;
+export default router;
 
-router.get("/", (req, res) => {
-    getData(req.query.IGN)
-        .then(data => {
-            res.writeHead(200, {
-                "Content-Type": "application/json"
-            });
-            res.write(JSON.stringify(data));
-            res.end();
+router.get("/", (req: Request, res: Response): void => {
+  getData(req.query.IGN)
+    .then((data: any): void => {
+      res.writeHead(200, {
+        "Content-Type": "application/json"
+      });
+      res.write(JSON.stringify(data));
+      res.end();
+    })
+    .catch(error => {
+      res.writeHead(200, {
+        // 200 to handle error myself, otherwise it renders 404 page
+        "Content-Type": "application/json"
+      });
+      res.write(
+        JSON.stringify({
+          error: true,
+          errorMessage: error
         })
-        .catch(error => {
-            res.writeHead(200, {
-                // 200 to handle error myself, otherwise it renders 404 page
-                "Content-Type": "application/json"
-            });
-            res.write(
-                JSON.stringify({
-                    error: true,
-                    errorMessage: error
-                })
-            );
-            res.end();
-        });
+      );
+      res.end();
+    });
 });
