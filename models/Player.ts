@@ -4,7 +4,7 @@ const playerSchema = new Schema({
     exists: Boolean,
     retrieval: { type: Date, default: Date.now },
     playerID: { type: String, unique: true },
-    name: { type: String, unique: true },
+    name: { type: String, unique: true, sparse: true },
     shardId: String,
     createdAt: Date,
     patchVersion: String,
@@ -29,7 +29,7 @@ export type IPlayer = Document & {
     exists: boolean;
     retrieval: Date;
     playerID: string;
-    name: string;
+    name: string | null;
     shardId: string;
     createdAt: Date;
     patchVersion: string;

@@ -31,7 +31,7 @@ const getPlayer = (IGN: string): Promise<IPlayer> => {
                     ) {
                         if (playerData.exists) {
                             return getPlayerAPI(
-                                playerData.name,
+                                playerData.name!, // queried by name
                                 playerData.shardId
                             )
                                 .then((APIData: any) => {
@@ -44,7 +44,7 @@ const getPlayer = (IGN: string): Promise<IPlayer> => {
                                     reject("id: 1 " + err);
                                 });
                         } else {
-                            return getPlayerAPI(playerData.name)
+                            return getPlayerAPI(playerData.name!) // queried by name
                                 .then(APIData => {
                                     return compareIDs(APIData, playerData);
                                 })
@@ -211,19 +211,21 @@ const compareIDs = (APIData: any, DBData: IPlayer): Promise<IPlayer> => {
     if (APIData.playerID === DBData.playerID) {
         return getMatches("update", APIData);
     } else {
-        Player.update(
-            { playerID: DBData.playerID },
-            { $set: { name: undefined } }
-        );
-        return Player.findOne({ playerID: APIData.playerID })
+        return Player.updateOne({ name: DBData.name }, { $unset: { name: "" } })
             .exec()
-            .then(playerData => {
+            .then(res => console.log(res))
+            .then(() => {
+                return Player.findOne({ playerID: APIData.playerID })
+            .exec()
+            }).then(playerData => {
                 if (playerData) {
                     return getMatches("update", APIData);
                 }
                 return getMatches("new", APIData);
             })
-            .catch(err => Promise.reject("id: 12 " + err));
+            .catch(err => {
+                throw new Error(err);
+            });
     }
 };
 
