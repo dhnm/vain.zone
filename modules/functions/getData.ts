@@ -4,7 +4,6 @@ import axios, { AxiosResponse } from "axios";
 
 import { Player, IPlayer } from "./../../models/Player";
 import { Match, IMatch } from "./../../models/Match";
-import { AsyncResource } from "async_hooks";
 
 export default (IGN: string): Promise<PlayerWithMatches> => {
     return new Promise((resolve, reject): void => {
@@ -324,11 +323,11 @@ const axiosAPI = (options: {
                 );
                 throw new Error(error.message);
             }
-            console.error(
-                "Error occured while fetching API. CMD+F this line to inspect the error.",
-                error.config
-            );
-            throw new Error(error.config);
+            // console.error(
+            //     "Error occured while fetching API. CMD+F this line to inspect the error.",
+            //     error.config
+            // );
+            // throw new Error(error.config);
         });
 };
 

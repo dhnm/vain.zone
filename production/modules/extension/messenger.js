@@ -581,7 +581,7 @@ const updateInfo = () => {
     });
 };
 //getProfile();
-router.get("/updateprofile", (req, res) => {
+router.get("/updateprofile", (_req, res) => {
     updateInfo()
         .then(() => {
         res.sendStatus(200);

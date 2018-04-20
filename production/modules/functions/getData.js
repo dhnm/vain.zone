@@ -276,8 +276,11 @@ const axiosAPI = (options) => {
             console.error("Error occured while fetching API. CMD+F this line to inspect the error.", error.message);
             throw new Error(error.message);
         }
-        console.error("Error occured while fetching API. CMD+F this line to inspect the error.", error.config);
-        throw new Error(error.config);
+        // console.error(
+        //     "Error occured while fetching API. CMD+F this line to inspect the error.",
+        //     error.config
+        // );
+        // throw new Error(error.config);
     });
 };
 const uploadMatches = (matches) => {

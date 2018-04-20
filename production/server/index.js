@@ -13,6 +13,8 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 const axios_1 = require("axios");
 const mongoose = require("mongoose");
+// import { Match } from "./../models/Match";
+// import { Player } from "./../models/Player";
 mongoose.connect("mongodb://user_thisBoy:r8LspGn5jpZJIfCP@vainzone-shard-00-00-jem9k.mongodb.net:27017,vainzone-shard-00-01-jem9k.mongodb.net:27017,vainzone-shard-00-02-jem9k.mongodb.net:27017/VAINZONE?ssl=true&replicaSet=VAINZONE-shard-0&authSource=admin");
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -125,7 +127,7 @@ app
     });
     server.use("/extension", extension_1.default(app));
     server.use("/api", api_1.default);
-    server.get("/", (req, res) => {
+    server.get("/", (_req, res) => {
         res.send("Coming soon.");
     });
     server.get("*", (req, res) => {
