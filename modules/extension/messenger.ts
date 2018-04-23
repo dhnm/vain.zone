@@ -613,7 +613,7 @@ const updateInfo = () => {
             {
                 locale: "default",
                 text:
-                    "Welcome to Vainglory Messenger Extension. See your Vainglory match statistics and quickly share them with your friends! Tap on the button below and then type in your In-Game Nickname."
+                    "Welcome to Vainglory Messenger Extension! Tap on the button below and then type in your In-Game Nickname to see your stats." // must be lte 160 characters
             }
             /*{
             locale: "en_US",
@@ -675,7 +675,7 @@ const updateInfo = () => {
             access_token:
                 "EAAIxVyRb1vwBAHhU8w9UNT7G5mv9CR7oPra44BXAHS6PwVkf7OOwR5bKZCCXbZB0l2IJ01b7HxonqYrtUyg9d7w2ykbW5dlhZCbkZCxRxThgJQ9nZAhHHwBTH8CxPhyl2ftVi8UNv36EwLKPyOpDtuKmhDQgfoaNclpMjxf1ZCoAZDZD"
         },
-        data: JSON.stringify(info),
+        data: info,
         headers: {
             "Content-Type": "application/json"
         }
