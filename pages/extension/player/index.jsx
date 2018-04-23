@@ -1317,6 +1317,10 @@ class MainLayout extends React.Component {
                     <Sidebar.Pusher dimmed={this.props.sidebarVisible}>
                         <Segment basic>
                             <InputPanel appLoading={this.props.appLoading} />
+                            <Segment>
+                                Alpha disclaimer: Only EU is supported right
+                                now. We will support other regions soon.
+                            </Segment>
                             <PlayerDetailView player={this.props.data.player} />
                             <Button.Group attached="bottom">
                                 <Button

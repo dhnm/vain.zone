@@ -142,7 +142,8 @@ const formatDataPopulateMatches = (
 
 const getPlayerAPI = (IGN: string, dbRegion?: string): Promise<any> => {
     return new Promise((resolve, reject) => {
-        const regions = ["na", "eu", "sg", "sa", "ea", "cn"];
+        //const regions = ["na", "eu", "sg", "sa", "ea", "cn"];
+        const regions = ["eu"];
         let regionIndex = 0;
 
         const tryRegion = (region: string) => {
