@@ -248,7 +248,7 @@ const setTyping = (event: any, callback: Function) => {
 
   callSendAPI(messageData);
 
-  setTimeout(callback, 1000);
+  setTimeout(() => {callback(event)}, 1000);
 };
 
 const sendMyData = (userID: string) => {
