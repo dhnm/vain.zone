@@ -4,23 +4,23 @@
 // export const PHASE_DEVELOPMENT_SERVER = "phase-development-server";
 // export const PAGES_MANIFEST = "pages-manifest.json";
 // export const BUILD_MANIFEST = "build-manifest.json";
-const { PHASE_DEVELOPMENT_SERVER } = require("next/constants");
-const withTypescript = require("@zeit/next-typescript");
+// const { PHASE_DEVELOPMENT_SERVER } = require("next/constants");
+const withTypescript = require('@zeit/next-typescript');
 
 module.exports = (phase, { defaultConfig }) => {
-    const customConfig = {
-        serverRuntimeConfig: {
-            // Will only be available on the server side
-            mySecret: "secret"
-        },
-        publicRuntimeConfig: {
-            // Will be available on both server and client
-            staticFolder: "/static"
-        }
-    };
-    const config = Object.assign(defaultConfig, withTypescript(), customConfig);
+  const customConfig = {
+    serverRuntimeConfig: {
+      // Will only be available on the server side
+      mySecret: 'secret',
+    },
+    publicRuntimeConfig: {
+      // Will be available on both server and client
+      staticFolder: '/static',
+    },
+  };
+  const config = Object.assign(defaultConfig, withTypescript(), customConfig);
 
-    return config;
+  return config;
 };
 
 // import getConfig from "next/config";
