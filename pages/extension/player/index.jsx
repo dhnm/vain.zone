@@ -1659,9 +1659,9 @@ Extension.getInitialProps = async function(context) {
     try {
         const query = context.query;
 
-        let urlPath = "http://localhost:3000";
-        if (process.env.NODE && ~process.env.NODE.indexOf("heroku"))
-            urlPath = "https://test.vainglory.eu";
+        let urlPath = "https://test.vainglory.eu"
+        if (process.env.NODE_ENV !== "production")
+            urlPath = "http://localhost:3000";
 
         if (!JSON.parse(query.error)) {
             if (!JSON.parse(query.extension)) {
