@@ -421,6 +421,9 @@ const sendSystemMessage = (userID: string, message: any) => {
 
 const sendPlayerInfo = (userID: string, data: any) => {
     let rankPointsText = "";
+    console.log(data);
+    console.log(data.rankPoints);
+    console.log(data.rankPoints_5v5);
     if (data.rankPoints_5v5) {
         rankPointsText = "3v3 Rank points: " + data.rankPoints.toFixed(0);
     } else {
