@@ -675,10 +675,9 @@ const updateInfo = () => {
             access_token:
                 "EAAIxVyRb1vwBAHhU8w9UNT7G5mv9CR7oPra44BXAHS6PwVkf7OOwR5bKZCCXbZB0l2IJ01b7HxonqYrtUyg9d7w2ykbW5dlhZCbkZCxRxThgJQ9nZAhHHwBTH8CxPhyl2ftVi8UNv36EwLKPyOpDtuKmhDQgfoaNclpMjxf1ZCoAZDZD"
         },
-        data: info,
+        data: JSON.stringify(info),
         headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json"
+            "Content-Type": "application/json"
         }
     })
         .then((fbRes: AxiosResponse<any>): void => {
@@ -689,6 +688,10 @@ const updateInfo = () => {
             }
         })
         .catch(err => {
+            if (err.response) {
+                console.error(err.response.status);
+                console.error(err.response.data);
+            }
             throw new Error(err);
         });
 };
