@@ -1,7 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
-import { Sidebar, Segment, Button, Icon, Label } from 'semantic-ui-react';
+import {
+  Sidebar,
+  Segment,
+  Button,
+  Icon,
+  Label,
+  Message,
+} from 'semantic-ui-react';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
 
@@ -232,10 +239,10 @@ export default class MainView extends React.Component {
         <Sidebar.Pusher dimmed={this.props.sidebarVisible}>
           <Segment basic>
             <InputPanel appLoading={this.props.appLoading} />
-            <Segment>
-              Alpha disclaimer: Only EU is supported right now. We will support
-              other regions soon.
-            </Segment>
+            <Message warning>
+              <strong>Alpha disclaimer:</strong> Only EU is supported right now.
+              We will support other regions soon.
+            </Message>
             <PlayerDetailView player={this.props.data.player} />
             <Button.Group attached="bottom">
               <Button

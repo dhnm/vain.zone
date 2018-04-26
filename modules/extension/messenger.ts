@@ -158,7 +158,7 @@ const getPlayerInfo = (input: string, userID: string) => {
             console.log(err);
             sendSystemMessage(
                 userID,
-                "Something went wrong :(\n\n1) Please check the spelling and capitalisation of the nick.\n\n2) If the player hasn't played this mode for a long time, we don't have data for them.\n\n3) Maybe the player has changed their nick?\n\n4) There might be also an issue on SEMC side (developers of Vainglory). You can try again later.\n" +
+                "Something went wrong :(\n\n1) Please check the spelling and capitalisation of the nick.\n\n2) If the player hasn't played a match recently, we don't have data for them.\n\n3) Maybe the player has changed their nick?\n\n4) There might be also an issue on SEMC side (developers of Vainglory). You can try again later.\n" +
                     err
             );
         });
@@ -600,7 +600,7 @@ const sendPlayerInfo = (userID: string, data: any) => {
                         {
                             title: "Statistics",
                             subtitle:
-                                rankPointsText + "\nTotal wins: " + data.wins
+                                rankPointsText + "\nLifetime wins: " + data.wins
                         }
                     ],
                     buttons: [
