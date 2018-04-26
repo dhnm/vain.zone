@@ -222,7 +222,15 @@ export default class MainView extends React.Component {
   }
   render() {
     if (this.props.extension) {
-      return <span />;
+      return (
+        <Message icon>
+          <Icon name="circle notched" loading />
+          <Message.Content>
+            <Message.Header>Just one second</Message.Header>
+            <p>We are fetching data for you.</p>
+          </Message.Content>
+        </Message>
+      );
     }
     return (
       <Sidebar.Pushable style={{ minHeight: '100vh' }}>
