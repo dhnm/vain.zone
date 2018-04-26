@@ -457,18 +457,13 @@ const processRankPoints = (rp_3v3: number | null, rp_5v5: number | null) => {
                     skillTier: i - 2
                 };
             }
-            if (
-                i == rankPointLimits.length - 1 &&
-                rawRankPoints >= rankPointLimits[rankPointLimits.length - 1]
-            ) {
-                rankProgress = 1;
-                return {
-                    value: rawRankPoints,
-                    progress: rankProgress * 100,
-                    skillTier: i
-                };
-            }
         }
+
+        return {
+            value: rawRankPoints,
+            progress: 100,
+            skillTier: rankPointLimits.length - 2,
+        };
     })(rankPoints);
 
     const skillTierFormats = (rawSkillTier => {

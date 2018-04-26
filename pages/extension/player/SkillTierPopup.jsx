@@ -62,7 +62,7 @@ export default function SkillTierPopup({ rankPoints, mode }) {
     return {
       value: rawRankPoints,
       progress: 100,
-      skillTier: rankPointLimits.length - 1,
+      skillTier: rankPointLimits.length - 2,
     };
   })(rankPoints);
 
