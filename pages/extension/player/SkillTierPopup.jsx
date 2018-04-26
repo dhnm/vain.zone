@@ -10,6 +10,7 @@ const propTypes = {
 export default function SkillTierPopup({ rankPoints, mode }) {
   const processedRankPoints = ((rawRankPoints) => {
     const rankPointLimits = [
+      -1,
       0,
       109,
       218,
@@ -53,7 +54,7 @@ export default function SkillTierPopup({ rankPoints, mode }) {
         return {
           value: rawRankPoints,
           progress: rankProgress * 100,
-          skillTier: i - 1,
+          skillTier: i - 2,
         };
       }
     }
@@ -131,9 +132,9 @@ export default function SkillTierPopup({ rankPoints, mode }) {
         <div style={{ float: 'right', position: 'relative' }}>
           <Image
             size="tiny"
-            src={`/static/img/rank/c/${
-              skillTierFormats.number
-            }%20${skillTierFormats.color.trim()}.png`}
+            src={`/static/img/rank/c/${skillTierFormats.number}${
+              skillTierFormats.color
+            }.png`}
             style={{
               margin: 0,
               marginBottom: '-7px',

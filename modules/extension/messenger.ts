@@ -410,6 +410,7 @@ const processRankPoints = (rp_3v3: number | null, rp_5v5: number | null) => {
 
     const processedRankPoints = (rawRankPoints => {
         const rankPointLimits = [
+            -1,
             0,
             109,
             218,
@@ -453,7 +454,7 @@ const processRankPoints = (rp_3v3: number | null, rp_5v5: number | null) => {
                 return {
                     value: rawRankPoints,
                     progress: rankProgress * 100,
-                    skillTier: i - 1
+                    skillTier: i - 2
                 };
             }
             if (
