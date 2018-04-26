@@ -19,7 +19,7 @@ export default class InputPanel extends React.Component {
   handleInputChange(event) {
     // const value = event.target.type === "checkbox" ? event.target.checked : event.target.value;
     this.setState({
-      //[event.target.id]: event.target.value.trim(),
+      // [event.target.id]: event.target.value.trim(),
       [event.target.id]: event.target.value.replace(/\s+/g, ''),
     });
   }

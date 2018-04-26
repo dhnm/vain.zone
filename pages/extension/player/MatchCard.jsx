@@ -65,7 +65,7 @@ export default function MatchCard({
           </span>{' '}
           {humanGameMode.toUpperCase()}
         </Card.Header>
-        <Card.Meta>
+        <Card.Meta style={{ fontSize: '0.9em', marginTop: "3px" }}>
           {moment(match.createdAt).fromNow()} | {humanDuration}min game
         </Card.Meta>
       </Card.Content>
