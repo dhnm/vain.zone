@@ -53,7 +53,7 @@ export default function ParticipantCard({
       href={`/extension/player?error=false&extension=false&IGN=${
         participant.player.name
       }`}
-      as={`/extension/player/'${participant.player.name}`}
+      as={`/extension/player/${participant.player.name}`}
     >
       <Card
         link

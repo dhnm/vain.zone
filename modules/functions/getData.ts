@@ -126,7 +126,7 @@ const formatDataPopulateMatches = (
 
     // return new Promise((resolve, reject) => {
     //   db
-    //     .getAll(...playerData.matchRefs.slice(0, 12))
+    //     .getAll(...playerData.matchRefs.slice(0, 14))
     //     .then(docs => {
     //       delete playerData.matchRefs;
     //       resolve({
@@ -238,7 +238,7 @@ const getMatches = (command: string, playerData: IPlayer): Promise<IPlayer> => {
         endPoint: "matches",
         params: {
             "page[offset]": 0,
-            "page[limit]": 35,
+            "page[limit]": 12,
             sort: "-createdAt",
             "filter[playerNames]": playerData.name
         }
