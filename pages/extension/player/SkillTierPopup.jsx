@@ -139,7 +139,7 @@ export default function SkillTierPopup({ rankPoints, mode }) {
               width: '55px',
               margin: 0,
               marginBottom: '-7px',
-              marginRight: '8px',
+              marginRight: '9px',
             }}
           />
           <strong

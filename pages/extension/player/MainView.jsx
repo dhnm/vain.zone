@@ -247,10 +247,10 @@ export default class MainView extends React.Component {
         <Sidebar.Pusher dimmed={this.props.sidebarVisible}>
           <Segment basic>
             <InputPanel appLoading={this.props.appLoading} />
-            <Message warning>
+            {/* <Message warning>
               <strong>Alpha disclaimer:</strong> Only EU is supported right now.
               We will support other regions soon.
-            </Message>
+            </Message> */}
             <PlayerDetailView player={this.props.data.player} />
             <Button.Group attached="bottom">
               <Button
