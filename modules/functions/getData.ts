@@ -65,7 +65,12 @@ const getPlayer = (IGN: string): Promise<IPlayer> => {
                 } else {
                     return getPlayerAPI(IGN)
                         .then(APIData => {
-                            return getMatches("new", APIData);
+                            return Player.findOne({playerID: APIData.playerID}).exec().then(foundPlayerByID => {
+                                if (foundPlayerByID) {
+                                    return getMatches("updateIGN", APIData);
+                                }
+                                return getMatches("new", APIData);
+                            })
                         })
                         .then((data: any) => {
                             resolve(data);
@@ -523,7 +528,7 @@ const updatePlayerDB = (
 ): Promise<IPlayer> => {
     return new Promise((resolve, reject) => {
         console.log("command", command);
-        if (command == "new") {
+        if (command === "new") {
             if (matchRefs) {
                 customPlayerDataModel.matchRefs = matchRefs;
             } else {
@@ -549,6 +554,18 @@ const updatePlayerDB = (
                     if (!playerData) {
                         console.log(playerData);
                         throw new Error("System error. #tswai");
+                    }
+
+                    if (command === "updateIGN") {
+                        if (playerData.IGNHistory) {
+                            customPlayerDataModel.IGNHistory = playerData.IGNHistory.unshift(playerData.name);
+                        } else {
+                            customPlayerDataModel.IGNHistory = [playerData.name];
+                        }
+                    } else { // add this field to older entries
+                        if (!playerData.IGNHistory) {
+                            playerData.IGNHistory = [];
+                        }
                     }
 
                     const deduplicatedMatchRefs = [

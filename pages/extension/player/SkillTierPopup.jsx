@@ -136,9 +136,10 @@ export default function SkillTierPopup({ rankPoints, mode }) {
               skillTierFormats.color
             }.png`}
             style={{
+              width: '55px',
               margin: 0,
               marginBottom: '-7px',
-              marginRight: '5px',
+              marginRight: '8px',
             }}
           />
           <strong

@@ -16,7 +16,7 @@ export default function PlayerDetailView({ player }) {
       player.played_casual * 18 +
       player.played_ranked * 22) /
     60;
-  if (player.patchVersion === '3.2') {
+  if (player.patchVersion >= '3.2') {
     experienceHours += player.played_ranked_5v5 * 28 / 60;
   }
   const addictivenessRatingDict = {
@@ -81,19 +81,12 @@ export default function PlayerDetailView({ player }) {
       >
         <Card fluid id="playerDetailView">
           <Card.Content>
-            <SkillTierPopup
-              skillTier={player.skillTier}
-              rankPoints={player.rank_3v3}
-              mode="3v3"
-            />
+            <SkillTierPopup rankPoints={player.rank_blitz} mode="Blitz" />
+            <SkillTierPopup rankPoints={player.rank_3v3} mode="3v3" />
             {(() => {
-              if (player.patchVersion === '3.2') {
+              if (player.patchVersion >= '3.2') {
                 return (
-                  <SkillTierPopup
-                    skillTier={player.skillTier}
-                    rankPoints={player.rank_5v5}
-                    mode="5v5"
-                  />
+                  <SkillTierPopup rankPoints={player.rank_5v5} mode="5v5" />
                 );
               }
               return <span />;
@@ -130,7 +123,7 @@ export default function PlayerDetailView({ player }) {
                   </div>
                   <br />
                   {(() => {
-                    if (player.patchVersion === '3.2') {
+                    if (player.patchVersion >= '3.2') {
                       return (
                         <div>
                           5v5 Rankeds:

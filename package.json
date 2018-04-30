@@ -55,7 +55,7 @@
     "ts-node": "^4.1.0"
   },
   "nodemonConfig": {
-    "watch": ["server/**/*.ts"],
+    "watch": ["server/**/*.ts", "modules/functions/getData.ts"],
     "execMap": {
       "ts": "ts-node --compilerOptions '{\"module\":\"commonjs\"}'"
     }
