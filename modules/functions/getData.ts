@@ -530,9 +530,9 @@ const updatePlayerDB = (
         console.log("command", command);
         if (command === "new") {
             if (matchRefs) {
-                customPlayerDataModel.matchRefs = matchRefs;
+                customPlayerDataModel.matchRefs = matchRefs.slice();
             } else {
-                customPlayerDataModel.matchRefs = [];
+                customPlayerDataModel.matchRefs = new Array();
             }
 
             const newPlayer = new Player(customPlayerDataModel);
@@ -558,18 +558,18 @@ const updatePlayerDB = (
 
                     if (command === "updateIGN") {
                         if (playerData.IGNHistory) {
-                            customPlayerDataModel.IGNHistory = playerData.IGNHistory.unshift(playerData.name);
+                            customPlayerDataModel.IGNHistory = [playerData.name, ...playerData.IGNHistory.slice()]
                         } else {
                             customPlayerDataModel.IGNHistory = [playerData.name];
                         }
                     } else { // add this field to older entries
-                        if (!playerData.IGNHistory) {
-                            playerData.IGNHistory = [];
+                        if (!customPlayerDataModel.IGNHistory) {
+                            customPlayerDataModel.IGNHistory = new Array();
                         }
                     }
 
                     const deduplicatedMatchRefs = [
-                        ...new Set([...matchRefs, ...playerData.matchRefs])
+                        ...new Set([...matchRefs.slice(), ...playerData.matchRefs.slice()])
                     ];
                     customPlayerDataModel.matchRefs = deduplicatedMatchRefs;
 
