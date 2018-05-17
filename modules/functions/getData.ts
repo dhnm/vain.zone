@@ -567,11 +567,11 @@ const updatePlayerDB = (
           ];
           customPlayerDataModel.matchRefs = deduplicatedMatchRefs;
 
-          //Object.assign(playerData, customPlayerDataModel);
-          const newPlayerData = { ...playerData, ...customPlayerDataModel };
-          newPlayerData
+          Object.assign(playerData, customPlayerDataModel);
+          // not working: const newPlayerData: IPlayer = { ...playerData, ...customPlayerDataModel };
+          playerData
             .save()
-            .then(() => resolve(newPlayerData))
+            .then(() => resolve(playerData))
             .catch((err) => reject(err));
         });
     }
