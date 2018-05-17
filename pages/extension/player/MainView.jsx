@@ -95,9 +95,9 @@ export default class MainView extends React.Component {
         return new Promise((resolve, reject) => {
           axios({
             method: 'post',
-            url: '/api/uploadtofb',
+            url: '/api/fbattachment',
             data: formData,
-            headers: formData.getHeaders(),
+            // headers: formData.getHeaders(), maybe works only on server-side
           })
             .then((res) => res.data)
             .then((resJson) => {
@@ -268,7 +268,7 @@ export default class MainView extends React.Component {
               style={{
                 width: '100%',
                 height: '120px',
-                display: 'none',
+                //display: 'none',
               }}
               value="Debugging"
               readOnly
