@@ -45,7 +45,7 @@ export default function ParticipantCard({
   }
   let cardBg = 'white';
   if (participant.player.id === playerInTheMatch.player.id) {
-    cardBg = '#f6f6f6';
+    cardBg = '#ececec';
   }
   return (
     <Link
@@ -80,6 +80,7 @@ export default function ParticipantCard({
               textOverflow: 'ellipsis',
               fontSize: '1.1rem',
               display: 'block',
+              whiteSpace: 'nowrap',
             }}
           >
             {participant.player.name}

@@ -105,7 +105,7 @@ export default function MatchCard({
                         display: 'block',
                         overflow: 'hidden',
                         lineHeight: '24px',
-                        fontSize: '0.85em',
+                        fontSize: '0.85em',whiteSpace: "nowrap"
                       }}
                     >
                       {(() => {
@@ -166,7 +166,7 @@ export default function MatchCard({
                         overflow: 'hidden',
                         lineHeight: '24px',
                         fontSize: '0.85em',
-                        textAlign: 'center',
+                        textAlign: 'center',whiteSpace: "nowrap"
                       }}
                     >
                       {(() => {
