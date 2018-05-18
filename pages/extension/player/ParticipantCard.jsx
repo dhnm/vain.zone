@@ -48,7 +48,9 @@ export default function ParticipantCard({
   }
   let cardBg = 'white';
   if (participant.player.id === playerInTheMatch.player.id) {
-    cardBg = '#ececec';
+    cardBg = `linear-gradient(${
+      { left: '135deg', right: '225deg' }[side]
+    }, #d3d3d3, white)`;
   }
   const skillTierInfo = skillTierCalculator(rankPoints);
   return (
@@ -65,7 +67,7 @@ export default function ParticipantCard({
         style={{
           margin: '3px 1px 3px 0',
           color: 'black',
-          backgroundColor: cardBg,
+          background: cardBg,
         }}
       >
         <Dimmer active={telemetryLoading} inverted>
@@ -90,7 +92,7 @@ export default function ParticipantCard({
             style={{
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              fontSize: '1rem',
+              fontSize: '1.05rem',
               display: 'block',
               whiteSpace: 'nowrap',
             }}
