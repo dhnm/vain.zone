@@ -7,6 +7,8 @@ import Layout from './../../../components/ExtensionLayout';
 import MainView from './MainView';
 import ErrorLayout from './ErrorView';
 
+import { gameModeDict } from './../../../modules/functions/variables';
+
 const propTypes = {
   data: PropTypes.object,
   TLData: PropTypes.object,
@@ -142,31 +144,7 @@ class Extension extends React.Component {
         matchConclusionColors: ['#fc0', 'yellow'],
       };
     },
-    humanGameMode: () =>
-      ({
-        '5v5_pvp_ranked': ['5v5 Ranked', false, '5v5ranked'],
-        '5v5_pvp_casual': ['5v5 Casual', false, '5v5casual'],
-        private_party_draft_match_5v5: ['5v5 Private Draft', true, '5v5ranked'],
-        private_party_vg_5v5: [
-          "Sovereign's Rise Private Blind",
-          true,
-          '5v5casual',
-        ],
-        ranked: ['3v3 Ranked', false, 'ranked'],
-        private_party_draft_match: ['3v3 Private Draft', true, 'ranked'],
-        casual: ['3v3 Casual', false, 'casual'],
-        private: ['Halcyon Fold Private Blind', true, 'casual'],
-        casual_aral: ['Battle Royale', false, 'br'],
-        private_party_aral_match: ['Private Battle Royale', true, 'br'],
-        blitz_pvp_ranked: ['Blitz', false, 'blitz'],
-        private_party_blitz_match: ['Private Blitz', true, 'blitz'],
-        blitz_rounds_pvp_casual: ['Onslaught', false, 'onslaught'],
-        private_party_blitz_rounds_match: [
-          'Private Onslaught',
-          true,
-          'onslaught',
-        ],
-      }[data.gameMode][0]),
+    humanGameMode: () => gameModeDict[data.gameMode][0],
     humanDuration: () => {
       let time = `${Math.floor(data.duration / 60)}:${data.duration % 60}`;
       time = time.split(':');

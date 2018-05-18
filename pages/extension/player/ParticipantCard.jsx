@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Dimmer, Loader, Image, Grid, Progress, Card } from 'semantic-ui-react';
 import Link from 'next/link';
 
+import skillTierCalculator from '../../../modules/functions/skillTierCalculator';
+
 const propTypes = {
   matchDuration: PropTypes.number.isRequired,
   participant: PropTypes.object.isRequired,
@@ -25,6 +27,7 @@ export default function ParticipantCard({
   damage,
   playerInTheMatch,
   gameMode,
+  rankPoints,
 }) {
   const items = participant.items.slice();
   if (gameMode.indexOf('5v5') !== -1) {
@@ -47,6 +50,7 @@ export default function ParticipantCard({
   if (participant.player.id === playerInTheMatch.player.id) {
     cardBg = '#ececec';
   }
+  const skillTierInfo = skillTierCalculator(rankPoints);
   return (
     <Link
       prefetch
@@ -74,11 +78,19 @@ export default function ParticipantCard({
             style={{ borderRadius: '25%', margin: '0 2px' }}
             floated={side}
           />
+          <Image
+            size="mini"
+            src={`/static/img/rank/c/${skillTierInfo.number}${
+              skillTierInfo.color
+            }.png`}
+            style={{ margin: '0 -6px', padding: '-5px' }}
+            floated={{ left: 'right', right: 'left' }[side]}
+          />
           <strong
             style={{
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              fontSize: '1.1rem',
+              fontSize: '1rem',
               display: 'block',
               whiteSpace: 'nowrap',
             }}

@@ -172,6 +172,7 @@ export default function MatchDetailView({
                   telemetryLoading={telemetryLoading}
                   damage={TLData.damageData.rosters[0][participant.actor]}
                   highestDamage={TLData.damageData.highest}
+                  rankPoints={TLData.rankPoints[participant.player.name]}
                 />
               ))}
             </Grid.Column>
@@ -188,6 +189,7 @@ export default function MatchDetailView({
                   telemetryLoading={telemetryLoading}
                   damage={TLData.damageData.rosters[1][participant.actor]}
                   highestDamage={TLData.damageData.highest}
+                  rankPoints={TLData.rankPoints[participant.player.name]}
                 />
               ))}
             </Grid.Column>
