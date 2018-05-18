@@ -18,7 +18,7 @@ module.exports = (phase, { defaultConfig }) => {
       staticFolder: '/static',
     },
   };
-  const config = Object.assign(defaultConfig, withTypescript(), customConfig);
+  const config = { ...defaultConfig, ...withTypescript(), ...customConfig };
 
   return config;
 };

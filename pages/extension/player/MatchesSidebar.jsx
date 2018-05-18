@@ -28,15 +28,19 @@ export default function MatchesSidebar({
       visible={sidebarVisible}
       icon="labeled"
       style={{ maxWidth: '100vw' }}
-      inverted
+      //inverted
       vertical
     >
       <Menu.Item
         style={{ padding: '10px', paddingBottom: '5px', textAlign: 'left' }}
+        onClick={toggleSidebar}
+        icon={false}
       >
-        <Button onClick={toggleSidebar} style={{ width: '100%' }}>
+        {/* <Button onClick={toggleSidebar} style={{ width: '100%' }}> */}
+        <div style={{ lineHeight: '2.4rem', fontSize: '1.2rem' }}>
           <Icon name="chevron left" />Back
-        </Button>
+        </div>
+        {/* </Button> */}
         <Button
           onClick={() =>
             console.log('Show with modal: Filter option is coming soon!')
@@ -53,33 +57,15 @@ export default function MatchesSidebar({
           rosters: match.rosters,
         }).identifyPlayerInTheMatch();
         return (
-          <Menu.Item
+          <MatchCard
             key={match.matchID}
-            style={{ padding: '10px', paddingBottom: '5px' }}
-          >
-            <button
-              style={{
-                border: 'none',
-                backgroundImage: 'none',
-                backgroundColor: 'transparent',
-                boxShadow: 'none',
-                padding: 0,
-                width: '100%',
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                setSelectedMatch(index);
-              }}
-            >
-              <MatchCard
-                key={index}
-                match={match}
-                playerInTheMatch={playerInTheMatch}
-                playerInTheMatchWon={playerInTheMatchWon}
-                converter={converter}
-              />
-            </button>
-          </Menu.Item>
+            match={match}
+            playerInTheMatch={playerInTheMatch}
+            playerInTheMatchWon={playerInTheMatchWon}
+            converter={converter}
+            setSelectedMatch={setSelectedMatch}
+            index={index}
+          />
         );
       })}
     </Sidebar>

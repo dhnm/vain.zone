@@ -46,11 +46,11 @@ export default function ParticipantCard({
     kdaPerTenMinutes =
       (participant.kills + participant.assists) / (matchDuration / 600);
   }
-  let cardBg = 'white';
+  let cardBg = 'transparent';
   if (participant.player.id === playerInTheMatch.player.id) {
     cardBg = `linear-gradient(${
       { left: '135deg', right: '225deg' }[side]
-    }, #d3d3d3, white)`;
+    }, #d3d3d3, transparent)`;
   }
   const skillTierInfo = skillTierCalculator(rankPoints);
 
@@ -70,11 +70,11 @@ export default function ParticipantCard({
       as={`/extension/player/${participant.player.name}`}
     >
       <Card
-        link
-        fluid
+        as="a"
+        //fluid
         style={{
+          color: 'initial',
           margin: '3px 1px 3px 0',
-          color: 'black',
           background: cardBg,
         }}
       >
@@ -108,15 +108,18 @@ export default function ParticipantCard({
           >
             {participant.player.name}
           </strong>
-          <div style={{ fontSize: '0.9rem' }}>
+          <div style={{ fontSize: '0.88rem' }}>
             {participant.kills}/{participant.deaths}/{participant.assists}{' '}
-            <span
+            <em style={{ fontSize: '0.75rem' }}>{`(${kdaPerTenMinutes.toFixed(
+              1,
+            )})`}</em>
+            {/* <span
               style={{
                 float: { right: 'left', left: 'right' }[side],
               }}
             >
               {`(${kdaPerTenMinutes.toFixed(1)})`}
-            </span>
+            </span> */}
           </div>
           <Grid style={{ margin: 0, marginBottom: '2px' }} columns={6}>
             <Grid.Row style={{ padding: 0 }}>

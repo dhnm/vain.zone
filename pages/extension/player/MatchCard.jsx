@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, Image, Grid, Label } from 'semantic-ui-react';
+import { Card, Image, Grid, Label, Menu } from 'semantic-ui-react';
 import * as moment from 'moment';
 
 const propTypes = {
@@ -8,6 +8,7 @@ const propTypes = {
   playerInTheMatch: PropTypes.object.isRequired,
   playerInTheMatchWon: PropTypes.bool.isRequired,
   converter: PropTypes.func.isRequired,
+  setSelectedMatch: PropTypes.func.isRequired,
 };
 
 export default function MatchCard({
@@ -15,6 +16,8 @@ export default function MatchCard({
   playerInTheMatch,
   playerInTheMatchWon,
   converter,
+  setSelectedMatch,
+  index,
 }) {
   const { shortMatchConclusion, matchConclusionColors } = converter({
     shortMatchConclusion: playerInTheMatchWon,
@@ -45,7 +48,17 @@ export default function MatchCard({
   }
   const goldPerMinute = playerInTheMatch.gold / (match.duration / 60);
   return (
-    <Card color={matchConclusionColors[1]} link fluid>
+    <Menu.Item
+      // style={{ padding: '10px', paddingBottom: '5px' }}
+      onClick={(e) => {
+        e.preventDefault();
+        setSelectedMatch(index);
+      }}
+      as={Card}
+      color={matchConclusionColors[1]}
+      link
+      fluid
+    >
       <Card.Content>
         <Image
           size="mini"
@@ -69,7 +82,7 @@ export default function MatchCard({
           {moment(match.createdAt).fromNow()} | {humanDuration}min game
         </Card.Meta>
       </Card.Content>
-      <Card.Content style={{ color: 'black' }}>
+      <Card.Content>
         <Grid columns="equal">
           <Grid.Row>
             <Grid.Column style={{ margin: 'auto', padding: '0 0.5rem' }}>
@@ -255,7 +268,7 @@ export default function MatchCard({
           </Grid.Row>
         </Grid>
       </Card.Content>
-    </Card>
+    </Menu.Item>
   );
 }
 

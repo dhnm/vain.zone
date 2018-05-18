@@ -252,12 +252,12 @@ export default class MainView extends React.Component {
               We will support other regions soon.
             </Message> */}
             <PlayerDetailView player={this.props.data.player} />
-            <Button.Group attached="bottom">
+            <Button.Group attached="bottom" style={{ overflow: 'hidden' }}>
               <Button
                 onClick={() => MainView.generateImage('playerDetailView')}
               >
                 <Icon name="send" />Send Profile{' '}
-                <Label color="yellow">Beta</Label>
+                <Label color="blue">Beta</Label>
               </Button>
               <Button onClick={this.props.toggleSidebar}>
                 <Icon name="sidebar" /> Matches
@@ -283,7 +283,7 @@ export default class MainView extends React.Component {
               onClick={() => MainView.generateImage('matchDetailView')}
               attached="bottom"
             >
-              <Icon name="send" />Send Match <Label color="yellow">Beta</Label>
+              <Icon name="send" />Send Match <Label color="blue">Beta</Label>
             </Button>
           </Segment>
         </Sidebar.Pusher>
