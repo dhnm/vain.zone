@@ -53,6 +53,14 @@ export default function ParticipantCard({
     }, #d3d3d3, white)`;
   }
   const skillTierInfo = skillTierCalculator(rankPoints);
+
+  let afkFilter = '';
+  let afkTextDecoration = '';
+  if (participant.wentAfk) {
+    afkFilter = 'grayscale(100%)';
+    afkTextDecoration = 'line-through';
+  }
+
   return (
     <Link
       prefetch
@@ -77,7 +85,7 @@ export default function ParticipantCard({
           <Image
             size="mini"
             src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
-            style={{ borderRadius: '25%', margin: '0 2px' }}
+            style={{ borderRadius: '25%', margin: '0 2px', filter: afkFilter }}
             floated={side}
           />
           <Image
@@ -95,6 +103,7 @@ export default function ParticipantCard({
               fontSize: '1.05rem',
               display: 'block',
               whiteSpace: 'nowrap',
+              textDecoration: afkTextDecoration,
             }}
           >
             {participant.player.name}

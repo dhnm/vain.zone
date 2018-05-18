@@ -81,57 +81,69 @@ export default function MatchCard({
                   overflow: 'hidden',
                 }}
               >
-                {match.rosters[0].participants.map((participant, index) => (
-                  <div
-                    style={{
-                      display: 'block',
-                      float: 'left',
-                    }}
-                  >
-                    <Image
-                      avatar
-                      src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
-                      style={{
-                        borderRadius: '25%',
-                        width: '22px',
-                        height: '22px',
-                        margin: '1px',
-                        float: 'left',
-                      }}
-                      key={index}
-                    />{' '}
+                {match.rosters[0].participants.map((participant, index) => {
+                  let afkFilter = '';
+                  let afkTextDecoration = '';
+                  if (participant.wentAfk) {
+                    afkFilter = 'grayscale(100%)';
+                    afkTextDecoration = 'line-through';
+                  }
+
+                  return (
                     <div
                       style={{
                         display: 'block',
-                        overflow: 'hidden',
-                        lineHeight: '24px',
-                        fontSize: '0.85em',whiteSpace: "nowrap"
+                        float: 'left',
                       }}
                     >
-                      {(() => {
-                        if (
-                          participant.player.name !==
-                          playerInTheMatch.player.name
-                        ) {
-                          return <>{participant.player.name}</>;
-                        }
-                        return <strong>{participant.player.name}</strong>;
-                      })()}
+                      <Image
+                        avatar
+                        src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
+                        style={{
+                          borderRadius: '25%',
+                          width: '22px',
+                          height: '22px',
+                          margin: '1px',
+                          float: 'left',
+                          filter: afkFilter,
+                        }}
+                        key={index}
+                      />{' '}
                       <div
                         style={{
-                          position: 'absolute',
-                          top: `${index * 24}px`,
-                          left: 0,
                           display: 'block',
-                          width: '50%',
-                          height: '24px',
-                          background:
-                            'linear-gradient(to right, transparent 90%, white)',
+                          overflow: 'hidden',
+                          lineHeight: '24px',
+                          fontSize: '0.85em',
+                          whiteSpace: 'nowrap',
+                          textDecoration: afkTextDecoration,
                         }}
-                      />
+                      >
+                        {(() => {
+                          if (
+                            participant.player.name !==
+                            playerInTheMatch.player.name
+                          ) {
+                            return <>{participant.player.name}</>;
+                          }
+                          return <strong>{participant.player.name}</strong>;
+                        })()}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: `${index * 24}px`,
+                            left: 0,
+                            display: 'block',
+                            width: '50%',
+                            height: '24px',
+                            background:
+                              'linear-gradient(to right, transparent 90%, white)',
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
               <div
                 style={{
@@ -140,59 +152,71 @@ export default function MatchCard({
                   verticalAlign: 'middle',
                 }}
               >
-                {match.rosters[1].participants.map((participant, index) => (
-                  <div
-                    style={{
-                      display: 'block',
-                      float: 'right',
-                      width: '100%',
-                    }}
-                  >
-                    <Image
-                      avatar
-                      src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
-                      style={{
-                        borderRadius: '25%',
-                        width: '22px',
-                        height: '22px',
-                        margin: '1px',
-                        float: 'right',
-                      }}
-                      key={index}
-                    />
+                {match.rosters[1].participants.map((participant, index) => {
+                  let afkFilter = '';
+                  let afkTextDecoration = '';
+                  if (participant.wentAfk) {
+                    afkFilter = 'grayscale(100%)';
+                    afkTextDecoration = 'line-through';
+                  }
+
+                  return (
                     <div
                       style={{
                         display: 'block',
-                        overflow: 'hidden',
-                        lineHeight: '24px',
-                        fontSize: '0.85em',
-                        textAlign: 'center',whiteSpace: "nowrap"
+                        float: 'right',
+                        width: '100%',
                       }}
                     >
-                      {(() => {
-                        if (
-                          participant.player.name !==
-                          playerInTheMatch.player.name
-                        ) {
-                          return <>{participant.player.name}</>;
-                        }
-                        return <strong>{participant.player.name}</strong>;
-                      })()}{' '}
+                      <Image
+                        avatar
+                        src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
+                        style={{
+                          borderRadius: '25%',
+                          width: '22px',
+                          height: '22px',
+                          margin: '1px',
+                          float: 'right',
+                          filter: afkFilter,
+                        }}
+                        key={index}
+                      />
                       <div
                         style={{
-                          position: 'absolute',
-                          top: `${index * 24}px`,
-                          left: '50%',
                           display: 'block',
-                          width: 'calc(50% - 24px - 6px)',
-                          height: '24px',
-                          background:
-                            'linear-gradient(to right, transparent 85%, white)',
+                          overflow: 'hidden',
+                          lineHeight: '24px',
+                          fontSize: '0.85em',
+                          textAlign: 'center',
+                          whiteSpace: 'nowrap',
+                          textDecoration: afkTextDecoration,
                         }}
-                      />
+                      >
+                        {(() => {
+                          if (
+                            participant.player.name !==
+                            playerInTheMatch.player.name
+                          ) {
+                            return <>{participant.player.name}</>;
+                          }
+                          return <strong>{participant.player.name}</strong>;
+                        })()}{' '}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: `${index * 24}px`,
+                            left: '50%',
+                            display: 'block',
+                            width: 'calc(50% - 24px - 6px)',
+                            height: '24px',
+                            background:
+                              'linear-gradient(to right, transparent 85%, white)',
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </Grid.Column>
             <Grid.Column
