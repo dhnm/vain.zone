@@ -73,34 +73,125 @@ export default function MatchCard({
         <Grid columns="equal">
           <Grid.Row>
             <Grid.Column style={{ margin: 'auto', padding: '0 0.5rem' }}>
-              <div style={{ margin: 'auto' }}>
+              <div
+                style={{
+                  display: 'inline-block',
+                  verticalAlign: 'middle',
+                  width: '50%',
+                  overflow: 'hidden',
+                }}
+              >
                 {match.rosters[0].participants.map((participant, index) => (
-                  <Image
-                    avatar
-                    src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
+                  <div
                     style={{
-                      borderRadius: '25%',
-                      width: '22px',
-                      height: '22px',
-                      margin: '1px',
+                      display: 'block',
+                      float: 'left',
                     }}
-                    key={index}
-                  />
+                  >
+                    <Image
+                      avatar
+                      src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
+                      style={{
+                        borderRadius: '25%',
+                        width: '22px',
+                        height: '22px',
+                        margin: '1px',
+                        float: 'left',
+                      }}
+                      key={index}
+                    />{' '}
+                    <div
+                      style={{
+                        display: 'block',
+                        overflow: 'hidden',
+                        lineHeight: '24px',
+                        fontSize: '0.85em',
+                      }}
+                    >
+                      {(() => {
+                        if (
+                          participant.player.name !==
+                          playerInTheMatch.player.name
+                        ) {
+                          return <>{participant.player.name}</>;
+                        }
+                        return <strong>{participant.player.name}</strong>;
+                      })()}
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: `${index * 24}px`,
+                          left: 0,
+                          display: 'block',
+                          width: '50%',
+                          height: '24px',
+                          background:
+                            'linear-gradient(to right, transparent 90%, white)',
+                        }}
+                      />
+                    </div>
+                  </div>
                 ))}
-                <br />
-                vs<br />
+              </div>
+              <div
+                style={{
+                  display: 'inline-block',
+                  width: '50%',
+                  verticalAlign: 'middle',
+                }}
+              >
                 {match.rosters[1].participants.map((participant, index) => (
-                  <Image
-                    avatar
-                    src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
+                  <div
                     style={{
-                      borderRadius: '25%',
-                      width: '22px',
-                      height: '22px',
-                      margin: '1px',
+                      display: 'block',
+                      float: 'right',
+                      width: '100%',
                     }}
-                    key={index}
-                  />
+                  >
+                    <Image
+                      avatar
+                      src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
+                      style={{
+                        borderRadius: '25%',
+                        width: '22px',
+                        height: '22px',
+                        margin: '1px',
+                        float: 'right',
+                      }}
+                      key={index}
+                    />
+                    <div
+                      style={{
+                        display: 'block',
+                        overflow: 'hidden',
+                        lineHeight: '24px',
+                        fontSize: '0.85em',
+                        textAlign: 'center',
+                      }}
+                    >
+                      {(() => {
+                        if (
+                          participant.player.name !==
+                          playerInTheMatch.player.name
+                        ) {
+                          return <>{participant.player.name}</>;
+                        }
+                        return <strong>{participant.player.name}</strong>;
+                      })()}{' '}
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: `${index * 24}px`,
+                          left: '50%',
+                          display: 'block',
+                          width: 'calc(50% - 24px - 6px)',
+                          height: '24px',
+                          background:
+                            'linear-gradient(to right, transparent 85%, white)',
+                        }}
+                      />
+                    </div>
+                  </div>
                 ))}
               </div>
             </Grid.Column>
@@ -108,10 +199,14 @@ export default function MatchCard({
               style={{
                 textAlign: 'center',
                 margin: 'auto',
-                padding: '0 0.5rem',
+                padding: '0 0.2rem',
+                paddingBottom: '3px',
               }}
             >
               <div style={{ margin: 'auto' }}>
+                {playerInTheMatch.kills} / {playerInTheMatch.deaths} /{' '}
+                {playerInTheMatch.assists}
+                <br />
                 <strong>{kdaPerTenMinutes.toFixed(1)}</strong> KDA Score
                 <br />
                 <strong>{goldPerMinute.toFixed(0)}</strong> Gold/min

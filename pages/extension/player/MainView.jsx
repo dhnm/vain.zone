@@ -256,7 +256,7 @@ export default class MainView extends React.Component {
               <Button
                 onClick={() => MainView.generateImage('playerDetailView')}
               >
-                <Icon name="send" />Send Image{' '}
+                <Icon name="send" />Send Profile{' '}
                 <Label color="yellow">Beta</Label>
               </Button>
               <Button onClick={this.props.toggleSidebar}>
@@ -283,7 +283,7 @@ export default class MainView extends React.Component {
               onClick={() => MainView.generateImage('matchDetailView')}
               attached="bottom"
             >
-              <Icon name="send" />Send Image <Label color="yellow">Beta</Label>
+              <Icon name="send" />Send Match <Label color="yellow">Beta</Label>
             </Button>
           </Segment>
         </Sidebar.Pusher>
