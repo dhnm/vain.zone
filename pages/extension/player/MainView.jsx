@@ -268,7 +268,7 @@ export default class MainView extends React.Component {
               style={{
                 width: '100%',
                 height: '120px',
-                //display: 'none',
+                display: 'none',
               }}
               value="Debugging"
               readOnly
