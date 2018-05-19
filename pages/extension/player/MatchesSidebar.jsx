@@ -22,7 +22,7 @@ export default function MatchesSidebar({
   return (
     <Sidebar
       as={Menu}
-      animation="push"
+      animation="scale down"
       direction="right"
       width="wide"
       visible={sidebarVisible}
@@ -36,11 +36,18 @@ export default function MatchesSidebar({
         onClick={toggleSidebar}
         icon={false}
       >
-        {/* <Button onClick={toggleSidebar} style={{ width: '100%' }}> */}
-        <div style={{ lineHeight: '2.4rem', fontSize: '1.2rem' }}>
-          <Icon name="chevron left" />Back
-        </div>
-        {/* </Button> */}
+        <Button
+          onClick={toggleSidebar}
+          style={{
+            width: '100%',
+            background: 'transparent',
+            border: '1px solid hsla(0, 0%, 0%, 0.53)',
+          }}
+        >
+          <div style={{ lineHeight: '2.4rem', fontSize: '1.2rem' }}>
+            <Icon name="chevron left" />Back
+          </div>
+        </Button>
         <Button
           onClick={() =>
             console.log('Show with modal: Filter option is coming soon!')

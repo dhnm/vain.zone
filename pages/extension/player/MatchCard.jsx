@@ -58,6 +58,11 @@ export default function MatchCard({
       color={matchConclusionColors[1]}
       link
       fluid
+      style={{
+        background: `linear-gradient(hsla(0, 100%, 100%, 0.93), hsla(0, 100%, 100%, 0.87), hsla(0, 100%, 100%, 0.93)), url(/static/img/heroes/c/${playerInTheMatch.actor.toLowerCase()}.jpg)`,
+        backgroundSize: 'cover',
+        backgroundPositionY: '40%',
+      }}
     >
       <Card.Content>
         <Image
@@ -154,6 +159,7 @@ export default function MatchCard({
                             top: `${index * 24}px`,
                             left: 0,
                             display: 'block',
+                            display: 'none',
                             width: '50%',
                             height: '24px',
                             background:
@@ -227,6 +233,7 @@ export default function MatchCard({
                             top: `${index * 24}px`,
                             left: '50%',
                             display: 'block',
+                            display: 'none',
                             width: 'calc(50% - 24px - 6px)',
                             height: '24px',
                             background:
