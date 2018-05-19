@@ -7,7 +7,7 @@ import Layout from './../../../components/ExtensionLayout';
 import MainView from './MainView';
 import ErrorLayout from './ErrorView';
 
-import { gameModeDict } from './../../../modules/functions/variables';
+import { gameModeDict } from './../../../modules/functions/constants';
 
 const propTypes = {
   data: PropTypes.object,

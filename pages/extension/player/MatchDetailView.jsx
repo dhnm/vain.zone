@@ -4,7 +4,23 @@ import Link from 'next/link';
 import { Segment, Label, Grid, Image } from 'semantic-ui-react';
 import * as moment from 'moment';
 
+import { ICONS, Icon as VZIcon } from './../../../components/icons';
 import ParticipantCard from './ParticipantCard';
+
+function TeamStat(props) {
+  return (
+    <span
+      style={{
+        display: 'inline-block',
+        padding: '0 3px',
+        margin: '1px 2px 1px 0',
+        fontSize: '1.05rem',
+      }}
+    >
+      <VZIcon icon={props.icon} size={11 * 1.05} />&zwj;{props.stat}
+    </span>
+  );
+}
 
 const propTypes = {
   converter: PropTypes.func.isRequired,
@@ -88,7 +104,9 @@ export default function MatchDetailView({
             transform: 'translateX(-50%)',
           }}
         >
-          {match.rosters[0].heroKills} ⚔️{match.rosters[1].heroKills}
+          {match.rosters[0].heroKills}{' '}
+          <VZIcon icon={ICONS.swords} size={1.4 * 11} />{" "}
+          {match.rosters[1].heroKills}
         </div>
         <Label
           color={
@@ -113,18 +131,19 @@ export default function MatchDetailView({
         <Grid columns={2} style={{ clear: 'both' }}>
           <Grid.Row style={{ padding: '0.4rem 0 0 0' }}>
             <Grid.Column textAlign="left">
-              <span role="img" aria-label="Team Gold">
-                💰
-              </span>&zwj;{match.rosters[0].gold}{' '}
-              <span role="img" aria-label="Total Aces">
-                🃏
-              </span>&zwj;{match.rosters[0].acesEarned}{' '}
-              <span role="img" aria-label="Legendary Creature Captures">
-                🐲
-              </span>&zwj;{match.rosters[0].krakenCaptures}{' '}
-              <span role="img" aria-label="Turrets Taken">
-                🗼
-              </span>&zwj;{match.rosters[0].turretKills}
+              <TeamStat icon={ICONS.coin} stat={match.rosters[0].gold} />
+              <TeamStat
+                icon={ICONS.spades}
+                stat={match.rosters[0].acesEarned}
+              />
+              <TeamStat
+                icon={ICONS.kraken}
+                stat={match.rosters[0].krakenCaptures}
+              />
+              <TeamStat
+                icon={ICONS.turret}
+                stat={match.rosters[0].turretKills}
+              />
               <br />
               {TLData.banData.rosters[0].map((b) => (
                 <Label image style={{ margin: '0.2rem 0' }}>
@@ -133,18 +152,19 @@ export default function MatchDetailView({
               ))}
             </Grid.Column>
             <Grid.Column textAlign="right" style={{}}>
-              <span role="img" aria-label="Team Gold">
-                💰
-              </span>&zwj;{match.rosters[1].gold}{' '}
-              <span role="img" aria-label="Total Aces">
-                🃏
-              </span>&zwj;{match.rosters[1].acesEarned}{' '}
-              <span role="img" aria-label="Legendary Creature Captures">
-                🐲
-              </span>&zwj;{match.rosters[1].krakenCaptures}{' '}
-              <span role="img" aria-label="Turrets Taken">
-                🗼
-              </span>&zwj;{match.rosters[1].turretKills}
+              <TeamStat icon={ICONS.coin} stat={match.rosters[1].gold} />
+              <TeamStat
+                icon={ICONS.spades}
+                stat={match.rosters[1].acesEarned}
+              />
+              <TeamStat
+                icon={ICONS.kraken}
+                stat={match.rosters[1].krakenCaptures}
+              />
+              <TeamStat
+                icon={ICONS.turret}
+                stat={match.rosters[1].turretKills}
+              />
               <br />
               {TLData.banData.rosters[1].map((b) => (
                 <Label image style={{ margin: '0.2rem 0' }}>

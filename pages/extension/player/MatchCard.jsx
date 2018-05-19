@@ -76,7 +76,14 @@ export default function MatchCard({
               {shortMatchConclusion.toUpperCase()}
             </Label>
           </span>{' '}
-          {humanGameMode.toUpperCase()}
+          <span
+            style={{
+              fontStyle: 'italic',
+              // color: matchConclusionColors[1],
+            }}
+          >
+            {humanGameMode.toUpperCase()}
+          </span>
         </Card.Header>
         <Card.Meta style={{ fontSize: '0.9em', marginTop: '3px' }}>
           {moment(match.createdAt).fromNow()} | {humanDuration}min game

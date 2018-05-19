@@ -4,7 +4,7 @@ const router: Router = Router();
 import axios, { AxiosResponse } from 'axios';
 import { IMatch } from 'models/Match';
 
-import { gameModeDict } from './../functions/variables';
+import { gameModeDict } from './../functions/constants';
 
 export default router;
 
