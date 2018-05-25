@@ -30,15 +30,17 @@ class Extension extends React.Component {
     this.state = {
       data: props.data,
       sidebarVisible: false,
+      scrollPosition: 0,
       selectedMatch: 0,
       TLData: props.TLData,
       telemetryLoading: false,
       appLoading: false,
     };
-    this.toggleSidebar = this.toggleSidebar.bind(this);
+    this.showSidebar = this.showSidebar.bind(this);
     this.converter = this.converter.bind(this);
     this.setSelectedMatch = this.setSelectedMatch.bind(this);
     this.appLoadingOn = this.appLoadingOn.bind(this);
+    this.loadMoreMatches = this.loadMoreMatches.bind(this);
   }
   componentDidMount() {
     Router.onRouteChangeStart = () =>
@@ -57,8 +59,15 @@ class Extension extends React.Component {
       appLoading: false,
     });
   }
+  loadMoreMatches = () => {
+    const data = Object.assign({}, this.state.data);
+    const newMatches = data.matches.slice();
+
+    data.matches = newMatches.concat(newMatches.slice());
+    this.setState({ data: data });
+  };
   setSelectedMatch = (index) => {
-    this.toggleSidebar();
+    this.showSidebar(false);
     this.setState({ telemetryLoading: true });
     const that = this;
     axios({
@@ -85,9 +94,24 @@ class Extension extends React.Component {
   appLoadingOn = () => {
     this.setState({ appLoading: true });
   };
-  toggleSidebar = () => {
-    this.setState({ sidebarVisible: !this.state.sidebarVisible });
+  showSidebar = (sidebarVisible) => {
+    this.setState(
+      () => {
+        return {
+          sidebarVisible: sidebarVisible,
+          scrollPosition: window.scrollY,
+        };
+      },
+      () => {
+        if (sidebarVisible) {
+          window.document.body.style.overflowY = 'hidden';
+        } else {
+          window.document.body.style.overflowY = 'auto';
+        }
+      },
+    );
   };
+
   converter = (data) => ({
     identifyPlayerInTheMatch: () => {
       for (
@@ -193,7 +217,7 @@ class Extension extends React.Component {
       <MainView
         data={this.state.data}
         sidebarVisible={this.state.sidebarVisible}
-        toggleSidebar={this.toggleSidebar}
+        showSidebar={this.showSidebar}
         converter={this.converter}
         setSelectedMatch={this.setSelectedMatch}
         selectedMatch={this.state.selectedMatch}
@@ -202,6 +226,8 @@ class Extension extends React.Component {
         extension={this.props.extension}
         appLoading={this.state.appLoading}
         appLoadingOn={this.appLoadingOn}
+        loadMoreMatches={this.loadMoreMatches}
+        scrollPosition={this.state.scrollPosition}
       />
     );
   }

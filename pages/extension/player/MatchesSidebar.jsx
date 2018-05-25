@@ -7,17 +7,20 @@ import MatchCard from './MatchCard';
 const propTypes = {
   matches: PropTypes.arrayOf(PropTypes.object).isRequired,
   sidebarVisible: PropTypes.bool.isRequired,
-  toggleSidebar: PropTypes.func.isRequired,
+  showSidebar: PropTypes.func.isRequired,
   converter: PropTypes.func.isRequired,
   setSelectedMatch: PropTypes.func.isRequired,
+  loadMoreMatches: PropTypes.func.isRequired,
 };
 
-export default function MatchesSidebar({
+function MatchesSidebar({
   matches,
   sidebarVisible,
-  toggleSidebar,
+  showSidebar,
   converter,
   setSelectedMatch,
+  loadMoreMatches,
+  scrollPosition,
 }) {
   return (
     <Sidebar
@@ -27,17 +30,25 @@ export default function MatchesSidebar({
       width="wide"
       visible={sidebarVisible}
       icon="labeled"
-      style={{ maxWidth: '100vw' }}
+      style={{
+        maxWidth: '100vw',
+        maxHeight: '100vh',
+        top: `${scrollPosition}px`,
+      }}
       //inverted
       vertical
     >
       <Menu.Item
         style={{ padding: '10px', paddingBottom: '5px', textAlign: 'left' }}
-        onClick={toggleSidebar}
+        onClick={() => {
+          showSidebar(false);
+        }}
         icon={false}
       >
         <Button
-          onClick={toggleSidebar}
+          onClick={() => {
+            showSidebar(false);
+          }}
           style={{
             width: '100%',
             background: 'transparent',
@@ -75,8 +86,39 @@ export default function MatchesSidebar({
           />
         );
       })}
+      <Menu.Item
+        style={{
+          display: 'none',
+        }}
+      >
+        <Button
+          style={{
+            width: '100%',
+            background: 'transparent',
+            border: '1px solid hsla(0, 0%, 0%, 0.53)',
+          }}
+          onClick={loadMoreMatches}
+          loading={false}
+        >
+          <div style={{ lineHeight: '2.4rem', fontSize: '1.2rem' }}>
+            Load more matches
+          </div>
+        </Button>
+      </Menu.Item>
     </Sidebar>
   );
+}
+
+export default class ExportedMatchesSidebar extends React.Component {
+  componentDidMount() {
+    console.log('mounted');
+  }
+  componentWillUnmount() {
+    console.log('will unmount');
+  }
+  render() {
+    return <MatchesSidebar {...this.props} />;
+  }
 }
 
 MatchesSidebar.propTypes = propTypes;

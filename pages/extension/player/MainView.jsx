@@ -24,13 +24,14 @@ const propTypes = {
   playerID: PropTypes.string.isRequired,
   matches: PropTypes.arrayOf(PropTypes.object).isRequired,
   sidebarVisible: PropTypes.bool.isRequired,
-  toggleSidebar: PropTypes.func.isRequired,
+  showSidebar: PropTypes.func.isRequired,
   converter: PropTypes.func.isRequired,
   selectedMatch: PropTypes.number.isRequired,
   setSelectedMatch: PropTypes.func.isRequired,
   appLoading: PropTypes.bool.isRequired,
   TLData: PropTypes.object.isRequired,
   telemetryLoading: PropTypes.bool.isRequired,
+  loadMoreMatches: PropTypes.func.isRequired,
 };
 
 export default class MainView extends React.Component {
@@ -233,16 +234,18 @@ export default class MainView extends React.Component {
       );
     }
     return (
-      <Sidebar.Pushable style={{ minHeight: '100vh' }}>
+      <Sidebar.Pushable>
         <MatchesSidebar
           data={this.props.data}
           playerName={this.props.data.player.name}
           playerID={this.props.data.player.playerID}
           matches={this.props.data.matches}
           sidebarVisible={this.props.sidebarVisible}
-          toggleSidebar={this.props.toggleSidebar}
+          showSidebar={this.props.showSidebar}
           converter={this.props.converter}
           setSelectedMatch={this.props.setSelectedMatch}
+          loadMoreMatches={this.props.loadMoreMatches}
+          scrollPosition={this.props.scrollPosition}
         />
         <Sidebar.Pusher dimmed={this.props.sidebarVisible}>
           <Segment basic>
@@ -259,7 +262,11 @@ export default class MainView extends React.Component {
                 <Icon name="send" />Send Profile{' '}
                 <Label color="blue">Beta</Label>
               </Button>
-              <Button onClick={this.props.toggleSidebar}>
+              <Button
+                onClick={() => {
+                  this.props.showSidebar(true);
+                }}
+              >
                 <Icon name="sidebar" /> Matches
               </Button>
             </Button.Group>
