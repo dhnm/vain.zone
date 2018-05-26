@@ -120,17 +120,12 @@ function MatchesSidebar({
               active={selectedMode === 'private_party_vg_5v5'}
             />
             <Dropdown.Divider />
-            <Dropdown.Header
-              content="Halcyon Fold"
+            <Dropdown.Header content="Halcyon Fold" />
+            <Dropdown.Item
+              text="3v3 Ranked"
               value="ranked"
               onClick={handleSelect}
               active={selectedMode === 'ranked'}
-            />
-            <Dropdown.Item
-              text="3v3 Ranked"
-              value="5v5_pvp_ranked"
-              onClick={handleSelect}
-              active={selectedMode === '5v5_pvp_ranked'}
             />
             <Dropdown.Item
               text="3v3 Casual"
