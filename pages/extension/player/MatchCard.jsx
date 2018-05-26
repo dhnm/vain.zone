@@ -164,9 +164,9 @@ export default function MatchCard({
                             playerInTheMatch.player.name
                           ) {
                             return (
-                              <React.Fragment>
+                              <span className="fragment">
                                 {participant.player.name}
-                              </React.Fragment>
+                              </span>
                             );
                           }
                           return <strong>{participant.player.name}</strong>;
@@ -241,9 +241,9 @@ export default function MatchCard({
                             playerInTheMatch.player.name
                           ) {
                             return (
-                              <React.Fragment>
+                              <span className="fragment">
                                 {participant.player.name}
-                              </React.Fragment>
+                              </span>
                             );
                           }
                           return <strong>{participant.player.name}</strong>;
