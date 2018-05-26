@@ -122,15 +122,28 @@ class Extension extends React.Component {
               data.matches = newMatches.slice();
             }
 
-            this.setState({ data, appLoading: false });
+            this.setState({
+              data,
+              appLoading: false,
+              scrollPosition: window.scrollY,
+            });
           })
           .catch((err) => {
             const data = Object.assign({}, this.state.data);
             if (this.state.filters.page === 1) {
               data.matches = [];
             }
-
-            this.setState({ appLoading: false, filterFailed: true, data });
+            console.log(window.scrollY);
+            this.setState(
+              () => ({
+                appLoading: false,
+                filterFailed: true,
+                data,
+              }),
+              () => {
+                this.setState({ scrollPosition: window.scrollY });
+              },
+            );
             console.error(err);
           });
       },

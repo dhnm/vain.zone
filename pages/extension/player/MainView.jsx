@@ -288,10 +288,7 @@ export default class MainView extends React.Component {
             {(() => {
               if (this.props.data.matches.length > 0) {
                 return (
-                  <span
-                    className="fragment"
-                    style={{ marginTop: '12px', display: 'block' }}
-                  >
+                  <React.Fragment>
                     <MatchDetailView
                       match={this.props.data.matches[this.props.selectedMatch]}
                       converter={this.props.converter}
@@ -305,10 +302,10 @@ export default class MainView extends React.Component {
                       <Icon name="send" />Send Match{' '}
                       <Label color="blue">Beta</Label>
                     </Button>
-                  </span>
+                  </React.Fragment>
                 );
               }
-              return <span className="fragment" />;
+              return <></>;
             })()}
           </Segment>
         </Sidebar.Pusher>

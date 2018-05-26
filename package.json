@@ -1,8 +1,9 @@
 {
-  "name": "vainzone",
+  "name": "vain.zone",
   "version": "0.9.0",
   "engines": {
-    "node": "9.11.1"
+    "node": "9.11.1",
+    "npm": "6.1.0"
   },
   "description": "",
   "main": "production/server/index.js",

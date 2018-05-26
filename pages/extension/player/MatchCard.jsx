@@ -163,11 +163,7 @@ export default function MatchCard({
                             participant.player.name !==
                             playerInTheMatch.player.name
                           ) {
-                            return (
-                              <span className="fragment">
-                                {participant.player.name}
-                              </span>
-                            );
+                            return <>{participant.player.name}</>;
                           }
                           return <strong>{participant.player.name}</strong>;
                         })()}
@@ -240,11 +236,7 @@ export default function MatchCard({
                             participant.player.name !==
                             playerInTheMatch.player.name
                           ) {
-                            return (
-                              <span className="fragment">
-                                {participant.player.name}
-                              </span>
-                            );
+                            return <>{participant.player.name}</>;
                           }
                           return <strong>{participant.player.name}</strong>;
                         })()}{' '}
