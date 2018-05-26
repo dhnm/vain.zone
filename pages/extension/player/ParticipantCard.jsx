@@ -10,11 +10,12 @@ const propTypes = {
   participant: PropTypes.object.isRequired,
   side: PropTypes.string.isRequired,
   maxParticipantValues: PropTypes.object.isRequired,
-  telemetryLoading: PropTypes.bool.isRequired,
+  appLoading: PropTypes.bool.isRequired,
   highestDamage: PropTypes.number.isRequired,
   damage: PropTypes.number.isRequired,
   playerInTheMatch: PropTypes.object.isRequired,
   gameMode: PropTypes.string.isRequired,
+  rankPoints: PropTypes.number.isRequired,
 };
 
 export default function ParticipantCard({
@@ -22,7 +23,7 @@ export default function ParticipantCard({
   participant,
   side,
   maxParticipantValues,
-  telemetryLoading,
+  appLoading,
   highestDamage,
   damage,
   playerInTheMatch,
@@ -71,14 +72,14 @@ export default function ParticipantCard({
     >
       <Card
         as="a"
-        //fluid
+        // fluid
         style={{
           color: 'initial',
           margin: '3px 1px 3px 0',
           background: cardBg,
         }}
       >
-        <Dimmer active={telemetryLoading} inverted>
+        <Dimmer active={appLoading} inverted>
           <Loader />
         </Dimmer>
         <Card.Content style={{ padding: '4px' }}>
@@ -110,9 +111,9 @@ export default function ParticipantCard({
           </strong>
           <div style={{ fontSize: '0.88rem' }}>
             {participant.kills}/{participant.deaths}/{participant.assists}{' '}
-            <em style={{ fontSize: '0.75rem' }}>{`(${kdaPerTenMinutes.toFixed(
-              1,
-            )})`}</em>
+            <em style={{ fontSize: '0.75rem' }}>
+              {`(${kdaPerTenMinutes.toFixed(1)})`}
+            </em>
             {/* <span
               style={{
                 float: { right: 'left', left: 'right' }[side],

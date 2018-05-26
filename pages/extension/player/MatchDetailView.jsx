@@ -7,7 +7,12 @@ import * as moment from 'moment';
 import { ICONS, Icon as VZIcon } from './../../../components/icons';
 import ParticipantCard from './ParticipantCard';
 
-function TeamStat(props) {
+const TeamStatPropTypes = {
+  icon: PropTypes.string.isRequired,
+  stat: PropTypes.string.isRequired,
+};
+
+function TeamStat({ icon, stat }) {
   return (
     <span
       style={{
@@ -17,23 +22,25 @@ function TeamStat(props) {
         fontSize: '1.05rem',
       }}
     >
-      <VZIcon icon={props.icon} size={11 * 1.05} />&zwj;{props.stat}
+      <VZIcon icon={icon} size={11 * 1.05} />&zwj;{stat}
     </span>
   );
 }
+
+TeamStat.propTypes = TeamStatPropTypes;
 
 const propTypes = {
   converter: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   TLData: PropTypes.object.isRequired,
-  telemetryLoading: PropTypes.bool.isRequired,
+  appLoading: PropTypes.bool.isRequired,
 };
 
 export default function MatchDetailView({
   converter,
   match,
   TLData,
-  telemetryLoading,
+  appLoading,
 }) {
   const maxParticipantValues = converter({
     rosters: match.rosters,
@@ -105,7 +112,7 @@ export default function MatchDetailView({
           }}
         >
           {match.rosters[0].heroKills}{' '}
-          <VZIcon icon={ICONS.swords} size={1.4 * 11} />{" "}
+          <VZIcon icon={ICONS.swords} size={1.4 * 11} />{' '}
           {match.rosters[1].heroKills}
         </div>
         <Label
@@ -189,7 +196,7 @@ export default function MatchDetailView({
                   maxParticipantValues={maxParticipantValues}
                   side="left"
                   key={index}
-                  telemetryLoading={telemetryLoading}
+                  appLoading={appLoading}
                   damage={TLData.damageData.rosters[0][participant.actor]}
                   highestDamage={TLData.damageData.highest}
                   rankPoints={TLData.rankPoints[participant.player.name]}
@@ -206,7 +213,7 @@ export default function MatchDetailView({
                   maxParticipantValues={maxParticipantValues}
                   side="right"
                   key={index}
-                  telemetryLoading={telemetryLoading}
+                  appLoading={appLoading}
                   damage={TLData.damageData.rosters[1][participant.actor]}
                   highestDamage={TLData.damageData.highest}
                   rankPoints={TLData.rankPoints[participant.player.name]}

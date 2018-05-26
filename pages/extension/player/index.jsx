@@ -31,44 +31,45 @@ class Extension extends React.Component {
       data: props.data,
       sidebarVisible: false,
       scrollPosition: 0,
+      filters: {
+        page: 1,
+        createdAt: '',
+        gameMode: '',
+      },
+      filterFailed: false,
       selectedMatch: 0,
       TLData: props.TLData,
-      telemetryLoading: false,
       appLoading: false,
     };
     this.showSidebar = this.showSidebar.bind(this);
     this.converter = this.converter.bind(this);
     this.setSelectedMatch = this.setSelectedMatch.bind(this);
     this.appLoadingOn = this.appLoadingOn.bind(this);
-    this.loadMoreMatches = this.loadMoreMatches.bind(this);
+    this.applyFilter = this.applyFilter.bind(this);
   }
   componentDidMount() {
-    Router.onRouteChangeStart = () =>
-      this.setState({ telemetryLoading: true, appLoading: true });
+    Router.onRouteChangeStart = () => this.setState({ appLoading: true });
     // Router.onRouteChangeComplete = () => console.log("Complete");
-    Router.onRouteChangeError = () =>
-      this.setState({ telemetryLoading: false, appLoading: false });
+    Router.onRouteChangeError = () => this.setState({ appLoading: false });
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
       data: nextProps.data,
       sidebarVisible: false,
+      filters: {
+        page: 1,
+        createdAt: '',
+        gameMode: '',
+      },
+      filterFailed: false,
       selectedMatch: 0,
       TLData: nextProps.TLData,
-      telemetryLoading: false,
       appLoading: false,
     });
   }
-  loadMoreMatches = () => {
-    const data = Object.assign({}, this.state.data);
-    const newMatches = data.matches.slice();
-
-    data.matches = newMatches.concat(newMatches.slice());
-    this.setState({ data: data });
-  };
   setSelectedMatch = (index) => {
     this.showSidebar(false);
-    this.setState({ telemetryLoading: true });
+    this.setState({ appLoading: true });
     const that = this;
     axios({
       method: 'get',
@@ -82,26 +83,68 @@ class Extension extends React.Component {
         that.setState({
           selectedMatch: index,
           TLData: processedTelemetry,
-          telemetryLoading: false,
+          appLoading: false,
         });
       })
       .catch((err) => {
-        that.setState({ telemetryLoading: false });
+        that.setState({ appLoading: false });
         // alert('Error retrieving telemetry data.');
         console.log(err);
       });
+  };
+  applyFilter = (modifiedValues) => {
+    this.setState(
+      (prevState) => ({
+        filters: {
+          ...prevState.filters,
+          ...modifiedValues,
+        },
+        filterFailed: false,
+        appLoading: true,
+      }),
+      () => {
+        axios({
+          method: 'get',
+          url: '/api/applyfilter',
+          params: {
+            player: this.state.data.player.name,
+            shardId: this.state.data.player.shardId,
+            filters: this.state.filters,
+          },
+        })
+          .then((res) => res.data)
+          .then((newMatches) => {
+            const data = Object.assign({}, this.state.data);
+
+            if (this.state.filters.page > 1) {
+              data.matches.push(...newMatches);
+            } else {
+              data.matches = newMatches.slice();
+            }
+
+            this.setState({ data, appLoading: false });
+          })
+          .catch((err) => {
+            const data = Object.assign({}, this.state.data);
+            if (this.state.filters.page === 1) {
+              data.matches = [];
+            }
+
+            this.setState({ appLoading: false, filterFailed: true, data });
+            console.error(err);
+          });
+      },
+    );
   };
   appLoadingOn = () => {
     this.setState({ appLoading: true });
   };
   showSidebar = (sidebarVisible) => {
     this.setState(
-      () => {
-        return {
-          sidebarVisible: sidebarVisible,
-          scrollPosition: window.scrollY,
-        };
-      },
+      () => ({
+        sidebarVisible,
+        scrollPosition: window.scrollY,
+      }),
       () => {
         if (sidebarVisible) {
           window.document.body.style.overflowY = 'hidden';
@@ -222,11 +265,12 @@ class Extension extends React.Component {
         setSelectedMatch={this.setSelectedMatch}
         selectedMatch={this.state.selectedMatch}
         TLData={this.state.TLData}
-        telemetryLoading={this.state.telemetryLoading}
         extension={this.props.extension}
         appLoading={this.state.appLoading}
         appLoadingOn={this.appLoadingOn}
-        loadMoreMatches={this.loadMoreMatches}
+        applyFilter={this.applyFilter}
+        filters={this.state.filters}
+        filterFailed={this.state.filterFailed}
         scrollPosition={this.state.scrollPosition}
       />
     );

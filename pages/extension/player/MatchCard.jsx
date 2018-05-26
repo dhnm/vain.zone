@@ -1,6 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, Image, Grid, Label, Menu } from 'semantic-ui-react';
+import {
+  Card,
+  Image,
+  Grid,
+  Label,
+  Menu,
+  Dimmer,
+  Loader,
+} from 'semantic-ui-react';
 import * as moment from 'moment';
 
 const propTypes = {
@@ -9,6 +17,8 @@ const propTypes = {
   playerInTheMatchWon: PropTypes.bool.isRequired,
   converter: PropTypes.func.isRequired,
   setSelectedMatch: PropTypes.func.isRequired,
+  matchIndex: PropTypes.number.isRequired,
+  matchCardsLoading: PropTypes.bool.isRequired,
 };
 
 export default function MatchCard({
@@ -17,7 +27,8 @@ export default function MatchCard({
   playerInTheMatchWon,
   converter,
   setSelectedMatch,
-  index,
+  matchIndex,
+  matchCardsLoading,
 }) {
   const { shortMatchConclusion, matchConclusionColors } = converter({
     shortMatchConclusion: playerInTheMatchWon,
@@ -52,7 +63,7 @@ export default function MatchCard({
       // style={{ padding: '10px', paddingBottom: '5px' }}
       onClick={(e) => {
         e.preventDefault();
-        setSelectedMatch(index);
+        setSelectedMatch(matchIndex);
       }}
       as={Card}
       color={matchConclusionColors[1]}
@@ -64,6 +75,9 @@ export default function MatchCard({
         backgroundPositionY: '40%',
       }}
     >
+      <Dimmer active={matchCardsLoading} inverted>
+        <Loader />
+      </Dimmer>
       <Card.Content>
         <Image
           size="mini"
@@ -159,11 +173,10 @@ export default function MatchCard({
                             top: `${index * 24}px`,
                             left: 0,
                             display: 'block',
-                            display: 'none',
                             width: '50%',
                             height: '24px',
                             background:
-                              'linear-gradient(to right, transparent 90%, white)',
+                              'linear-gradient(to right, transparent 80%, hsla(0, 100%, 100%, 0.4))',
                           }}
                         />
                       </div>
@@ -233,11 +246,10 @@ export default function MatchCard({
                             top: `${index * 24}px`,
                             left: '50%',
                             display: 'block',
-                            display: 'none',
                             width: 'calc(50% - 24px - 6px)',
                             height: '24px',
                             background:
-                              'linear-gradient(to right, transparent 85%, white)',
+                              'linear-gradient(to right, transparent 80%, hsla(0, 100%, 100%, 0.5))',
                           }}
                         />
                       </div>

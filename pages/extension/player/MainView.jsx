@@ -30,8 +30,10 @@ const propTypes = {
   setSelectedMatch: PropTypes.func.isRequired,
   appLoading: PropTypes.bool.isRequired,
   TLData: PropTypes.object.isRequired,
-  telemetryLoading: PropTypes.bool.isRequired,
-  loadMoreMatches: PropTypes.func.isRequired,
+  applyFilter: PropTypes.func.isRequired,
+  filters: PropTypes.object.isRequired,
+  filterFailed: PropTypes.bool.isRequired,
+  scrollPosition: PropTypes.number.isRequired,
 };
 
 export default class MainView extends React.Component {
@@ -234,7 +236,7 @@ export default class MainView extends React.Component {
       );
     }
     return (
-      <Sidebar.Pushable>
+      <Sidebar.Pushable style={{ minHeight: '100vh' }}>
         <MatchesSidebar
           data={this.props.data}
           playerName={this.props.data.player.name}
@@ -244,8 +246,11 @@ export default class MainView extends React.Component {
           showSidebar={this.props.showSidebar}
           converter={this.props.converter}
           setSelectedMatch={this.props.setSelectedMatch}
-          loadMoreMatches={this.props.loadMoreMatches}
+          applyFilter={this.props.applyFilter}
+          filters={this.props.filters}
+          filterFailed={this.props.filterFailed}
           scrollPosition={this.props.scrollPosition}
+          appLoading={this.props.appLoading}
         />
         <Sidebar.Pusher dimmed={this.props.sidebarVisible}>
           <Segment basic>
@@ -280,18 +285,28 @@ export default class MainView extends React.Component {
               value="Debugging"
               readOnly
             />
-            <MatchDetailView
-              match={this.props.data.matches[this.props.selectedMatch]}
-              converter={this.props.converter}
-              TLData={this.props.TLData}
-              telemetryLoading={this.props.telemetryLoading}
-            />
-            <Button
-              onClick={() => MainView.generateImage('matchDetailView')}
-              attached="bottom"
-            >
-              <Icon name="send" />Send Match <Label color="blue">Beta</Label>
-            </Button>
+            {(() => {
+              if (this.props.data.matches.length > 0) {
+                return (
+                  <React.Fragment>
+                    <MatchDetailView
+                      match={this.props.data.matches[this.props.selectedMatch]}
+                      converter={this.props.converter}
+                      TLData={this.props.TLData}
+                      appLoading={this.props.appLoading}
+                    />
+                    <Button
+                      onClick={() => MainView.generateImage('matchDetailView')}
+                      attached="bottom"
+                    >
+                      <Icon name="send" />Send Match{' '}
+                      <Label color="blue">Beta</Label>
+                    </Button>
+                  </React.Fragment>
+                );
+              }
+              return <></>;
+            })()}
           </Segment>
         </Sidebar.Pusher>
       </Sidebar.Pushable>

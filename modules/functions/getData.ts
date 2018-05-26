@@ -247,11 +247,12 @@ const getMatches = (command: string, playerData: IPlayer): Promise<IPlayer> => {
   })
     .then((matches) => {
       if (matches) {
+        if (matches.data.length == 0) {
+          throw new Error('No matches found.');
+        }
         return uploadMatches(matches).then((matchRefs) => {
           return updatePlayerDB(command, playerData, matchRefs);
         });
-      } else if (matches.data.length == 0) {
-        throw new Error('No matches found.');
       } else {
         throw new Error(
           'Error retrieving matches: ' + JSON.stringify(matches.errors),
