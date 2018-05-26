@@ -163,7 +163,11 @@ export default function MatchCard({
                             participant.player.name !==
                             playerInTheMatch.player.name
                           ) {
-                            return <>{participant.player.name}</>;
+                            return (
+                              <React.Fragment>
+                                {participant.player.name}
+                              </React.Fragment>
+                            );
                           }
                           return <strong>{participant.player.name}</strong>;
                         })()}
@@ -236,7 +240,11 @@ export default function MatchCard({
                             participant.player.name !==
                             playerInTheMatch.player.name
                           ) {
-                            return <>{participant.player.name}</>;
+                            return (
+                              <React.Fragment>
+                                {participant.player.name}
+                              </React.Fragment>
+                            );
                           }
                           return <strong>{participant.player.name}</strong>;
                         })()}{' '}

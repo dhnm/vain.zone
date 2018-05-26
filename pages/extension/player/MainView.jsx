@@ -305,7 +305,7 @@ export default class MainView extends React.Component {
                   </React.Fragment>
                 );
               }
-              return <></>;
+              return <React.Fragment />;
             })()}
           </Segment>
         </Sidebar.Pusher>
