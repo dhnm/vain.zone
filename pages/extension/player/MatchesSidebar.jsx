@@ -186,7 +186,7 @@ function MatchesSidebar({
             playerInTheMatchWon={playerInTheMatchWon}
             converter={converter}
             setSelectedMatch={setSelectedMatch}
-            index={index}
+            matchIndex={index}
           />
         );
       })}
