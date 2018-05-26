@@ -92,32 +92,32 @@ function MatchesSidebar({
               text="All modes"
               value=""
               onClick={handleSelect}
-              active={selectedMode === ''}
+              active={selectedMode === 'All modes'}
             />
             <Dropdown.Header content="Sovereign's Rise" />
             <Dropdown.Item
               text="5v5 Ranked"
               value="5v5_pvp_ranked"
               onClick={handleSelect}
-              active={selectedMode === '5v5_pvp_ranked'}
+              active={selectedMode === '5v5 Ranked'}
             />
             <Dropdown.Item
               text="5v5 Casual"
               value="5v5_pvp_casual"
               onClick={handleSelect}
-              active={selectedMode === '5v5_pvp_casual'}
+              active={selectedMode === '5v5 Casual'}
             />
             <Dropdown.Item
               text="5v5 Private Draft"
               value="private_party_draft_match_5v5"
               onClick={handleSelect}
-              active={selectedMode === 'private_party_draft_match_5v5'}
+              active={selectedMode === '5v5 Private Draft'}
             />
             <Dropdown.Item
               text="SR Private Blind"
               value="private_party_vg_5v5"
               onClick={handleSelect}
-              active={selectedMode === 'private_party_vg_5v5'}
+              active={selectedMode === 'SR Private Blind'}
             />
             <Dropdown.Divider />
             <Dropdown.Header content="Halcyon Fold" />
@@ -125,25 +125,25 @@ function MatchesSidebar({
               text="3v3 Ranked"
               value="ranked"
               onClick={handleSelect}
-              active={selectedMode === 'ranked'}
+              active={selectedMode === '3v3 Ranked'}
             />
             <Dropdown.Item
               text="3v3 Casual"
               value="casual"
               onClick={handleSelect}
-              active={selectedMode === 'casual'}
+              active={selectedMode === '3v3 Casual'}
             />
             <Dropdown.Item
               text="3v3 Private Draft"
               value="private_party_draft_match"
               onClick={handleSelect}
-              active={selectedMode === 'private_party_draft_match'}
+              active={selectedMode === '3v3 Private Draft'}
             />
             <Dropdown.Item
               text="HF Private Blind"
               value="private"
               onClick={handleSelect}
-              active={selectedMode === 'private'}
+              active={selectedMode === 'HF Private Blind'}
             />
             <Dropdown.Divider />
             <Dropdown.Header content="BRAWL" />
@@ -151,25 +151,25 @@ function MatchesSidebar({
               text="Battle Royale"
               value="casual_aral"
               onClick={handleSelect}
-              active={selectedMode === 'casual_aral'}
+              active={selectedMode === 'Battle Royale'}
             />
             <Dropdown.Item
               text="Blitz"
               value="blitz_pvp_ranked"
               onClick={handleSelect}
-              active={selectedMode === 'blitz_pvp_ranked'}
+              active={selectedMode === 'Blitz'}
             />
             <Dropdown.Item
               text="Private B. Royale"
               value="private_party_aral_match"
               onClick={handleSelect}
-              active={selectedMode === 'private_party_aral_match'}
+              active={selectedMode === 'Private B. Royale'}
             />
             <Dropdown.Item
               text="Private Blitz"
               value="private_party_blitz_match"
               onClick={handleSelect}
-              active={selectedMode === 'private_party_blitz_match'}
+              active={selectedMode === 'Private Blitz'}
             />
           </Dropdown.Menu>
         </Dropdown>
@@ -226,10 +226,6 @@ function MatchesSidebar({
   );
 }
 
-const exportedPropTypes = {
-  applyFilter: PropTypes.func.isRequired,
-};
-
 export default class ExportedMatchesSidebar extends React.Component {
   constructor(props) {
     super(props);
@@ -239,6 +235,11 @@ export default class ExportedMatchesSidebar extends React.Component {
   }
   componentDidMount() {
     console.log('mounted');
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.filters.gameMode === '') {
+      this.setState({ selectedMode: 'All modes' });
+    }
   }
   componentWillUnmount() {
     console.log('will unmount');
@@ -263,4 +264,4 @@ export default class ExportedMatchesSidebar extends React.Component {
 }
 
 MatchesSidebar.propTypes = propTypes;
-ExportedMatchesSidebar.propTypes = exportedPropTypes;
+ExportedMatchesSidebar.propTypes = propTypes;

@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { Segment, Label, Grid, Image } from 'semantic-ui-react';
 import * as moment from 'moment';
 
-import { ICONS, Icon as VZIcon } from './../../../components/icons';
+import VZIcon from './../../../components/Icon';
+import { ICONS } from './../../../modules/functions/constants';
 import ParticipantCard from './ParticipantCard';
 
 const TeamStatPropTypes = {
