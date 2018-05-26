@@ -1,60 +1,60 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const form_data_1 = require("form-data");
+const FormData = require("form-data");
 const multer = require("multer");
 const axios_1 = require("axios");
 const router = express_1.Router();
 const storage = multer.memoryStorage;
 const upload = multer({ storage: storage() });
 exports.default = router;
-router.post("/", upload.single("blob"), (req, res) => {
+router.post('/', upload.single('blob'), (req, res) => {
     const message = {
         attachment: {
-            type: "image",
+            type: 'image',
             payload: {
-                is_reusable: true
-            }
-        }
+                is_reusable: true,
+            },
+        },
     };
-    var fd = new form_data_1.default();
-    fd.append("message", JSON.stringify(message));
-    fd.append("filedata", req.file.buffer, {
-        filename: "image.png"
+    var fd = new FormData();
+    fd.append('message', JSON.stringify(message));
+    fd.append('filedata', req.file.buffer, {
+        filename: 'image.png',
     });
     axios_1.default({
-        method: "post",
-        url: "https://graph.facebook.com/v2.6/me/message_attachments",
+        method: 'post',
+        url: 'https://graph.facebook.com/v2.6/me/message_attachments',
         params: {
-            access_token: "EAAIxVyRb1vwBAHhU8w9UNT7G5mv9CR7oPra44BXAHS6PwVkf7OOwR5bKZCCXbZB0l2IJ01b7HxonqYrtUyg9d7w2ykbW5dlhZCbkZCxRxThgJQ9nZAhHHwBTH8CxPhyl2ftVi8UNv36EwLKPyOpDtuKmhDQgfoaNclpMjxf1ZCoAZDZD"
+            access_token: 'EAAIxVyRb1vwBAHhU8w9UNT7G5mv9CR7oPra44BXAHS6PwVkf7OOwR5bKZCCXbZB0l2IJ01b7HxonqYrtUyg9d7w2ykbW5dlhZCbkZCxRxThgJQ9nZAhHHwBTH8CxPhyl2ftVi8UNv36EwLKPyOpDtuKmhDQgfoaNclpMjxf1ZCoAZDZD',
         },
         data: fd,
-        headers: fd.getHeaders()
+        headers: fd.getHeaders(),
     })
         .then((fbRes) => {
-        console.log("Success!");
+        console.log('Success!');
         if (fbRes.data.attachment_id) {
             const output = {
                 error: false,
-                attachmentId: fbRes.data.attachment_id
+                attachmentId: fbRes.data.attachment_id,
             };
             res.writeHead(200, {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
             });
             res.write(JSON.stringify(output));
             res.end();
         }
         else {
-            return Promise.reject("Missing attachment_id in response");
+            return Promise.reject('Missing attachment_id in response');
         }
     })
-        .catch(err => {
+        .catch((err) => {
         const output = {
-            error: true
+            error: true,
         };
-        console.error("Unable to send image with error: %s", err);
+        console.error('Unable to send image with error: %s', err);
         res.writeHead(500, {
-            "Content-Type": "application/json"
+            'Content-Type': 'application/json',
         });
         res.write(JSON.stringify(output));
         res.end();

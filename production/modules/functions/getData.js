@@ -8,9 +8,9 @@ exports.default = (IGN) => {
     return new Promise((resolve, reject) => {
         getPlayer(IGN)
             .then((playerData) => formatDataPopulateMatches(playerData))
-            .then(playerAndMatchesData => resolve(playerAndMatchesData))
-            .catch(error => {
-            reject({ errorID: "10", error: error });
+            .then((playerAndMatchesData) => resolve(playerAndMatchesData))
+            .catch((error) => {
+            reject({ errorID: '10', error: error });
         });
     });
 };
@@ -18,13 +18,13 @@ const getPlayer = (IGN) => {
     return new Promise((resolve, reject) => {
         Player_1.Player.findOne({ name: IGN })
             .exec()
-            .then(playerData => {
+            .then((playerData) => {
             if (playerData) {
-                if (new Date().getTime() -
-                    new Date(playerData.retrieval).getTime() >
+                if (new Date().getTime() - new Date(playerData.retrieval).getTime() >
                     300000) {
                     if (playerData.exists) {
-                        return getPlayerAPI(playerData.name, playerData.shardId)
+                        return getPlayerAPI(playerData.name, // queried by name
+                        playerData.shardId)
                             .then((APIData) => {
                             return compareIDs(APIData, playerData);
                         })
@@ -32,19 +32,19 @@ const getPlayer = (IGN) => {
                             resolve(data);
                         })
                             .catch((err) => {
-                            reject("id: 1 " + err);
+                            reject('id: 1 ' + err);
                         });
                     }
                     else {
-                        return getPlayerAPI(playerData.name)
-                            .then(APIData => {
+                        return getPlayerAPI(playerData.name) // queried by name
+                            .then((APIData) => {
                             return compareIDs(APIData, playerData);
                         })
-                            .then(data => {
+                            .then((data) => {
                             resolve(data);
                         })
-                            .catch(err => {
-                            reject("id: 2 " + err);
+                            .catch((err) => {
+                            reject('id: 2 ' + err);
                         });
                     }
                 }
@@ -53,24 +53,31 @@ const getPlayer = (IGN) => {
                         resolve(playerData);
                     }
                     else {
-                        reject("id: 3 Player does not exist.");
+                        reject('id: 3 Player does not exist.');
                     }
                 }
             }
             else {
                 return getPlayerAPI(IGN)
-                    .then(APIData => {
-                    return getMatches("new", APIData);
+                    .then((APIData) => {
+                    return Player_1.Player.findOne({ playerID: APIData.playerID })
+                        .exec()
+                        .then((foundPlayerByID) => {
+                        if (foundPlayerByID) {
+                            return getMatches('updateIGN', APIData);
+                        }
+                        return getMatches('new', APIData);
+                    });
                 })
                     .then((data) => {
                     resolve(data);
                 })
                     .catch((err) => {
-                    reject("id: 4 " + err);
+                    reject('id: 4 ' + err);
                 });
             }
         })
-            .catch(err => reject("id: 14 " + err));
+            .catch((err) => reject('id: 14 ' + err));
     });
 };
 const formatDataPopulateMatches = (playerData) => {
@@ -89,23 +96,23 @@ const formatDataPopulateMatches = (playerData) => {
     //   });
     return new Promise((resolve, reject) => {
         Match_1.Match.find({ matchID: { $in: [...playerData.matchRefs.slice(0, 12)] } }, null, {
-            sort: { createdAt: -1 }
+            sort: { createdAt: -1 },
         })
             .exec()
-            .then(matches => {
+            .then((matches) => {
             delete playerData.matchRefs;
             resolve({
                 player: playerData,
                 matches: matches,
                 error: false,
-                extension: false
+                extension: false,
             });
         })
-            .catch(err => reject("id: 11 " + err));
+            .catch((err) => reject('id: 11 ' + err));
     });
     // return new Promise((resolve, reject) => {
     //   db
-    //     .getAll(...playerData.matchRefs.slice(0, 12))
+    //     .getAll(...playerData.matchRefs.slice(0, 14))
     //     .then(docs => {
     //       delete playerData.matchRefs;
     //       resolve({
@@ -120,15 +127,16 @@ const formatDataPopulateMatches = (playerData) => {
 };
 const getPlayerAPI = (IGN, dbRegion) => {
     return new Promise((resolve, reject) => {
-        const regions = ["na", "eu", "sg", "sa", "ea", "cn"];
+        const regions = ['na', 'eu', 'sg', 'sa', 'ea', 'cn'];
+        //const regions = ["eu"];
         let regionIndex = 0;
         const tryRegion = (region) => {
             axiosAPI({
                 shardId: region,
-                endPoint: "players",
-                params: { "filter[playerNames]": IGN }
+                endPoint: 'players',
+                params: { 'filter[playerNames]': IGN },
             })
-                .then(player => {
+                .then((player) => {
                 const data = player.data[0];
                 const customPlayerDataModel = {
                     exists: true,
@@ -152,20 +160,20 @@ const getPlayerAPI = (IGN, dbRegion) => {
                     rank_blitz: data.attributes.stats.rankPoints.blitz,
                     skillTier: data.attributes.stats.skillTier,
                     wins: data.attributes.stats.wins,
-                    matchRefs: []
+                    matchRefs: [],
                 };
                 resolve(customPlayerDataModel);
             })
-                .catch(err => {
+                .catch((err) => {
                 if (regionIndex + 1 == regions.length) {
                     if (err == 404) {
                         saveNonExist(IGN);
-                        reject("Player was not found on any server.");
+                        reject('Player was not found on any server.');
                     }
-                    reject(err + " error while retrieving player.");
+                    reject(err + ' error while retrieving player.');
                 }
                 else {
-                    console.log("Not Found.", IGN, regions[regionIndex]);
+                    console.log('Not Found.', IGN, regions[regionIndex]);
                     regionIndex++;
                     tryRegion(regions[regionIndex]);
                 }
@@ -182,71 +190,75 @@ const getPlayerAPI = (IGN, dbRegion) => {
 };
 const compareIDs = (APIData, DBData) => {
     if (APIData.playerID === DBData.playerID) {
-        return getMatches("update", APIData);
+        return getMatches('update', APIData);
     }
     else {
-        Player_1.Player.update({ playerID: DBData.playerID }, { $set: { name: undefined } });
-        return Player_1.Player.findOne({ playerID: APIData.playerID })
+        return Player_1.Player.updateOne({ name: DBData.name }, { $unset: { name: '' } })
             .exec()
-            .then(playerData => {
-            if (playerData) {
-                return getMatches("update", APIData);
-            }
-            return getMatches("new", APIData);
+            .then((res) => console.log(res))
+            .then(() => {
+            return Player_1.Player.findOne({ playerID: APIData.playerID }).exec();
         })
-            .catch(err => Promise.reject("id: 12 " + err));
+            .then((playerData) => {
+            if (playerData) {
+                return getMatches('update', APIData);
+            }
+            return getMatches('new', APIData);
+        })
+            .catch((err) => {
+            throw new Error(err);
+        });
     }
 };
 // Match
 const getMatches = (command, playerData) => {
     return axiosAPI({
         shardId: playerData.shardId,
-        endPoint: "matches",
+        endPoint: 'matches',
         params: {
-            "page[offset]": 0,
-            "page[limit]": 35,
-            sort: "-createdAt",
-            "filter[playerNames]": playerData.name
-        }
+            'page[offset]': 0,
+            'page[limit]': 12,
+            sort: '-createdAt',
+            'filter[playerNames]': playerData.name,
+        },
     })
-        .then(matches => {
+        .then((matches) => {
         if (matches) {
-            return uploadMatches(matches).then(matchRefs => {
+            if (matches.data.length == 0) {
+                throw new Error('No matches found.');
+            }
+            return uploadMatches(matches).then((matchRefs) => {
                 return updatePlayerDB(command, playerData, matchRefs);
             });
         }
-        else if (matches.data.length == 0) {
-            throw new Error("No matches found.");
-        }
         else {
-            throw new Error("Error retrieving matches: " +
-                JSON.stringify(matches.errors));
+            throw new Error('Error retrieving matches: ' + JSON.stringify(matches.errors));
         }
     })
-        .catch(err => {
-        throw new Error("id: 8 " + err);
+        .catch((err) => {
+        throw new Error('id: 8 ' + err);
     });
 };
 const axiosAPI = (options) => {
     return axios_1.default({
-        method: "get",
-        url: "https://api.dc01.gamelockerapp.com/shards/" +
+        method: 'get',
+        url: 'https://api.dc01.gamelockerapp.com/shards/' +
             options.shardId +
-            "/" +
+            '/' +
             options.endPoint,
         params: options.params,
         headers: {
-            "Content-Encoding": "gzip",
-            "Content-Type": "application/json",
-            "User-Agent": "js/vainglory",
-            Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxYWIwYmFhMC0xZTYxLTAxMzYtNGMyOC0wYTU4NjQ2MDBlZGYiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTIzMzA1MTE1LCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJ2YWluLXpvbmUiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.WRRbcDammhPrqWhDPenutkXJdCbGv3CpxvwscPyQK9Y",
-            "X-TITLE-ID": "semc-vainglory",
-            Accept: "application/vnd.api+json"
+            'Content-Encoding': 'gzip',
+            'Content-Type': 'application/json',
+            'User-Agent': 'js/vainglory',
+            Authorization: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxYWIwYmFhMC0xZTYxLTAxMzYtNGMyOC0wYTU4NjQ2MDBlZGYiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTIzMzA1MTE1LCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJ2YWluLXpvbmUiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.WRRbcDammhPrqWhDPenutkXJdCbGv3CpxvwscPyQK9Y',
+            'X-TITLE-ID': 'semc-vainglory',
+            Accept: 'application/vnd.api+json',
         },
-        responseType: "json"
+        responseType: 'json',
     })
         .then((response) => {
-        console.log("here1", response.status);
+        console.log('here1', response.status);
         return response.data;
     })
         .catch(function (error) {
@@ -254,13 +266,13 @@ const axiosAPI = (options) => {
             // The request was made and the server responded with a status code
             // that falls out of the range of 2xx
             if (error.response.status == 404) {
-                console.log("axiosAPI: 404 Not Found");
+                console.log('axiosAPI: 404 Not Found');
             }
             else if (error.response.status == 429) {
-                console.log("axiosAPI: 429 Request Limit Reached", error.response.data);
+                console.log('axiosAPI: 429 Request Limit Reached', error.response.data);
             }
             else {
-                console.error("axiosAPI: " + error.response.status + " Error", error.response.data);
+                console.error('axiosAPI: ' + error.response.status + ' Error', error.response.data);
             }
             throw new Error(error.response.status);
         }
@@ -268,12 +280,12 @@ const axiosAPI = (options) => {
             // The request was made but no response was received
             // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
             // http.ClientRequest in node.js
-            console.error("Error occured while fetching API. CMD+F this line to inspect the error.", error.request);
+            console.error('Error occured while fetching API. CMD+F this line to inspect the error.', error.request);
             throw new Error(error.request);
         }
         else {
             // Something happened in setting up the request that triggered an Error
-            console.error("Error occured while fetching API. CMD+F this line to inspect the error.", error.message);
+            console.error('Error occured while fetching API. CMD+F this line to inspect the error.', error.message);
             throw new Error(error.message);
         }
         // console.error(
@@ -288,10 +300,28 @@ const uploadMatches = (matches) => {
     const newMatches = [];
     return Match_1.Match.find({ matchID: { $in: retrievedMatchesIds } })
         .exec()
-        .then(existingMatches => {
-        const existingMatchesIds = existingMatches.map(e => e.matchID);
+        .then((existingMatches) => {
+        const existingMatchesIds = existingMatches.map((e) => e.matchID);
         matches.data.forEach((match) => {
-            if (existingMatchesIds.indexOf(match.id) <= -1) {
+            if (existingMatchesIds.indexOf(match.id) == -1) {
+                // axiosAPI({
+                //     shardId: match.attributes.shardId,
+                //     endPoint: "matches/" + match.id,
+                //     params: {}
+                // })
+                //     .then(match => {
+                //         if (match) {
+                //             console.log("Retrieved single match.")
+                //         } else {
+                //             throw new Error(
+                //                 "Error retrieving match: " +
+                //                     JSON.stringify(match.errors)
+                //             );
+                //         }
+                //     })
+                //     .catch(err => {
+                //         throw new Error("id: 8 " + err);
+                //     });
                 var customMatchDataModel = {
                     matchID: match.id,
                     createdAt: new Date(match.attributes.createdAt),
@@ -302,23 +332,18 @@ const uploadMatches = (matches) => {
                     endGameReason: match.attributes.stats.endGameReason,
                     spectators: new Array(),
                     rosters: new Array(),
-                    telemetryURL: matches.included.find((e) => e.id === match.relationships.assets.data[0].id).attributes.URL
+                    telemetryURL: matches.included.find((e) => e.id === match.relationships.assets.data[0].id).attributes.URL,
                 };
-                for (var spectatorIndex = 0; spectatorIndex <
-                    match.relationships.spectators.data.length; spectatorIndex++) {
-                    const spectatorParticipant = matches.included.find((e) => e.id ===
-                        match.relationships.spectators.data[spectatorIndex].id);
-                    const spectatorPlayer = matches.included.find((e) => e.id ===
-                        spectatorParticipant.relationships.player.data
-                            .id);
+                for (var spectatorIndex = 0; spectatorIndex < match.relationships.spectators.data.length; spectatorIndex++) {
+                    const spectatorParticipant = matches.included.find((e) => e.id === match.relationships.spectators.data[spectatorIndex].id);
+                    const spectatorPlayer = matches.included.find((e) => e.id === spectatorParticipant.relationships.player.data.id);
                     customMatchDataModel.spectators.push({
                         id: spectatorPlayer.id,
-                        name: spectatorPlayer.attributes.name
+                        name: spectatorPlayer.attributes.name,
                     });
                 }
                 for (var rosterIndex = 0; rosterIndex < match.relationships.rosters.data.length; rosterIndex++) {
-                    const roster = matches.included.find((e) => e.id ===
-                        match.relationships.rosters.data[rosterIndex].id);
+                    const roster = matches.included.find((e) => e.id === match.relationships.rosters.data[rosterIndex].id);
                     var customRosterDataModel = {
                         acesEarned: roster.attributes.stats.acesEarned,
                         gold: roster.attributes.stats.gold,
@@ -328,50 +353,33 @@ const uploadMatches = (matches) => {
                         turretKills: roster.attributes.stats.turretKills,
                         turretsRemaining: roster.attributes.stats.turretsRemaining,
                         won: JSON.parse(roster.attributes.won),
-                        participants: new Array()
+                        participants: new Array(),
                     };
-                    for (var participantIndex = 0; participantIndex <
-                        roster.relationships.participants.data.length; participantIndex++) {
+                    for (var participantIndex = 0; participantIndex < roster.relationships.participants.data.length; participantIndex++) {
                         const participant = matches.included.find((e) => e.id ===
                             roster.relationships.participants.data[participantIndex].id);
-                        const player = matches.included.find((e) => e.id ===
-                            participant.relationships.player.data.id);
+                        const player = matches.included.find((e) => e.id === participant.relationships.player.data.id);
                         var customParticipantDataModel = {
                             actor: participant.attributes.actor.substring(1, participant.attributes.actor.length - 1),
                             skillTier: participant.attributes.stats.skillTier,
                             assists: participant.attributes.stats.assists,
-                            crystalMineCaptures: participant.attributes.stats
-                                .crystalMineCaptures,
+                            crystalMineCaptures: participant.attributes.stats.crystalMineCaptures,
                             deaths: participant.attributes.stats.deaths,
                             farm: participant.attributes.stats.farm,
                             firstAfkTime: participant.attributes.stats.firstAfkTime,
                             gold: participant.attributes.stats.gold,
-                            goldMineCaptures: participant.attributes.stats
-                                .goldMineCaptures,
+                            goldMineCaptures: participant.attributes.stats.goldMineCaptures,
                             items: participant.attributes.stats.items,
                             jungleKills: participant.attributes.stats.jungleKills,
                             kills: participant.attributes.stats.kills,
                             krakenCaptures: participant.attributes.stats.krakenCaptures,
-                            nonJungleMinionKills: participant.attributes.stats
-                                .nonJungleMinionKills,
+                            nonJungleMinionKills: participant.attributes.stats.nonJungleMinionKills,
                             skinKey: participant.attributes.stats.skinKey,
                             wentAfk: participant.attributes.stats.wentAfk,
                             player: {
                                 id: player.id,
-                                name: player.attributes.name
-                                // played_aral: player.attributes.stats.gamesPlayed.aral,
-                                // played_blitz: player.attributes.stats.gamesPlayed.blitz,
-                                // played_casual: player.attributes.stats.gamesPlayed.casual,
-                                // played_ranked: player.attributes.stats.gamesPlayed.ranked,
-                                // played_casual_5v5:
-                                //   player.attributes.stats.gamesPlayed.casual_5v5,
-                                // guildTag: player.attributes.stats.guildTag,
-                                // karmaLevel: player.attributes.stats.karmaLevel,
-                                // rank_3v3: player.attributes.stats.rankPoints.ranked,
-                                // rank_blitz: player.attributes.stats.rankPoints.blitz,
-                                // skillTier: player.attributes.stats.skillTier,
-                                // wins: player.attributes.stats.wins
-                            }
+                                name: player.attributes.name,
+                            },
                         };
                         customRosterDataModel.participants.push(customParticipantDataModel);
                     }
@@ -382,60 +390,78 @@ const uploadMatches = (matches) => {
         });
         return newMatches;
     })
-        .then(newMatches => {
+        .then((newMatches) => {
         return Match_1.Match.insertMany(newMatches, { ordered: false })
-            .then(m => {
-            console.log("Inserted " + m.length + " matches.");
+            .then((m) => {
+            console.log('Inserted ' + m.length + ' matches.');
             return Promise.resolve(retrievedMatchesIds);
         })
-            .catch(err => {
-            console.error("Error inserting matches.", err);
-            throw new Error("Error inserting matches.");
+            .catch((err) => {
+            console.error('Error inserting matches.', err);
+            throw new Error('Error inserting matches.');
         });
     })
-        .catch(err => {
-        throw new Error("id: 15 " + err);
+        .catch((err) => {
+        throw new Error('id: 15 ' + err);
     });
 };
 const updatePlayerDB = (command, customPlayerDataModel, matchRefs) => {
     return new Promise((resolve, reject) => {
-        console.log("command", command);
-        if (command == "new") {
+        console.log('command', command);
+        if (command === 'new') {
             if (matchRefs) {
-                customPlayerDataModel.matchRefs = matchRefs;
+                customPlayerDataModel.matchRefs = matchRefs.slice();
             }
             else {
-                customPlayerDataModel.matchRefs = [];
+                customPlayerDataModel.matchRefs = new Array();
             }
             const newPlayer = new Player_1.Player(customPlayerDataModel);
             newPlayer
                 .save()
-                .then(newPlayerData => {
-                console.log("Successfuly saved new player");
+                .then((newPlayerData) => {
+                console.log('Successfuly saved new player');
                 resolve(newPlayerData);
             })
-                .catch(err => {
-                console.error("Failed to upload", err);
+                .catch((err) => {
+                console.error('Failed to upload', err);
                 reject(err);
             });
         }
         else {
             Player_1.Player.findOne({ playerID: customPlayerDataModel.playerID })
                 .exec()
-                .then(playerData => {
+                .then((playerData) => {
                 if (!playerData) {
                     console.log(playerData);
-                    throw new Error("System error. #tswai");
+                    throw new Error('System error. #tswai');
+                }
+                if (command === 'updateIGN') {
+                    if (playerData.IGNHistory) {
+                        customPlayerDataModel.IGNHistory = [
+                            playerData.name,
+                            ...playerData.IGNHistory.slice(),
+                        ];
+                    }
+                    else {
+                        customPlayerDataModel.IGNHistory = [playerData.name];
+                    }
+                }
+                else {
+                    // add this field to older entries
+                    if (!customPlayerDataModel.IGNHistory) {
+                        customPlayerDataModel.IGNHistory = new Array();
+                    }
                 }
                 const deduplicatedMatchRefs = [
-                    ...new Set([...matchRefs, ...playerData.matchRefs])
+                    ...new Set([...matchRefs.slice(), ...playerData.matchRefs.slice()]),
                 ];
                 customPlayerDataModel.matchRefs = deduplicatedMatchRefs;
                 Object.assign(playerData, customPlayerDataModel);
+                // not working: const newPlayerData: IPlayer = { ...playerData, ...customPlayerDataModel };
                 playerData
                     .save()
-                    .then(() => resolve(customPlayerDataModel))
-                    .catch(err => reject(err));
+                    .then(() => resolve(playerData))
+                    .catch((err) => reject(err));
             });
         }
     });
@@ -444,15 +470,15 @@ const saveNonExist = (IGN) => {
     var nonExistData = {
         name: IGN,
         retrieval: new Date(),
-        exists: false
+        exists: false,
     };
     Player_1.Player.findOneAndUpdate({ name: IGN }, nonExistData, {
-        upsert: true
+        upsert: true,
     })
         .then(() => {
-        console.log("Saved " + IGN + " as nonexist.");
+        console.log('Saved ' + IGN + ' as nonexist.');
     })
-        .catch(err => console.error("Could not save/update nonexist " + err));
+        .catch((err) => console.error('Could not save/update nonexist ' + err));
     // var colRef = db.collection("players");
     // var query = colRef
     //   .where("name", "==", IGN)

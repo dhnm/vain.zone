@@ -5,7 +5,8 @@ const playerSchema = new mongoose_1.Schema({
     exists: Boolean,
     retrieval: { type: Date, default: Date.now },
     playerID: { type: String, unique: true },
-    name: { type: String, unique: true },
+    name: { type: String, unique: true, sparse: true },
+    IGNHistory: [String],
     shardId: String,
     createdAt: Date,
     patchVersion: String,
@@ -23,7 +24,7 @@ const playerSchema = new mongoose_1.Schema({
     rank_blitz: Number,
     skillTier: Number,
     wins: Number,
-    matchRefs: [{ type: String, ref: "matches" }]
+    matchRefs: [{ type: String, ref: 'matches' }],
 });
-exports.Player = mongoose_1.model("players", playerSchema);
+exports.Player = mongoose_1.model('players', playerSchema);
 //# sourceMappingURL=Player.js.map

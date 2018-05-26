@@ -118,21 +118,7 @@ const getPlayerInfo = (input, userID) => {
         playerData.ranked_5v5 = player.played_ranked_5v5;
         playerData.ranked = player.played_ranked;
         playerData.blitz = player.played_blitz;
-        const tier = player.skillTier / 3 + 1;
-        const colorNumber = player.skillTier % 3;
-        let color = "B";
-        switch (colorNumber) {
-            case 0:
-                color = "B";
-                break;
-            case 1:
-                color = "S";
-                break;
-            default:
-                color = "G";
-        }
         playerData.wins = player.wins;
-        playerData.tier = tier + color;
         playerData.rankPoints = player.rank_3v3;
         playerData.rankPoints_5v5 = player.rank_5v5;
         playerData.guildTag = player.guildTag;
@@ -140,7 +126,7 @@ const getPlayerInfo = (input, userID) => {
     })
         .catch(err => {
         console.log(err);
-        sendSystemMessage(userID, "Something went wrong :(\n\n1) Please check the spelling and capitalisation of the nick.\n\n2) If the player hasn't played this mode for a long time, we don't have data for them.\n\n3) Maybe the player has changed their nick?\n\n4) There might be also an issue on SEMC side (developers of Vainglory). You can try again later.\n" +
+        sendSystemMessage(userID, "Something went wrong :(\n\n1) Please check the spelling and capitalisation of the nick.\n\n2) If the player hasn't played a match recently, we don't have data for them.\n\n3) Maybe the player has changed their nick?\n\n4) There might be also an issue on SEMC side (developers of Vainglory). You can try again later.\n" +
             err);
     });
 };
@@ -151,7 +137,8 @@ const receivedPostback = (event) => {
     // The 'payload' param is a developer-defined field which is set in a postback
     // button for Structured Messages.
     var payload = event.postback.payload;
-    console.log("Received postback for user %d and page %d with payload '%s' " + "at %d", userID, pageID, payload, timeOfPostback);
+    console.log("Received postback for user %d and page %d with payload '%s' " +
+        "at %d", userID, pageID, payload, timeOfPostback);
     // When a postback is called, we'll send a message back to the sender to
     // let them know it was successful
     payload = payload.split(" ");
@@ -201,7 +188,9 @@ const setTyping = (event, callback) => {
         sender_action: "typing_on"
     };
     callSendAPI(messageData);
-    setTimeout(callback, 1000);
+    setTimeout(() => {
+        callback(event);
+    }, 1000);
 };
 const sendMyData = (userID) => {
     findOrCreateUser(userID)
@@ -225,7 +214,8 @@ const sendMyData = (userID) => {
             messaging_type: "RESPONSE",
             recipient: { id: userID },
             message: {
-                text: "An error has occured, please contact the devlopers. " + err
+                text: "An error has occured, please contact the devlopers. " +
+                    err
             }
         };
         callSendAPI(messageData);
@@ -351,8 +341,160 @@ const sendSystemMessage = (userID, message) => {
     };
     callSendAPI(messageData);
 };
+const processRankPoints = (rp_3v3, rp_5v5) => {
+    let rankPoints = rp_3v3;
+    if (rp_5v5)
+        rankPoints = rp_5v5;
+    if (rp_5v5 && rp_3v3)
+        rankPoints = Math.max(rp_5v5, rp_3v3);
+    const processedRankPoints = (rawRankPoints => {
+        const rankPointLimits = [
+            -1,
+            0,
+            109,
+            218,
+            327,
+            436,
+            545,
+            654,
+            763,
+            872,
+            981,
+            1090,
+            1200,
+            1250,
+            1300,
+            1350,
+            1400,
+            1467,
+            1533,
+            1600,
+            1667,
+            1733,
+            1800,
+            1867,
+            1933,
+            2000,
+            2134,
+            2267,
+            2400,
+            2600,
+            2800
+        ];
+        let rankProgress = 0.0;
+        for (let i = 1; i < rankPointLimits.length; i++) {
+            if (rawRankPoints >= rankPointLimits[i - 1] &&
+                rawRankPoints < rankPointLimits[i]) {
+                rankProgress =
+                    (rawRankPoints - rankPointLimits[i - 1]) /
+                        (rankPointLimits[i] - 1 - rankPointLimits[i - 1]);
+                return {
+                    value: rawRankPoints,
+                    progress: rankProgress * 100,
+                    skillTier: i - 2
+                };
+            }
+        }
+        return {
+            value: rawRankPoints,
+            progress: 100,
+            skillTier: rankPointLimits.length - 2,
+        };
+    })(rankPoints);
+    const skillTierFormats = (rawSkillTier => {
+        let tierNumber = Math.floor(rawSkillTier / 3) + 1;
+        let tierName = "";
+        const colorNumber = rawSkillTier % 3;
+        let colorName = "";
+        switch (tierNumber) {
+            case 1:
+                tierName = "Just Beginning";
+                break;
+            case 2:
+                tierName = "Getting There";
+                break;
+            case 3:
+                tierName = "Rock Solid";
+                break;
+            case 4:
+                tierName = "Worthy Foe";
+                break;
+            case 5:
+                tierName = "Got Swagger";
+                break;
+            case 6:
+                tierName = "Credible Threat";
+                break;
+            case 7:
+                tierName = "The Hotness";
+                break;
+            case 8:
+                tierName = "Simply Amazing";
+                break;
+            case 9:
+                tierName = "Pinnacle of Awesome";
+                break;
+            case 10:
+                tierName = "Vainglorious";
+                break;
+            default:
+                tierNumber = 0;
+                tierName = "Unranked";
+        }
+        switch (colorNumber) {
+            case 0:
+                colorName = " Bronze";
+                break;
+            case 1:
+                colorName = " Silver";
+                break;
+            case 2:
+                colorName = " Gold";
+                break;
+            default:
+                colorName = "";
+        }
+        return {
+            number: tierNumber,
+            name: tierName,
+            color: colorName
+        };
+    })(processedRankPoints.skillTier);
+    return skillTierFormats;
+};
 const sendPlayerInfo = (userID, data) => {
-    var messageData = {
+    let rankPointsText = "";
+    console.log(data);
+    if (data.rankPoints_5v5) {
+        rankPointsText =
+            "3v3 / 5v5 Rank points: " +
+                data.rankPoints.toFixed(0) +
+                " / " +
+                data.rankPoints_5v5.toFixed(0);
+    }
+    else {
+        rankPointsText = "3v3 Rank points: " + data.rankPoints.toFixed(0);
+    }
+    let rankedGamesPlayedText = "";
+    if (data.ranked_5v5) {
+        rankedGamesPlayedText =
+            data.ranked + "× Ranked 3v3\n" + data.ranked_5v5 + "× Ranked 5v5";
+    }
+    else {
+        rankedGamesPlayedText =
+            data.ranked + "× Ranked 3v3\n" + data.blitz + "× Ranked Blitz";
+    }
+    let tier = "";
+    if (data.rankPoints_5v5) {
+        const processed3v3 = processRankPoints(data.rankPoints, null);
+        const processed5v5 = processRankPoints(null, data.rankPoints_5v5);
+        tier = `(${processed3v3.number}${processed3v3.color}/${processed5v5.number}${processed5v5.color})`;
+    }
+    else {
+        const processed3v3 = processRankPoints(data.rankPoints, null);
+        tier = `(${processed3v3.number}${processed3v3.color})`;
+    }
+    const messageData = {
         messaging_type: "RESPONSE",
         recipient: {
             id: userID
@@ -365,37 +507,35 @@ const sendPlayerInfo = (userID, data) => {
                     top_element_style: "compact",
                     elements: [
                         {
-                            title: data.tier + " " + data.name + " [" + data.guildTag + "]",
+                            title: tier +
+                                " " +
+                                data.name +
+                                " [" +
+                                data.guildTag +
+                                "]",
                             subtitle: data.karma + "\nLevel: " + data.level
                         },
                         {
                             title: "Ranked Games Played",
-                            subtitle: data.ranked +
-                                "× 3v3 Rankeds\n" +
-                                data.blitz +
-                                "× 3v3 Blitz Rankeds"
+                            subtitle: rankedGamesPlayedText
                         },
                         {
                             title: "Casual Games Played",
                             subtitle: data.casual +
-                                "× 3v3 Casuals\n" +
+                                "× Casual 3v3\n" +
                                 data.casual_5v5 +
-                                "× 5v5 Casuals"
+                                "× Casual 5v5"
                         },
                         {
                             title: "Statistics",
-                            subtitle: "3v3/5v5 Rank points: " +
-                                data.rankPoints.toFixed(0) +
-                                "/" +
-                                data.rankPoints_5v5.toFixed(0) +
-                                "\nTotal wins: " +
-                                data.wins
+                            subtitle: rankPointsText + "\nLifetime wins: " + data.wins
                         }
                     ],
                     buttons: [
                         {
                             type: "web_url",
-                            url: "https://test.vainglory.eu/extension/player/" + data.name,
+                            url: "https://test.vainglory.eu/extension/player/" +
+                                data.name,
                             title: "See more",
                             webview_height_ratio: "full",
                             webview_share_button: "hide",
@@ -443,7 +583,8 @@ const sendPlayerInfo = (userID, data) => {
             messaging_type: "RESPONSE",
             recipient: { id: userID },
             message: {
-                text: "An error has occured, please contact the developers. " + err
+                text: "An error has occured, please contact the developers. " +
+                    err
             }
         };
         callSendAPI(messageData);
@@ -505,12 +646,12 @@ const updateInfo = () => {
         greeting: [
             {
                 locale: "default",
-                text: "Welcome to Vainglory Messenger Extension. See your Vainglory match statistics and quickly share them with your friends! Tap on the button below and then type in your In-Game Nickname."
+                text: "Welcome to Vainglory Messenger Extension! Tap on the button below and then type in your In-Game Nickname to see your stats." // must be lte 160 characters
             }
             /*{
-                  locale: "en_US",
-                  text: "Hi!"
-              }*/
+            locale: "en_US",
+            text: "Hi!"
+        }*/
         ],
         home_url: {
             url: "https://test.vainglory.eu/extension",
@@ -564,8 +705,7 @@ const updateInfo = () => {
         },
         data: info,
         headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json"
+            "Content-Type": "application/json"
         }
     })
         .then((fbRes) => {
@@ -577,6 +717,10 @@ const updateInfo = () => {
         }
     })
         .catch(err => {
+        if (err.response) {
+            console.error(err.response.status);
+            console.error(err.response.data);
+        }
         throw new Error(err);
     });
 };

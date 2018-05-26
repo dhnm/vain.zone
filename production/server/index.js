@@ -8,17 +8,17 @@ const extension_1 = require("./../modules/extension");
 const api_1 = require("./../modules/api");
 const bodyParser = require("body-parser");
 const PORT = process.env.PORT || 3000;
-const dev = process.env.NODE_ENV !== "production";
+const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 const axios_1 = require("axios");
 const mongoose = require("mongoose");
 // import { Match } from "./../models/Match";
 // import { Player } from "./../models/Player";
-mongoose.connect("mongodb://user_thisBoy:r8LspGn5jpZJIfCP@vainzone-shard-00-00-jem9k.mongodb.net:27017,vainzone-shard-00-01-jem9k.mongodb.net:27017,vainzone-shard-00-02-jem9k.mongodb.net:27017/VAINZONE?ssl=true&replicaSet=VAINZONE-shard-0&authSource=admin");
+mongoose.connect('mongodb://user_thisBoy:r8LspGn5jpZJIfCP@vainzone-shard-00-00-jem9k.mongodb.net:27017,vainzone-shard-00-01-jem9k.mongodb.net:27017,vainzone-shard-00-02-jem9k.mongodb.net:27017/VAINZONE?ssl=true&replicaSet=VAINZONE-shard-0&authSource=admin');
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
     console.log("We're connected!");
     //   Match.collection.dropIndexes().then(r => {
     //     console.log("success", r);
@@ -76,11 +76,11 @@ db.once("open", () => {
 });
 setInterval(() => {
     axios_1.default({
-        method: "get",
-        url: "https://test.vainglory.eu/"
+        method: 'get',
+        url: 'https://test.vainglory.eu/',
     })
-        .then(response => {
-        console.log("here1", response);
+        .then((response) => {
+        console.log('here1', response);
     })
         .catch(function (error) {
         console.error(error);
@@ -92,24 +92,24 @@ app
     const server = express();
     server.use(compression());
     server.use(helmet());
-    server.use(bodyParser.json({ limit: "5mb" }));
+    server.use(bodyParser.json({ limit: '5mb' }));
     server.use((req, res, callback) => {
         var allowedOrigins = [
-            "http://localhost:3000",
-            "https://localhost:3000",
-            "http://x.vainglory.eu",
-            "https://x.vainglory.eu",
-            "http://test.vainglory.eu",
-            "https://test.vainglory.eu",
-            "http://vain.zone",
-            "https://vain.zone",
-            "http://www.vain.zone",
-            "https://www.vain.zone"
+            'http://localhost:3000',
+            'https://localhost:3000',
+            'http://x.vainglory.eu',
+            'https://x.vainglory.eu',
+            'http://test.vainglory.eu',
+            'https://test.vainglory.eu',
+            'http://vain.zone',
+            'https://vain.zone',
+            'http://www.vain.zone',
+            'https://www.vain.zone',
         ];
         var origin = req.headers.origin;
-        if (typeof origin === "string") {
+        if (typeof origin === 'string') {
             if (allowedOrigins.indexOf(origin) > -1) {
-                res.setHeader("Access-Control-Allow-Origin", origin);
+                res.setHeader('Access-Control-Allow-Origin', origin);
             }
         }
         else if (origin instanceof Array) {
@@ -117,29 +117,29 @@ app
                 return origin.indexOf(val) != -1;
             });
             if (duplicates.length > 0) {
-                res.setHeader("Access-Control-Allow-Origin", origin);
+                res.setHeader('Access-Control-Allow-Origin', origin);
             }
         }
         //res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
         //res.header('Access-Control-Allow-Credentials', true);
         return callback();
     });
-    server.use("/extension", extension_1.default(app));
-    server.use("/api", api_1.default);
-    server.get("/", (_req, res) => {
-        res.send("Coming soon.");
+    server.use('/extension', extension_1.default(app));
+    server.use('/api', api_1.default);
+    server.get('/', (_req, res) => {
+        res.send('Coming soon.');
     });
-    server.get("*", (req, res) => {
+    server.get('*', (req, res) => {
         return handle(req, res);
     });
     server.listen(PORT, (err) => {
         if (err)
             throw err;
-        console.log("> Ready on http://localhost:" + PORT);
+        console.log('> Ready on http://localhost:' + PORT);
     });
 })
-    .catch(ex => {
+    .catch((ex) => {
     console.error(ex.stack);
     process.exit(1);
 });
