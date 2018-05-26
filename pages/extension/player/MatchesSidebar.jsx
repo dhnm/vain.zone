@@ -62,8 +62,8 @@ function MatchesSidebar({
             width: 'calc(50% - 4px)',
             height: '55px',
             fontSize: '1.05rem',
-            background: 'transparent',
-            border: '1px solid hsla(0, 0%, 0%, 0.53)',
+            // background: 'transparent',
+            // border: '1px solid hsla(0, 0%, 0%, 0.53)',
           }}
         >
           <Icon name="chevron left" />Back
@@ -74,7 +74,7 @@ function MatchesSidebar({
           floating
           labeled
           button
-          className="icon"
+          className="icon black"
           style={{
             verticalAlign: 'top',
             width: 'calc(50% - 4px)',
@@ -200,8 +200,8 @@ function MatchesSidebar({
         <Button
           style={{
             width: '100%',
-            background: 'transparent',
-            border: '1px solid hsla(0, 0%, 0%, 0.53)',
+            // background: 'transparent',
+            // border: '1px solid hsla(0, 0%, 0%, 0.53)',
           }}
           onClick={() => {
             applyFilter({
