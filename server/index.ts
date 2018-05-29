@@ -109,6 +109,7 @@ app
 
     server.use(compression());
     server.use(helmet());
+
     server.use(bodyParser.json({ limit: '5mb' }));
 
     server.use((req, res, callback) => {
@@ -141,6 +142,8 @@ app
       //res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
       //res.header('Access-Control-Allow-Credentials', true);
+
+      res.setHeader('X-Frame-Options', `ALLOW-FROM ${origin}`);
 
       return callback();
     });
