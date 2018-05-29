@@ -147,6 +147,8 @@ app
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
       //res.header('Access-Control-Allow-Credentials', true);
 
+      res.setHeader('X-Frame-Options', `ALLOW-FROM ${origin}`);
+
       return callback();
     });
 
