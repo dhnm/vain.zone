@@ -108,7 +108,11 @@ app
     const server = express();
 
     server.use(compression());
-    server.use(helmet());
+    server.use(
+      helmet({
+        frameguard: false,
+      }),
+    );
 
     server.use(bodyParser.json({ limit: '5mb' }));
 
@@ -142,8 +146,6 @@ app
       //res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
       //res.header('Access-Control-Allow-Credentials', true);
-
-      res.setHeader('X-Frame-Options', `ALLOW-FROM ${origin}`);
 
       return callback();
     });
