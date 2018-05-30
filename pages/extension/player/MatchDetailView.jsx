@@ -23,7 +23,7 @@ function TeamStat({ icon, stat }) {
         fontSize: '1.05rem',
       }}
     >
-      <VZIcon icon={icon} size={11 * 1.05} />&zwj;{stat}
+      <VZIcon icon={icon} color="white" size={11 * 1.05} />&zwj;{stat}
     </span>
   );
 }
@@ -113,7 +113,7 @@ export default function MatchDetailView({
           }}
         >
           {match.rosters[0].heroKills}{' '}
-          <VZIcon icon={ICONS.swords} size={1.4 * 11} />{' '}
+          <VZIcon icon={ICONS.swords} color="white" size={1.4 * 11} />{' '}
           {match.rosters[1].heroKills}
         </div>
         <Label

@@ -114,6 +114,10 @@ class Extension extends React.Component {
         })
           .then((res) => res.data)
           .then((newMatches) => {
+            if (!newMatches || !newMatches.length) {
+              throw new Error(newMatches);
+            }
+
             const data = Object.assign({}, this.state.data);
 
             if (this.state.filters.page > 1) {
@@ -126,6 +130,7 @@ class Extension extends React.Component {
               data,
               appLoading: false,
               scrollPosition: window.scrollY,
+              selectedMatch: 0,
             });
           })
           .catch((err) => {

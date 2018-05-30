@@ -70,9 +70,10 @@ export default function MatchCard({
       link
       fluid
       style={{
-        background: `linear-gradient(hsla(0, 100%, 100%, 0.93), hsla(0, 100%, 100%, 0.87), hsla(0, 100%, 100%, 0.93)), url(/static/img/heroes/c/${playerInTheMatch.actor.toLowerCase()}.jpg)`,
+        background: `linear-gradient(hsla(0, 0%, 10%, 0.9), hsla(0, 0%, 10%, 0.9)), url(/static/img/heroes/c/${playerInTheMatch.actor.toLowerCase()}.jpg)`,
         backgroundSize: 'cover',
         backgroundPositionY: '40%',
+        color: 'hsla(0, 0%, 90%, 1)',
       }}
     >
       <Dimmer active={matchCardsLoading} inverted>
@@ -176,7 +177,7 @@ export default function MatchCard({
                             width: '50%',
                             height: '24px',
                             background:
-                              'linear-gradient(to right, transparent 80%, hsla(0, 100%, 100%, 0.4))',
+                              'linear-gradient(to right, transparent 80%, hsla(0, 0%, 0%, 0.2))',
                           }}
                         />
                       </div>
@@ -249,7 +250,7 @@ export default function MatchCard({
                             width: 'calc(50% - 24px - 6px)',
                             height: '24px',
                             background:
-                              'linear-gradient(to right, transparent 80%, hsla(0, 100%, 100%, 0.5))',
+                              'linear-gradient(to right, transparent 80%, hsla(0, 0%, 0%, 0.2))',
                           }}
                         />
                       </div>

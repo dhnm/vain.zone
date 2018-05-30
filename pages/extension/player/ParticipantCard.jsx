@@ -47,11 +47,13 @@ export default function ParticipantCard({
     kdaPerTenMinutes =
       (participant.kills + participant.assists) / (matchDuration / 600);
   }
-  let cardBg = 'transparent';
+  let cardBg = `linear-gradient(${
+    { left: '135deg', right: '225deg' }[side]
+  }, hsla(0, 0%, 83%, 0.2), hsla(0, 0%, 83%, 0.05), hsla(0, 0%, 83%, 0.1))`;
   if (participant.player.id === playerInTheMatch.player.id) {
     cardBg = `linear-gradient(${
       { left: '135deg', right: '225deg' }[side]
-    }, #d3d3d3, transparent)`;
+    }, hsla(0, 0%, 83%, 0.2), hsla(0, 0%, 83%, 0.26), hsla(0, 0%, 83%, 0.2))`;
   }
   const skillTierInfo = skillTierCalculator(rankPoints);
 
@@ -79,10 +81,10 @@ export default function ParticipantCard({
           background: cardBg,
         }}
       >
-        <Dimmer active={appLoading} inverted>
+        <Dimmer active={appLoading}>
           <Loader />
         </Dimmer>
-        <Card.Content style={{ padding: '4px' }}>
+        <Card.Content style={{ padding: '4px', color: 'hsla(0, 0%, 100%, 1)' }}>
           <Image
             size="mini"
             src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
@@ -183,9 +185,9 @@ export default function ParticipantCard({
               color="orange"
             />
             <div className="progressLabelWrapper">
-              <span className="progressLabel">Dmg/min</span>{' '}
+              <span className="progressLabel">DPS</span>{' '}
               <span className="progressLabelValue">
-                {(damage / (matchDuration / 60)).toFixed(0)}
+                {(damage / (matchDuration / 60) / 60).toFixed(2)}
               </span>
             </div>
           </div>

@@ -22,10 +22,10 @@ export default function ExtensionLayout({ children }) {
           rel="stylesheet"
           href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"
         />
-        {/* <link
+        <link
           rel="stylesheet"
           href="http://semantic-ui-forest.com/static/dist/semantic-ui/forest-themes/bootswatch/semantic.slate.min.css"
-        /> */}
+        />
       </Head>
       {children}
       <style jsx global>
