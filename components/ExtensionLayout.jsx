@@ -24,7 +24,7 @@ export default function ExtensionLayout({ children }) {
         />
         <link
           rel="stylesheet"
-          href="http://semantic-ui-forest.com/static/dist/semantic-ui/forest-themes/bootswatch/semantic.slate.min.css"
+          href="//semantic-ui-forest.com/static/dist/semantic-ui/forest-themes/bootswatch/semantic.slate.min.css"
         />
       </Head>
       {children}
