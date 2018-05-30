@@ -74,94 +74,97 @@ export default function PlayerDetailView({ player, childRef }) {
     }
   }
   return (
-    <Segment
-      as={(props) => <div ref={childRef} {...props} />}
-      basic
-      attached="top"
-      style={{ padding: 0, margin: '1em 0 0 -1px' }}
-    >
-      <Card fluid id="playerDetailView">
-        <Card.Content>
-          <SkillTierPopup rankPoints={player.rank_blitz} mode="Blitz" />
-          <SkillTierPopup rankPoints={player.rank_3v3} mode="3v3" />
-          {(() => {
-            if (player.patchVersion >= '3.2') {
-              return <SkillTierPopup rankPoints={player.rank_5v5} mode="5v5" />;
-            }
-            return <span />;
-          })()}
-          <Card.Header>{player.name}</Card.Header>
-          <Card.Meta>{`Level: ${player.level}`}</Card.Meta>
-          <Label content={player.shardId.toUpperCase()} />
-          {(() => {
-            if (player.guildTag) return <Label content={player.guildTag} />;
-            return <span />;
-          })()}
-          <Image
-            style={{ height: '30px' }}
-            spaced
-            src={`/static/img/karma/c/${player.karmaLevel}.png`}
-          />
-        </Card.Content>
-        <Card.Content>
-          <Grid columns={2}>
-            <Grid.Row style={{ paddingBottom: 0 }}>
-              <Grid.Column width={16} style={{ textAlign: 'center' }}>
-                Experience Level
-                <h2 style={{ margin: 0 }}>
-                  {experienceHours.toFixed(0)} hours
-                </h2>
-                <em>“{addictivenessRating}”</em>
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column>
-                5v5 Casuals:
-                <div style={{ float: 'right' }}>
-                  {player.played_casual_5v5}×
-                </div>
-                <br />
-                {(() => {
-                  if (player.patchVersion >= '3.2') {
+    <div ref={childRef}>
+      <Segment
+        basic
+        attached="top"
+        style={{ padding: 0, margin: '1em 0 0 -1px' }}
+      >
+        <Card fluid id="playerDetailView">
+          <Card.Content>
+            <SkillTierPopup rankPoints={player.rank_blitz} mode="Blitz" />
+            <SkillTierPopup rankPoints={player.rank_3v3} mode="3v3" />
+            {(() => {
+              if (player.patchVersion >= '3.2') {
+                return (
+                  <SkillTierPopup rankPoints={player.rank_5v5} mode="5v5" />
+                );
+              }
+              return <span />;
+            })()}
+            <Card.Header>{player.name}</Card.Header>
+            <Card.Meta>{`Level: ${player.level}`}</Card.Meta>
+            <Label content={player.shardId.toUpperCase()} />
+            {(() => {
+              if (player.guildTag) return <Label content={player.guildTag} />;
+              return <span />;
+            })()}
+            <Image
+              style={{ height: '30px' }}
+              spaced
+              src={`/static/img/karma/c/${player.karmaLevel}.png`}
+            />
+          </Card.Content>
+          <Card.Content>
+            <Grid columns={2}>
+              <Grid.Row style={{ paddingBottom: 0 }}>
+                <Grid.Column width={16} style={{ textAlign: 'center' }}>
+                  Experience Level
+                  <h2 style={{ margin: 0 }}>
+                    {experienceHours.toFixed(0)} hours
+                  </h2>
+                  <em>“{addictivenessRating}”</em>
+                </Grid.Column>
+              </Grid.Row>
+              <Grid.Row>
+                <Grid.Column>
+                  5v5 Casuals:
+                  <div style={{ float: 'right' }}>
+                    {player.played_casual_5v5}×
+                  </div>
+                  <br />
+                  {(() => {
+                    if (player.patchVersion >= '3.2') {
+                      return (
+                        <div>
+                          5v5 Rankeds:
+                          <div
+                            style={{
+                              float: 'right',
+                            }}
+                          >
+                            {player.played_ranked_5v5}×
+                          </div>
+                        </div>
+                      );
+                    }
                     return (
                       <div>
-                        5v5 Rankeds:
+                        BRAWL Games:
                         <div
                           style={{
                             float: 'right',
                           }}
                         >
-                          {player.played_ranked_5v5}×
+                          {player.played_aral + player.played_blitz}×
                         </div>
                       </div>
                     );
-                  }
-                  return (
-                    <div>
-                      BRAWL Games:
-                      <div
-                        style={{
-                          float: 'right',
-                        }}
-                      >
-                        {player.played_aral + player.played_blitz}×
-                      </div>
-                    </div>
-                  );
-                })()}
-              </Grid.Column>
-              <Grid.Column>
-                3v3 Casuals:
-                <div style={{ float: 'right' }}>{player.played_casual}×</div>
-                <br />
-                3v3 Rankeds:
-                <div style={{ float: 'right' }}>{player.played_ranked}×</div>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Card.Content>
-      </Card>
-    </Segment>
+                  })()}
+                </Grid.Column>
+                <Grid.Column>
+                  3v3 Casuals:
+                  <div style={{ float: 'right' }}>{player.played_casual}×</div>
+                  <br />
+                  3v3 Rankeds:
+                  <div style={{ float: 'right' }}>{player.played_ranked}×</div>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Card.Content>
+        </Card>
+      </Segment>
+    </div>
   );
 }
 

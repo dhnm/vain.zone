@@ -34,6 +34,8 @@ const propTypes = {
   filters: PropTypes.object.isRequired,
   filterFailed: PropTypes.bool.isRequired,
   scrollPosition: PropTypes.number.isRequired,
+  sendLoading: PropTypes.bool.isRequired,
+  toggleSendLoading: PropTypes.func.isRequired,
 };
 
 export default class MainView extends React.Component {
@@ -82,6 +84,13 @@ export default class MainView extends React.Component {
     })
       .then((canvas) => {
         const imgBase64 = canvas.toDataURL('image/png');
+
+        // const img = new window.Image();
+        // img.src = imgBase64;
+        // img.style.height = '100px';
+        // window.document.body.appendChild(img);
+        // return;
+
         const imageData = window.atob(imgBase64.split(',')[1]);
         const arraybuffer = new ArrayBuffer(imageData.length);
         const view = new Uint8Array(arraybuffer);
@@ -145,6 +154,7 @@ export default class MainView extends React.Component {
         };
         window.MessengerExtensions.beginShareFlow(
           (/* share_response */) => {
+            this.props.toggleSendLoading(false);
             // Modal => Sent (?)
             // User dismissed without error, but did they share the message?
             // if (share_response.is_sent) {
@@ -164,6 +174,8 @@ export default class MainView extends React.Component {
             // }
           },
           (errorCode, errorMessage) => {
+            this.props.toggleSendLoading(true);
+
             window.document.getElementById(
               'debugConsole',
             ).value += `\nError opening share window: ${errorCode} ${errorMessage}`;
@@ -180,17 +192,19 @@ export default class MainView extends React.Component {
         );
       })
       .catch((err) => {
+        this.props.toggleSendLoading(true);
+
         window.document.getElementById(
           'debugConsole',
         ).value += `\nError L ${err}`;
         // alert('Error! Please notify the developers. ' + err);
       });
   }
-  //   constructor(props) {
-  //     super(props);
-  //     MainView.identifyExtensionUser = MainView.identifyExtensionUser.bind(this);
-  //     MainView.generateImage = MainView.generateImage.bind(this);
-  //   }
+  constructor(props) {
+    super(props);
+    MainView.identifyExtensionUser = MainView.identifyExtensionUser.bind(this);
+    MainView.generateImage = MainView.generateImage.bind(this);
+  }
   componentDidMount() {
     const FBLoaded = () => {
       if (this.props.extension) {
@@ -267,7 +281,12 @@ export default class MainView extends React.Component {
             />
             <Button.Group attached="bottom" style={{ overflow: 'hidden' }}>
               <Button
-                onClick={() => MainView.generateImage(this.playerDetailView)}
+                onClick={() => {
+                  this.props.toggleSendLoading(true);
+                  MainView.generateImage(this.playerDetailView);
+                }}
+                loading={this.props.sendLoading}
+                disabled={this.props.sendLoading}
               >
                 <Icon name="send" />Send Profile{' '}
                 <Label color="blue">Beta</Label>
@@ -308,9 +327,12 @@ export default class MainView extends React.Component {
                       }}
                     />
                     <Button
-                      onClick={() =>
-                        MainView.generateImage(this.matchDetailView)
-                      }
+                      onClick={() => {
+                        this.props.toggleSendLoading(true);
+                        MainView.generateImage(this.matchDetailView);
+                      }}
+                      loading={this.props.sendLoading}
+                      disabled={this.props.sendLoading}
                       attached="bottom"
                     >
                       <Icon name="send" />Send Match{' '}

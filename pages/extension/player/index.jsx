@@ -40,6 +40,7 @@ class Extension extends React.Component {
       selectedMatch: 0,
       TLData: props.TLData,
       appLoading: false,
+      sendLoading: false,
     };
     this.showSidebar = this.showSidebar.bind(this);
     this.converter = this.converter.bind(this);
@@ -91,6 +92,10 @@ class Extension extends React.Component {
         // alert('Error retrieving telemetry data.');
         console.log(err);
       });
+  };
+
+  toggleSendLoading = (newState) => {
+    this.setState({ sendLoading: newState });
   };
   applyFilter = (modifiedValues) => {
     this.setState(
@@ -290,6 +295,8 @@ class Extension extends React.Component {
         filters={this.state.filters}
         filterFailed={this.state.filterFailed}
         scrollPosition={this.state.scrollPosition}
+        sendLoading={this.state.sendLoading}
+        toggleSendLoading={this.toggleSendLoading}
       />
     );
   }
