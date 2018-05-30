@@ -85,12 +85,6 @@ export default class MainView extends React.Component {
       .then((canvas) => {
         const imgBase64 = canvas.toDataURL('image/png');
 
-        // const img = new window.Image();
-        // img.src = imgBase64;
-        // img.style.height = '100px';
-        // window.document.body.appendChild(img);
-        // return;
-
         const imageData = window.atob(imgBase64.split(',')[1]);
         const arraybuffer = new ArrayBuffer(imageData.length);
         const view = new Uint8Array(arraybuffer);

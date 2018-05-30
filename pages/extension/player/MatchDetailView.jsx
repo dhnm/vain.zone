@@ -234,7 +234,7 @@ export default function MatchDetailView({
                 {match.spectators.map((spectator) => (
                   <Link
                     prefetch
-                    href={`$/extension/player?error=false&extension=false&IGN=${
+                    href={`/extension/player?error=false&extension=false&IGN=${
                       spectator.name
                     }`}
                     as={`/extension/player/${spectator.name}`}
