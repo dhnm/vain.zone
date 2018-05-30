@@ -300,7 +300,7 @@ export default class MainView extends React.Component {
                       TLData={this.props.TLData}
                       appLoading={this.props.appLoading}
                       childRef={(c) => {
-                        this.MatchDetailView = c;
+                        this.matchDetailView = c;
                       }}
                     />
                     <Button
