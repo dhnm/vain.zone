@@ -130,7 +130,7 @@ class Extension extends React.Component {
               data,
               appLoading: false,
               scrollPosition: window.scrollY,
-              selectedMatch: 0,
+              selectedMatch: null,
             });
           })
           .catch((err) => {

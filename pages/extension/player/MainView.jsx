@@ -291,7 +291,11 @@ export default class MainView extends React.Component {
               readOnly
             />
             {(() => {
-              if (this.props.data.matches.length > 0) {
+              if (
+                this.props.data.matches.length > 0 &&
+                (this.props.selectedMatch || this.props.selectedMatch === 0)
+              ) {
+                console.log(this.props.selectedMatch, this.props.selectedMatch);
                 return (
                   <React.Fragment>
                     <MatchDetailView
