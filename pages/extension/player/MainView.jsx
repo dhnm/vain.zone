@@ -76,8 +76,8 @@ export default class MainView extends React.Component {
       );
     });
   }
-  static generateImage(elementId) {
-    html2canvas(window.document.getElementById(elementId), {
+  static generateImage(element) {
+    html2canvas(element, {
       backgroundColor: null,
     })
       .then((canvas) => {
@@ -259,10 +259,15 @@ export default class MainView extends React.Component {
               <strong>Alpha disclaimer:</strong> Only EU is supported right now.
               We will support other regions soon.
             </Message> */}
-            <PlayerDetailView player={this.props.data.player} />
+            <PlayerDetailView
+              player={this.props.data.player}
+              childRef={(c) => {
+                this.playerDetailView = c;
+              }}
+            />
             <Button.Group attached="bottom" style={{ overflow: 'hidden' }}>
               <Button
-                onClick={() => MainView.generateImage('playerDetailView')}
+                onClick={() => MainView.generateImage(this.playerDetailView)}
               >
                 <Icon name="send" />Send Profile{' '}
                 <Label color="blue">Beta</Label>
@@ -294,9 +299,14 @@ export default class MainView extends React.Component {
                       converter={this.props.converter}
                       TLData={this.props.TLData}
                       appLoading={this.props.appLoading}
+                      childRef={(c) => {
+                        this.MatchDetailView = c;
+                      }}
                     />
                     <Button
-                      onClick={() => MainView.generateImage('matchDetailView')}
+                      onClick={() =>
+                        MainView.generateImage(this.matchDetailView)
+                      }
                       attached="bottom"
                     >
                       <Icon name="send" />Send Match{' '}

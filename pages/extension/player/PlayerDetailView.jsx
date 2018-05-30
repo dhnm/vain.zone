@@ -6,9 +6,10 @@ import SkillTierPopup from './SkillTierPopup';
 
 const propTypes = {
   player: PropTypes.object.isRequired,
+  childRef: PropTypes.func.isRequired,
 };
 
-export default function PlayerDetailView({ player }) {
+export default function PlayerDetailView({ player, childRef }) {
   let experienceHours =
     (player.played_casual_5v5 * 22 +
       player.played_aral * 10 +
@@ -73,12 +74,12 @@ export default function PlayerDetailView({ player }) {
     }
   }
   return (
-    <div>
-      <Segment
-        basic
-        attached="top"
-        style={{ padding: 0, margin: '1em 0 0 -1px' }}
-      >
+    <Segment
+      basic
+      attached="top"
+      style={{ padding: 0, margin: '1em 0 0 -1px' }}
+    >
+      <div ref={childRef}>
         <Card fluid id="playerDetailView">
           <Card.Content>
             <SkillTierPopup rankPoints={player.rank_blitz} mode="Blitz" />
@@ -162,8 +163,8 @@ export default function PlayerDetailView({ player }) {
             </Grid>
           </Card.Content>
         </Card>
-      </Segment>
-    </div>
+      </div>
+    </Segment>
   );
 }
 
