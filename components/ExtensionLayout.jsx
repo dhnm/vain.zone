@@ -35,10 +35,10 @@ export default function ExtensionLayout({ children }) {
             background-color: black !important;
 
             background-image: linear-gradient(
-                hsla(0, 0%, 0%, 0.4),
-                hsla(0, 0%, 0%, 0.4),
-                hsla(0, 0%, 0%, 0.4),
-                hsla(227, 32%, 9%, 0.5),
+                hsla(0, 0%, 0%, 0.6),
+                hsla(0, 0%, 0%, 0.5),
+                hsla(0, 0%, 0%, 0.7),
+                hsla(227, 32%, 9%, 0.8),
                 hsla(227, 32%, 9%, 1)
               ),
               url('/static/img/bg.jpg') !important;
