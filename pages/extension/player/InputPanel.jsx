@@ -54,6 +54,7 @@ export default class InputPanel extends React.Component {
             loading={this.props.appLoading}
           /> */}
           <Search
+            placeholder="In-Game Name"
             style={{ fontSize: '16px' }}
             loading={this.props.appLoading}
             onFocus={() => {

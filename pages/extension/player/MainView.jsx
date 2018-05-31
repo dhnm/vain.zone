@@ -235,13 +235,20 @@ export default class MainView extends React.Component {
     this.saveNameInLocalStorage();
   }
   componentDidUpdate(prevProps) {
-    if (prevProps.data.player.name !== this.props.data.player.name) {
-      this.saveNameInLocalStorage();
+    if (!this.props.extension) {
+      if (prevProps.data) {
+        if (prevProps.data.player.name !== this.props.data.player.name) {
+          this.saveNameInLocalStorage();
+        }
+      } else {
+        this.saveNameInLocalStorage();
+      }
     }
   }
   saveNameInLocalStorage() {
     if (!this.props.extension) {
       if (window.localStorage) {
+        console.log(this.props);
         console.log('---------- counted');
         const fromStorage = window.localStorage.getItem('favorites');
         const favorites = fromStorage ? JSON.parse(fromStorage) : [];
