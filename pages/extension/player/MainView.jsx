@@ -198,6 +198,7 @@ export default class MainView extends React.Component {
     super(props);
     MainView.identifyExtensionUser = MainView.identifyExtensionUser.bind(this);
     MainView.generateImage = MainView.generateImage.bind(this);
+    this.saveNameInLocalStorage = this.saveNameInLocalStorage.bind(this);
   }
   componentDidMount() {
     const FBLoaded = () => {
@@ -230,6 +231,33 @@ export default class MainView extends React.Component {
       js.src = '//connect.facebook.com/en_US/messenger.Extensions.js';
       fjs.parentNode.insertBefore(js, fjs);
     })(window.document, 'script', 'Messenger');
+
+    this.saveNameInLocalStorage();
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.data.player.name !== this.props.data.player.name) {
+      this.saveNameInLocalStorage();
+    }
+  }
+  saveNameInLocalStorage() {
+    if (!this.props.extension) {
+      if (window.localStorage) {
+        console.log('---------- counted');
+        const fromStorage = window.localStorage.getItem('favorites');
+        const favorites = fromStorage ? JSON.parse(fromStorage) : [];
+        const existingIndex = favorites.findIndex(
+          (e) => e.name === this.props.data.player.name,
+        );
+
+        if (existingIndex > -1) {
+          favorites[existingIndex].count += 1;
+        } else {
+          favorites.push({ name: this.props.data.player.name, count: 1 });
+        }
+
+        window.localStorage.setItem('favorites', JSON.stringify(favorites));
+      }
+    }
   }
   render() {
     if (this.props.extension) {

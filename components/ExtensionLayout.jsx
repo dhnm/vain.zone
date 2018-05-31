@@ -26,6 +26,7 @@ export default function ExtensionLayout({ children }) {
           rel="stylesheet"
           href="//semantic-ui-forest.com/static/dist/semantic-ui/forest-themes/bootswatch/semantic.slate.min.css"
         />
+        <script src="https://cdn.polyfill.io/v2/polyfill.min.js" />
       </Head>
       {children}
       <style jsx global>
