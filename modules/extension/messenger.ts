@@ -673,10 +673,16 @@ const setIGN = (nick: string, userID: string) => {
         .then(user => {
             if (nick == "del") {
                 user.defaultIGN = undefined;
-                sendTextMessage(
-                    userID,
-                    "Deleted. You can set your default IGN again anytime. Just type it and hit send."
-                );
+                user
+                    .save()
+                    .then(() => {
+                        sendTextMessage(
+                            userID,
+                            "Deleted. You can set your default IGN again anytime. Just type it and hit send."
+                        );
+                    })
+                    .catch(err => Promise.reject(err));
+                
             } else {
                 user.defaultIGN = nick;
                 user
