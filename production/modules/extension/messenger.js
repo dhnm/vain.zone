@@ -575,7 +575,7 @@ const sendPlayerInfo = (userID, data) => {
             };
             setTimeout(function () {
                 callSendAPI(saveIGN);
-            }, 250);
+            }, 350);
         }
     })
         .catch(err => {
@@ -595,7 +595,12 @@ const setIGN = (nick, userID) => {
         .then(user => {
         if (nick == "del") {
             user.defaultIGN = undefined;
-            sendTextMessage(userID, "Deleted. You can set your default IGN again anytime. Just type it and hit send.");
+            user
+                .save()
+                .then(() => {
+                sendTextMessage(userID, "Deleted. You can set your default IGN again anytime. Just type it and hit send.");
+            })
+                .catch(err => Promise.reject(err));
         }
         else {
             user.defaultIGN = nick;

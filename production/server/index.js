@@ -91,7 +91,9 @@ app
     .then(() => {
     const server = express();
     server.use(compression());
-    server.use(helmet());
+    server.use(helmet({
+        frameguard: false,
+    }));
     server.use(bodyParser.json({ limit: '5mb' }));
     server.use((req, res, callback) => {
         var allowedOrigins = [
@@ -123,13 +125,14 @@ app
         //res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
         //res.header('Access-Control-Allow-Credentials', true);
+        res.setHeader('X-Frame-Options', `ALLOW-FROM ${origin}`);
         return callback();
     });
     server.use('/extension', extension_1.default(app));
     server.use('/api', api_1.default);
-    server.get('/', (_req, res) => {
-        res.send('Coming soon.');
-    });
+    // server.get('/', (_req, res) => {
+    //   res.send('Coming soon.');
+    // });
     server.get('*', (req, res) => {
         return handle(req, res);
     });

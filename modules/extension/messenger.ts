@@ -650,7 +650,7 @@ const sendPlayerInfo = (userID: string, data: any) => {
 
                 setTimeout(function() {
                     callSendAPI(saveIGN);
-                }, 250);
+                }, 350);
             }
         })
         .catch(err => {

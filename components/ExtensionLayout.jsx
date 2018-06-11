@@ -14,10 +14,6 @@ export default function ExtensionLayout({ children }) {
     <div id="container">
       <Head>
         <title>VAIN.ZONE</title>
-        <meta
-          name="viewport"
-          content="initial-scale=1.0, width=device-width, shrink-to-fit=no"
-        />
         <link
           rel="stylesheet"
           href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"
@@ -26,7 +22,6 @@ export default function ExtensionLayout({ children }) {
           rel="stylesheet"
           href="//semantic-ui-forest.com/static/dist/semantic-ui/forest-themes/bootswatch/semantic.slate.min.css"
         />
-        <script src="https://cdn.polyfill.io/v2/polyfill.min.js" />
       </Head>
       {children}
       <style jsx global>

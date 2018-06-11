@@ -1,92 +1,84 @@
-import * as express from 'express';
-import * as next from 'next';
-import * as helmet from 'helmet';
-import * as compression from 'compression';
+const app = require('express')();
+const bodyParser = require('body-parser');
+
+const mongoose = require('mongoose');
+const db = mongoose.connection;
+
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+
+const helmet = require('helmet');
+const compression = require('compression');
+// const crypto = require('crypto');
+// function encrypt(text) {
+//   const cipher = crypto.createCipher(
+//     'aes-256-ctr',
+//     'PqTJKyuK-uTC6nsnk-AVm7DpFs-jZdfn8Vk-wAyFddh6',
+//   );
+
+//   return cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
+// }
+// function decrypt(text, password) {
+//   const decipher = crypto.createDecipher(
+//     'aes-256-ctr',
+//     password + 'PqTJKyuK-uTC6nsnk-AVm7DpFs-jZdfn8Vk-wAyFddh6',
+//   );
+//   return decipher.update(text, 'hex', 'utf8') + decipher.final('utf8');
+// }
+
+const PORT = process.env.PORT || 3000;
+const dev = process.env.NODE_ENV !== 'production';
+
+const nextApp = require('next')({ dev });
+const nextHandler = nextApp.getRequestHandler();
+
+import axios from 'axios';
 
 import extension from './../modules/extension';
 import api from './../modules/api';
 
-import * as bodyParser from 'body-parser';
-
-const PORT = process.env.PORT || 3000;
-
-const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
-const handle = app.getRequestHandler();
-
-import axios from 'axios';
-
-import * as mongoose from 'mongoose';
 // import { Match } from "./../models/Match";
 // import { Player } from "./../models/Player";
 mongoose.connect(
   'mongodb://user_thisBoy:r8LspGn5jpZJIfCP@vainzone-shard-00-00-jem9k.mongodb.net:27017,vainzone-shard-00-01-jem9k.mongodb.net:27017,vainzone-shard-00-02-jem9k.mongodb.net:27017/VAINZONE?ssl=true&replicaSet=VAINZONE-shard-0&authSource=admin',
 );
-const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
   console.log("We're connected!");
+});
 
-  //   Match.collection.dropIndexes().then(r => {
-  //     console.log("success", r);
-  //   });
+io.on('connection', (socket) => {
+  socket.on('join room', (room) => {
+    socket.join(room);
+  });
 
-  //   Match.update({}, { $unset: { id: 1 } }, { multi: true })
-  //     .exec()
-  //     .then(ps => {
-  //       console.log(ps);
-  //     });
+  socket.on('verify', (data) => {
+    const roomID = data.keys.roomID;
+    const rooms = Object.assign({}, io.sockets.adapter.rooms);
 
-  //   var counter = 0;
-  //   Match.find({ matchID: { $exists: true } })
-  //     .exec()
-  //     .then(ms => {
-  //       ms.forEach(m => {
-  //         m.id = undefined;
-  //         //m.id = undefined;
-  //         m.save().then(() => {
-  //           counter++;
-  //           console.log("modified", counter, "out of", ms.length);
-  //         });
-  //       });
-  //     })
-  //     .catch(err => {
-  //       console.error(err);
-  //     });
+    if (data.keys.teamID) {
+      socket.join(`${roomID}/${data.keys.teamID}`);
+    }
+    socket.join(roomID);
 
-  // const startTimer = new Date();
-  // Match.find({})
-  //     .exec()
-  //     .then(allMatches => {
-  //         console.log(
-  //             "Done. Retrieved %s matches in %sms.",
-  //             allMatches.length,
-  //             new Date() - startTimer
-  //         );
-  //     });
+    if (rooms[roomID] && rooms[roomID].sockets[roomID]) {
+      socket.to(data.keys.recipientID).emit('verify', data);
+    } else {
+      socket.emit('data transfer', { keys: { failed: true } });
+    }
+  });
 
-  // BotUser.insertMany(transformedData, { ordered: true })
-  //     .then(u => console.log("Inserted " + u.length + " users."))
-  //     .catch(err => console.error("Error inserting people", err));
+  socket.on('data transfer', (data) => {
+    socket.to(data.keys.recipientID).emit('data transfer', data);
+  });
 
-  // BotUser.deleteMany({})
-  //     .exec()
-  //     .then(deleted => console.log("deleted", deleted))
-  //     .catch(err => console.error("error modifying", err));
+  socket.on('host update', (data) => {
+    socket.to(data.keys.recipientID).emit('host update', data);
+  });
 
-  // Player.find({ id: "5ad169e94a085e75ca6f1b0b" })
-  //   .exec()
-  //   .then(founds => {
-  //     founds.forEach(found => {
-  //       found.id = mongoose.Types.ObjectId().toHexString();
-
-  //       found
-  //         .save()
-  //         .then(saved => console.log("saved", saved.id))
-  //         .catch(err => console.log("err2" + err));
-  //     });
-  //   })
-  //   .catch(err => console.log("err1" + err));
+  socket.on('disconnect', () => {
+    socket.broadcast.emit('socket disconnected', socket.id);
+  });
 });
 
 setInterval(() => {
@@ -102,21 +94,20 @@ setInterval(() => {
     });
 }, 29 * 60 * 1000);
 
-app
+nextApp
   .prepare()
   .then(() => {
-    const server = express();
-
-    server.use(compression());
-    server.use(
+    app.use(compression());
+    app.use(
       helmet({
         frameguard: false,
       }),
     );
 
-    server.use(bodyParser.json({ limit: '5mb' }));
+    app.use(bodyParser.json({ limit: '5mb' }));
+    app.use(bodyParser.urlencoded({ extended: true }));
 
-    server.use((req, res, callback) => {
+    app.use((req, res, callback) => {
       var allowedOrigins = [
         'http://localhost:3000',
         'https://localhost:3000',
@@ -152,18 +143,35 @@ app
       return callback();
     });
 
-    server.use('/extension', extension(app));
-    server.use('/api', api);
+    app.use('/extension', extension(nextApp));
+    app.use('/api', api);
 
-    server.get('/', (_req, res) => {
-      res.send('Coming soon.');
+    app.get('/draft', (req, res) => {
+      nextApp.render(req, res, '/draft', {
+        urlPath: req.protocol + '://' + req.headers.host,
+      });
     });
 
-    server.get('*', (req, res) => {
-      return handle(req, res);
+    app.get('/draft/:roomID', (req, res) => {
+      nextApp.render(req, res, '/draft', {
+        urlPath: req.protocol + '://' + req.headers.host,
+        roomID: req.params.roomID,
+      });
     });
 
-    server.listen(PORT, (err: any) => {
+    app.get('/draft/:roomID/:teamID', (req, res) => {
+      nextApp.render(req, res, '/draft', {
+        urlPath: req.protocol + '://' + req.headers.host,
+        roomID: req.params.roomID,
+        teamID: req.params.teamID,
+      });
+    });
+
+    app.get('*', (req, res) => {
+      return nextHandler(req, res);
+    });
+
+    http.listen(PORT, (err: any) => {
       if (err) throw err;
       console.log('> Ready on http://localhost:' + PORT);
     });

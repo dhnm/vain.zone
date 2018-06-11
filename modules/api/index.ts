@@ -7,6 +7,8 @@ import matches from './matches';
 import telemetry from './telemetry';
 import applyfilter from './applyfilter';
 
+import uuidv4 from './uuidv4';
+
 export default router;
 
 router.use('/fbattachment', fbattachment);
@@ -14,3 +16,5 @@ router.use('/botuser', botuser);
 router.use('/matches', matches);
 router.use('/telemetry', telemetry);
 router.use('/applyfilter', applyfilter);
+
+router.use('/uuidv4', uuidv4);

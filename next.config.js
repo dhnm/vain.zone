@@ -6,6 +6,7 @@
 // export const BUILD_MANIFEST = "build-manifest.json";
 // const { PHASE_DEVELOPMENT_SERVER } = require("next/constants");
 const withTypescript = require('@zeit/next-typescript');
+const withCSS = require('@zeit/next-css');
 
 module.exports = (phase, { defaultConfig }) => {
   const customConfig = {
@@ -18,7 +19,12 @@ module.exports = (phase, { defaultConfig }) => {
       staticFolder: '/static',
     },
   };
-  const config = { ...defaultConfig, ...withTypescript(), ...customConfig };
+  const config = {
+    ...defaultConfig,
+    ...withTypescript(),
+    ...withCSS(),
+    ...customConfig,
+  };
 
   return config;
 };
