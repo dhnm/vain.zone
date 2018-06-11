@@ -138,7 +138,9 @@ class Guest extends React.Component {
         <Lobby>
           <Head>
             <title>
-              {`Lobby | ${this.state.matchName}` || 'Lobby | NACL Draft'}
+              {this.state.matchName
+                ? `Lobby | ${this.state.matchName}`
+                : 'Lobby | NACL Draft'}
             </title>
           </Head>
           <img

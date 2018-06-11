@@ -39,7 +39,7 @@ class Draft extends React.Component {
   state = { timeLeft: 0 };
   componentDidMount() {
     this.socket = io();
-    console.log(toast);
+
     toast.success('Draft has started. Good luck!', {
       position: toast.POSITION.TOP_CENTER,
       autoClose: 2000,
@@ -76,7 +76,7 @@ class Draft extends React.Component {
             new Date(prevState[sideBonus]).getTime() - new Date().getTime(),
         }));
       }
-    }, 200);
+    }, 1000);
   }
   componentWillUnmount() {
     this.socket.close();
@@ -103,15 +103,125 @@ class Draft extends React.Component {
     });
   };
   render() {
+    let percent =
+      (this.state.timeLeft - 800) /
+      (this.props.draftSequence[this.props.draftedHeroes.length].action ===
+      'pick'
+        ? this.props.pickTime
+        : this.props.banTime);
+    if (percent < 0) {
+      percent = 0;
+    }
     return (
       <React.Fragment>
         <Head>
           <title>{this.props.matchName}</title>
         </Head>
         <h1>{this.props.matchName}</h1>
+        <div id="timers">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle
+              cx="60"
+              cy="60"
+              r="52.5"
+              fill="none"
+              stroke="#0000ff"
+              strokeWidth="15"
+            />
+            <circle
+              transform="rotate(-90 60 60)"
+              cx="60"
+              cy="60"
+              r="52.5"
+              fill="none"
+              stroke="#f77a52"
+              strokeWidth="15"
+              strokeDasharray={2 * Math.PI * 52.5}
+              strokeDashoffset={
+                2 *
+                Math.PI *
+                52.5 *
+                (1 - this.state.blueBonusLeft / this.props.bonusTime)
+              }
+              style={{ transition: 'stroke-dashoffset 1000ms linear' }}
+            />
+            <text
+              x="60"
+              y="60"
+              textAnchor="middle"
+              alignmentBaseline="central"
+              fontSize="45px"
+              fontWeight="bold"
+            >
+              {Math.round(this.state.timeLeft / 1000)}
+            </text>
+          </svg>
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle
+              cx="60"
+              cy="60"
+              r="52.5"
+              fill="none"
+              stroke="#e6e6e6"
+              strokeWidth="15"
+            />
+            <circle
+              transform="rotate(-90 60 60)"
+              cx="60"
+              cy="60"
+              r="52.5"
+              fill="none"
+              stroke="#f77a52"
+              strokeWidth="15"
+              strokeDasharray={2 * Math.PI * 52.5}
+              strokeDashoffset={2 * Math.PI * 52.5 * (1 - percent)}
+              style={{ transition: 'stroke-dashoffset 1000ms linear' }}
+            />
+            <text
+              x="60"
+              y="60"
+              textAnchor="middle"
+              alignmentBaseline="central"
+              fontSize="45px"
+              fontWeight="bold"
+            >
+              {Math.round(this.state.timeLeft / 1000)}
+            </text>
+          </svg>
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle
+              cx="60"
+              cy="60"
+              r="52.5"
+              fill="none"
+              stroke="#e6e6e6"
+              strokeWidth="15"
+            />
+            <circle
+              transform="rotate(-90 60 60)"
+              cx="60"
+              cy="60"
+              r="52.5"
+              fill="none"
+              stroke="#f77a52"
+              strokeWidth="15"
+              strokeDasharray={2 * Math.PI * 52.5}
+              strokeDashoffset={2 * Math.PI * 52.5 * (1 - percent)}
+              style={{ transition: 'stroke-dashoffset 1000ms linear' }}
+            />
+            <text
+              x="60"
+              y="60"
+              textAnchor="middle"
+              alignmentBaseline="central"
+              fontSize="45px"
+              fontWeight="bold"
+            >
+              {Math.round(this.state.timeLeft / 1000)}
+            </text>
+          </svg>
+        </div>
         <div id="draft_state">
-          {this.state.timeLeft} {this.state.blueBonusLeft}{' '}
-          {this.state.redBonusLeft}
           <ul id="blue_pick">
             {this.props.draftSequence
               .filter((e) => e.action === 'pick' && e.team === 0)

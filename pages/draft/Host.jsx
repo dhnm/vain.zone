@@ -114,8 +114,8 @@ class Host extends React.Component {
     matchName: 'NACL Draft Match',
     blueName: 'Blue Team',
     redName: 'Red Team',
-    banTime: 10000,
-    pickTime: 15000,
+    banTime: 15000,
+    pickTime: 20000,
     bonusTime: 30000,
 
     draftStarted: false,
@@ -374,7 +374,11 @@ class Host extends React.Component {
     return (
       <Lobby>
         <Head>
-          <title>{this.state.matchName || 'NACL Draft Tool'}</title>
+          <title>
+            {this.state.matchName === 'NACL Draft Match'
+              ? 'Nacl Draft Tool'
+              : 'NACL Draft Tool'}
+          </title>
         </Head>
         <React.Fragment>
           <img
@@ -415,7 +419,11 @@ class Host extends React.Component {
                       }}
                       className="indicator"
                     />
-                    {['Offline', 'In Lobby', 'Ready'][this.state.blueState]}
+                    {
+                      ['Team Offline', 'In Lobby', 'Ready'][
+                        this.state.blueState
+                      ]
+                    }
                   </div>
                 </React.Fragment>
               )}
@@ -448,7 +456,7 @@ class Host extends React.Component {
                       }}
                       className="indicator"
                     />
-                    {['Offline', 'In Lobby', 'Ready'][this.state.redState]}
+                    {['Team Offline', 'In Lobby', 'Ready'][this.state.redState]}
                   </div>
                 </React.Fragment>
               )}
@@ -513,15 +521,28 @@ class Host extends React.Component {
               border-bottom: ${this.state.lobby
                 ? '0'
                 : '1px solid hsla(0, 0%, 75%, 1)'};
-              width: ${this.state.lobby ? 'initial' : 'calc(100% - 30px)'};
-              ${this.state.lobby ? 'cursor: default;' : ''};
+              ${this.state.lobby
+                ? 'width: calc(100% - 20px - 110px)'
+                : 'width: calc(100% - 20px)'};
+              ${this.state.lobby ? 'cursor: default' : ''};
               box-sizing: border-box;
+            }
+            .names[name='matchName'] {
+              width: calc(100% - 20px);
             }
             .names:focus,
             .names:hover {
               border-bottom: ${this.state.lobby
                 ? '0'
                 : '1px solid hsla(0, 0%, 30%, 1)'};
+            }
+            .indicatorText {
+              float: right;
+              margin-top: 23px;
+              font-weight: bold;
+              font-size: 0.7rem;
+              line-height: 1rem;
+              text-transform: uppercase;
             }
             .indicator {
               float: right;
@@ -533,23 +554,19 @@ class Host extends React.Component {
               border-radius: 50%;
               box-sizing: border-box;
             }
-            .indicatorText {
-              float: right;
-              margin-top: 23px;
-              font-weight: bold;
-              font-size: 0.7rem;
-              line-height: 1rem;
-              text-transform: uppercase;
-            }
             @media (max-width: 632px) {
               .names {
-                max-width: calc(66% - 20px);
+                margin-right: 0;
+                margin-left: 0;
+                width: ${this.state.lobby
+                  ? 'calc(100% - 110px - 5px)'
+                  : '100%'};
               }
               .names[name='matchName'] {
-                max-width: 100%;
+                width: 100%;
               }
               .indicatorText {
-                max-width: calc(33% - 10px);
+                width: 110px;
               }
             }
             input:focus {

@@ -31,8 +31,8 @@ const App = (props) => (
         .custom-toast {
           text-align: center;
           box-shadow: 0 0 20px hsla(0, 0%, 90%, 1);
-          border-top: 8px solid hsla(0, 0%, 0%, 0.4);
-          border-bottom: 8px solid hsla(0, 0%, 0%, 0.4);
+          border-top: 8px solid hsla(0, 0%, 0%, 0.2);
+          border-bottom: 8px solid hsla(0, 0%, 0%, 0.2);
         }
       `}
     </style>
