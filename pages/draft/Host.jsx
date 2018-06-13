@@ -72,51 +72,70 @@ class Host extends React.Component {
     hostState: 1,
 
     draftSequence: [
-      { action: 'ban', team: 0 },
-      { action: 'ban', team: 0 },
-      { action: 'ban', team: 0 },
-      { action: 'ban', team: 1 },
-      { action: 'ban', team: 1 },
-      { action: 'ban', team: 1 },
-      { action: 'pick', team: 0 },
-      { action: 'pick', team: 0 },
-      { action: 'pick', team: 0 },
-      { action: 'pick', team: 0 },
-      { action: 'pick', team: 0 },
-      { action: 'pick', team: 1 },
-      { action: 'pick', team: 1 },
-      { action: 'pick', team: 1 },
-      { action: 'pick', team: 1 },
-      { action: 'pick', team: 1 },
+      { team: 0, action: 'ban' },
+      { team: 1, action: 'ban' },
+      { team: 0, action: 'ban' },
+      { team: 1, action: 'ban' },
+      { team: 0, action: 'pick' },
+      { team: 1, action: 'pick' },
+      { team: 1, action: 'pick' },
+      { team: 0, action: 'pick' },
+      { team: 0, action: 'pick' },
+      { team: 1, action: 'pick' },
+      { team: 1, action: 'pick' },
+      { team: 0, action: 'pick' },
+      { team: 0, action: 'pick' },
+      { team: 1, action: 'pick' },
     ],
     heroes: [
-      {
-        name: 'Ringo',
-        img: '',
-      },
       { name: 'Adagio' },
-      { name: 'Baptiste' },
       { name: 'Alpha' },
+      { name: 'Ardan' },
+      { name: 'Baptiste' },
+      { name: 'Baron' },
       { name: 'Blackfeather' },
-      { name: 'Taka' },
-      { name: 'Vox' },
-      { name: 'Koshka' },
-      { name: 'Reza' },
-      { name: 'Grace' },
-      { name: 'Lyra' },
-      { name: 'Varya' },
-      { name: 'Kensei' },
-      { name: 'Tony' },
-      { name: 'Malene' },
-      { name: 'Phinn' },
       { name: 'Catherine' },
+      { name: 'Celeste' },
+      { name: 'Churnwalker' },
+      { name: 'Flicker' },
+      { name: 'Fortress' },
+      { name: 'Glaive' },
+      { name: 'Grace' },
+      { name: 'Grumpjaw' },
+      { name: 'Gwen' },
+      { name: 'Idris' },
+      { name: 'Joule' },
+      { name: 'Kensei' },
+      { name: 'Kestrel' },
+      { name: 'Kinetic' },
+      { name: 'Koshka' },
+      { name: 'Krul' },
+      { name: 'Lance' },
+      { name: 'Lorelai' },
+      { name: 'Lyra' },
+      { name: 'Malene' },
+      { name: 'Ozo' },
+      { name: 'Petal' },
+      { name: 'Phinn' },
+      { name: 'Reim' },
+      { name: 'Reza' },
+      { name: 'Ringo' },
+      { name: 'Rona' },
+      { name: 'Samuel' },
+      { name: 'SAW' },
+      { name: 'Skaarf' },
+      { name: 'Skye' },
+      { name: 'Taka' },
+      { name: 'Tony' },
+      { name: 'Varya' },
+      { name: 'Vox' },
     ],
     matchName: 'NACL Draft Match',
     blueName: 'Blue Team',
     redName: 'Red Team',
-    banTime: 15000,
-    pickTime: 20000,
-    bonusTime: 30000,
+    banTime: 20000,
+    pickTime: 30000,
+    bonusTime: 60000,
 
     draftStarted: false,
     draftedHeroes: [],
@@ -223,6 +242,23 @@ class Host extends React.Component {
           this.setState(
             (prevState) => {
               const draftPositionIndex = prevState.draftedHeroes.length;
+              console.log(data, prevState.draftSequence.length);
+              if (
+                data.state.draftedHeroes &&
+                data.state.draftedHeroes.length ===
+                  prevState.draftSequence.length
+              ) {
+                return {
+                  ...data.state,
+                  draftFinished: true,
+                };
+              } else if (
+                data.state.draftedHeroes &&
+                data.state.draftedHeroes.length > prevState.draftSequence.length
+              ) {
+                return null;
+              }
+
               const teamTurn = prevState.draftSequence[draftPositionIndex].team;
               const requestFromTeam =
                 data.keys.teamID === this.props.blueID ? 0 : 1;
@@ -369,7 +405,7 @@ class Host extends React.Component {
   };
   render() {
     if (this.state.draftStarted) {
-      return <Draft {...this.state} urlPath={this.props.urlPath} />;
+      return <Draft {...this.state} />;
     }
     return (
       <Lobby>

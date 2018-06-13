@@ -24,6 +24,7 @@ class App extends React.Component {
                 border-radius: 40px;
                 box-shadow: 0 0 20px hsla(0, 0%, 90%, 1);
                 background-color: white;
+                transition: 0.5s linear;
               }
               @media (max-width: 632px) {
                 #wrapper {

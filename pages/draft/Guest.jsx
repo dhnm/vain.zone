@@ -120,7 +120,6 @@ class Guest extends React.Component {
       return (
         <Draft
           {...this.state}
-          urlPath={this.props.urlPath}
           emit={(state) =>
             this.socket.emit('host update', {
               state,
@@ -281,6 +280,14 @@ class Guest extends React.Component {
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <td>First Turn</td>
+                <td>
+                  {this.state.draftSequence[0].team
+                    ? this.state.redName
+                    : this.state.blueName}
+                </td>
+              </tr>
               <tr>
                 <td>Players</td>
                 <td>

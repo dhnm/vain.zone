@@ -24,7 +24,9 @@ const App = (props) => (
           font-family: 'Open Sans', sans-serif;
         }
         header,
-        h1 {
+        h1,
+        h2,
+        h3 {
           text-align: center;
           font-family: 'Montserrat', sans-serif;
         }
