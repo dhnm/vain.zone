@@ -414,8 +414,8 @@ class Host extends React.Component {
         <Head>
           <title>
             {this.state.matchName === 'NACL Draft Match'
-              ? 'Nacl Draft Tool'
-              : 'NACL Draft Tool'}
+              ? 'NACL Draft Tool'
+              : this.state.matchName}
           </title>
         </Head>
         <React.Fragment>

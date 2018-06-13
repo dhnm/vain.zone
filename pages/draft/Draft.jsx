@@ -137,21 +137,24 @@ class Draft extends React.Component {
               display: inline-block;
             }
             img {
+              border: ${
+                this.props.draftedHeroes.length === draftPositionIndex
+                  ? '12px solid'
+                  : this.props.draftedHeroes.length + 1 === draftPositionIndex
+                    ? '6px dashed'
+                    : '0'
+              };
+              border-color: ${e.team ? 'red' : '#008AF4'};
               border-radius: ${e.action === 'pick' ? '25px' : '50%'};
               width: ${e.action === 'pick' ? '72px' : '58px'};
+              box-sizing: border-box;
               margin: 0 1px;
-              border: ${this.props.draftedHeroes.length === draftPositionIndex
-                ? '12px solid'
-                : '0'};
-              ${this.props.draftedHeroes.length + 1 === draftPositionIndex
-                ? 'border: 6px dashed;'
-                : ''} box-sizing: border-box;
-              border-color: ${e.team ? 'red' : '#008AF4'};
               transition: 0.5s cubic-bezier(0.25, 0.01, 0.31, 3.5);
             }
             li:after {
-              ${e.action === 'ban'
-                ? `
+              ${
+                e.action === 'ban'
+                  ? `
               content: '';
               width: 8px;
               height: 100%;
@@ -164,7 +167,8 @@ class Draft extends React.Component {
               margin: auto;
               background-color: hsla(0, 0%, 100%, 0.6);
               z-index: 0;`
-                : ''};
+                  : ''
+              };
             }
 
             #draftSequenceNumber {
@@ -188,8 +192,9 @@ class Draft extends React.Component {
               }
               transition: 0.5s linear;
 
-              ${this.props.draftedHeroes.length > draftPositionIndex
-                ? `
+              ${
+                this.props.draftedHeroes.length > draftPositionIndex
+                  ? `
               top: initial;
               color: black;
               transform: none;
@@ -201,14 +206,15 @@ class Draft extends React.Component {
               line-height: 20px;
               font-size: 1.1rem;
               background-color: white`
-                : ''};
+                  : ''
+              };
             }
-            @media (max-width: 404px) {
+            {/* @media (max-width: 404px) {
               img {
                 width: 58px;
                 border-radius: ${e.action === 'pick' ? '21px' : '50%'};
               }
-            }
+            } */}
           `}
         </style>
       </li>
