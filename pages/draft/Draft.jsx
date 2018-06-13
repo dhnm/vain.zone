@@ -206,7 +206,7 @@ class Draft extends React.Component {
             @media (max-width: 404px) {
               img {
                 width: 58px;
-                ${e.action === 'pick' ? '20px' : '50%'};
+                border-radius: ${e.action === 'pick' ? '21px' : '50%'};
               }
             }
           `}
