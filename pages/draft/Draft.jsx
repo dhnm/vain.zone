@@ -127,7 +127,7 @@ class Draft extends React.Component {
       ? hero.img || `/static/img/heroes/${hero.name.toLowerCase()}.png`
       : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNU+g8AAUkBI5mqlHIAAAAASUVORK5CYII=';
     return (
-      <li key={i}>
+      <li key={`draftPosition${draftPositionIndex}`}>
         <img src={src} alt={hero ? hero.name : 'Empty draft slot'} />
         <span id="draftSequenceNumber">{draftPositionIndex + 1}</span>
         <style jsx>
