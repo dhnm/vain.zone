@@ -150,7 +150,7 @@ class Draft extends React.Component {
               width: ${e.action === 'pick' ? '72px' : '58px'};
               box-sizing: border-box;
               margin: 0 1px;
-              transition: 0.5s cubic-bezier(0.25, 0.01, 0.31, 3.5);
+              transition: 0.5s cubic-bezier(0.25, 0.01, 0.31, 2.5);
             }
             li:after {
               ${
@@ -158,7 +158,7 @@ class Draft extends React.Component {
                   ? `
               content: '';
               width: 8px;
-              height: 100%;
+              height: 102px;
               transform: rotate(45deg);
               position: absolute;
               left: 0;
@@ -166,7 +166,7 @@ class Draft extends React.Component {
               top: 0;
               bottom: 0;
               margin: auto;
-              background-color: hsla(0, 0%, 100%, 0.6);
+              background-color: hsla(0, 0%, 100%, 0.65);
               z-index: 0;`
                   : ''
               };
@@ -210,12 +210,12 @@ class Draft extends React.Component {
                   : ''
               };
             }
-            {/* @media (max-width: 404px) {
+            @media (max-width: 404px) {
               img {
-                width: 58px;
-                border-radius: ${e.action === 'pick' ? '21px' : '50%'};
+                width: ${e.action === 'pick' ? '58px' : '54px'};
+                {/* border-radius: ${e.action === 'pick' ? '21px' : '50%'}; */}
               }
-            } */}
+            }
           `}
         </style>
       </li>
@@ -250,7 +250,14 @@ class Draft extends React.Component {
     return (
       <div id="draftWrapper">
         <Head>
-          <title>{this.props.matchName}</title>
+          <title>
+            {typeof this.props.team === 'number'
+              ? this.props.team
+                ? `${this.props.redName} in`
+                : `${this.props.blueName} in`
+              : 'Spectating'}{' '}
+            {this.props.matchName}
+          </title>
         </Head>
         <div id="left">
           <h1>{this.props.matchName}</h1>
@@ -562,7 +569,7 @@ class Draft extends React.Component {
               text-align: center;
             }
             #heroes li {
-              margin: 1px 2px;
+              margin: 1px;
               position: relative;
               display: inline-block;
             }
