@@ -135,17 +135,18 @@ class Draft extends React.Component {
             li {
               position: relative;
               display: inline-block;
+              overflow: hidden
             }
             img {
               border: ${
                 this.props.draftedHeroes.length === draftPositionIndex
                   ? '12px solid'
                   : this.props.draftedHeroes.length + 1 === draftPositionIndex
-                    ? '6px dashed'
+                    ? '4px dashed'
                     : '0'
               };
               border-color: ${e.team ? 'red' : '#008AF4'};
-              border-radius: ${e.action === 'pick' ? '25px' : '50%'};
+              {/* border-radius: ${e.action === 'pick' ? '25px' : '50%'}; */}
               width: ${e.action === 'pick' ? '72px' : '58px'};
               box-sizing: border-box;
               margin: 0 1px;
@@ -174,7 +175,7 @@ class Draft extends React.Component {
             #draftSequenceNumber {
               position: absolute;
               padding: 2px;
-              border-radius: 50%;
+              border-radius: 0 50% 0 0;
               text-align: center;
               font-weight: bold;
               z-index: 1;
@@ -201,10 +202,10 @@ class Draft extends React.Component {
 
               left: 0px;
               bottom: 0px;
-              width: 20px;
-              height: 20px;
-              line-height: 20px;
-              font-size: 1.1rem;
+              width: 16px;
+              height: 16px;
+              line-height: 16px;
+              font-size: 0.85rem;
               background-color: white`
                   : ''
               };
