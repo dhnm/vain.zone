@@ -1,11 +1,11 @@
-import React from 'react';
-import Head from 'next/head';
+import React from "react";
+import Head from "next/head";
 
-import io from 'socket.io-client';
-import axios from 'axios';
-import Router from 'next/router';
+import io from "socket.io-client";
+import axios from "axios";
+import Router from "next/router";
 
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const HeroPick = ({ hero }) => {
   const src = hero.img || `/static/img/heroes/${hero.name.toLowerCase()}.png`;
@@ -16,55 +16,55 @@ class Draft extends React.Component {
   static async getInitialProps({ query }) {
     return query;
   }
-  state = { timeLeft: 0, heroSearchPhrase: '' };
+  state = { timeLeft: 0, heroSearchPhrase: "" };
   componentDidMount() {
     this.socket = io();
 
-    toast.success('Draft has started.', {
+    toast.success("Draft has started.", {
       position: toast.POSITION.TOP_CENTER,
       autoClose: 2000,
       closeButton: false,
-      hideProgressBar: true,
+      hideProgressBar: true
     });
 
     const draftPositionIndex = this.props.draftedHeroes.length;
     const teamTurn = this.props.draftSequence[draftPositionIndex].team;
     if (this.props.team === teamTurn) {
-      toast.info('Your turn.', {
+      toast.info("Your turn.", {
         position: toast.POSITION.TOP_CENTER,
         autoClose: 1500,
         closeButton: true,
-        hideProgressBar: true,
+        hideProgressBar: true
       });
     }
 
     const intervalID = setInterval(() => {
       const draftPositionIndex = this.props.draftedHeroes.length;
       const teamTurn = this.props.draftSequence[draftPositionIndex].team;
-      const sideBonus = teamTurn ? 'redBonus' : 'blueBonus';
+      const sideBonus = teamTurn ? "redBonus" : "blueBonus";
 
       const timeLeft =
         new Date(this.props.timeLeft).getTime() - new Date().getTime();
       if (timeLeft >= 0) {
         this.setState({
-          timeLeft,
+          timeLeft
         });
-      } else if (typeof this.state[sideBonus] === 'undefined') {
+      } else if (typeof this.state[sideBonus] === "undefined") {
         this.setState({
           timeLeft: 0,
           [sideBonus]: new Date(
             new Date(this.props.timeLeft).getTime() +
-              this.props[`${sideBonus}Left`],
+              this.props[`${sideBonus}Left`]
           ),
           [`${sideBonus}Left`]:
             new Date(this.props.timeLeft).getTime() +
             this.props[`${sideBonus}Left`] -
-            new Date().getTime(),
+            new Date().getTime()
         });
       } else {
-        this.setState((prevState) => ({
+        this.setState(prevState => ({
           [`${sideBonus}Left`]:
-            new Date(prevState[sideBonus]).getTime() - new Date().getTime(),
+            new Date(prevState[sideBonus]).getTime() - new Date().getTime()
         }));
       }
     }, 1000);
@@ -75,39 +75,37 @@ class Draft extends React.Component {
     if (JSON.stringify(prevProps) !== JSON.stringify(this.props)) {
       if (this.props.draftFinished) {
         clearInterval(this.state.intervalID);
-        toast.success('Draft finished. Good luck in match!', {
+        toast.success("Draft finished. Good luck in match!", {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 2000,
           closeButton: false,
-          hideProgressBar: true,
+          hideProgressBar: true
         });
       }
 
       const draftPositionIndex = this.props.draftedHeroes.length;
       const draftSequenceItem = this.props.draftSequence[draftPositionIndex];
       const sideBonus = draftSequenceItem
-        ? draftSequenceItem.team
-          ? 'redBonus'
-          : 'blueBonus'
-        : 'blueBonus';
+        ? draftSequenceItem.team ? "redBonus" : "blueBonus"
+        : "blueBonus";
 
       if (
         draftSequenceItem &&
         this.props.team === draftSequenceItem.team &&
         prevProps.draftedHeroes.length !== this.props.draftedHeroes.length
       ) {
-        toast.info('Your turn.', {
+        toast.info("Your turn.", {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 1500,
           closeButton: true,
-          hideProgressBar: true,
+          hideProgressBar: true
         });
       }
 
       if (
         new Date(
           new Date(this.props.timeLeft).getTime() +
-            this.props[`${sideBonus}Left`],
+            this.props[`${sideBonus}Left`]
         ) !== this.state[sideBonus]
       ) {
         this.setState({ [sideBonus]: undefined });
@@ -121,44 +119,59 @@ class Draft extends React.Component {
     const draftPositionIndex = this.props.draftSequence.indexOf(e);
     const drafted = draftPositionIndex + 1 <= this.props.draftedHeroes.length;
     const hero = this.props.heroes.find(
-      (h) => h.name === this.props.draftedHeroes[draftPositionIndex],
+      h => h.name === this.props.draftedHeroes[draftPositionIndex]
     );
+
+    const colors = {
+      black:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+      blue:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk6PzyHwAEjAJ+zzya7wAAAABJRU5ErkJggg==",
+      red:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8D0HwAFCQICTJNNiQAAAABJRU5ErkJggg=="
+    };
+
     const src = drafted
       ? hero.img || `/static/img/heroes/${hero.name.toLowerCase()}.png`
-      : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNU+g8AAUkBI5mqlHIAAAAASUVORK5CYII=';
+      : this.props.draftedHeroes.length === draftPositionIndex
+        ? e.team ? colors.red : colors.blue
+        : colors.black;
+
     return (
       <li key={`draftPosition${draftPositionIndex}`}>
-        <img src={src} alt={hero ? hero.name : 'Empty draft slot'} />
+        <img src={src} alt={hero ? hero.name : "Empty draft slot"} />
         <span id="draftSequenceNumber">{draftPositionIndex + 1}</span>
         <style jsx>
           {`
             li {
               position: relative;
               display: inline-block;
-              overflow: hidden
+              overflow: hidden;
+              margin: 0;
+              padding: 0;
+              width: ${e.action === "pick" ? "100%" : "70%"};
+              overflow: auto;
             }
             img {
-              border: ${
-                this.props.draftedHeroes.length === draftPositionIndex
-                  ? '12px solid'
-                  : this.props.draftedHeroes.length + 1 === draftPositionIndex
-                    ? '4px dashed'
-                    : '0'
-              };
-              border-color: ${e.team ? 'red' : '#008AF4'};
-              {/* border-radius: ${e.action === 'pick' ? '25px' : '50%'}; */}
-              width: ${e.action === 'pick' ? '72px' : '58px'};
+              border: ${this.props.draftedHeroes.length === draftPositionIndex
+                ? "12px inset"
+                : this.props.draftedHeroes.length + 1 === draftPositionIndex
+                  ? "4px dashed"
+                  : "0"};
+              border: 3px inset;
+              border-color: ${e.team ? "red" : "#008AF4"};
               box-sizing: border-box;
-              margin: 0 1px;
+              width: 100%;
+              border-radius: ${e.action === "pick" ? "25px" : "50%"};
               transition: 0.5s cubic-bezier(0.25, 0.01, 0.31, 2.5);
             }
-            li:after {
-              ${
-                e.action === 'ban'
-                  ? `
+            li:before {
+              ${e.action === "ban"
+                ? `
               content: '';
-              width: 8px;
-              height: 102px;
+              border-radius: 50%;
+              width: 7px;
+              height: 100%;
               transform: rotate(45deg);
               position: absolute;
               left: 0;
@@ -166,36 +179,39 @@ class Draft extends React.Component {
               top: 0;
               bottom: 0;
               margin: auto;
-              background-color: hsla(0, 0%, 100%, 0.65);
+              background-color: ${
+                e.team ? "#AB0001" : "#0059A0"
+              } /*hsla(0, 0%, 100%, 0.65)*/;
               z-index: 0;`
-                  : ''
-              };
+                : ""};
             }
 
             #draftSequenceNumber {
               position: absolute;
+              align-items: center;
+              justify-content: center;
+              display: flex;
               padding: 2px;
-              border-radius: 0 50% 0 0;
               text-align: center;
               font-weight: bold;
+              font-family: "Montserrat", sans-serif;
               z-index: 1;
 
               left: 50%;
               top: 46%;
               transform: translate(-50%, -50%);
-              width: 44px;
-              height: 44px;
-              line-height: 44px;
-              font-size: 1.8rem;
+              width: 100%;
+              height: 100%;
+              font-size: 1.5rem;
               color: white;
                {
                 /* background-color: red; */
               }
               transition: 0.5s linear;
+              box-sizing: border-box;
 
-              ${
-                this.props.draftedHeroes.length > draftPositionIndex
-                  ? `
+              ${this.props.draftedHeroes.length > draftPositionIndex
+                ? `
               top: initial;
               color: black;
               transform: none;
@@ -206,14 +222,18 @@ class Draft extends React.Component {
               height: 16px;
               line-height: 16px;
               font-size: 0.85rem;
-              background-color: white`
-                  : ''
-              };
+              background-color: red`
+                : ""};
             }
-            @media (max-width: 404px) {
+            @media (max-width: 767px) {
+              li {
+                width: 100%;
+              }
               img {
-                width: ${e.action === 'pick' ? '58px' : '54px'};
-                {/* border-radius: ${e.action === 'pick' ? '21px' : '50%'}; */}
+                width: ${e.action === "pick" ? "100%" : "90%"};
+                border-radius: ${e.action === "pick" ? "17px" : "50%"};
+                border-width: 2px;
+                box-sizing: border-box;
               }
             }
           `}
@@ -221,9 +241,9 @@ class Draft extends React.Component {
       </li>
     );
   };
-  handleChange = (event) => {
+  handleChange = event => {
     this.setState({
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value
     });
   };
   render() {
@@ -232,7 +252,7 @@ class Draft extends React.Component {
       purPercent =
         (this.state.timeLeft - 800) /
         (this.props.draftSequence[this.props.draftedHeroes.length].action ===
-        'pick'
+        "pick"
           ? this.props.pickTime
           : this.props.banTime);
       if (purPercent < 0) {
@@ -251,141 +271,172 @@ class Draft extends React.Component {
       <div id="draftWrapper">
         <Head>
           <title>
-            {typeof this.props.team === 'number'
+            {typeof this.props.team === "number"
               ? this.props.team
                 ? `${this.props.redName} in`
                 : `${this.props.blueName} in`
-              : 'Spectating'}{' '}
+              : "Spectating"}{" "}
             {this.props.matchName}
           </title>
         </Head>
         <div id="left">
+          <div className="draft_items">
+            <ul>
+              {this.props.draftSequence
+                .filter(e => e.team === 0)
+                .map(this.draftItemCallback)}
+            </ul>
+          </div>
+        </div>
+        <div id="central">
           <h1>{this.props.matchName}</h1>
           <div id="timers">
-            <svg width="100" height="100" viewBox="0 0 100 100">
-              <circle
-                cx="50"
-                cy="50"
-                r="42.5" // cx - strokeWidth/2
-                fill="none"
-                stroke="hsla(0, 0%, 94%, 1.0)"
-                strokeWidth="15"
-              />
-              <circle
-                transform="rotate(-90 50 50)"
-                cx="50"
-                cy="50"
-                r="42.5"
-                fill="none"
-                stroke="#008AF4"
-                strokeWidth="15"
-                strokeDasharray={2 * Math.PI * 42.5}
-                strokeDashoffset={Math.min(
-                  2 * Math.PI * 42.5,
-                  2 * Math.PI * 42.5 * (1 - bluePercent),
-                )}
-                style={{ transition: 'stroke-dashoffset 1000ms linear' }}
-              />
-              <text
-                x="50"
-                y="50"
-                textAnchor="middle"
-                alignmentBaseline="central"
-                fontSize="35px"
-                fontWeight="bold"
-                fill={
-                  this.state.blueBonusLeft && this.state.blueBonusLeft < 0
-                    ? 'darkred'
-                    : 'black'
-                }
+            <div className="timer">
+              <svg
+                width="100"
+                height="100"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="xMidYMin slice"
               >
-                {Math.ceil(
-                  (this.state.blueBonusLeft || this.props.blueBonusLeft) / 1000,
-                )}
-              </text>
-            </svg>
-            <svg width="100" height="100" viewBox="0 0 100 100">
-              <circle
-                cx="50"
-                cy="50"
-                r="42.5"
-                fill="none"
-                stroke="hsla(0, 0%, 94%, 1.0)"
-                strokeWidth="15"
-              />
-              <circle
-                transform="rotate(-90 50 50)"
-                cx="50"
-                cy="50"
-                r="42.5"
-                fill="none"
-                stroke="#651297"
-                //stroke="#f77a52"
-                strokeWidth="15"
-                strokeDasharray={2 * Math.PI * 42.5}
-                strokeDashoffset={2 * Math.PI * 42.5 * (1 - purPercent)}
-                style={{ transition: 'stroke-dashoffset 1000ms linear' }}
-              />
-              <text
-                x="50"
-                y="50"
-                textAnchor="middle"
-                alignmentBaseline="central"
-                fontSize="35px"
-                fontWeight="bold"
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="42.5" // cx - strokeWidth/2
+                  fill="none"
+                  stroke="hsla(0, 0%, 94%, 1.0)"
+                  strokeWidth="15"
+                />
+                <circle
+                  transform="rotate(-90 50 50)"
+                  cx="50"
+                  cy="50"
+                  r="42.5"
+                  fill="none"
+                  stroke="#008AF4"
+                  strokeWidth="15"
+                  strokeDasharray={2 * Math.PI * 42.5}
+                  strokeDashoffset={Math.min(
+                    2 * Math.PI * 42.5,
+                    2 * Math.PI * 42.5 * (1 - bluePercent)
+                  )}
+                  style={{ transition: "stroke-dashoffset 1000ms linear" }}
+                />
+                <text
+                  x="50"
+                  y="50"
+                  textAnchor="middle"
+                  alignmentBaseline="central"
+                  fontSize="35px"
+                  fontWeight="bold"
+                  fill={
+                    this.state.blueBonusLeft && this.state.blueBonusLeft < 0
+                      ? "darkred"
+                      : "black"
+                  }
+                >
+                  {Math.ceil(
+                    (this.state.blueBonusLeft || this.props.blueBonusLeft) /
+                      1000
+                  )}
+                </text>
+              </svg>
+            </div>
+            <div className="timer">
+              <svg
+                width="100"
+                height="100"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="xMidYMin slice"
               >
-                {this.props.draftFinished
-                  ? 'END'
-                  : Math.ceil(this.state.timeLeft / 1000)}
-              </text>
-            </svg>
-            <svg width="100" height="100" viewBox="0 0 100 100">
-              <circle
-                cx="50"
-                cy="50"
-                r="42.5" // cx - strokeWidth/2
-                fill="none"
-                stroke="hsla(0, 0%, 94%, 1.0)"
-                strokeWidth="15"
-              />
-              <circle
-                transform="rotate(-90 50 50)"
-                cx="50"
-                cy="50"
-                r="42.5"
-                fill="none"
-                stroke="red"
-                strokeWidth="15"
-                strokeDasharray={2 * Math.PI * 42.5}
-                strokeDashoffset={Math.min(
-                  2 * Math.PI * 42.5,
-                  2 *
-                    Math.PI *
-                    42.5 *
-                    (1 -
-                      (this.state.redBonusLeft || this.props.redBonusLeft) /
-                        this.props.bonusTime),
-                )}
-                style={{ transition: 'stroke-dashoffset 1000ms linear' }}
-              />
-              <text
-                x="50"
-                y="50"
-                textAnchor="middle"
-                alignmentBaseline="central"
-                fontSize="35px"
-                fontWeight="bold"
-                fill={
-                  this.state.redBonusLeft && this.state.redBonusLeft < 0
-                    ? 'darkred'
-                    : 'black'
-                }
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="42.5"
+                  fill="none"
+                  stroke="hsla(0, 0%, 94%, 1.0)"
+                  strokeWidth="15"
+                />
+                <circle
+                  transform="rotate(-90 50 50)"
+                  cx="50"
+                  cy="50"
+                  r="42.5"
+                  fill="none"
+                  stroke="#651297"
+                  //stroke="#f77a52"
+                  strokeWidth="15"
+                  strokeDasharray={2 * Math.PI * 42.5}
+                  strokeDashoffset={2 * Math.PI * 42.5 * (1 - purPercent)}
+                  style={{ transition: "stroke-dashoffset 1000ms linear" }}
+                />
+                <text
+                  x="50"
+                  y="50"
+                  textAnchor="middle"
+                  alignmentBaseline="central"
+                  fontSize="35px"
+                  fontWeight="bold"
+                >
+                  {this.props.draftFinished
+                    ? "END"
+                    : Math.ceil(this.state.timeLeft / 1000)}
+                </text>
+              </svg>
+            </div>
+            <div className="timer">
+              <svg
+                width="100"
+                height="100"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="xMidYMin slice"
               >
-                {Math.ceil(
-                  (this.state.redBonusLeft || this.props.redBonusLeft) / 1000,
-                )}
-              </text>
-            </svg>
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="42.5" // cx - strokeWidth/2
+                  fill="none"
+                  stroke="hsla(0, 0%, 94%, 1.0)"
+                  strokeWidth="15"
+                />
+                <circle
+                  transform="rotate(-90 50 50)"
+                  cx="50"
+                  cy="50"
+                  r="42.5"
+                  fill="none"
+                  stroke="red"
+                  strokeWidth="15"
+                  strokeDasharray={2 * Math.PI * 42.5}
+                  strokeDashoffset={Math.min(
+                    2 * Math.PI * 42.5,
+                    2 *
+                      Math.PI *
+                      42.5 *
+                      (1 -
+                        (this.state.redBonusLeft || this.props.redBonusLeft) /
+                          this.props.bonusTime)
+                  )}
+                  style={{ transition: "stroke-dashoffset 1000ms linear" }}
+                />
+                <text
+                  x="50"
+                  y="50"
+                  textAnchor="middle"
+                  alignmentBaseline="central"
+                  fontSize="35px"
+                  fontWeight="bold"
+                  fill={
+                    this.state.redBonusLeft && this.state.redBonusLeft < 0
+                      ? "darkred"
+                      : "black"
+                  }
+                >
+                  {Math.ceil(
+                    (this.state.redBonusLeft || this.props.redBonusLeft) / 1000
+                  )}
+                </text>
+              </svg>
+            </div>
             <div id="team_names">
               <span>{this.props.blueName}</span>
               <span
@@ -394,9 +445,9 @@ class Draft extends React.Component {
                     this.props.draftSequence[this.props.draftedHeroes.length] &&
                     this.props.draftSequence[this.props.draftedHeroes.length]
                       .team === this.props.team
-                      ? 'initial'
-                      : 'none',
-                  textTransform: 'uppercase',
+                      ? "initial"
+                      : "none",
+                  textTransform: "uppercase"
                 }}
               >
                 Your Turn
@@ -404,64 +455,34 @@ class Draft extends React.Component {
               <span>{this.props.redName}</span>
             </div>
           </div>
-          <div id="draft_state">
-            <h3
-              style={{ marginTop: 0, marginBottom: '14px', textAlign: 'left' }}
-            >
-              {this.props.blueName}
-            </h3>
-            <ul id="blue_pick">
-              {this.props.draftSequence
-                .filter((e) => e.action === 'pick' && e.team === 0)
-                .map(this.draftItemCallback)}
-            </ul>
-            <div id="bans">
-              <ul id="blue_bans">
-                {this.props.draftSequence
-                  .filter((e) => e.action === 'ban' && e.team === 0)
-                  .map(this.draftItemCallback)}
-              </ul>
-              <ul id="red_bans">
-                {this.props.draftSequence
-                  .filter((e) => e.action === 'ban' && e.team === 1)
-                  .map(this.draftItemCallback)}
-              </ul>
+          {this.props.spectator && (
+            <div style={{ boxShadow: "none", textAlign: "center" }}>
+              <img src="/static/img/draft/logo.png" alt="NACL Logo" />
             </div>
-            <ul id="red_pick">
-              {this.props.draftSequence
-                .filter((e) => e.action === 'pick' && e.team === 1)
-                .map(this.draftItemCallback)}
-            </ul>
-            <div style={{ clear: 'both' }} />
-            <h3
-              style={{ marginBottom: 0, marginTop: '10px', textAlign: 'right' }}
-            >
-              {this.props.redName}
-            </h3>
-          </div>
-        </div>
-        <div id="right">
+          )}
           <div id="input_panel">
-            <input
-              type="text"
-              placeholder="Search Hero..."
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  e.target.blur();
+            {!this.props.spectator && (
+              <input
+                type="text"
+                placeholder="Search Hero..."
+                onKeyPress={e => {
+                  if (e.key === "Enter") {
+                    e.target.blur();
+                  }
+                }}
+                onChange={e =>
+                  this.setState({ heroSearchPhrase: e.target.value })
                 }
-              }}
-              onChange={(e) =>
-                this.setState({ heroSearchPhrase: e.target.value })
-              }
-            />
+              />
+            )}
             <ul id="heroes">
               {this.props.heroes
-                .filter((h) =>
+                .filter(h =>
                   h.name
                     .toLowerCase()
-                    .includes(this.state.heroSearchPhrase.toLowerCase()),
+                    .includes(this.state.heroSearchPhrase.toLowerCase())
                 )
-                .map((hero) => {
+                .map(hero => {
                   const src =
                     hero.img ||
                     `/static/img/heroes/${hero.name.toLowerCase()}.png`;
@@ -470,11 +491,11 @@ class Draft extends React.Component {
                       <button
                         style={{
                           background: `url('${src}')`,
-                          backgroundSize: 'cover',
+                          backgroundSize: "cover"
                         }}
                         id={hero.name}
                         disabled={this.props.draftedHeroes.includes(hero.name)}
-                        onClick={(e) => {
+                        onClick={e => {
                           if (
                             this.props.draftSequence[
                               this.props.draftedHeroes.length
@@ -487,15 +508,15 @@ class Draft extends React.Component {
                             this.props.emit({
                               draftedHeroes: [
                                 ...this.props.draftedHeroes,
-                                e.target.id,
-                              ],
+                                e.target.id
+                              ]
                             });
                           } else {
                             toast.error("It's not your turn", {
                               position: toast.POSITION.TOP_CENTER,
                               autoClose: 1000,
                               closeButton: false,
-                              hideProgressBar: true,
+                              hideProgressBar: true
                             });
                           }
                         }}
@@ -506,10 +527,18 @@ class Draft extends React.Component {
             </ul>
           </div>
         </div>
+        <div id="right">
+          <div className="draft_items">
+            <ul>
+              {this.props.draftSequence
+                .filter(e => e.team === 1)
+                .map(this.draftItemCallback)}
+            </ul>
+          </div>
+        </div>
         <style jsx>
           {`
             h1 {
-              margin: 6% auto 9% auto;
             }
             #draftWrapper {
               margin: 0 auto;
@@ -518,17 +547,22 @@ class Draft extends React.Component {
             }
             #left,
             #right {
-              width: 50%;
+              display: inline-block;
+              width: 14%;
+              margin: 0;
+              float: left;
+            }
+            #central {
+              display: inline-block;
+              width: 72%;
               margin: 0;
               float: left;
             }
             #draftWrapper > div > div {
               width: calc(94%);
-              max-width: 600px;
-              min-width: 320px;
               overflow: hidden;
-              margin: 0 auto 6% auto;
-              padding: 30px;
+              margin: 0 auto 3% auto;
+              padding: calc(25px + 0.75%) calc(15px + 2px + 2.25%);
               box-sizing: border-box;
               border-radius: 40px;
               box-shadow: 0 0 20px hsla(0, 0%, 90%, 1);
@@ -551,19 +585,14 @@ class Draft extends React.Component {
             #team_names > span {
               width: 100px;
             }
+            .draft_items ul {
+              text-align: center;
+              font-size: 0.2rem;
+            }
             ul {
+              position: relative;
               margin: 0;
               padding: 0;
-            }
-            #blue_pick {
-              float: left;
-            }
-            #red_pick {
-              float: right;
-            }
-            #bans {
-              text-align: center;
-              clear: both;
             }
             #heroes {
               text-align: center;
@@ -579,13 +608,13 @@ class Draft extends React.Component {
               cursor: pointer;
               outline: inherit;
               appearance: none;
-              border: 8px solid hsla(0, 0%, 100%, 0.5);
+              border: 7px solid hsla(0, 0%, 100%, 0.5);
               border-radius: 30px;
               padding: 0;
               box-sizing: border-box;
 
-              width: 96px;
-              height: 96px;
+              width: 73px;
+              height: 73px;
               transition: 0.5s cubic-bezier(0.25, 0.01, 0.31, 2);
               z-index: 1;
             }
@@ -620,31 +649,55 @@ class Draft extends React.Component {
             #input_panel input:hover {
               border-bottom: 1px solid hsla(0, 0%, 30%, 1);
             }
-            @media (max-width: 1023px) {
-              #left,
-              #right {
-                width: 100%;
-              }
-              #heroes li button {
-                width: 104px;
-                height: 104px;
-              }
-            }
-            @media (max-width: 513px) {
-              #draftWrapper {
-                padding: 10px 0;
-              }
+            @media (max-width: 767px) {
+              // #left,
+              // #right {
+              //   width: 100%;
+              // }
+              #draftWrapper,
               #draftWrapper > div > div {
-                border-radius: 0;
-                padding: 10px 10px;
+                padding: 0;
+                margin-left: 0;
+                margin-right: 0;
                 width: 100%;
-                box-shadow: 0 0 20px hsla(0, 0%, 92%, 1);
+                border-radius: 0;
+                box-shadow: none;
+              }
+              #draftWrapper #timers {
+                padding-left: 3px;
+                padding-right: 3px;
+              }
+              #timers #team_names {
+                margin: 0;
+              }
+              .timer {
+                max-width: 33%;
+              }
+              .timer svg {
+                height: 1px;
+                width: 100%;
+                overflow: visible;
+                padding-bottom: 100%;
+              }
+              #team_names > span {
+                max-width: 33%;
               }
               #heroes li button {
-                width: 96px;
-                height: 96px;
+                border-width: 5px;
+                width: 68px;
               }
             }
+            // @media (max-width: 513px) {
+            //   #draftWrapper {
+            //     padding: 10px 0;
+            //   }
+            //   #draftWrapper > div > div {
+            //     border-radius: 0;
+            //     padding: 10px 10px;
+            //     width: 100%;
+            //     box-shadow: 0 0 20px hsla(0, 0%, 92%, 1);
+            //   }
+            // }
           `}
         </style>
       </div>
