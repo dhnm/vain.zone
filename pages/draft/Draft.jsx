@@ -144,28 +144,35 @@ class Draft extends React.Component {
         <style jsx>
           {`
             li {
+              list-style: none;
               position: relative;
               display: inline-block;
               overflow: hidden;
-              margin: 0;
+              margin: 2px 0;
               padding: 0;
               width: ${e.action === "pick" ? "100%" : "70%"};
               overflow: auto;
             }
+            li:last-child {
+              margin-bottom: 0;
+            }
             img {
-              border: ${this.props.draftedHeroes.length === draftPositionIndex
-                ? "12px inset"
-                : this.props.draftedHeroes.length + 1 === draftPositionIndex
-                  ? "4px dashed"
-                  : "0"};
-              border: 3px inset;
+              display: block;
+              margin: auto;
+              border: 4px inset;
+              ${this.props.draftedHeroes.length + 1 === draftPositionIndex
+                ? "border: 4px dashed;"
+                : ""} filter: ${e.action === "pick" ||
+                this.props.draftedHeroes.length <= draftPositionIndex
+                  ? "none"
+                  : "grayscale(75%)"};
               border-color: ${e.team ? "red" : "#008AF4"};
               box-sizing: border-box;
               width: 100%;
-              border-radius: ${e.action === "pick" ? "25px" : "50%"};
+              border-radius: ${e.action === "pick" ? "38%" : "50%"};
               transition: 0.5s cubic-bezier(0.25, 0.01, 0.31, 2.5);
             }
-            li:before {
+            li:after {
               ${e.action === "ban"
                 ? `
               content: '';
@@ -191,15 +198,14 @@ class Draft extends React.Component {
               align-items: center;
               justify-content: center;
               display: flex;
-              padding: 2px;
               text-align: center;
               font-weight: bold;
               font-family: "Montserrat", sans-serif;
               z-index: 1;
 
-              left: 50%;
-              top: 46%;
-              transform: translate(-50%, -50%);
+              /*left: calc(50% - 0.5px);*/
+              top: calc(50% - 1px);
+              transform: translate(0, -50%);
               width: 100%;
               height: 100%;
               font-size: 1.5rem;
@@ -216,22 +222,26 @@ class Draft extends React.Component {
               color: black;
               transform: none;
 
+              padding: 2px;
+
               left: 0px;
               bottom: 0px;
               width: 16px;
               height: 16px;
               line-height: 16px;
               font-size: 0.85rem;
-              background-color: red`
+              border-radius: 50%;
+              background-color: white`
                 : ""};
             }
             @media (max-width: 767px) {
               li {
                 width: 100%;
+                margin: 1px 0;
               }
               img {
-                width: ${e.action === "pick" ? "100%" : "90%"};
-                border-radius: ${e.action === "pick" ? "17px" : "50%"};
+                width: ${e.action === "pick" ? "100%" : "82%"};
+                border-radius: ${e.action === "pick" ? "16px" : "50%"};
                 border-width: 2px;
                 box-sizing: border-box;
               }
@@ -268,7 +278,7 @@ class Draft extends React.Component {
       (this.state.redBonusLeft || this.props.redBonusLeft) /
       this.props.bonusTime;
     return (
-      <div id="draftWrapper">
+      <div id="draft_wrapper">
         <Head>
           <title>
             {typeof this.props.team === "number"
@@ -559,7 +569,8 @@ class Draft extends React.Component {
         `}</style>
         <style jsx>
           {`
-            #draftWrapper {
+            #draft_wrapper {
+              overflow: overlay;
               color: #f0f0f0;
               margin: 2% auto;
               padding: 30px 20px;
@@ -584,10 +595,10 @@ class Draft extends React.Component {
               margin: 0;
               float: left;
             }
-            #draftWrapper > div > div {
+            #draft_wrapper > div > div {
               width: calc(94%);
               overflow: hidden;
-              margin: 0 auto 3% auto;
+              margin: 4% auto;
               padding: calc(25px + 0.75%) calc(15px + 2px + 2.25%);
               box-sizing: border-box;
               border-radius: 40px;
@@ -610,6 +621,9 @@ class Draft extends React.Component {
             }
             #team_names > span {
               width: 100px;
+            }
+            .draft_items {
+              margin: 0;
             }
             .draft_items ul {
               text-align: center;
@@ -681,8 +695,8 @@ class Draft extends React.Component {
               // #right {
               //   width: 100%;
               // }
-              #draftWrapper,
-              #draftWrapper > div > div {
+              #draft_wrapper,
+              #draft_wrapper > div > div {
                 padding: 0;
                 margin-left: 0;
                 margin-right: 0;
@@ -696,9 +710,9 @@ class Draft extends React.Component {
               .mobileHeader {
                 display: block;
               }
-              #draftWrapper #timers {
-                padding-left: 3px;
-                padding-right: 3px;
+              #draft_wrapper #timers {
+                padding-left: 5px;
+                padding-right: 5px;
               }
               #timers #team_names {
                 margin: 0;
@@ -725,17 +739,21 @@ class Draft extends React.Component {
                 width: 68px;
               }
             }
-            // @media (max-width: 513px) {
-            //   #draftWrapper {
-            //     padding: 10px 0;
-            //   }
-            //   #draftWrapper > div > div {
-            //     border-radius: 0;
-            //     padding: 10px 10px;
-            //     width: 100%;
-            //     box-shadow: 0 0 20px hsla(0, 0%, 92%, 1);
-            //   }
-            // }
+            @media only screen and (max-width: 486px) and (min-height: 538px) and (orientation: portrait) {
+              #central h1 {
+                display: block;
+              }
+              .mobileHeader {
+                display: none;
+              }
+              #left,
+              #right {
+                position: fixed;
+              }
+              #central {
+                margin-left: 14%;
+              }
+            }
           `}
         </style>
       </div>

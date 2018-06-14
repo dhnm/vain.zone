@@ -53,7 +53,7 @@ class Guest extends React.Component {
     });
 
     this.socket.on("socket disconnected", socketID => {
-      if (socketID === this.props.roomID) {
+      if (socketID === this.props.roomID && !this.state.draftFinished) {
         toast.error("Draft Host disconnected. Draft has been terminated.", {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 5000,
