@@ -8,7 +8,8 @@ import Router from "next/router";
 import { toast } from "react-toastify";
 
 const HeroPick = ({ hero }) => {
-  const src = hero.img || `/static/img/heroes/${hero.name.toLowerCase()}.png`;
+  const src =
+    hero.img || `/static/img/heroes/170-jpg/${hero.name.toLowerCase()}.jpg`;
   return <img src={src} alt={hero.name} />;
 };
 
@@ -137,7 +138,7 @@ class Draft extends React.Component {
     };
 
     const src = drafted
-      ? hero.img || `/static/img/heroes/${hero.name.toLowerCase()}.png`
+      ? hero.img || `/static/img/heroes/170-jpg/${hero.name.toLowerCase()}.jpg`
       : this.props.draftedHeroes.length === draftPositionIndex
         ? e.team ? colors.red : colors.blue
         : colors.black;
@@ -517,7 +518,7 @@ class Draft extends React.Component {
                 .map(hero => {
                   const src =
                     hero.img ||
-                    `/static/img/heroes/${hero.name.toLowerCase()}.png`;
+                    `/static/img/heroes/170-jpg/${hero.name.toLowerCase()}.jpg`;
                   return (
                     <li key={hero.name}>
                       <button
@@ -755,6 +756,18 @@ class Draft extends React.Component {
                 border-width: 3px;
                 width: 68px;
                 height: 68px;
+              }
+            }
+            @media (max-width: 767px) and (min-width: 584px) {
+              #left,
+              #right {
+                width: 14%;
+              }
+              #central {
+                width: 72%;
+              }
+              .draft_items ul {
+                padding: 14px;
               }
             }
             @media only screen and (max-width: 583px) and (min-height: ${fixedHUDScreenHeight}px) and (orientation: portrait) {
