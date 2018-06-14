@@ -18,6 +18,11 @@ class Draft extends React.Component {
   }
   state = { timeLeft: 0, heroSearchPhrase: "" };
   componentDidMount() {
+    this.setState({ windowWidth: window.screen.width });
+    window.addEventListener("resize", () =>
+      this.setState({ windowWidth: window.screen.width })
+    );
+
     this.socket = io();
 
     toast.success("Draft has started.", {
@@ -136,7 +141,6 @@ class Draft extends React.Component {
       : this.props.draftedHeroes.length === draftPositionIndex
         ? e.team ? colors.red : colors.blue
         : colors.black;
-
     return (
       <li key={`draftPosition${draftPositionIndex}`}>
         <img src={src} alt={hero ? hero.name : "Empty draft slot"} />
@@ -277,6 +281,12 @@ class Draft extends React.Component {
     const redPercent =
       (this.state.redBonusLeft || this.props.redBonusLeft) /
       this.props.bonusTime;
+
+    const fixedHUDScreenHeight =
+      446.578 /
+      320 *
+      (this && this.state.windowWidth ? this.state.windowWidth : 1000);
+    console.log(this.props);
     return (
       <div id="draft_wrapper">
         <Head>
@@ -289,7 +299,7 @@ class Draft extends React.Component {
             {this.props.matchName}
           </title>
         </Head>
-        <h1 className="mobileHeader">{this.props.matchName}</h1>
+        <h1 className="phone_header">{this.props.matchName}</h1>
         <div id="left">
           <div className="draft_items">
             <ul>
@@ -565,6 +575,9 @@ class Draft extends React.Component {
             background-position: center;
             background-repeat: no-repeat;*/
             background-color: #0e2026;
+            position: relative;
+            min-width: 320px;
+            min-height: 320px;
           }
         `}</style>
         <style jsx>
@@ -579,7 +592,7 @@ class Draft extends React.Component {
             #central h1 {
               margin-bottom: 5%;
             }
-            .mobileHeader {
+            .phone_header {
               display: none;
             }
             #left,
@@ -707,10 +720,14 @@ class Draft extends React.Component {
               #central h1 {
                 display: none;
               }
-              .mobileHeader {
+              .phone_header {
                 display: block;
               }
+              #draft_wrapper > div > .draft_items {
+                margin-top: 0;
+              }
               #draft_wrapper #timers {
+                margin-top: 0;
                 padding-left: 5px;
                 padding-right: 5px;
               }
@@ -718,16 +735,16 @@ class Draft extends React.Component {
                 margin: 0;
               }
               .timer {
-                max-width: 28%;
+                max-width: 27%;
+              }
+              #team_names > span {
+                max-width: 27%;
               }
               .timer svg {
                 height: 1px;
                 width: 100%;
                 overflow: visible;
                 padding-bottom: 100%;
-              }
-              #team_names > span {
-                max-width: 28%;
               }
               #input_panel input {
                 margin-left: 8px;
@@ -737,13 +754,37 @@ class Draft extends React.Component {
               #heroes li button {
                 border-width: 3px;
                 width: 68px;
+                height: 68px;
               }
             }
-            @media only screen and (max-width: 486px) and (min-height: 538px) and (orientation: portrait) {
+            @media only screen and (max-width: 583px) and (min-height: ${fixedHUDScreenHeight}px) and (orientation: portrait) {
               #central h1 {
                 display: block;
+                margin-top: calc(0.25 * 72vw + 2rem + 3%);
               }
-              .mobileHeader {
+              #central #timers {
+                position: fixed;
+                top: 0;
+                height: calc(0.25 * 72vw + 2.5rem);
+                width: 72%;
+                margin: 0;
+                margin-bottom: 5%;
+                padding: 5px;
+                box-sizing: border-box;
+                z-index: 1000;
+              }
+              .timer {
+                max-width: 25%;
+                /*height: calc(0.25 * 72vw);*/
+              }
+              #team_names > span {
+                font-size: 0.75rem;
+                max-width: 25%;
+              }
+              .timer svg {
+                display: block;
+              }
+              .phone_header {
                 display: none;
               }
               #left,
