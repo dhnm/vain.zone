@@ -279,6 +279,7 @@ class Draft extends React.Component {
             {this.props.matchName}
           </title>
         </Head>
+        <h1 className="mobileHeader">{this.props.matchName}</h1>
         <div id="left">
           <div className="draft_items">
             <ul>
@@ -303,7 +304,7 @@ class Draft extends React.Component {
                   cy="50"
                   r="42.5" // cx - strokeWidth/2
                   fill="none"
-                  stroke="hsla(0, 0%, 94%, 1.0)"
+                  stroke="hsla(0, 0%, 96%, 0.2)"
                   strokeWidth="15"
                 />
                 <circle
@@ -331,7 +332,7 @@ class Draft extends React.Component {
                   fill={
                     this.state.blueBonusLeft && this.state.blueBonusLeft < 0
                       ? "darkred"
-                      : "black"
+                      : "hsla(0, 0%, 96%, 1.0)"
                   }
                 >
                   {Math.ceil(
@@ -353,7 +354,7 @@ class Draft extends React.Component {
                   cy="50"
                   r="42.5"
                   fill="none"
-                  stroke="hsla(0, 0%, 94%, 1.0)"
+                  stroke="hsla(0, 0%, 96%, 0.2)"
                   strokeWidth="15"
                 />
                 <circle
@@ -362,7 +363,7 @@ class Draft extends React.Component {
                   cy="50"
                   r="42.5"
                   fill="none"
-                  stroke="#651297"
+                  stroke="#C145FF"
                   //stroke="#f77a52"
                   strokeWidth="15"
                   strokeDasharray={2 * Math.PI * 42.5}
@@ -376,6 +377,7 @@ class Draft extends React.Component {
                   alignmentBaseline="central"
                   fontSize="35px"
                   fontWeight="bold"
+                  fill="hsla(0, 0%, 96%, 1.0)"
                 >
                   {this.props.draftFinished
                     ? "END"
@@ -395,7 +397,7 @@ class Draft extends React.Component {
                   cy="50"
                   r="42.5" // cx - strokeWidth/2
                   fill="none"
-                  stroke="hsla(0, 0%, 94%, 1.0)"
+                  stroke="hsla(0, 0%, 96%, 0.2)"
                   strokeWidth="15"
                 />
                 <circle
@@ -428,7 +430,7 @@ class Draft extends React.Component {
                   fill={
                     this.state.redBonusLeft && this.state.redBonusLeft < 0
                       ? "darkred"
-                      : "black"
+                      : "hsla(0, 0%, 96%, 1.0)"
                   }
                 >
                   {Math.ceil(
@@ -456,8 +458,18 @@ class Draft extends React.Component {
             </div>
           </div>
           {this.props.spectator && (
-            <div style={{ boxShadow: "none", textAlign: "center" }}>
-              <img src="/static/img/draft/logo.png" alt="NACL Logo" />
+            <div
+              style={{
+                boxShadow: "none",
+                textAlign: "center",
+                background: "none"
+              }}
+            >
+              <img
+                src="/static/img/draft/logo.png"
+                alt="NACL Logo"
+                style={{ maxWidth: "100%" }}
+              />
             </div>
           )}
           <div id="input_panel">
@@ -536,14 +548,28 @@ class Draft extends React.Component {
             </ul>
           </div>
         </div>
+        <style global jsx>{`
+          body {
+            /*background-image: url("/static/img/draft/bg.jpg");
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;*/
+            background-color: #0e2026;
+          }
+        `}</style>
         <style jsx>
           {`
-            h1 {
-            }
             #draftWrapper {
-              margin: 0 auto;
+              color: #f0f0f0;
+              margin: 2% auto;
               padding: 30px 20px;
               max-width: 1024px;
+            }
+            #central h1 {
+              margin-bottom: 5%;
+            }
+            .mobileHeader {
+              display: none;
             }
             #left,
             #right {
@@ -565,8 +591,8 @@ class Draft extends React.Component {
               padding: calc(25px + 0.75%) calc(15px + 2px + 2.25%);
               box-sizing: border-box;
               border-radius: 40px;
-              box-shadow: 0 0 20px hsla(0, 0%, 90%, 1);
-              background-color: white;
+              box-shadow: 0px 1px 10px 1px hsla(0, 0%, 90%, 0.4);
+              background-color: #1a2b34;
             }
             #timers {
               display: flex;
@@ -608,7 +634,7 @@ class Draft extends React.Component {
               cursor: pointer;
               outline: inherit;
               appearance: none;
-              border: 7px solid hsla(0, 0%, 100%, 0.5);
+              border: 5px inset hsla(0, 0%, 100%, 0.5);
               border-radius: 30px;
               padding: 0;
               box-sizing: border-box;
@@ -628,6 +654,7 @@ class Draft extends React.Component {
               cursor: default;
             }
             #input_panel input {
+              border-radius: 30px;
               appearance: none;
               border: 0;
               margin: auto;
@@ -636,7 +663,7 @@ class Draft extends React.Component {
 
               width: 100%;
               margin-bottom: 15px;
-              padding: 10px 5px;
+              padding: 10px 25px;
               border-bottom: 1px solid hsla(0, 0%, 75%, 1);
               box-sizing: border-box;
             }
@@ -663,6 +690,12 @@ class Draft extends React.Component {
                 border-radius: 0;
                 box-shadow: none;
               }
+              #central h1 {
+                display: none;
+              }
+              .mobileHeader {
+                display: block;
+              }
               #draftWrapper #timers {
                 padding-left: 3px;
                 padding-right: 3px;
@@ -671,7 +704,7 @@ class Draft extends React.Component {
                 margin: 0;
               }
               .timer {
-                max-width: 33%;
+                max-width: 28%;
               }
               .timer svg {
                 height: 1px;
@@ -680,10 +713,15 @@ class Draft extends React.Component {
                 padding-bottom: 100%;
               }
               #team_names > span {
-                max-width: 33%;
+                max-width: 28%;
+              }
+              #input_panel input {
+                margin-left: 8px;
+                margin-right: 8px;
+                width: calc(100% - 16px);
               }
               #heroes li button {
-                border-width: 5px;
+                border-width: 3px;
                 width: 68px;
               }
             }
