@@ -56,6 +56,12 @@ class Draft extends React.Component {
           timeLeft
         });
       } else if (typeof this.state[sideBonus] === "undefined") {
+        console.log(
+          "new time left",
+          new Date(this.props.timeLeft).getTime() +
+            this.props[`${sideBonus}Left`] -
+            new Date().getTime()
+        );
         this.setState({
           timeLeft: 0,
           [sideBonus]: new Date(
@@ -108,13 +114,17 @@ class Draft extends React.Component {
         });
       }
 
-      if (
-        new Date(
-          new Date(this.props.timeLeft).getTime() +
-            this.props[`${sideBonus}Left`]
-        ) !== this.state[sideBonus]
-      ) {
-        this.setState({ [sideBonus]: undefined });
+      if (this.props.blueBonusLeft !== this.state.blueBonusLeft) {
+        this.setState({
+          blueBonus: undefined,
+          blueBonusLeft: this.props.blueBonusLeft
+        });
+      }
+      if (this.props.redBonusLeft !== this.state.redBonusLeft) {
+        this.setState({
+          redBonus: undefined,
+          redBonusLeft: this.props.redBonusLeft
+        });
       }
     }
   }
@@ -145,7 +155,7 @@ class Draft extends React.Component {
     return (
       <li key={`draftPosition${draftPositionIndex}`}>
         <img src={src} alt={hero ? hero.name : "Empty draft slot"} />
-        <span id="draftSequenceNumber">{draftPositionIndex + 1}</span>
+        <span id="draft_sequence_number">{draftPositionIndex + 1}</span>
         <style jsx>
           {`
             li {
@@ -171,7 +181,9 @@ class Draft extends React.Component {
                 this.props.draftedHeroes.length <= draftPositionIndex
                   ? "none"
                   : "grayscale(75%)"};
-              border-color: ${e.team ? "red" : "#008AF4"};
+              border-color: ${e.team
+                ? "hsla(0, 100%, 50%, 1)"
+                : "hsla(206, 100%, 48%, 1)"};
               box-sizing: border-box;
               width: 100%;
               border-radius: ${e.action === "pick" ? "38%" : "50%"};
@@ -192,13 +204,13 @@ class Draft extends React.Component {
               bottom: 0;
               margin: auto;
               background-color: ${
-                e.team ? "#AB0001" : "#0059A0"
+                e.team ? "hsla(360, 100%, 34%, 1)" : "hsla(207, 100%, 31%, 1)"
               } /*hsla(0, 0%, 100%, 0.65)*/;
               z-index: 0;`
                 : ""};
             }
 
-            #draftSequenceNumber {
+            #draft_sequence_number {
               position: absolute;
               align-items: center;
               justify-content: center;
@@ -287,7 +299,6 @@ class Draft extends React.Component {
       446.578 /
       320 *
       (this && this.state.windowWidth ? this.state.windowWidth : 1000);
-    console.log(this.props);
     return (
       <div id="draft_wrapper">
         <Head>
@@ -334,7 +345,7 @@ class Draft extends React.Component {
                   cy="50"
                   r="42.5"
                   fill="none"
-                  stroke="#008AF4"
+                  stroke="hsla(206, 100%, 48%, 1)"
                   strokeWidth="15"
                   strokeDasharray={2 * Math.PI * 42.5}
                   strokeDashoffset={Math.min(
@@ -352,7 +363,7 @@ class Draft extends React.Component {
                   fontWeight="bold"
                   fill={
                     this.state.blueBonusLeft && this.state.blueBonusLeft < 0
-                      ? "darkred"
+                      ? "hsla(0, 100%, 27%, 1)"
                       : "hsla(0, 0%, 96%, 1.0)"
                   }
                 >
@@ -384,7 +395,7 @@ class Draft extends React.Component {
                   cy="50"
                   r="42.5"
                   fill="none"
-                  stroke="#C145FF"
+                  stroke="hsla(280, 100%, 64%, 1)"
                   //stroke="#f77a52"
                   strokeWidth="15"
                   strokeDasharray={2 * Math.PI * 42.5}
@@ -427,7 +438,7 @@ class Draft extends React.Component {
                   cy="50"
                   r="42.5"
                   fill="none"
-                  stroke="red"
+                  stroke="hsla(360, 100%, 50%, 1)"
                   strokeWidth="15"
                   strokeDasharray={2 * Math.PI * 42.5}
                   strokeDashoffset={Math.min(
@@ -450,7 +461,7 @@ class Draft extends React.Component {
                   fontWeight="bold"
                   fill={
                     this.state.redBonusLeft && this.state.redBonusLeft < 0
-                      ? "darkred"
+                      ? "hsla(0, 100%, 27%, 1)"
                       : "hsla(0, 0%, 96%, 1.0)"
                   }
                 >
@@ -521,14 +532,19 @@ class Draft extends React.Component {
                     `/static/img/heroes/170-jpg/${hero.name.toLowerCase()}.jpg`;
                   return (
                     <li key={hero.name}>
-                      <button
+                      <input
+                        type="image"
+                        name="hero"
+                        src={src}
                         style={{
-                          background: `url('${src}')`,
+                          backgroundImage: `url('${src}')`,
                           backgroundSize: "cover"
                         }}
                         id={hero.name}
+                        alt={hero.name}
                         disabled={this.props.draftedHeroes.includes(hero.name)}
                         onClick={e => {
+                          e.preventDefault();
                           if (
                             this.props.draftSequence[
                               this.props.draftedHeroes.length
@@ -552,6 +568,8 @@ class Draft extends React.Component {
                               hideProgressBar: true
                             });
                           }
+
+                          this.setState({ heroSearchPhrase: "" });
                         }}
                       />
                     </li>
@@ -571,21 +589,20 @@ class Draft extends React.Component {
         </div>
         <style global jsx>{`
           body {
+            display: block;
             /*background-image: url("/static/img/draft/bg.jpg");
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;*/
-            background-color: #0e2026;
+            background-color: hsla(195, 46%, 10%, 1);
             position: relative;
-            min-width: 320px;
-            min-height: 320px;
           }
         `}</style>
         <style jsx>
           {`
             #draft_wrapper {
               overflow: overlay;
-              color: #f0f0f0;
+              color: hsla(0, 0%, 94%, 1);
               margin: 2% auto;
               padding: 30px 20px;
               max-width: 1024px;
@@ -617,7 +634,7 @@ class Draft extends React.Component {
               box-sizing: border-box;
               border-radius: 40px;
               box-shadow: 0px 1px 10px 1px hsla(0, 0%, 90%, 0.4);
-              background-color: #1a2b34;
+              background-color: hsla(201, 33%, 15%, 1);
             }
             #timers {
               display: flex;
@@ -656,27 +673,27 @@ class Draft extends React.Component {
               position: relative;
               display: inline-block;
             }
-            #heroes li button {
-              color: inherit;
-              font: inherit;
+            #heroes li input[type="image"] {
+              position: relative;
               cursor: pointer;
-              outline: inherit;
+              outline: none;
               appearance: none;
               border: 5px inset hsla(0, 0%, 100%, 0.5);
               border-radius: 30px;
               padding: 0;
               box-sizing: border-box;
-
+              object-fit: cover;
+              object-position: center center;
               width: 73px;
               height: 73px;
               transition: 0.5s cubic-bezier(0.25, 0.01, 0.31, 2);
               z-index: 1;
             }
-            #heroes li button:hover {
+            #heroes li input[type="image"]:hover {
               transform: scale(1.1);
               z-index: 2;
             }
-            #heroes li button:disabled {
+            #heroes li input[type="image"]:disabled {
               transform: scale(1);
               opacity: 0.4;
               cursor: default;

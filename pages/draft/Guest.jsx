@@ -27,7 +27,6 @@ class Guest extends React.Component {
     });
 
     this.socket.on("data transfer", data => {
-      console.log("here", data);
       if (data.keys.failed) {
         const tid = toast.error("Wrong link or expired draft session.", {
           position: toast.POSITION.TOP_CENTER,
