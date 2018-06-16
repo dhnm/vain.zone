@@ -136,13 +136,14 @@ class Host extends React.Component {
     matchName: "NACL Draft Match",
     blueName: "Blue Team",
     redName: "Red Team",
-    banTime: 20000,
+    waitingTime: 5000,
+    banTime: 30000,
     pickTime: 30000,
     bonusTime: 60000,
 
-    draftStarted: false,
+    draftLaunched: false,
     draftedHeroes: [],
-    timeLeft: 0,
+    timeLeft: new Date(),
     redBonusLeft: 0,
     blueBonusLeft: 0
   };
@@ -157,7 +158,7 @@ class Host extends React.Component {
           this.setState(
             prevState => {
               return {
-                blueState: this.state.draftStarted ? 2 : 1,
+                blueState: this.state.draftLaunched ? 2 : 1,
                 blueSockets: new Set([
                   ...prevState.blueSockets,
                   data.keys.socketID
@@ -171,7 +172,7 @@ class Host extends React.Component {
           this.setState(
             prevState => {
               return {
-                redState: this.state.draftStarted ? 2 : 1,
+                redState: this.state.draftLaunched ? 2 : 1,
                 redSockets: new Set([
                   ...prevState.redSockets,
                   data.keys.socketID
@@ -182,7 +183,6 @@ class Host extends React.Component {
               this.socket.emit("data transfer", this.stateWithKeys({ team: 1 }))
           );
         } else if (data.keys.teamID) {
-          console.log(data.keys);
           this.socket.emit(
             "data transfer",
             this.stateWithKeys({
@@ -223,6 +223,11 @@ class Host extends React.Component {
         data.keys.teamID === this.props.blueID ||
         data.keys.teamID === this.props.redID
       ) {
+        console.log(
+          new Date().getTime(),
+          new Date(this.state.timeLeft).getTime(),
+          this.state.waitingTime
+        );
         if (data.state.redState || data.state.blueState) {
           this.setState(data.state, () => {
             this.socket.emit("data transfer", this.stateWithKeys());
@@ -235,7 +240,15 @@ class Host extends React.Component {
               });
             }
           });
-        } else {
+        } else if (
+          this.state.draftedHeroes.length > 0 ||
+          (this.state.draftedHeroes.length === 0 &&
+            new Date().getTime() >=
+              new Date(this.state.timeLeft).getTime() -
+                (this.state.draftSequence[0].action === "pick"
+                  ? this.state.pickTime
+                  : this.state.banTime))
+        ) {
           this.setState(
             prevState => {
               const draftPositionIndex = prevState.draftedHeroes.length;
@@ -388,12 +401,22 @@ class Host extends React.Component {
     const draftAction = this.state.draftSequence[draftPositionIndex].action;
     const timeLeft =
       draftAction === "pick"
-        ? new Date(new Date().getTime() + this.state.pickTime + 400)
-        : new Date(new Date().getTime() + this.state.banTime + 400);
+        ? new Date(
+            new Date().getTime() +
+              this.state.pickTime +
+              this.state.waitingTime +
+              400
+          )
+        : new Date(
+            new Date().getTime() +
+              this.state.banTime +
+              this.state.waitingTime +
+              400
+          );
     this.setState(
       {
         hostState: 2,
-        draftStarted: true,
+        draftLaunched: true,
         timeLeft,
         blueBonusLeft: this.state.bonusTime,
         redBonusLeft: this.state.bonusTime
@@ -402,7 +425,7 @@ class Host extends React.Component {
     );
   };
   render() {
-    if (this.state.draftStarted) {
+    if (this.state.draftLaunched) {
       return <Draft {...this.state} />;
     }
     return (

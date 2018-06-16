@@ -26,34 +26,57 @@ class Draft extends React.Component {
 
     this.socket = io();
 
-    toast.success("Draft has started.", {
-      position: toast.POSITION.TOP_CENTER,
-      autoClose: 2000,
-      closeButton: false,
-      hideProgressBar: true
-    });
+    const timeoutTime =
+      new Date(this.props.timeLeft).getTime() -
+      (this.props.draftSequence[0].action === "pick"
+        ? this.props.pickTime
+        : this.props.banTime) -
+      new Date().getTime() +
+      50;
 
-    const draftPositionIndex = this.props.draftedHeroes.length;
-    const teamTurn = this.props.draftSequence[draftPositionIndex].team;
-    if (this.props.team === teamTurn) {
-      toast.info("Your turn.", {
+    setTimeout(() => {
+      toast.success("Draft has started.", {
         position: toast.POSITION.TOP_CENTER,
-        autoClose: 1500,
-        closeButton: true,
+        autoClose: 2000,
+        closeButton: false,
         hideProgressBar: true
       });
-    }
+
+      if (
+        this.props.team ===
+        this.props.draftSequence[this.props.draftedHeroes.length].team
+      ) {
+        toast.info("Your turn.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 1500,
+          closeButton: true,
+          hideProgressBar: true
+        });
+      }
+    }, Math.max(timeoutTime, 0));
 
     const intervalID = setInterval(() => {
       const draftPositionIndex = this.props.draftedHeroes.length;
       const teamTurn = this.props.draftSequence[draftPositionIndex].team;
+
+      const waitingTimeLeft =
+        draftPositionIndex === 0
+          ? new Date(this.props.timeLeft).getTime() -
+            (this.props.draftSequence[0].action === "pick"
+              ? this.props.pickTime
+              : this.props.banTime) -
+            new Date().getTime()
+          : -1;
+
       const sideBonus = teamTurn ? "redBonus" : "blueBonus";
 
       const timeLeft =
         new Date(this.props.timeLeft).getTime() - new Date().getTime();
+
       if (timeLeft >= 0) {
         this.setState({
-          timeLeft
+          timeLeft,
+          waitingTimeLeft
         });
       } else if (typeof this.state[sideBonus] === "undefined") {
         console.log(
@@ -71,20 +94,29 @@ class Draft extends React.Component {
           [`${sideBonus}Left`]:
             new Date(this.props.timeLeft).getTime() +
             this.props[`${sideBonus}Left`] -
-            new Date().getTime()
+            new Date().getTime(),
+          waitingTimeLeft
         });
       } else {
         this.setState(prevState => ({
           [`${sideBonus}Left`]:
-            new Date(prevState[sideBonus]).getTime() - new Date().getTime()
+            new Date(prevState[sideBonus]).getTime() - new Date().getTime(),
+          waitingTimeLeft
         }));
       }
-    }, 1000);
+    }, 500);
+
+    setTimeout(() => {
+      this.setState({ animated: true });
+    }, 510);
 
     this.setState({ intervalID });
   }
   componentDidUpdate(prevProps) {
     if (JSON.stringify(prevProps) !== JSON.stringify(this.props)) {
+      setTimeout(() => {
+        this.setState({ animated: true });
+      }, 500);
       if (this.props.draftFinished) {
         clearInterval(this.state.intervalID);
         toast.success("Draft finished. Good luck in match!", {
@@ -277,7 +309,7 @@ class Draft extends React.Component {
     let purPercent = 1;
     if (this.props.draftSequence[this.props.draftedHeroes.length]) {
       purPercent =
-        (this.state.timeLeft - 800) /
+        this.state.timeLeft /
         (this.props.draftSequence[this.props.draftedHeroes.length].action ===
         "pick"
           ? this.props.pickTime
@@ -352,7 +384,7 @@ class Draft extends React.Component {
                     2 * Math.PI * 42.5,
                     2 * Math.PI * 42.5 * (1 - bluePercent)
                   )}
-                  style={{ transition: "stroke-dashoffset 1000ms linear" }}
+                  style={{ transition: "stroke-dashoffset 500ms linear" }}
                 />
                 <text
                   x="50"
@@ -395,12 +427,19 @@ class Draft extends React.Component {
                   cy="50"
                   r="42.5"
                   fill="none"
-                  stroke="hsla(280, 100%, 64%, 1)"
-                  //stroke="#f77a52"
+                  stroke={
+                    this.state.waitingTimeLeft > 0
+                      ? "#f77a52"
+                      : "hsla(280, 100%, 64%, 1)"
+                  }
                   strokeWidth="15"
                   strokeDasharray={2 * Math.PI * 42.5}
                   strokeDashoffset={2 * Math.PI * 42.5 * (1 - purPercent)}
-                  style={{ transition: "stroke-dashoffset 1000ms linear" }}
+                  style={
+                    this.state.animated
+                      ? { transition: "stroke-dashoffset 500ms linear" }
+                      : {}
+                  }
                 />
                 <text
                   x="50"
@@ -413,7 +452,9 @@ class Draft extends React.Component {
                 >
                   {this.props.draftFinished
                     ? "END"
-                    : Math.ceil(this.state.timeLeft / 1000)}
+                    : this.state.waitingTimeLeft > 0
+                      ? Math.round(this.state.waitingTimeLeft / 1000)
+                      : Math.ceil(this.state.timeLeft / 1000)}
                 </text>
               </svg>
             </div>
@@ -450,7 +491,7 @@ class Draft extends React.Component {
                         (this.state.redBonusLeft || this.props.redBonusLeft) /
                           this.props.bonusTime)
                   )}
-                  style={{ transition: "stroke-dashoffset 1000ms linear" }}
+                  style={{ transition: "stroke-dashoffset 500ms linear" }}
                 />
                 <text
                   x="50"
@@ -478,7 +519,8 @@ class Draft extends React.Component {
                   display:
                     this.props.draftSequence[this.props.draftedHeroes.length] &&
                     this.props.draftSequence[this.props.draftedHeroes.length]
-                      .team === this.props.team
+                      .team === this.props.team &&
+                    this.state.waitingTimeLeft <= 0
                       ? "initial"
                       : "none",
                   textTransform: "uppercase"
@@ -545,6 +587,7 @@ class Draft extends React.Component {
                         disabled={this.props.draftedHeroes.includes(hero.name)}
                         onClick={e => {
                           e.preventDefault();
+
                           if (
                             this.props.draftSequence[
                               this.props.draftedHeroes.length
@@ -560,6 +603,11 @@ class Draft extends React.Component {
                                 e.target.id
                               ]
                             });
+
+                            this.setState({
+                              heroSearchPhrase: "",
+                              animated: false
+                            });
                           } else {
                             toast.error("It's not your turn", {
                               position: toast.POSITION.TOP_CENTER,
@@ -568,8 +616,6 @@ class Draft extends React.Component {
                               hideProgressBar: true
                             });
                           }
-
-                          this.setState({ heroSearchPhrase: "" });
                         }}
                       />
                     </li>

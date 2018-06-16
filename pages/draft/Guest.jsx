@@ -114,7 +114,7 @@ class Guest extends React.Component {
     });
   };
   render() {
-    if (this.state.draftStarted) {
+    if (this.state.draftLaunched) {
       return (
         <Draft
           {...this.state}
