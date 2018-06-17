@@ -161,7 +161,7 @@ class Host extends React.Component {
         { name: "Varya" },
         { name: "Vox" }
       ],
-      matchName: "NACL Draft Match",
+      matchName: "VAIN.ZONE Draft",
       blueName: "Blue Team",
       redName: "Red Team",
       waitingTime: 5000,
@@ -460,18 +460,22 @@ class Host extends React.Component {
       <Lobby>
         <Head>
           <title>
-            {this.state.matchName === "NACL Draft Match"
-              ? "NACL Draft Tool"
+            {this.state.matchName === "VAIN.ZONE Draft"
+              ? "VAIN.ZONE Draft Tool"
               : this.state.matchName}
           </title>
         </Head>
         <React.Fragment>
           <img
             src="/static/img/draft/logo.png"
-            alt="NACL Logo"
+            alt="Draft Logo"
             style={{ height: "100px", margin: "auto", display: "block" }}
           />
-          <h1>NACL Draft Tool</h1>
+          <h1>
+            {this.state.matchName === "VAIN.ZONE Draft"
+              ? "VAIN.ZONE Draft Tool"
+              : this.state.matchName}
+          </h1>
           <form>
             <input
               type="text"

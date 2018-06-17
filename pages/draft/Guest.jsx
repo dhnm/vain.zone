@@ -136,7 +136,7 @@ class Guest extends React.Component {
             <title>
               {this.state.matchName
                 ? `Lobby | ${this.state.matchName}`
-                : "Lobby | NACL Draft"}
+                : "Lobby | VAIN.ZONE Draft"}
             </title>
             {this.state.heroes.map(h => (
               <link

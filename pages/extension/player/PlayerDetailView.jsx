@@ -52,6 +52,7 @@ export default function PlayerDetailView({ player, childRef }) {
     8766: "More than a year worth of time spent in the game? Check.",
     9406: "Vainglory Royalty"
   };
+  // Don't neglect your loved ones for Vainglory.
   const addictivenessRatingDictKeys = Object.keys(addictivenessRatingDict)
     .map(e => parseInt(e, 10))
     .sort((a, b) => a - b);

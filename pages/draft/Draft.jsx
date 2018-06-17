@@ -127,7 +127,7 @@ class Draft extends React.Component {
 
     setTimeout(() => {
       this.setState({ animated: true });
-    }, 1500);
+    }, 1000);
 
     this.setState({ intervalID });
   }
@@ -136,7 +136,7 @@ class Draft extends React.Component {
     if (JSON.stringify(prevProps) !== JSON.stringify(this.props)) {
       setTimeout(() => {
         this.setState({ animated: true });
-      }, 500);
+      }, 1000);
       if (this.props.draftFinished) {
         clearInterval(this.state.intervalID);
         if (!toast.isActive(this.draftFinishedToast)) {
@@ -588,8 +588,8 @@ class Draft extends React.Component {
               }}
             >
               <img
-                src="/static/img/draft/logo.png"
-                alt="NACL Logo"
+                src="/static/img/draft/VAINZONE-logo-darkbg.png"
+                alt="Draft Logo"
                 style={{ maxWidth: "100%" }}
               />
             </div>
