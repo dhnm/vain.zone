@@ -127,10 +127,11 @@ class Draft extends React.Component {
 
     setTimeout(() => {
       this.setState({ animated: true });
-    }, 1250);
+    }, 1500);
 
     this.setState({ intervalID });
   }
+  draftFinishedToast = null;
   componentDidUpdate(prevProps) {
     if (JSON.stringify(prevProps) !== JSON.stringify(this.props)) {
       setTimeout(() => {
@@ -138,12 +139,17 @@ class Draft extends React.Component {
       }, 500);
       if (this.props.draftFinished) {
         clearInterval(this.state.intervalID);
-        toast.success("Draft finished. Good luck in match!", {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 2000,
-          closeButton: false,
-          hideProgressBar: true
-        });
+        if (!toast.isActive(this.draftFinishedToast)) {
+          this.draftFinishedToast = toast.success(
+            "Draft finished. Good luck in match!",
+            {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: 2000,
+              closeButton: false,
+              hideProgressBar: true
+            }
+          );
+        }
       }
 
       const draftPositionIndex = this.props.draftedHeroes.length;
