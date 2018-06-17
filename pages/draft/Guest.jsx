@@ -130,7 +130,6 @@ class Guest extends React.Component {
         />
       );
     } else if (this.state.draftSequence) {
-      console.log(this.state, this.props);
       return (
         <Lobby>
           <Head>
@@ -139,6 +138,17 @@ class Guest extends React.Component {
                 ? `Lobby | ${this.state.matchName}`
                 : "Lobby | NACL Draft"}
             </title>
+            {this.state.heroes.map(h => (
+              <link
+                rel="preload"
+                href={
+                  h.img ||
+                  `/static/img/heroes/placeholder/${h.name.toLowerCase()}.jpg`
+                }
+                as="image"
+                type="image/jpeg"
+              />
+            ))}
           </Head>
           <img
             src="/static/img/draft/logo.png"

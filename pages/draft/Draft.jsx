@@ -6,23 +6,42 @@ import axios from "axios";
 import Router from "next/router";
 
 import { toast } from "react-toastify";
+import ProgressiveImage from "react-progressive-image";
 
 const HeroPick = ({ hero }) => {
   const src =
     hero.img || `/static/img/heroes/170-jpg/${hero.name.toLowerCase()}.jpg`;
-  return <img src={src} alt={hero.name} />;
+  const placeholder =
+    hero.img || `/static/img/heroes/placeholder/${hero.name.toLowerCase()}.jpg`;
+  return (
+    <ProgressiveImage src={placeholder} placeholder={placeholder}>
+      {progressiveSrc => <img src={progressiveSrc} alt={hero.name} />}
+    </ProgressiveImage>
+  );
 };
 
 class Draft extends React.Component {
   static async getInitialProps({ query }) {
     return query;
   }
-  state = { timeLeft: 0, heroSearchPhrase: "" };
+  state = { timeLeft: 0, heroSearchPhrase: "", lastKnownScrollPosition: 0 };
   componentDidMount() {
     this.setState({ windowWidth: window.screen.width });
     window.addEventListener("resize", () =>
       this.setState({ windowWidth: window.screen.width })
     );
+    let lastKnownScrollPosition = 0;
+    let ticking = false;
+    window.addEventListener("scroll", () => {
+      lastKnownScrollPosition = window.scrollY;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          this.setState({ lastKnownScrollPosition });
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
 
     this.socket = io();
 
@@ -104,11 +123,11 @@ class Draft extends React.Component {
           waitingTimeLeft
         }));
       }
-    }, 500);
+    }, 1000);
 
     setTimeout(() => {
       this.setState({ animated: true });
-    }, 510);
+    }, 1250);
 
     this.setState({ intervalID });
   }
@@ -184,9 +203,25 @@ class Draft extends React.Component {
       : this.props.draftedHeroes.length === draftPositionIndex
         ? e.team ? colors.red : colors.blue
         : colors.black;
+    const placeholder = drafted
+      ? hero.img ||
+        `/static/img/heroes/placeholder/${hero.name.toLowerCase()}.jpg`
+      : src;
     return (
       <li key={`draftPosition${draftPositionIndex}`}>
-        <img src={src} alt={hero ? hero.name : "Empty draft slot"} />
+        <ProgressiveImage src={src} placeholder={placeholder}>
+          {(progressiveSrc, loading) => (
+            <img
+              style={{
+                filter: loading ? "blur(0.14vw)" : "blur(0)",
+                transform: loading ? "scale(1.04)" : "scale(1)",
+                transition: "500ms linear"
+              }}
+              src={progressiveSrc}
+              alt={hero ? hero.name : "Empty draft slot"}
+            />
+          )}
+        </ProgressiveImage>
         <span id="draft_sequence_number">{draftPositionIndex + 1}</span>
         <style jsx>
           {`
@@ -197,7 +232,10 @@ class Draft extends React.Component {
               overflow: hidden;
               margin: 2px 0;
               padding: 0;
-              width: ${e.action === "pick" ? "100%" : "70%"};
+              width: ${e.action === "pick" ? "60%" : "40%"};
+              float: ${e.action === "pick"
+                ? ["right", "left"][e.team]
+                : ["left", "right"][e.team]};
               overflow: auto;
             }
             li:last-child {
@@ -328,9 +366,13 @@ class Draft extends React.Component {
       this.props.bonusTime;
 
     const fixedHUDScreenHeight =
-      446.578 /
-      320 *
-      (this && this.state.windowWidth ? this.state.windowWidth : 1000);
+      446.578 / 320 * (this.state.windowWidth ? this.state.windowWidth : 1000);
+    const lastKnownScrollPosition = this.state.lastKnownScrollPosition;
+    const stickyScreenHeight = Math.min(
+      675 / 1024 * (this.state.windowWidth ? this.state.windowWidth : 1024),
+      675
+    );
+    console.log(stickyScreenHeight);
     return (
       <div id="draft_wrapper">
         <Head>
@@ -384,7 +426,7 @@ class Draft extends React.Component {
                     2 * Math.PI * 42.5,
                     2 * Math.PI * 42.5 * (1 - bluePercent)
                   )}
-                  style={{ transition: "stroke-dashoffset 500ms linear" }}
+                  style={{ transition: "stroke-dashoffset 1000ms linear" }}
                 />
                 <text
                   x="50"
@@ -437,7 +479,7 @@ class Draft extends React.Component {
                   strokeDashoffset={2 * Math.PI * 42.5 * (1 - purPercent)}
                   style={
                     this.state.animated
-                      ? { transition: "stroke-dashoffset 500ms linear" }
+                      ? { transition: "stroke-dashoffset 1000ms linear" }
                       : {}
                   }
                 />
@@ -491,7 +533,7 @@ class Draft extends React.Component {
                         (this.state.redBonusLeft || this.props.redBonusLeft) /
                           this.props.bonusTime)
                   )}
-                  style={{ transition: "stroke-dashoffset 500ms linear" }}
+                  style={{ transition: "stroke-dashoffset 1000ms linear" }}
                 />
                 <text
                   x="50"
@@ -572,52 +614,65 @@ class Draft extends React.Component {
                   const src =
                     hero.img ||
                     `/static/img/heroes/170-jpg/${hero.name.toLowerCase()}.jpg`;
+                  const placeholder =
+                    hero.img ||
+                    `/static/img/heroes/placeholder/${hero.name.toLowerCase()}.jpg`;
+
                   return (
                     <li key={hero.name}>
-                      <input
-                        type="image"
-                        name="hero"
-                        src={src}
-                        style={{
-                          backgroundImage: `url('${src}')`,
-                          backgroundSize: "cover"
-                        }}
-                        id={hero.name}
-                        alt={hero.name}
-                        disabled={this.props.draftedHeroes.includes(hero.name)}
-                        onClick={e => {
-                          e.preventDefault();
+                      <ProgressiveImage src={src} placeholder={placeholder}>
+                        {(progressiveSrc, loading) => (
+                          <input
+                            type="image"
+                            name="hero"
+                            src={progressiveSrc}
+                            style={{
+                              backgroundImage: `url('${progressiveSrc}')`,
+                              backgroundSize: "cover",
+                              filter: loading ? "blur(0.14vw)" : "blur(0)",
+                              transform: loading ? "scale(1.04)" : "scale(1)",
+                              transition: "500ms linear"
+                            }}
+                            id={hero.name}
+                            alt={hero.name}
+                            disabled={this.props.draftedHeroes.includes(
+                              hero.name
+                            )}
+                            onClick={e => {
+                              e.preventDefault();
 
-                          if (
-                            this.props.draftSequence[
-                              this.props.draftedHeroes.length
-                            ] &&
-                            this.props.team ===
-                              this.props.draftSequence[
-                                this.props.draftedHeroes.length
-                              ].team
-                          ) {
-                            this.props.emit({
-                              draftedHeroes: [
-                                ...this.props.draftedHeroes,
-                                e.target.id
-                              ]
-                            });
+                              if (
+                                this.props.draftSequence[
+                                  this.props.draftedHeroes.length
+                                ] &&
+                                this.props.team ===
+                                  this.props.draftSequence[
+                                    this.props.draftedHeroes.length
+                                  ].team
+                              ) {
+                                this.props.emit({
+                                  draftedHeroes: [
+                                    ...this.props.draftedHeroes,
+                                    e.target.id
+                                  ]
+                                });
 
-                            this.setState({
-                              heroSearchPhrase: "",
-                              animated: false
-                            });
-                          } else {
-                            toast.error("It's not your turn", {
-                              position: toast.POSITION.TOP_CENTER,
-                              autoClose: 1000,
-                              closeButton: false,
-                              hideProgressBar: true
-                            });
-                          }
-                        }}
-                      />
+                                this.setState({
+                                  heroSearchPhrase: "",
+                                  animated: false
+                                });
+                              } else {
+                                toast.error("It's not your turn", {
+                                  position: toast.POSITION.TOP_CENTER,
+                                  autoClose: 1000,
+                                  closeButton: false,
+                                  hideProgressBar: true
+                                });
+                              }
+                            }}
+                          />
+                        )}
+                      </ProgressiveImage>
                     </li>
                   );
                 })}
@@ -641,7 +696,12 @@ class Draft extends React.Component {
             background-position: center;
             background-repeat: no-repeat;*/
             background-color: hsla(195, 46%, 10%, 1);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.4' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
             position: relative;
+          }
+          img,
+          input[type="image"] {
+            color: hsla(0, 0%, 94%, 1);
           }
         `}</style>
         <style jsx>
@@ -649,9 +709,10 @@ class Draft extends React.Component {
             #draft_wrapper {
               overflow: overlay;
               color: hsla(0, 0%, 94%, 1);
-              margin: 2% auto;
-              padding: 30px 20px;
+              margin: 0 auto;
+              padding: 2%;
               max-width: 1024px;
+              box-sizing: border-box;
             }
             #central h1 {
               margin-bottom: 5%;
@@ -661,14 +722,16 @@ class Draft extends React.Component {
             }
             #left,
             #right {
+              position: relative;
+              min-height: 1px;
               display: inline-block;
-              width: 14%;
+              width: 20%;
               margin: 0;
               float: left;
             }
             #central {
               display: inline-block;
-              width: 72%;
+              width: 60%;
               margin: 0;
               float: left;
             }
@@ -676,7 +739,7 @@ class Draft extends React.Component {
               width: calc(94%);
               overflow: hidden;
               margin: 4% auto;
-              padding: calc(25px + 0.75%) calc(15px + 2px + 2.25%);
+              padding: calc(10px + 0.75%) calc(5px + 2px + 2.25%);
               box-sizing: border-box;
               border-radius: 40px;
               box-shadow: 0px 1px 10px 1px hsla(0, 0%, 90%, 0.4);
@@ -699,9 +762,6 @@ class Draft extends React.Component {
             #team_names > span {
               width: 100px;
             }
-            .draft_items {
-              margin: 0;
-            }
             .draft_items ul {
               text-align: center;
               font-size: 0.2rem;
@@ -721,6 +781,7 @@ class Draft extends React.Component {
             }
             #heroes li input[type="image"] {
               position: relative;
+              vertical-align: middle;
               cursor: pointer;
               outline: none;
               appearance: none;
@@ -735,16 +796,16 @@ class Draft extends React.Component {
               transition: 0.5s cubic-bezier(0.25, 0.01, 0.31, 2);
               z-index: 1;
             }
-            #heroes li input[type="image"]:hover {
+            /*#heroes li input[type="image"]:hover {
               transform: scale(1.1);
               z-index: 2;
-            }
+            }*/
             #heroes li input[type="image"]:disabled {
               transform: scale(1);
               opacity: 0.4;
               cursor: default;
             }
-            #input_panel input {
+            #input_panel input[type="text"] {
               border-radius: 30px;
               appearance: none;
               border: 0;
@@ -768,10 +829,13 @@ class Draft extends React.Component {
               border-bottom: 1px solid hsla(0, 0%, 30%, 1);
             }
             @media (max-width: 767px) {
-              // #left,
-              // #right {
-              //   width: 100%;
-              // }
+              #left,
+              #right {
+                width: 14.5%;
+              }
+              #central {
+                width: 71%;
+              }
               #draft_wrapper,
               #draft_wrapper > div > div {
                 padding: 0;
@@ -810,7 +874,7 @@ class Draft extends React.Component {
                 overflow: visible;
                 padding-bottom: 100%;
               }
-              #input_panel input {
+              #input_panel input[type="text"] {
                 margin-left: 8px;
                 margin-right: 8px;
                 width: calc(100% - 16px);
@@ -831,6 +895,32 @@ class Draft extends React.Component {
               }
               .draft_items ul {
                 padding: 14px;
+              }
+            }
+          `}
+        </style>
+        <style jsx>
+          {`
+            @media (min-width: 768px) and (min-height: ${stickyScreenHeight}px) {
+              #draft_wrapper {
+                max-height: 100vh;
+                width: 100vw;
+                box-sizing: border-box;
+              }
+              #left,
+              #right,
+              #timers {
+                position: sticky;
+                top: 2vw;
+                transition: 600ms cubic-bezier(0.25, 0.01, 0.31, 1.8);
+                z-index: 1000;
+              }
+              #timers {
+                top: 3px;
+              }
+              ::-webkit-scrollbar {
+                width: 0px; /* remove scrollbar space */
+                background: transparent;
               }
             }
             @media only screen and (max-width: 583px) and (min-height: ${fixedHUDScreenHeight}px) and (orientation: portrait) {

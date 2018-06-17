@@ -9,6 +9,49 @@ import { toast } from "react-toastify";
 import Lobby from "./Lobby";
 import Draft from "./Draft";
 
+const draftSequenceProfiles = {
+  "Vainglory Tournament": [
+    { team: 0, action: "ban" },
+    { team: 1, action: "ban" },
+    { team: 0, action: "pick" },
+    { team: 1, action: "pick" },
+    { team: 1, action: "pick" },
+    { team: 0, action: "pick" },
+    { team: 1, action: "ban" },
+    { team: 0, action: "ban" },
+    { team: 1, action: "pick" },
+    { team: 0, action: "pick" },
+    { team: 0, action: "pick" },
+    { team: 1, action: "pick" },
+    { team: 0, action: "ban" },
+    { team: 1, action: "ban" },
+    { team: 0, action: "pick" },
+    { team: 1, action: "pick" }
+  ],
+  "League of Legends Tournament": [
+    { team: 0, action: "ban" },
+    { team: 1, action: "ban" },
+    { team: 0, action: "ban" },
+    { team: 1, action: "ban" },
+    { team: 0, action: "ban" },
+    { team: 1, action: "ban" },
+    { team: 0, action: "pick" },
+    { team: 1, action: "pick" },
+    { team: 1, action: "pick" },
+    { team: 0, action: "pick" },
+    { team: 0, action: "pick" },
+    { team: 1, action: "pick" },
+    { team: 1, action: "ban" },
+    { team: 0, action: "ban" },
+    { team: 1, action: "ban" },
+    { team: 0, action: "ban" },
+    { team: 1, action: "pick" },
+    { team: 0, action: "pick" },
+    { team: 0, action: "pick" },
+    { team: 1, action: "pick" }
+  ]
+};
+
 const SharingLink = ({ lobby, roomID, teamID }) => {
   if (lobby) {
     const link = `${window.location.protocol}//${
@@ -62,91 +105,77 @@ const SharingLink = ({ lobby, roomID, teamID }) => {
 };
 
 class Host extends React.Component {
-  state = {
-    blueSockets: new Set(),
-    redSockets: new Set(),
-    spectatorSockets: new Set(),
-    spectator: true,
+  constructor(props) {
+    super(props);
+    this.state = {
+      blueSockets: new Set(),
+      redSockets: new Set(),
+      spectatorSockets: new Set(),
+      spectator: true,
 
-    blueState: 0,
-    redState: 0,
-    hostState: 1,
+      blueState: 0,
+      redState: 0,
+      hostState: 1,
 
-    draftSequence: [
-      { team: 0, action: "ban" },
-      { team: 1, action: "ban" },
-      { team: 0, action: "pick" },
-      { team: 1, action: "pick" },
-      { team: 1, action: "pick" },
-      { team: 0, action: "pick" },
-      { team: 1, action: "ban" },
-      { team: 0, action: "ban" },
-      { team: 1, action: "pick" },
-      { team: 0, action: "pick" },
-      { team: 0, action: "pick" },
-      { team: 1, action: "pick" },
-      { team: 0, action: "ban" },
-      { team: 1, action: "ban" },
-      { team: 0, action: "pick" },
-      { team: 1, action: "pick" }
-    ],
-    heroes: [
-      { name: "Adagio" },
-      { name: "Alpha" },
-      { name: "Ardan" },
-      { name: "Baptiste" },
-      { name: "Baron" },
-      { name: "Blackfeather" },
-      { name: "Catherine" },
-      { name: "Celeste" },
-      { name: "Churnwalker" },
-      { name: "Flicker" },
-      { name: "Fortress" },
-      { name: "Glaive" },
-      { name: "Grace" },
-      { name: "Grumpjaw" },
-      { name: "Gwen" },
-      { name: "Idris" },
-      { name: "Joule" },
-      { name: "Kensei" },
-      { name: "Kestrel" },
-      { name: "Kinetic" },
-      { name: "Koshka" },
-      { name: "Krul" },
-      { name: "Lance" },
-      { name: "Lorelai" },
-      { name: "Lyra" },
-      { name: "Malene" },
-      { name: "Ozo" },
-      { name: "Petal" },
-      { name: "Phinn" },
-      { name: "Reim" },
-      { name: "Reza" },
-      { name: "Ringo" },
-      { name: "Rona" },
-      { name: "Samuel" },
-      { name: "SAW" },
-      { name: "Skaarf" },
-      { name: "Skye" },
-      { name: "Taka" },
-      { name: "Tony" },
-      { name: "Varya" },
-      { name: "Vox" }
-    ],
-    matchName: "NACL Draft Match",
-    blueName: "Blue Team",
-    redName: "Red Team",
-    waitingTime: 5000,
-    banTime: 30000,
-    pickTime: 30000,
-    bonusTime: 60000,
+      draftSequence: draftSequenceProfiles["Vainglory Tournament"],
+      heroes: [
+        { name: "Adagio" },
+        { name: "Alpha" },
+        { name: "Ardan" },
+        { name: "Baptiste" },
+        { name: "Baron" },
+        { name: "Blackfeather" },
+        { name: "Catherine" },
+        { name: "Celeste" },
+        { name: "Churnwalker" },
+        { name: "Flicker" },
+        { name: "Fortress" },
+        { name: "Glaive" },
+        { name: "Grace" },
+        { name: "Grumpjaw" },
+        { name: "Gwen" },
+        { name: "Idris" },
+        { name: "Joule" },
+        { name: "Kensei" },
+        { name: "Kestrel" },
+        { name: "Kinetic" },
+        { name: "Koshka" },
+        { name: "Krul" },
+        { name: "Lance" },
+        { name: "Lorelai" },
+        { name: "Lyra" },
+        { name: "Malene" },
+        { name: "Ozo" },
+        { name: "Petal" },
+        { name: "Phinn" },
+        { name: "Reim" },
+        { name: "Reza" },
+        { name: "Ringo" },
+        { name: "Rona" },
+        { name: "Samuel" },
+        { name: "SAW" },
+        { name: "Skaarf" },
+        { name: "Skye" },
+        { name: "Taka" },
+        { name: "Tony" },
+        { name: "Varya" },
+        { name: "Vox" }
+      ],
+      matchName: "NACL Draft Match",
+      blueName: "Blue Team",
+      redName: "Red Team",
+      waitingTime: 5000,
+      banTime: 30000,
+      pickTime: 30000,
+      bonusTime: 60000,
 
-    draftLaunched: false,
-    draftedHeroes: [],
-    timeLeft: new Date(),
-    redBonusLeft: 0,
-    blueBonusLeft: 0
-  };
+      draftLaunched: false,
+      draftedHeroes: [],
+      timeLeft: new Date(),
+      redBonusLeft: 0,
+      blueBonusLeft: 0
+    };
+  }
   componentDidMount() {
     this.socket = io();
     this.socket.on("connect", () => {
@@ -252,7 +281,6 @@ class Host extends React.Component {
           this.setState(
             prevState => {
               const draftPositionIndex = prevState.draftedHeroes.length;
-              console.log(data, prevState.draftSequence.length);
               if (
                 data.state.draftedHeroes &&
                 data.state.draftedHeroes.length ===

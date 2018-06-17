@@ -36,6 +36,7 @@
     "react": "^16.4.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.3.2",
+    "react-progressive-image": "^0.3.0",
     "react-toastify": "^4.1.0",
     "semantic-ui-react": "^0.80.0",
     "socket.io": "^2.1.1",
