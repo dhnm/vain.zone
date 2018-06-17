@@ -120,16 +120,14 @@ export default function PlayerDetailView({ player, childRef }) {
               </Grid.Row>
               <Grid.Row>
                 <Grid.Column>
-                  5v5 Casuals:
-                  <div style={{ float: "right" }}>
-                    {player.played_casual_5v5}×
-                  </div>
+                  3v3 Ranked:
+                  <div style={{ float: "right" }}>{player.played_ranked}×</div>
                   <br />
                   {(() => {
                     if (player.patchVersion >= "3.2") {
                       return (
-                        <div>
-                          5v5 Rankeds:
+                        <React.Fragment>
+                          5v5 Ranked:
                           <div
                             style={{
                               float: "right"
@@ -137,29 +135,26 @@ export default function PlayerDetailView({ player, childRef }) {
                           >
                             {player.played_ranked_5v5}×
                           </div>
-                        </div>
+                          <br />
+                        </React.Fragment>
                       );
                     }
-                    return (
-                      <div>
-                        BRAWL Games:
-                        <div
-                          style={{
-                            float: "right"
-                          }}
-                        >
-                          {player.played_aral + player.played_blitz}×
-                        </div>
-                      </div>
-                    );
+                    return <div style={{ display: "none" }} />;
                   })()}
+                  Blitz:
+                  <div style={{ float: "right" }}>{player.played_blitz}×</div>
                 </Grid.Column>
                 <Grid.Column>
                   3v3 Casuals:
                   <div style={{ float: "right" }}>{player.played_casual}×</div>
                   <br />
-                  3v3 Rankeds:
-                  <div style={{ float: "right" }}>{player.played_ranked}×</div>
+                  5v5 Casuals:
+                  <div style={{ float: "right" }}>
+                    {player.played_casual_5v5}×
+                  </div>
+                  <br />
+                  Battle Royale:
+                  <div style={{ float: "right" }}>{player.played_aral}×</div>
                 </Grid.Column>
               </Grid.Row>
             </Grid>
