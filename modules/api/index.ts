@@ -6,6 +6,7 @@ import botuser from './botuser';
 import matches from './matches';
 import telemetry from './telemetry';
 import applyfilter from './applyfilter';
+import bestczsk from "./bestczsk"
 
 import uuidv4 from './uuidv4';
 
@@ -16,5 +17,6 @@ router.use('/botuser', botuser);
 router.use('/matches', matches);
 router.use('/telemetry', telemetry);
 router.use('/applyfilter', applyfilter);
+router.use('/bestczsk', bestczsk)
 
 router.use('/uuidv4', uuidv4);

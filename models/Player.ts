@@ -24,7 +24,18 @@ const playerSchema = new Schema({
   skillTier: Number,
   wins: Number,
   matchRefs: [{ type: String, ref: 'matches' }],
+  czSk: {
+    retrieval: Date,
+    of_month: Number,
+    first_of_month: Number,
+  },
 });
+
+type czSk = {
+  retrieval: Date;
+  of_month: number;
+  first_of_month: number;
+};
 
 export type IPlayer = Document & {
   exists: boolean;
@@ -50,6 +61,7 @@ export type IPlayer = Document & {
   skillTier: number;
   wins: number;
   matchRefs: string[];
+  czSk: czSk;
 };
 
 export const Player = model<IPlayer>('players', playerSchema);

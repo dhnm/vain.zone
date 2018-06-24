@@ -35,6 +35,7 @@ const nextHandler = nextApp.getRequestHandler();
 import axios from 'axios';
 
 import extension from './../modules/extension';
+import draft from './../modules/draft';
 import api from './../modules/api';
 
 // import { Match } from "./../models/Match";
@@ -47,13 +48,15 @@ db.once('open', () => {
   console.log("We're connected!");
 });
 
-io.on('connection', (socket) => {
+const draftIO = io.of('/draft');
+draftIO.on('connection', (socket) => {
   socket.on('join room', (room) => {
     socket.join(room);
   });
 
   socket.on('verify', (data) => {
     const roomID = data.keys.roomID;
+    const roomIDWithoutNamespace = roomID.split('#')[1]
     const rooms = Object.assign({}, io.sockets.adapter.rooms);
 
     if (data.keys.teamID) {
@@ -61,7 +64,7 @@ io.on('connection', (socket) => {
     }
     socket.join(roomID);
 
-    if (rooms[roomID] && rooms[roomID].sockets[roomID]) {
+    if (rooms[roomIDWithoutNamespace] && rooms[roomIDWithoutNamespace].sockets[roomIDWithoutNamespace]) {
       socket.to(data.keys.recipientID).emit('verify', data);
     } else {
       socket.emit('data transfer', { keys: { failed: true } });
@@ -144,28 +147,8 @@ nextApp
     });
 
     app.use('/extension', extension(nextApp));
+    app.use('/draft', draft(nextApp));
     app.use('/api', api);
-
-    app.get('/draft', (req, res) => {
-      nextApp.render(req, res, '/draft', {
-        urlPath: req.protocol + '://' + req.headers.host,
-      });
-    });
-
-    app.get('/draft/:roomID', (req, res) => {
-      nextApp.render(req, res, '/draft', {
-        urlPath: req.protocol + '://' + req.headers.host,
-        roomID: req.params.roomID,
-      });
-    });
-
-    app.get('/draft/:roomID/:teamID', (req, res) => {
-      nextApp.render(req, res, '/draft', {
-        urlPath: req.protocol + '://' + req.headers.host,
-        roomID: req.params.roomID,
-        teamID: req.params.teamID,
-      });
-    });
 
     app.get('*', (req, res) => {
       return nextHandler(req, res);

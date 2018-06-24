@@ -219,7 +219,12 @@ class Draft extends React.Component {
           {(progressiveSrc, loading) => (
             <img
               style={{
-                filter: loading ? "blur(0.14vw)" : "blur(0)",
+                filter: `${loading ? "blur(0.14vw)" : "blur(0)"} ${
+                  e.action === "pick" ||
+                  this.props.draftedHeroes.length <= draftPositionIndex
+                    ? ""
+                    : "grayscale(75%)"
+                }`,
                 transform: loading ? "scale(1.04)" : "scale(1)",
                 transition: "500ms linear"
               }}
@@ -253,13 +258,9 @@ class Draft extends React.Component {
               border: 4px inset;
               ${this.props.draftedHeroes.length + 1 === draftPositionIndex
                 ? "border: 4px dashed;"
-                : ""} filter: ${e.action === "pick" ||
-                this.props.draftedHeroes.length <= draftPositionIndex
-                  ? "none"
-                  : "grayscale(75%)"};
-              border-color: ${e.team
-                ? "hsla(0, 100%, 50%, 1)"
-                : "hsla(206, 100%, 48%, 1)"};
+                : ""} border-color: ${e.team
+                  ? "hsla(0, 100%, 50%, 1)"
+                  : "hsla(206, 100%, 48%, 1)"};
               box-sizing: border-box;
               width: 100%;
               border-radius: ${e.action === "pick" ? "38%" : "50%"};

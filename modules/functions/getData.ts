@@ -264,7 +264,7 @@ const getMatches = (command: string, playerData: IPlayer): Promise<IPlayer> => {
     });
 };
 
-const axiosAPI = (options: {
+export const axiosAPI = (options: {
   shardId: string;
   endPoint: string;
   params: any;
