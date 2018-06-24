@@ -40,6 +40,8 @@ import api from './../modules/api';
 
 // import { Match } from "./../models/Match";
 // import { Player } from "./../models/Player";
+// import { CzSk } from './../models/CzSk';
+
 mongoose.connect(
   'mongodb://user_thisBoy:r8LspGn5jpZJIfCP@vainzone-shard-00-00-jem9k.mongodb.net:27017,vainzone-shard-00-01-jem9k.mongodb.net:27017,vainzone-shard-00-02-jem9k.mongodb.net:27017/VAINZONE?ssl=true&replicaSet=VAINZONE-shard-0&authSource=admin',
 );
@@ -56,7 +58,7 @@ draftIO.on('connection', (socket) => {
 
   socket.on('verify', (data) => {
     const roomID = data.keys.roomID;
-    const roomIDWithoutNamespace = roomID.split('#')[1]
+    const roomIDWithoutNamespace = roomID.split('#')[1];
     const rooms = Object.assign({}, io.sockets.adapter.rooms);
 
     if (data.keys.teamID) {
@@ -64,7 +66,10 @@ draftIO.on('connection', (socket) => {
     }
     socket.join(roomID);
 
-    if (rooms[roomIDWithoutNamespace] && rooms[roomIDWithoutNamespace].sockets[roomIDWithoutNamespace]) {
+    if (
+      rooms[roomIDWithoutNamespace] &&
+      rooms[roomIDWithoutNamespace].sockets[roomIDWithoutNamespace]
+    ) {
       socket.to(data.keys.recipientID).emit('verify', data);
     } else {
       socket.emit('data transfer', { keys: { failed: true } });

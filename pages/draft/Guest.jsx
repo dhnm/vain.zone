@@ -1,46 +1,46 @@
-import React from "react";
-import io from "socket.io-client";
-import Router from "next/router";
-import Head from "next/head";
+import React from 'react';
+import io from 'socket.io-client';
+import Router from 'next/router';
+import Head from 'next/head';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import Lobby from "./Lobby";
-import Draft from "./Draft";
+import Lobby from './Lobby';
+import Draft from './Draft';
 
 class Guest extends React.Component {
   state = { lobby: true };
   componentDidMount() {
-    this.socket = io("/draft");
+    this.socket = io('/draft');
 
-    this.socket.on("connect", () => {
+    this.socket.on('connect', () => {
       console.log(this.props.roomID);
-      this.socket.emit("verify", {
+      this.socket.emit('verify', {
         keys: {
           socketID: this.socket.id,
           roomID: this.props.roomID,
           teamID: this.props.teamID,
-          recipientID: this.props.roomID
-        }
+          recipientID: this.props.roomID,
+        },
       });
     });
 
-    this.socket.on("data transfer", data => {
+    this.socket.on('data transfer', (data) => {
       if (data.keys.failed) {
-        const tid = toast.error("Wrong link or expired draft session.", {
+        const tid = toast.error('Wrong link or expired draft session.', {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 2500,
           closeButton: false,
           hideProgressBar: true,
-          onOpen: () => Router.replace("/draft")
+          onOpen: () => Router.replace('/draft'),
         });
       } else {
-        this.setState(prevState => {
+        this.setState((prevState) => {
           if (data.keys.spectator) {
             return { ...data.state, spectator: data.keys.spectator };
           } else if (
-            typeof data.keys.team === "number" &&
-            typeof prevState.team !== "number" &&
+            typeof data.keys.team === 'number' &&
+            typeof prevState.team !== 'number' &&
             !this.state.spectator
           ) {
             return { ...data.state, team: data.keys.team };
@@ -50,66 +50,70 @@ class Guest extends React.Component {
       }
     });
 
-    this.socket.on("socket disconnected", socketID => {
+    this.socket.on('socket disconnected', (socketID) => {
       if (socketID === this.props.roomID && !this.state.draftFinished) {
-        toast.error("Draft Host disconnected. Draft has been terminated.", {
+        toast.error('Draft Host disconnected. Draft has been terminated.', {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 5000,
           closeButton: false,
           hideProgressBar: true,
-          onOpen: () => Router.replace("/draft")
+          onOpen: () => Router.replace('/draft'),
         });
       }
     });
 
-    this.socket.on("disconnect", () => {
+    this.socket.on('disconnect', () => {
       this.setState(
         !this.state.spectator
-          ? this.state.team ? { redState: 0 } : { blueState: 0 }
-          : null
+          ? this.state.team
+            ? { redState: 0 }
+            : { blueState: 0 }
+          : null,
       );
-      toast.error("Disconnected from room.", {
+      toast.error('Disconnected from room.', {
         position: toast.POSITION.TOP_CENTER,
         autoClose: 3500,
         closeButton: false,
-        hideProgressBar: true
+        hideProgressBar: true,
       });
     });
 
-    this.socket.on("reconnect", () => {
-      this.socket.emit("verify", {
+    this.socket.on('reconnect', () => {
+      this.socket.emit('verify', {
         keys: {
           socketID: this.socket.id,
           roomID: this.props.roomID,
           teamID: this.props.teamID,
-          recipientID: this.props.roomID
-        }
+          recipientID: this.props.roomID,
+        },
       });
-      toast.info("Reconnecting.", {
+      toast.info('Reconnecting.', {
         position: toast.POSITION.TOP_CENTER,
         autoClose: 2000,
         closeButton: false,
-        hideProgressBar: true
+        hideProgressBar: true,
       });
     });
   }
   componentWillUnmount() {
     this.socket.close();
   }
-  handleChange = event => {
+  handleChange = (event) => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
   handleSubmit = () => {
-    this.socket.emit("host update", {
+    this.socket.emit('host update', {
       state: !this.state.spectator
-        ? this.state.team ? { redState: 2 } : { blueState: 2 }
+        ? this.state.team
+          ? { redState: 2 }
+          : { blueState: 2 }
         : null,
       keys: {
         teamID: this.props.teamID,
-        recipientID: this.props.roomID
-      }
+        recipientID: this.props.roomID,
+      },
     });
   };
   render() {
@@ -117,13 +121,13 @@ class Guest extends React.Component {
       return (
         <Draft
           {...this.state}
-          emit={state =>
-            this.socket.emit("host update", {
+          emit={(state) =>
+            this.socket.emit('host update', {
               state,
               keys: {
                 teamID: this.props.teamID,
-                recipientID: this.props.roomID
-              }
+                recipientID: this.props.roomID,
+              },
             })
           }
         />
@@ -135,9 +139,9 @@ class Guest extends React.Component {
             <title>
               {this.state.matchName
                 ? `Lobby | ${this.state.matchName}`
-                : "Lobby | VAIN.ZONE Draft"}
+                : 'Lobby | VAIN.ZONE Draft'}
             </title>
-            {this.state.heroes.map(h => (
+            {this.state.heroes.map((h) => (
               <link
                 rel="preload"
                 href={
@@ -152,7 +156,7 @@ class Guest extends React.Component {
           <img
             src="/static/img/draft/logo.png"
             alt="NACL Logo"
-            style={{ height: "100px", margin: "auto", display: "block" }}
+            style={{ height: '100px', margin: 'auto', display: 'block' }}
           />
           <header>
             <h1>
@@ -172,33 +176,33 @@ class Guest extends React.Component {
                 </React.Fragment>
               )}
             </h1>
-            <p>{this.state.matchName || "VAIN.ZONE Draft"}</p>
+            <p>{this.state.matchName || 'VAIN.ZONE Draft'}</p>
           </header>
           <input
             id="submit_button"
             type="button"
             value={
               this.state.spectator ||
-              this.state[this.state.team ? "redState" : "blueState"] === 2
-                ? "Waiting for Draft"
-                : "Ready?"
+              this.state[this.state.team ? 'redState' : 'blueState'] === 2
+                ? 'Waiting for Draft'
+                : 'Ready?'
             }
             style={
               this.state.spectator ||
-              this.state[this.state.team ? "redState" : "blueState"] === 2
+              this.state[this.state.team ? 'redState' : 'blueState'] === 2
                 ? {
-                    boxShadow: "none",
-                    background: "white",
-                    color: "#aaa",
-                    //border: '2px solid #aaa',
-                    cursor: "default",
-                    fontSize: "initial"
+                    boxShadow: 'none',
+                    background: 'white',
+                    color: '#aaa',
+                    // border: '2px solid #aaa',
+                    cursor: 'default',
+                    fontSize: 'initial',
                   }
                 : {}
             }
             disabled={
               this.state.spectator ||
-              this.state[this.state.team ? "redState" : "blueState"] === 2
+              this.state[this.state.team ? 'redState' : 'blueState'] === 2
             }
             onClick={this.handleSubmit}
           />
@@ -214,18 +218,18 @@ class Guest extends React.Component {
                 <td>
                   <span
                     style={{
-                      backgroundColor: ["red", "orange", "green"][
+                      backgroundColor: ['red', 'orange', 'green'][
                         this.state.blueState
                       ],
                       boxShadow: `0 0 1px 1px ${
-                        ["red", "orange", "green"][this.state.blueState]
-                      }`
+                        ['red', 'orange', 'green'][this.state.blueState]
+                      }`,
                     }}
                     className="indicator"
                   />
                   <div className="indicatorText">
                     {
-                      ["Not Connected", "In Lobby", "Ready"][
+                      ['Not Connected', 'In Lobby', 'Ready'][
                         this.state.blueState
                       ]
                     }
@@ -237,18 +241,18 @@ class Guest extends React.Component {
                 <td>
                   <span
                     style={{
-                      backgroundColor: ["red", "orange", "green"][
+                      backgroundColor: ['red', 'orange', 'green'][
                         this.state.redState
                       ],
                       boxShadow: `0 0 1px 1px ${
-                        ["red", "orange", "green"][this.state.redState]
-                      }`
+                        ['red', 'orange', 'green'][this.state.redState]
+                      }`,
                     }}
                     className="indicator"
                   />
                   <div className="indicatorText">
                     {
-                      ["Not Connected", "In Lobby", "Ready"][
+                      ['Not Connected', 'In Lobby', 'Ready'][
                         this.state.redState
                       ]
                     }
@@ -260,18 +264,18 @@ class Guest extends React.Component {
                 <td>
                   <span
                     style={{
-                      backgroundColor: ["red", "orange", "green"][
+                      backgroundColor: ['red', 'orange', 'green'][
                         this.state.hostState
                       ],
                       boxShadow: `0 0 1px 1px ${
-                        ["red", "orange", "green"][this.state.hostState]
-                      }`
+                        ['red', 'orange', 'green'][this.state.hostState]
+                      }`,
                     }}
                     className="indicator"
                   />
                   <div className="indicatorText">
                     {
-                      ["Disconnected", "Waiting", "Started Draft"][
+                      ['Disconnected', 'Waiting', 'Started Draft'][
                         this.state.hostState
                       ]
                     }
@@ -300,11 +304,11 @@ class Guest extends React.Component {
                 <td>
                   {
                     this.state.draftSequence.filter(
-                      e => (e.action === "pick") & (e.team === 0)
+                      (e) => e.action === 'pick' && e.team === 0,
                     ).length
                   }v{
                     this.state.draftSequence.filter(
-                      e => (e.action === "pick") & (e.team === 1)
+                      (e) => e.action === 'pick' && e.team === 1,
                     ).length
                   }
                 </td>
@@ -313,9 +317,9 @@ class Guest extends React.Component {
                 <td>Bans</td>
                 <td>
                   {
-                    this.state.draftSequence.filter(e => e.action === "ban")
+                    this.state.draftSequence.filter((e) => e.action === 'ban')
                       .length
-                  }{" "}
+                  }{' '}
                 </td>
               </tr>
               <tr>

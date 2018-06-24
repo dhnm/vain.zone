@@ -32,9 +32,9 @@ const playerSchema = new Schema({
 });
 
 type czSk = {
-  retrieval: Date;
-  of_month: number;
-  first_of_month: number;
+  retrieval?: Date;
+  of_month?: number;
+  first_of_month?: number;
 };
 
 export type IPlayer = Document & {
