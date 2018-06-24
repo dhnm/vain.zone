@@ -1,12 +1,12 @@
-import { Router, Response } from 'express';
+import { Router, Response } from "express";
 const router: Router = Router();
 
-import { Player, IPlayer } from './../../models/Player';
-import { axiosAPI } from './../functions/getData';
+import { Player, IPlayer } from "./../../models/Player";
+import { axiosAPI } from "./../functions/getData";
 
 export default router;
 
-router.get('/', (_, res: Response): void => {
+router.get("/", (_, res: Response): void => {
   Player.find({ czSk: { $exists: true } })
     .exec()
     .then((players: IPlayer[]) => {
@@ -14,11 +14,11 @@ router.get('/', (_, res: Response): void => {
         const toBeUpdated: IPlayer[] = [];
         const now = new Date();
 
-        players.forEach((p) => {
+        players.forEach(p => {
           const retrievalDate = new Date(p.czSk.retrieval);
           if (
             !p.czSk.retrieval ||
-            retrievalDate.setDate(retrievalDate.getDate() + 3) <=
+            retrievalDate.setDate(retrievalDate.getDate() + 1) <=
               now.getTime() ||
             p.czSk.of_month != now.getMonth()
           ) {
@@ -35,25 +35,23 @@ router.get('/', (_, res: Response): void => {
         for (let i = 0; i < toBeUpdated.length / 6; i++) {
           axiosArray.push(
             axiosAPI({
-              shardId: 'eu',
-              endPoint: 'players',
+              shardId: "eu",
+              endPoint: "players",
               params: {
-                'filter[playerIds]': toBeUpdated
+                "filter[playerIds]": toBeUpdated
                   .slice(i * 6, i * 6 + 5)
-                  .map((e) => e.playerID)
-                  .join(','),
-              },
-            }),
+                  .map(e => e.playerID)
+                  .join(",")
+              }
+            })
           );
         }
 
         Promise.all(axiosArray)
-          .then((axiosData) => {
-            const freshPlayerData = [].concat(...axiosData.map((e) => e.data));
-            freshPlayerData.forEach((e) => {
-              const relevantPlayer = toBeUpdated.find(
-                (p) => p.playerID === e.id,
-              );
+          .then(axiosData => {
+            const freshPlayerData = [].concat(...axiosData.map(e => e.data));
+            freshPlayerData.forEach(e => {
+              const relevantPlayer = toBeUpdated.find(p => p.playerID === e.id);
               relevantPlayer.rank_5v5 =
                 e.attributes.stats.rankPoints.ranked_5v5;
               relevantPlayer.czSk.retrieval = now;
@@ -67,29 +65,29 @@ router.get('/', (_, res: Response): void => {
 
             res.json({
               players: players
-                .map((p) => ({
+                .map(p => ({
                   name: p.name,
                   rankPoints: p.rank_5v5,
-                  first_of_month: p.czSk.first_of_month,
+                  first_of_month: p.czSk.first_of_month
                 }))
-                .sort((a, b) => b.rankPoints - a.rankPoints),
+                .sort((a, b) => b.rankPoints - a.rankPoints)
             });
           })
-          .catch((err) => {
+          .catch(err => {
             console.error(err);
             res.json({
               players: players
-                .map((p) => ({
+                .map(p => ({
                   name: p.name,
                   rankPoints: p.rank_5v5,
-                  first_of_month: p.czSk.first_of_month,
+                  first_of_month: p.czSk.first_of_month
                 }))
-                .sort((a, b) => b.rankPoints - a.rankPoints),
+                .sort((a, b) => b.rankPoints - a.rankPoints)
             });
           });
       }
     })
-    .catch((err) => {
+    .catch(err => {
       console.error(err);
       res.json({});
     });
