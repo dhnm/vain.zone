@@ -127,7 +127,7 @@ class Draft extends React.Component {
 
     setTimeout(() => {
       this.setState({ animated: true });
-    }, 1000);
+    }, 1250);
 
     this.setState({ intervalID });
   }
@@ -389,10 +389,12 @@ class Draft extends React.Component {
                 ? `${this.props.redName} in`
                 : `${this.props.blueName} in`
               : "Spectating"}{" "}
-            {this.props.matchName}
+            {this.props.matchName || "VAIN.ZONE Draft"}
           </title>
         </Head>
-        <h1 className="phone_header">{this.props.matchName}</h1>
+        <h1 className="phone_header">
+          {this.props.matchName || "VAIN.ZONE Draft"}
+        </h1>
         <div id="left">
           <div className="draft_items">
             <ul>
@@ -403,7 +405,7 @@ class Draft extends React.Component {
           </div>
         </div>
         <div id="central">
-          <h1>{this.props.matchName}</h1>
+          <h1>{this.props.matchName || "VAIN.ZONE Draft"}</h1>
           <div id="timers">
             <div className="timer">
               <svg

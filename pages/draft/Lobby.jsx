@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 class App extends React.Component {
   static async getInitialProps({ query }) {
@@ -18,7 +18,7 @@ class App extends React.Component {
                 max-width: 100vw;
                 min-width: 320px;
                 overflow: hidden;
-                margin: 6% auto;
+                margin: 5% auto;
                 padding: 30px;
                 box-sizing: border-box;
                 border-radius: 40px;
