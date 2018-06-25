@@ -127,6 +127,10 @@ nextApp
         'https://vain.zone',
         'http://www.vain.zone',
         'https://www.vain.zone',
+        'http://www.vainglory.eu',
+        'http://vainglory.eu',
+        'https://www.vainglory.eu',
+        'https://vainglory.eu',
       ];
       var origin = req.headers.origin;
 
