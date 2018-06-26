@@ -11,7 +11,7 @@ export default class MyDocument extends Document {
             content="initial-scale=1.0, width=device-width, shrink-to-fit=no"
           />
           <script src="https://cdn.polyfill.io/v2/polyfill.min.js" />
-          <script src="http://jsconsole.com/js/remote.js?1ee00309-abb9-4d6d-8107-f02667df3b85" />
+          <script src="https://jsconsole.com/js/remote.js?df50e402-65bc-4b37-ada7-aea610c438e3" />
         </Head>
         <body style={{ margin: 0 }}>
           <Main />
