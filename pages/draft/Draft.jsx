@@ -239,7 +239,6 @@ class Draft extends React.Component {
                   ? ['right', 'left'][e.team]
                   : ['left', 'right'][e.team]
               };
-              overflow: auto;
             }
             li:last-child {
               margin-bottom: 0;
