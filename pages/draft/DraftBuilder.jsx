@@ -184,7 +184,7 @@ export default class DraftBuilder extends React.Component {
             <input
               type="text"
               maxLength="28"
-              placeholder="Draft Name"
+              placeholder="Profile Name"
               onChange={this.handleChange}
               value={this.state.draftName}
               required
@@ -666,7 +666,7 @@ export default class DraftBuilder extends React.Component {
             id="submit_button"
             onClick={() => {
               if (!this.state.draftName) {
-                toast.error("Draft name field is empty.", {
+                toast.error("Profile Name field is empty.", {
                   position: toast.POSITION.TOP_CENTER,
                   autoClose: 2750,
                   closeButton: true,
@@ -685,6 +685,16 @@ export default class DraftBuilder extends React.Component {
               ) {
                 toast.error(
                   "Each side of the draft must have at least 2 steps.",
+                  {
+                    position: toast.POSITION.TOP_CENTER,
+                    autoClose: 2750,
+                    closeButton: true,
+                    hideProgressBar: true
+                  }
+                );
+              } else if (this.state.sequence.length > 20) {
+                toast.error(
+                  "We don't support more than 20 items in the draft sequence.",
                   {
                     position: toast.POSITION.TOP_CENTER,
                     autoClose: 2750,

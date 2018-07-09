@@ -464,12 +464,15 @@ class Host extends React.Component {
       try {
         const parsed_lastSelected = JSON.parse(LSLastSelectedProfile);
         this.setState(prevState => {
-          if (
-            parsed_lastSelected <
-            [...draftProfiles, ...prevState.userProfiles].length
-          ) {
+          const profiles = [...draftProfiles, ...prevState.userProfiles];
+          if (parsed_lastSelected < profiles.length) {
             return {
-              selectedProfileIndex: parsed_lastSelected
+              selectedProfileIndex: parsed_lastSelected,
+              banTime: profiles[parsed_lastSelected].banTime,
+              pickTime: profiles[parsed_lastSelected].pickTime,
+              bonusTime: profiles[parsed_lastSelected].bonusTime,
+              draftSequence: profiles[parsed_lastSelected].sequence,
+              heroes: profiles[parsed_lastSelected].heroes
             };
           }
           return { selectedProfileIndex: 0 };
