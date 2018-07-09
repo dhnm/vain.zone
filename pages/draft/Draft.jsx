@@ -704,7 +704,6 @@ class Draft extends React.Component {
             background-position: center;
             background-repeat: no-repeat;*/
               background-color: hsla(195, 46%, 10%, 1);
-              background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.4' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
               position: relative;
             }
             img,
@@ -750,8 +749,9 @@ class Draft extends React.Component {
               margin: 4% auto;
               padding: calc(10px + 0.75%) calc(5px + 2px + 2.25%);
               box-sizing: border-box;
-              border-radius: 40px;
-              box-shadow: 0px 1px 10px 1px hsla(0, 0%, 90%, 0.4);
+              border-radius: 35px;
+              box-shadow: 0px 5px 14px 0px hsla(0, 0%, 90%, 0.1);
+              border: 1px solid HSLA(116, 0%, 59%, 0.24);
               background-color: hsla(201, 33%, 15%, 1);
             }
             #timers {
@@ -824,6 +824,7 @@ class Draft extends React.Component {
 
               width: 100%;
               margin-bottom: 15px;
+              margin-top: 5px;
               padding: 10px 25px;
               border-bottom: 1px solid hsla(0, 0%, 75%, 1);
               box-sizing: border-box;

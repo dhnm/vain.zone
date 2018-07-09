@@ -351,6 +351,7 @@ App.getInitialProps = async function getInitialProps(context) {
             match: data.matches[0],
           },
         });
+        console.log('firstmatch', data.matches[0]);
         const processedTelemetry = await requestProcessedTelemetry.data;
         return {
           data,

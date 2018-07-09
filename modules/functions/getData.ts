@@ -6,14 +6,16 @@ import { Player, IPlayer } from './../../models/Player';
 import { Match, IMatch } from './../../models/Match';
 
 export default (IGN: string): Promise<PlayerWithMatches> => {
-  return new Promise((resolve, reject): void => {
-    getPlayer(IGN)
-      .then((playerData: IPlayer) => formatDataPopulateMatches(playerData))
-      .then((playerAndMatchesData) => resolve(playerAndMatchesData))
-      .catch((error) => {
-        reject({ errorID: '10', error: error });
-      });
-  });
+  return new Promise(
+    (resolve, reject): void => {
+      getPlayer(IGN)
+        .then((playerData: IPlayer) => formatDataPopulateMatches(playerData))
+        .then((playerAndMatchesData) => resolve(playerAndMatchesData))
+        .catch((error) => {
+          reject({ errorID: '10', error: error });
+        });
+    },
+  );
 };
 
 const getPlayer = (IGN: string): Promise<IPlayer> => {
@@ -340,6 +342,7 @@ const uploadMatches = (matches: any) => {
   const retrievedMatchesIds: string[] = matches.data.map(
     (match: any) => match.id,
   );
+
   const newMatches: IMatch[] = [];
 
   return Match.find({ matchID: { $in: retrievedMatchesIds } })
@@ -369,7 +372,15 @@ const uploadMatches = (matches: any) => {
           //     .catch(err => {
           //         throw new Error("id: 8 " + err);
           //     });
-
+          const telemetryAssetId = match.relationships.assets.data[0]
+            ? match.relationships.assets.data[0].id
+            : undefined;
+          const findTelemetry = matches.included.find(
+            (e: any) => e.id === telemetryAssetId,
+          );
+          const telemetryURL = findTelemetry.attributes
+            ? findTelemetry.attributes.URL
+            : undefined;
           var customMatchDataModel = {
             matchID: match.id,
             createdAt: new Date(match.attributes.createdAt),
@@ -380,9 +391,7 @@ const uploadMatches = (matches: any) => {
             endGameReason: match.attributes.stats.endGameReason,
             spectators: new Array(),
             rosters: new Array(),
-            telemetryURL: matches.included.find(
-              (e: any) => e.id === match.relationships.assets.data[0].id,
-            ).attributes.URL,
+            telemetryURL,
           };
 
           for (
@@ -490,7 +499,9 @@ const uploadMatches = (matches: any) => {
             customMatchDataModel.rosters.push(customRosterDataModel);
           }
 
-          newMatches.push(new Match(customMatchDataModel));
+          if (telemetryAssetId !== undefined) {
+            newMatches.push(new Match(customMatchDataModel));
+          }
         }
       });
 
@@ -508,6 +519,7 @@ const uploadMatches = (matches: any) => {
         });
     })
     .catch((err) => {
+      console.log(err);
       throw new Error('id: 15 ' + err);
     });
 };

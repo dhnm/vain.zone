@@ -7,65 +7,77 @@ import { Match, IMatch } from './../../models/Match';
 
 export default router;
 
-router.get('/', (req: Request, res: Response): void => {
-  const filters = JSON.parse(req.query.filters);
+router.get(
+  '/',
+  (req: Request, res: Response): void => {
+    const filters = JSON.parse(req.query.filters);
 
-  const createdAt = filters.createdAt ? new Date(filters.createdAt) : '';
-  if (createdAt) {
-    createdAt.setMilliseconds(createdAt.getMilliseconds() - 1);
-  }
+    const createdAt = filters.createdAt ? new Date(filters.createdAt) : '';
+    if (createdAt) {
+      createdAt.setMilliseconds(createdAt.getMilliseconds() - 1);
+    }
 
-  axios({
-    method: 'get',
-    url: `https://api.dc01.gamelockerapp.com/shards/${
-      req.query.shardId
-    }/matches`,
-    params: {
-      'filter[createdAt-end]': createdAt,
-      'page[limit]': 12,
-      sort: '-createdAt',
-      'filter[playerNames]': req.query.player,
-      'filter[gameMode]': filters.gameMode,
-    },
-    headers: {
-      'Content-Encoding': 'gzip',
-      'Content-Type': 'application/json',
-      'User-Agent': 'js/vainglory',
-      Authorization:
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxYWIwYmFhMC0xZTYxLTAxMzYtNGMyOC0wYTU4NjQ2MDBlZGYiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTIzMzA1MTE1LCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJ2YWluLXpvbmUiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.WRRbcDammhPrqWhDPenutkXJdCbGv3CpxvwscPyQK9Y',
-      'X-TITLE-ID': 'semc-vainglory',
-      Accept: 'application/vnd.api+json',
-    },
-    responseType: 'json',
-  })
-    .then((response: AxiosResponse<any>) => {
-      return response.data;
+    axios({
+      method: 'get',
+      url: `https://api.dc01.gamelockerapp.com/shards/${
+        req.query.shardId
+      }/matches`,
+      params: {
+        'filter[createdAt-end]': createdAt,
+        'page[limit]': 12,
+        sort: '-createdAt',
+        'filter[playerNames]': req.query.player,
+        'filter[gameMode]': filters.gameMode,
+      },
+      headers: {
+        'Content-Encoding': 'gzip',
+        'Content-Type': 'application/json',
+        'User-Agent': 'js/vainglory',
+        Authorization:
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxYWIwYmFhMC0xZTYxLTAxMzYtNGMyOC0wYTU4NjQ2MDBlZGYiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTIzMzA1MTE1LCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJ2YWluLXpvbmUiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.WRRbcDammhPrqWhDPenutkXJdCbGv3CpxvwscPyQK9Y',
+        'X-TITLE-ID': 'semc-vainglory',
+        Accept: 'application/vnd.api+json',
+      },
+      responseType: 'json',
     })
-    .then((matches: any) => {
-      if (matches) {
-        if (matches.data.length == 0) {
-          throw new Error('No matches found.');
+      .then((response: AxiosResponse<any>) => {
+        return response.data;
+      })
+      .then((matches: any) => {
+        if (matches) {
+          if (matches.data.length == 0) {
+            throw new Error('No matches found.');
+          }
+          return formatMatches(matches);
+        } else {
+          throw new Error(
+            'Error retrieving matches: ' + JSON.stringify(matches.errors),
+          );
         }
-        return formatMatches(matches);
-      } else {
-        throw new Error(
-          'Error retrieving matches: ' + JSON.stringify(matches.errors),
-        );
-      }
-    })
-    .then((formattedMatches: Array<IMatch>) => {
-      res.status(200).json(formattedMatches);
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(404).end();
-    });
-});
+      })
+      .then((formattedMatches: Array<IMatch>) => {
+        res.status(200).json(formattedMatches);
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(404).end();
+      });
+  },
+);
 
 function formatMatches(matches) {
   const formattedMatches: Array<IMatch> = [];
-
   matches.data.forEach((match: any) => {
+    const telemetryAssetId = match.relationships.assets.data[0]
+      ? match.relationships.assets.data[0].id
+      : undefined;
+    const findTelemetry = matches.included.find(
+      (e: any) => e.id === telemetryAssetId,
+    );
+    const telemetryURL = findTelemetry
+      ? findTelemetry.attributes.URL
+      : undefined;
+
     const customMatchDataModel = {
       matchID: match.id,
       createdAt: new Date(match.attributes.createdAt),
@@ -76,9 +88,7 @@ function formatMatches(matches) {
       endGameReason: match.attributes.stats.endGameReason,
       spectators: new Array(),
       rosters: new Array(),
-      telemetryURL: matches.included.find(
-        (e: any) => e.id === match.relationships.assets.data[0].id,
-      ).attributes.URL,
+      telemetryURL,
     };
 
     for (
@@ -169,7 +179,9 @@ function formatMatches(matches) {
       customMatchDataModel.rosters.push(customRosterDataModel);
     }
 
-    formattedMatches.push(new Match(customMatchDataModel));
+    if (telemetryAssetId !== undefined) {
+      formattedMatches.push(new Match(customMatchDataModel));
+    }
   });
 
   return formattedMatches;

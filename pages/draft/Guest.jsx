@@ -192,8 +192,8 @@ class Guest extends React.Component {
               this.state[this.state.team ? 'redState' : 'blueState'] === 2
                 ? {
                     boxShadow: 'none',
-                    background: 'white',
-                    color: '#aaa',
+                    background: 'transparent',
+                    color: '#ccc',
                     // border: '2px solid #aaa',
                     cursor: 'default',
                     fontSize: 'initial',

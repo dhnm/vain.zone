@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 class App extends React.Component {
   static async getInitialProps({ query }) {
@@ -8,8 +8,16 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <div id="wrapper">
+        <div id="wrapper" style={this.props.overrideStyle}>
           {this.props.children}
+          <style jsx global>
+            {`
+              body {
+                background-color: hsla(195, 46%, 10%, 1);
+                color: white;
+              }
+            `}
+          </style>
           <style jsx>
             {`
               #wrapper {
@@ -21,13 +29,14 @@ class App extends React.Component {
                 margin: 5% auto;
                 padding: 30px;
                 box-sizing: border-box;
-                border-radius: 40px;
-                box-shadow: 0 0 20px hsla(0, 0%, 90%, 1);
-                background-color: white;
+                border-radius: 35px;
+                box-shadow: 0px 5px 40px 0px hsla(0, 0%, 90%, 0.2);
+                background-color: hsla(201, 33%, 15%, 1);
                 transition: 0.5s linear;
               }
-              @media (max-width: 632px) {
+              @media (max-width: 500px) {
                 #wrapper {
+                  border-radius: 0;
                   margin: 0 auto;
                   box-shadow: none;
                   padding: 15px;
