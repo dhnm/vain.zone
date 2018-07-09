@@ -658,8 +658,10 @@ export default class DraftBuilder extends React.Component {
               </InteractiveElement>
             </div>
           </div>
-          Contact me if you need more customization options, including custom
-          heroes, colors, logos, etc! Add thisBoy#4399 on Discord.
+          <div style={{ textAlign: "justify" }}>
+            Contact me if you need more customization options, including custom
+            heroes, colors, logos, etc! Add thisBoy#4399 on Discord.
+          </div>
           <button
             id="submit_button"
             onClick={() => {

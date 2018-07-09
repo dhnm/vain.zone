@@ -478,7 +478,14 @@ class Host extends React.Component {
         );
       } catch (err) {
         console.error(err);
+        this.setState({
+          selectedProfileIndex: 0
+        });
       }
+    } else {
+      this.setState({
+        selectedProfileIndex: 0
+      });
     }
   }
   componentWillUnmount() {
