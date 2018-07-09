@@ -468,10 +468,9 @@ class Host extends React.Component {
             parsed_lastSelected <
             [...draftProfiles, ...prevState.userProfiles].length
           ) {
-            return;
-            {
-              selectedProfileIndex: parsed_lastSelected;
-            }
+            return {
+              selectedProfileIndex: parsed_lastSelected
+            };
           }
           return { selectedProfileIndex: 0 };
         });
