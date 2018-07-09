@@ -449,33 +449,32 @@ class Host extends React.Component {
     if (LSUserProfiles) {
       try {
         const parsed = JSON.parse(LSUserProfiles);
-        this.setState(
-          {
-            userProfiles: parsed
-          },
-          () => {
-            const LSLastSelectedProfile = window.localStorage.getItem(
-              "lastSelectedProfile"
-            );
-            if (LSLastSelectedProfile) {
-              try {
-                const parsed_lastSelected = JSON.parse(LSLastSelectedProfile);
-                this.setState({
-                  selectedProfileIndex: parsed_lastSelected
-                });
-              } catch (err) {
-                console.error(err);
-                this.setState({
-                  selectedProfileIndex: 0
-                });
-              }
-            } else {
-              this.setState({
-                selectedProfileIndex: 0
-              });
+        this.setState({
+          userProfiles: parsed
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    const LSLastSelectedProfile = window.localStorage.getItem(
+      "lastSelectedProfile"
+    );
+    if (LSLastSelectedProfile) {
+      try {
+        const parsed_lastSelected = JSON.parse(LSLastSelectedProfile);
+        this.setState(prevState => {
+          if (
+            parsed_lastSelected <
+            [...draftProfiles, ...prevState.userProfiles].length
+          ) {
+            return;
+            {
+              selectedProfileIndex: parsed_lastSelected;
             }
           }
-        );
+          return { selectedProfileIndex: 0 };
+        });
       } catch (err) {
         console.error(err);
         this.setState({
