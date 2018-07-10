@@ -4,8 +4,28 @@ const router: Router = Router();
 import { Player, IPlayer } from './../../models/Player';
 import { CzSk, ICzSk } from './../../models/CzSk';
 import { axiosAPI } from './../functions/getData';
+import skillTierCalculator from './../functions/skillTierCalculator';
 
 export default router;
+
+const output = (players) => ({
+  byRank: players
+    .map((p) => ({
+      name: p.name,
+      rankPoints: p.rank_5v5,
+      first_of_month: p.czSk.first_of_month,
+    }))
+    .sort((a, b) => b.rankPoints - a.rankPoints),
+  byGrowth: players
+    .map((p) => {
+      const skillTier = skillTierCalculator(p.rank_5v5).skillTier;
+      const growthPoints =
+        (p.rank_5v5 - p.czSk.first_of_month) * ((skillTier * 2) / 3) +
+        p.rank_5v5 / 10000;
+      return { name: p.name, growthPoints };
+    })
+    .sort((a, b) => b.growthPoints - a.growthPoints),
+});
 
 router.get(
   '/',
@@ -76,27 +96,11 @@ router.get(
                 relevantPlayer.save();
               });
 
-              res.json({
-                players: players
-                  .map((p) => ({
-                    name: p.name,
-                    rankPoints: p.rank_5v5,
-                    first_of_month: p.czSk.first_of_month,
-                  }))
-                  .sort((a, b) => b.rankPoints - a.rankPoints),
-              });
+              res.json(output(players));
             })
             .catch((err) => {
               console.error(err);
-              res.json({
-                players: players
-                  .map((p) => ({
-                    name: p.name,
-                    rankPoints: p.rank_5v5,
-                    first_of_month: p.czSk.first_of_month,
-                  }))
-                  .sort((a, b) => b.rankPoints - a.rankPoints),
-              });
+              res.json(output(players));
             });
         } else {
           throw new Error('No CZSK players found.');

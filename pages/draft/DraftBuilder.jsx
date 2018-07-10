@@ -10,17 +10,17 @@ import { ICONS } from "./../../modules/functions/constants";
 
 const InteractiveElement = ({ children, overrideStyle, action }) => (
   <div
-    id="outerIE"
+    className="outerIE"
     style={{ ...overrideStyle }}
     onClick={action}
     onKeyPress={action}
     role="button"
     tabIndex={0}
   >
-    <div id="innerIE">{children}</div>
+    <div className="innerIE">{children}</div>
     <style jsx>
       {`
-        #outerIE {
+        .outerIE {
           outline: none;
           display: inline-block;
           padding: 8px 12px;
@@ -35,16 +35,16 @@ const InteractiveElement = ({ children, overrideStyle, action }) => (
           color: black;
           transition: 140ms linear;
         }
-        #outerIE:hover {
+        .outerIE:hover {
           transform: scale(1.06);
         }
-        #innerIE {
+        .innerIE {
           width: 100%;
         }
-        #outerIE:hover {
+        .outerIE:hover {
           cursor: pointer;
         }
-        #outerIE:active {
+        .outerIE:active {
           opacity: 0.85;
         }
       `}
@@ -605,7 +605,8 @@ export default class DraftBuilder extends React.Component {
                   minWidth: "150px",
                   boxSizing: "border-box",
                   height: "38px",
-                  marginBottom: "3px"
+                  marginBottom: "3px",
+                  padding: "10px"
                 }}
               />
               <input
@@ -619,7 +620,8 @@ export default class DraftBuilder extends React.Component {
                   minWidth: "150px",
                   boxSizing: "border-box",
                   height: "38px",
-                  marginBottom: "3px"
+                  marginBottom: "3px",
+                  padding: "10px"
                 }}
               />
               <InteractiveElement

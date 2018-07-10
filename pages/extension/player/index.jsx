@@ -319,7 +319,7 @@ App.getInitialProps = async function getInitialProps(context) {
   try {
     const { query } = context;
 
-    let urlPath = 'https://test.vainglory.eu';
+    let urlPath = 'https://vain.zone';
     if (process.env.NODE_ENV !== 'production') {
       urlPath = 'http://localhost:3000';
     }

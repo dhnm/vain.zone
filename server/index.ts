@@ -92,7 +92,7 @@ draftIO.on('connection', (socket) => {
 setInterval(() => {
   axios({
     method: 'get',
-    url: 'https://test.vainglory.eu/',
+    url: 'https://vain.zone/',
   })
     .then((response) => {
       console.log('here1', response);
