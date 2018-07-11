@@ -1,9 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Dimmer, Loader, Image, Grid, Progress, Card } from "semantic-ui-react";
-import Link from "next/link";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Dimmer, Loader, Image, Grid, Progress, Card } from 'semantic-ui-react';
+import Link from 'next/link';
 
-import skillTierCalculator from "../../../modules/functions/skillTierCalculator";
+import skillTierCalculator from '../../../modules/functions/skillTierCalculator';
 
 const propTypes = {
   matchDuration: PropTypes.number.isRequired,
@@ -15,7 +15,7 @@ const propTypes = {
   damage: PropTypes.number.isRequired,
   playerInTheMatch: PropTypes.object.isRequired,
   gameMode: PropTypes.string.isRequired,
-  rankPoints: PropTypes.number.isRequired
+  rankPoints: PropTypes.number.isRequired,
 };
 
 export default function ParticipantCard({
@@ -28,13 +28,13 @@ export default function ParticipantCard({
   damage,
   playerInTheMatch,
   gameMode,
-  rankPoints
+  rankPoints,
 }) {
   const items = participant.items.slice();
   items.splice(0, 2);
   for (let i = 0; i < 6; i += 1) {
     if (!items[i]) {
-      items.push("empty");
+      items.push('empty');
     }
   }
   let kdaPerTenMinutes =
@@ -46,20 +46,20 @@ export default function ParticipantCard({
       (participant.kills + participant.assists) / (matchDuration / 600);
   }
   let cardBg = `linear-gradient(${
-    { left: "135deg", right: "225deg" }[side]
+    { left: '135deg', right: '225deg' }[side]
   }, hsla(0, 0%, 83%, 0.2), hsla(0, 0%, 83%, 0.05), hsla(0, 0%, 83%, 0.1))`;
   if (participant.player.id === playerInTheMatch.player.id) {
     cardBg = `linear-gradient(${
-      { left: "135deg", right: "225deg" }[side]
+      { left: '135deg', right: '225deg' }[side]
     }, hsla(0, 0%, 83%, 0.2), hsla(0, 0%, 83%, 0.26), hsla(0, 0%, 83%, 0.2))`;
   }
   const skillTierInfo = skillTierCalculator(rankPoints);
 
-  let afkFilter = "";
-  let afkTextDecoration = "";
+  let afkFilter = '';
+  let afkTextDecoration = '';
   if (participant.wentAfk) {
-    afkFilter = "grayscale(100%)";
-    afkTextDecoration = "line-through";
+    afkFilter = 'grayscale(100%)';
+    afkTextDecoration = 'line-through';
   }
 
   return (
@@ -74,44 +74,44 @@ export default function ParticipantCard({
         as="a"
         // fluid
         style={{
-          color: "initial",
-          margin: "3px 1px 3px 0",
-          background: cardBg
+          color: 'initial',
+          margin: '3px 1px 3px 0',
+          background: cardBg,
         }}
       >
         <Dimmer active={appLoading}>
           <Loader />
         </Dimmer>
-        <Card.Content style={{ padding: "4px", color: "hsla(0, 0%, 100%, 1)" }}>
+        <Card.Content style={{ padding: '4px', color: 'hsla(0, 0%, 100%, 1)' }}>
           <Image
             size="mini"
             src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
-            style={{ borderRadius: "25%", margin: "0 2px", filter: afkFilter }}
+            style={{ borderRadius: '25%', margin: '0 2px', filter: afkFilter }}
             floated={side}
           />
-          <Image
+          {/* <Image
             size="mini"
             src={`/static/img/rank/c/${skillTierInfo.number}${
               skillTierInfo.color
             }.png`}
             style={{ margin: "0 -6px", padding: "-5px" }}
             floated={{ left: "right", right: "left" }[side]}
-          />
+          /> */}
           <strong
             style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              fontSize: "1.05rem",
-              display: "block",
-              whiteSpace: "nowrap",
-              textDecoration: afkTextDecoration
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              fontSize: '1.05rem',
+              display: 'block',
+              whiteSpace: 'nowrap',
+              textDecoration: afkTextDecoration,
             }}
           >
             {participant.player.name}
           </strong>
-          <div style={{ fontSize: "0.88rem" }}>
-            {participant.kills}/{participant.deaths}/{participant.assists}{" "}
-            <em style={{ fontSize: "0.75rem" }}>
+          <div style={{ fontSize: '0.88rem' }}>
+            {participant.kills}/{participant.deaths}/{participant.assists}{' '}
+            <em style={{ fontSize: '0.75rem' }}>
               {`(${kdaPerTenMinutes.toFixed(1)})`}
             </em>
             {/* <span
@@ -122,24 +122,24 @@ export default function ParticipantCard({
               {`(${kdaPerTenMinutes.toFixed(1)})`}
             </span> */}
           </div>
-          <Grid style={{ margin: 0, marginBottom: "2px" }} columns={6}>
+          <Grid style={{ margin: 0, marginBottom: '2px' }} columns={6}>
             <Grid.Row style={{ padding: 0 }}>
               {items.map((item, index) => (
                 <Grid.Column
                   key={index}
                   style={{
                     padding: 0,
-                    textAlign: "center"
+                    textAlign: 'center',
                   }}
                 >
                   <Image
                     fluid
                     src={`/static/img/items/c/${item
-                      .replace(/ /g, "-")
+                      .replace(/ /g, '-')
                       .toLowerCase()}.png`}
                     style={{
-                      maxWidth: "3.5rem",
-                      margin: "0"
+                      maxWidth: '3.5rem',
+                      margin: '0',
                     }}
                   />
                 </Grid.Column>
@@ -148,8 +148,8 @@ export default function ParticipantCard({
           </Grid>
           <div
             style={{
-              marginTop: "1px",
-              marginBottom: "-4px"
+              marginTop: '1px',
+              marginBottom: '-4px',
             }}
           >
             <Progress
@@ -159,7 +159,7 @@ export default function ParticipantCard({
               color="yellow"
             />
             <div className="progressLabelWrapper">
-              <span className="progressLabel">Gold/min</span>{" "}
+              <span className="progressLabel">Gold/min</span>{' '}
               <span className="progressLabelValue">
                 {(participant.gold / (matchDuration / 60)).toFixed(0)}
               </span>
@@ -171,7 +171,7 @@ export default function ParticipantCard({
               color="teal"
             />
             <div className="progressLabelWrapper">
-              <span className="progressLabel">CS/min</span>{" "}
+              <span className="progressLabel">CS/min</span>{' '}
               <span className="progressLabelValue">
                 {(participant.farm / (matchDuration / 60)).toFixed(2)}
               </span>
@@ -183,7 +183,7 @@ export default function ParticipantCard({
               color="orange"
             />
             <div className="progressLabelWrapper">
-              <span className="progressLabel">DPS</span>{" "}
+              <span className="progressLabel">DPS</span>{' '}
               <span className="progressLabelValue">
                 {(damage / (matchDuration / 60) / 60).toFixed(2)}
               </span>

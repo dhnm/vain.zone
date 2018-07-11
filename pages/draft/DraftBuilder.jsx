@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import Lobby from "./Lobby";
-import ProfileItem from "./ProfileItem";
+import Lobby from './Lobby';
+import ProfileItem from './ProfileItem';
 
-import VZIcon from "./../../components/Icon";
-import { ICONS } from "./../../modules/functions/constants";
+import VZIcon from './../../components/Icon';
+import { ICONS } from './../../modules/functions/constants';
 
 const InteractiveElement = ({ children, overrideStyle, action }) => (
   <div
@@ -57,10 +57,10 @@ const Radio = ({ children, value, link, action, overrideStyle }) => (
     overrideStyle={
       link === value
         ? {
-            background: "HSLA(280, 100%, 64%, 1.00)",
-            fontWeight: "bold",
-            color: "white",
-            ...overrideStyle
+            background: 'HSLA(280, 100%, 64%, 1.00)',
+            fontWeight: 'bold',
+            color: 'white',
+            ...overrideStyle,
           }
         : { ...overrideStyle }
     }
@@ -82,43 +82,43 @@ export default class DraftBuilder extends React.Component {
       pickTime: 30,
       bonusTime: 60,
       sequence: [
-        { team: 0, action: "ban" },
-        { team: 1, action: "ban" },
-        { team: 0, action: "pick" },
-        { team: 1, action: "pick" },
-        { team: 1, action: "pick" },
-        { team: 0, action: "pick" },
-        { team: 1, action: "ban" },
-        { team: 0, action: "ban" },
-        { team: 1, action: "pick" },
-        { team: 0, action: "pick" },
-        { team: 0, action: "pick" },
-        { team: 1, action: "pick" },
-        { team: 0, action: "ban" },
-        { team: 1, action: "ban" },
-        { team: 0, action: "pick" },
-        { team: 1, action: "pick" }
+        { team: 0, action: 'ban' },
+        { team: 1, action: 'ban' },
+        { team: 0, action: 'pick' },
+        { team: 1, action: 'pick' },
+        { team: 1, action: 'pick' },
+        { team: 0, action: 'pick' },
+        { team: 1, action: 'ban' },
+        { team: 0, action: 'ban' },
+        { team: 1, action: 'pick' },
+        { team: 0, action: 'pick' },
+        { team: 0, action: 'pick' },
+        { team: 1, action: 'pick' },
+        { team: 0, action: 'ban' },
+        { team: 1, action: 'ban' },
+        { team: 0, action: 'pick' },
+        { team: 1, action: 'pick' },
       ],
       heroes: props.defaultHeroes,
 
-      draftName: "",
+      draftName: '',
       newHeroName: undefined,
       newHeroImageURL: undefined,
-      selectedGame: "Vainglory"
+      selectedGame: 'Vainglory',
     };
   }
-  handleChange = event => {
+  handleChange = (event) => {
     this.setState({ draftName: event.target.value });
   };
-  handleHeroName = event => {
+  handleHeroName = (event) => {
     this.setState({ newHeroName: event.target.value });
   };
-  handleImageURL = event => {
+  handleImageURL = (event) => {
     this.setState({ newHeroImageURL: event.target.value });
   };
   render() {
     return (
-      <Lobby overrideStyle={{ boxShadow: "none", background: "transparent" }}>
+      <Lobby overrideStyle={{ boxShadow: 'none', background: 'transparent' }}>
         <h3>Select a preset profile...</h3>
         <div className="profileList">
           {this.props.defaultProfiles.map((e, i) => (
@@ -143,29 +143,29 @@ export default class DraftBuilder extends React.Component {
               />
               <div
                 style={{
-                  width: "100%",
-                  textAlign: "right",
-                  position: "relative"
+                  width: '100%',
+                  textAlign: 'right',
+                  position: 'relative',
                 }}
               >
                 <button
                   style={{
-                    outline: "none",
-                    appearance: "none",
+                    outline: 'none',
+                    appearance: 'none',
                     border: 0,
-                    display: "inline-block",
-                    cursor: "pointer",
-                    width: "48px",
-                    height: "48px",
-                    borderRadius: "50%",
-                    background: "white",
-                    position: "absolute",
-                    top: "-80px",
-                    right: "10px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    paddingRight: "4px"
+                    display: 'inline-block',
+                    cursor: 'pointer',
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '50%',
+                    background: 'white',
+                    position: 'absolute',
+                    top: '-80px',
+                    right: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingRight: '4px',
                   }}
                   onClick={() => {
                     this.props.removeUserProfile(i);
@@ -249,20 +249,20 @@ export default class DraftBuilder extends React.Component {
             <div className="label">Draft Sequence</div>
             <table
               style={{
-                textAlign: "center",
-                textTransform: "uppercase",
-                fontWeight: "bold",
-                width: "100%",
-                borderSpacing: 0
+                textAlign: 'center',
+                textTransform: 'uppercase',
+                fontWeight: 'bold',
+                width: '100%',
+                borderSpacing: 0,
               }}
-              onDragOver={event => {
+              onDragOver={(event) => {
                 event.preventDefault(); // allows drop
               }}
-              onDrop={event => {
+              onDrop={(event) => {
                 event.preventDefault();
-                const draggingIndex = event.dataTransfer.getData("dragging");
-                this.setState(prevState => {
-                  if (typeof prevState.draggedOnIndex === "number") {
+                const draggingIndex = event.dataTransfer.getData('dragging');
+                this.setState((prevState) => {
+                  if (typeof prevState.draggedOnIndex === 'number') {
                     const sliced = prevState.sequence.slice();
                     const draggingItem = sliced[draggingIndex];
                     sliced.splice(draggingIndex, 1);
@@ -270,13 +270,13 @@ export default class DraftBuilder extends React.Component {
                       sliced.splice(
                         prevState.draggedOnIndex - 1,
                         0,
-                        draggingItem
+                        draggingItem,
                       );
                     } else {
                       sliced.splice(prevState.draggedOnIndex, 0, draggingItem);
                     }
                     return {
-                      sequence: sliced
+                      sequence: sliced,
                     };
                   } else {
                     return null;
@@ -287,60 +287,60 @@ export default class DraftBuilder extends React.Component {
               <tbody>
                 {this.state.sequence.map((e, i) => (
                   <tr>
-                    <td style={{ textAlign: "left", width: "30px" }}>
+                    <td style={{ textAlign: 'left', width: '30px' }}>
                       {i + 1}
                     </td>
                     <td style={{ padding: 0 }}>
                       <div
-                        onDragOver={event => {
+                        onDragOver={(event) => {
                           event.preventDefault(); // allows drop
                         }}
                         onDragEnter={() => {
                           this.setState({ draggedOnIndex: i });
                         }}
                         style={{
-                          width: "85%",
-                          height: "8px",
-                          margin: "0 10%",
+                          width: '85%',
+                          height: '8px',
+                          margin: '0 10%',
                           backgroundColor:
                             this.state.draggedOnIndex === i
-                              ? "orange"
-                              : "transparent"
+                              ? 'orange'
+                              : 'transparent',
                         }}
                       />
                       <div
                         className="draggable"
                         style={{
                           backgroundColor: e.team
-                            ? "HSLA(360, 98%, 50%, 1.00)"
-                            : "HSLA(206, 100%, 48%, 1.00)",
-                          padding: "5px 0",
-                          margin: "0 10%",
-                          width: "50%",
-                          float: e.team ? "right" : "left"
+                            ? 'HSLA(360, 98%, 50%, 1.00)'
+                            : 'HSLA(206, 100%, 48%, 1.00)',
+                          padding: '5px 0',
+                          margin: '0 10%',
+                          width: '50%',
+                          float: e.team ? 'right' : 'left',
                         }}
                         draggable
-                        onDragStart={event =>
-                          event.dataTransfer.setData("dragging", i)
+                        onDragStart={(event) =>
+                          event.dataTransfer.setData('dragging', i)
                         }
                         onDragEnd={() => {
                           this.setState({
-                            draggedOnIndex: undefined
+                            draggedOnIndex: undefined,
                           });
                         }}
                       >
                         <VZIcon
-                          icon={e.action === "pick" ? ICONS.pick : ICONS.ban}
+                          icon={e.action === 'pick' ? ICONS.pick : ICONS.ban}
                           color="white"
-                        />{" "}
+                        />{' '}
                         {e.action}
                       </div>
                     </td>
-                    <td style={{ textAlign: "right", width: "30px" }}>
+                    <td style={{ textAlign: 'right', width: '30px' }}>
                       <button
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => {
-                          this.setState(prevState => {
+                          this.setState((prevState) => {
                             const sliced = prevState.sequence.slice();
                             sliced.splice(i, 1);
                             return { sequence: sliced };
@@ -356,24 +356,24 @@ export default class DraftBuilder extends React.Component {
                   <td style={{ padding: 0 }} />
                   <td style={{ padding: 0 }}>
                     <div
-                      onDragOver={event => {
+                      onDragOver={(event) => {
                         event.preventDefault(); // allows drop
                       }}
                       onDragEnter={() => {
                         this.setState({
-                          draggedOnIndex: this.state.sequence.length
+                          draggedOnIndex: this.state.sequence.length,
                         });
                       }}
                       style={{
-                        clear: "both",
-                        width: "85%",
-                        height: "8px",
-                        margin: "0 10%",
+                        clear: 'both',
+                        width: '85%',
+                        height: '8px',
+                        margin: '0 10%',
                         backgroundColor:
                           this.state.draggedOnIndex ===
                           this.state.sequence.length
-                            ? "orange"
-                            : "transparent"
+                            ? 'orange'
+                            : 'transparent',
                       }}
                     />
                   </td>
@@ -383,74 +383,80 @@ export default class DraftBuilder extends React.Component {
             </table>
             <div
               style={{
-                clear: "both",
-                marginBottom: "10px"
+                clear: 'both',
+                marginBottom: '10px',
               }}
             />
             <InteractiveElement
               action={() =>
-                this.setState(prevState => ({
-                  sequence: [...prevState.sequence, { team: 0, action: "ban" }]
+                this.setState((prevState) => ({
+                  sequence: [...prevState.sequence, { team: 0, action: 'ban' }],
                 }))
               }
               overrideStyle={{
-                color: "HSLA(206, 100%, 48%, 1.00)",
-                fontWeight: "bold",
-                fontSize: "0.9rem"
+                color: 'HSLA(206, 100%, 48%, 1.00)',
+                fontWeight: 'bold',
+                fontSize: '0.9rem',
               }}
             >
-              <VZIcon icon={ICONS.plus} color="HSLA(206, 100%, 48%, 1.00)" />{" "}
+              <VZIcon icon={ICONS.plus} color="HSLA(206, 100%, 48%, 1.00)" />{' '}
               BAN
             </InteractiveElement>
             <InteractiveElement
               action={() =>
-                this.setState(prevState => ({
-                  sequence: [...prevState.sequence, { team: 0, action: "pick" }]
+                this.setState((prevState) => ({
+                  sequence: [
+                    ...prevState.sequence,
+                    { team: 0, action: 'pick' },
+                  ],
                 }))
               }
               overrideStyle={{
-                color: "HSLA(206, 100%, 48%, 1.00)",
-                fontWeight: "bold",
-                fontSize: "0.9rem"
+                color: 'HSLA(206, 100%, 48%, 1.00)',
+                fontWeight: 'bold',
+                fontSize: '0.9rem',
               }}
             >
-              <VZIcon icon={ICONS.plus} color="HSLA(206, 100%, 48%, 1.00)" />{" "}
+              <VZIcon icon={ICONS.plus} color="HSLA(206, 100%, 48%, 1.00)" />{' '}
               PICK
             </InteractiveElement>
             <InteractiveElement
               action={() =>
-                this.setState(prevState => ({
-                  sequence: [...prevState.sequence, { team: 1, action: "ban" }]
+                this.setState((prevState) => ({
+                  sequence: [...prevState.sequence, { team: 1, action: 'ban' }],
                 }))
               }
               overrideStyle={{
-                color: "HSLA(360, 98%, 50%, 1.00)",
-                fontWeight: "bold",
-                fontSize: "0.9rem"
+                color: 'HSLA(360, 98%, 50%, 1.00)',
+                fontWeight: 'bold',
+                fontSize: '0.9rem',
               }}
             >
               <VZIcon icon={ICONS.plus} color="HSLA(360, 98%, 50%, 1.00)" /> BAN
             </InteractiveElement>
             <InteractiveElement
               action={() =>
-                this.setState(prevState => ({
-                  sequence: [...prevState.sequence, { team: 1, action: "pick" }]
+                this.setState((prevState) => ({
+                  sequence: [
+                    ...prevState.sequence,
+                    { team: 1, action: 'pick' },
+                  ],
                 }))
               }
               overrideStyle={{
-                color: "HSLA(360, 98%, 50%, 1.00)",
-                fontWeight: "bold",
-                fontSize: "0.9rem"
+                color: 'HSLA(360, 98%, 50%, 1.00)',
+                fontWeight: 'bold',
+                fontSize: '0.9rem',
               }}
             >
-              <VZIcon icon={ICONS.plus} color="HSLA(360, 98%, 50%, 1.00)" />{" "}
+              <VZIcon icon={ICONS.plus} color="HSLA(360, 98%, 50%, 1.00)" />{' '}
               PICK
             </InteractiveElement>
             <InteractiveElement
               action={() => this.setState({ sequence: [] })}
               overrideStyle={{
-                fontWeight: "bold",
-                fontSize: "0.9rem"
+                fontWeight: 'bold',
+                fontSize: '0.9rem',
               }}
             >
               CLEAR
@@ -459,83 +465,83 @@ export default class DraftBuilder extends React.Component {
           <div className="field">
             <div className="label">Heroes</div>
             <Radio
-              value={"Vainglory"}
+              value={'Vainglory'}
               link={this.state.selectedGame}
               action={() => {
                 this.setState({
                   heroes: this.props.defaultHeroes,
-                  selectedGame: "Vainglory"
+                  selectedGame: 'Vainglory',
                 });
               }}
             />
             <Radio
-              overrideStyle={{ display: "none" }}
-              value={"Dota 2"}
+              overrideStyle={{ display: 'none' }}
+              value={'Dota 2'}
               link={this.state.selectedGame}
               action={() => {
                 window
                   .fetch(
-                    "https://cors-anywhere.herokuapp.com/https://api.opendota.com/api/heroStats"
+                    'https://cors-anywhere.herokuapp.com/https://api.opendota.com/api/heroStats',
                   )
-                  .then(data => data.json())
-                  .then(data => {
+                  .then((data) => data.json())
+                  .then((data) => {
                     this.setState({
-                      heroes: data.map(e => ({
+                      heroes: data.map((e) => ({
                         name: e.localized_name,
-                        img: `https://api.opendota.com${e.img}`
+                        img: `https://api.opendota.com${e.img}`,
                       })),
-                      selectedGame: "Dota 2"
+                      selectedGame: 'Dota 2',
                     });
                   })
-                  .catch(err => console.error(err));
+                  .catch((err) => console.error(err));
               }}
             />
             <Radio
-              overrideStyle={{ display: "none" }}
-              value={"League of Legends"}
+              overrideStyle={{ display: 'none' }}
+              value={'League of Legends'}
               link={this.state.selectedGame}
               action={() => {
-                let version = "";
+                let version = '';
                 window
                   .fetch(
-                    "https://cors-anywhere.herokuapp.com/https://ddragon.leagueoflegends.com/realms/na.json"
+                    'https://cors-anywhere.herokuapp.com/https://ddragon.leagueoflegends.com/realms/na.json',
                   )
-                  .then(data => data.json())
-                  .then(data => {
+                  .then((data) => data.json())
+                  .then((data) => {
                     version = data.n.champion;
                     return window.fetch(
-                      `https://cors-anywhere.herokuapp.com/http://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`
+                      `https://cors-anywhere.herokuapp.com/http://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`,
                     );
                   })
-                  .then(data => data.json())
-                  .then(data => {
+                  .then((data) => data.json())
+                  .then((data) => {
                     const keys = Object.keys(data.data);
                     this.setState({
-                      heroes: keys.map(e => ({
+                      heroes: keys.map((e) => ({
                         name: data.data[e].name,
                         img: `http://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${
                           data.data[e].image.full
-                        }`
+                        }`,
                       })),
-                      selectedGame: "League of Legends"
+                      selectedGame: 'League of Legends',
                     });
                   })
-                  .catch(err => console.error(err));
+                  .catch((err) => console.error(err));
               }}
             />
             <div
               style={{
-                margin: "0 10%",
-                height: "300px",
-                overflow: "auto",
-                marginBottom: "10px"
+                margin: '0 10%',
+                height: '300px',
+                overflow: 'auto',
+                marginBottom: '10px',
               }}
             >
               <table
                 style={{
-                  border: "1px solid white",
-                  width: "100%",
-                  borderCollapse: "collapse"
+                  border: '1px solid white',
+                  width: '100%',
+                  borderCollapse: 'collapse',
                 }}
               >
                 <tbody>
@@ -543,14 +549,14 @@ export default class DraftBuilder extends React.Component {
                     <tr
                       style={{
                         backgroundColor:
-                          i % 2 ? "transparent" : "hsla(0, 0%, 100%, 0.2)"
+                          i % 2 ? 'transparent' : 'hsla(0, 0%, 100%, 0.2)',
                       }}
                     >
                       <td
                         style={{
                           border: 0,
                           margin: 0,
-                          padding: 0
+                          padding: 0,
                         }}
                       >
                         <img
@@ -560,17 +566,17 @@ export default class DraftBuilder extends React.Component {
                           }
                           alt={h.name}
                           style={{
-                            height: "45px",
-                            verticalAlign: "middle"
+                            height: '45px',
+                            verticalAlign: 'middle',
                           }}
                         />
                       </td>
                       <td style={{ padding: 0 }}>{h.name}</td>
-                      <td style={{ padding: 0, textAlign: "right" }}>
+                      <td style={{ padding: 0, textAlign: 'right' }}>
                         <button
-                          style={{ cursor: "pointer" }}
+                          style={{ cursor: 'pointer' }}
                           onClick={() => {
-                            this.setState(prevState => {
+                            this.setState((prevState) => {
                               const sliced = prevState.heroes.slice();
                               sliced.splice(i, 1);
                               return { heroes: sliced };
@@ -587,10 +593,10 @@ export default class DraftBuilder extends React.Component {
             </div>
             <div
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                flexWrap: "wrap"
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
               }}
             >
               <input
@@ -601,12 +607,12 @@ export default class DraftBuilder extends React.Component {
                 value={this.state.newHeroName}
                 required
                 style={{
-                  width: "calc(40% - 10px)",
-                  minWidth: "150px",
-                  boxSizing: "border-box",
-                  height: "38px",
-                  marginBottom: "3px",
-                  padding: "10px"
+                  width: 'calc(40% - 10px)',
+                  minWidth: '150px',
+                  boxSizing: 'border-box',
+                  height: '38px',
+                  marginBottom: '3px',
+                  padding: '10px',
                 }}
               />
               <input
@@ -616,41 +622,41 @@ export default class DraftBuilder extends React.Component {
                 value={this.state.newHeroImageURL}
                 required
                 style={{
-                  width: "calc(40% - 10px)",
-                  minWidth: "150px",
-                  boxSizing: "border-box",
-                  height: "38px",
-                  marginBottom: "3px",
-                  padding: "10px"
+                  width: 'calc(40% - 10px)',
+                  minWidth: '150px',
+                  boxSizing: 'border-box',
+                  height: '38px',
+                  marginBottom: '3px',
+                  padding: '10px',
                 }}
               />
               <InteractiveElement
                 overrideStyle={{
-                  width: "20%",
-                  boxSizing: "border-box",
-                  verticalAlign: "middle",
-                  marginBottom: "3px",
-                  minWidth: "74px"
+                  width: '20%',
+                  boxSizing: 'border-box',
+                  verticalAlign: 'middle',
+                  marginBottom: '3px',
+                  minWidth: '74px',
                 }}
                 action={() => {
-                  this.setState(prevState => {
+                  this.setState((prevState) => {
                     if (prevState.newHeroName && prevState.newHeroImageURL) {
                       const sliced = prevState.heroes.slice();
                       sliced.unshift({
                         name: prevState.newHeroName,
-                        img: prevState.newHeroImageURL
+                        img: prevState.newHeroImageURL,
                       });
                       return {
                         heroes: sliced,
-                        newHeroName: "",
-                        newHeroImageURL: ""
+                        newHeroName: '',
+                        newHeroImageURL: '',
                       };
                     }
-                    toast.error("Empty name and/or URL field.", {
+                    toast.error('Empty name and/or URL field.', {
                       position: toast.POSITION.TOP_CENTER,
                       autoClose: 1750,
                       closeButton: false,
-                      hideProgressBar: true
+                      hideProgressBar: true,
                     });
                     return null;
                   });
@@ -660,7 +666,7 @@ export default class DraftBuilder extends React.Component {
               </InteractiveElement>
             </div>
           </div>
-          <div style={{ textAlign: "justify" }}>
+          <div style={{ textAlign: 'justify' }}>
             Contact me if you need more customization options, including custom
             heroes, colors, logos, etc! Add thisBoy#4399 on Discord.
           </div>
@@ -668,31 +674,31 @@ export default class DraftBuilder extends React.Component {
             id="submit_button"
             onClick={() => {
               if (!this.state.draftName) {
-                toast.error("Profile Name field is empty.", {
+                toast.error('Profile Name field is empty.', {
                   position: toast.POSITION.TOP_CENTER,
                   autoClose: 2750,
                   closeButton: true,
-                  hideProgressBar: true
+                  hideProgressBar: true,
                 });
               } else if (this.state.sequence.length < 4) {
-                toast.error("Draft sequence must have at least 4 steps.", {
+                toast.error('Draft sequence must have at least 4 steps.', {
                   position: toast.POSITION.TOP_CENTER,
                   autoClose: 2750,
                   closeButton: true,
-                  hideProgressBar: true
+                  hideProgressBar: true,
                 });
               } else if (
-                this.state.sequence.filter(e => e.team === 0).length < 2 ||
-                this.state.sequence.filter(e => e.team === 1).length < 2
+                this.state.sequence.filter((e) => e.team === 0).length < 2 ||
+                this.state.sequence.filter((e) => e.team === 1).length < 2
               ) {
                 toast.error(
-                  "Each side of the draft must have at least 2 steps.",
+                  'Each side of the draft must have at least 2 steps.',
                   {
                     position: toast.POSITION.TOP_CENTER,
                     autoClose: 2750,
                     closeButton: true,
-                    hideProgressBar: true
-                  }
+                    hideProgressBar: true,
+                  },
                 );
               } else if (this.state.sequence.length > 20) {
                 toast.error(
@@ -701,46 +707,46 @@ export default class DraftBuilder extends React.Component {
                     position: toast.POSITION.TOP_CENTER,
                     autoClose: 2750,
                     closeButton: true,
-                    hideProgressBar: true
-                  }
+                    hideProgressBar: true,
+                  },
                 );
               } else if (
                 this.state.heroes.length < this.state.sequence.length
               ) {
                 toast.error(
-                  "The number of available heroes must be greater or equal to the number of steps in draft.",
+                  'The number of available heroes must be greater or equal to the number of steps in draft.',
                   {
                     position: toast.POSITION.TOP_CENTER,
                     autoClose: 3500,
                     closeButton: true,
-                    hideProgressBar: true
-                  }
+                    hideProgressBar: true,
+                  },
                 );
               } else {
                 const gradients = [
-                  "linear-gradient(to right, #ff416c, #ff4b2b)",
-                  "linear-gradient(to right, #333333, #dd1818)",
-                  "linear-gradient(to right, #fe8c00, #f83600)",
-                  "linear-gradient(to right, #3ca55c, #b5ac49)",
-                  "linear-gradient(to right, #f7971e, #ffd200)",
-                  "linear-gradient(to right, #56ab2f, #a8e063)",
-                  "linear-gradient(to right, #8360c3, #2ebf91)",
-                  "linear-gradient(to right, #00b4db, #0083b0)",
-                  "linear-gradient(to right, #11998e, #38ef7d)",
-                  "linear-gradient(to right, #8e2de2, #4a00e0)",
-                  "linear-gradient(to right, #fc466b, #3f5efb)",
-                  "linear-gradient(to right, #c33764, #1d2671)",
-                  "linear-gradient(to right, #2c3e50, #fd746c)",
-                  "linear-gradient(to right, #2c3e50, #4ca1af)",
-                  "linear-gradient(to right, #43cea2, #185a9d)",
-                  "linear-gradient(to right, #00c6ff, #0072ff)",
-                  "linear-gradient(to right, #1a2980, #26d0ce)",
-                  "linear-gradient(to right, #1488cc, #2b32b2)",
-                  "linear-gradient(to right, #8a2387, #e94057, #f27121)",
-                  "linear-gradient(to right, #34e89e, #0f3443)",
-                  "linear-gradient(to right, #fdc830, #f37335)",
-                  "linear-gradient(to right, #c02425, #f0cb35)",
-                  "linear-gradient(to right, #ffe000, #799f0c)"
+                  'linear-gradient(to right, #ff416c, #ff4b2b)',
+                  'linear-gradient(to right, #333333, #dd1818)',
+                  'linear-gradient(to right, #fe8c00, #f83600)',
+                  'linear-gradient(to right, #3ca55c, #b5ac49)',
+                  'linear-gradient(to right, #f7971e, #ffd200)',
+                  'linear-gradient(to right, #56ab2f, #a8e063)',
+                  'linear-gradient(to right, #8360c3, #2ebf91)',
+                  'linear-gradient(to right, #00b4db, #0083b0)',
+                  'linear-gradient(to right, #11998e, #38ef7d)',
+                  'linear-gradient(to right, #8e2de2, #4a00e0)',
+                  'linear-gradient(to right, #fc466b, #3f5efb)',
+                  'linear-gradient(to right, #c33764, #1d2671)',
+                  'linear-gradient(to right, #2c3e50, #fd746c)',
+                  'linear-gradient(to right, #2c3e50, #4ca1af)',
+                  'linear-gradient(to right, #43cea2, #185a9d)',
+                  'linear-gradient(to right, #00c6ff, #0072ff)',
+                  'linear-gradient(to right, #1a2980, #26d0ce)',
+                  'linear-gradient(to right, #1488cc, #2b32b2)',
+                  'linear-gradient(to right, #8a2387, #e94057, #f27121)',
+                  'linear-gradient(to right, #34e89e, #0f3443)',
+                  'linear-gradient(to right, #fdc830, #f37335)',
+                  'linear-gradient(to right, #c02425, #f0cb35)',
+                  'linear-gradient(to right, #ffe000, #799f0c)',
                 ];
 
                 this.props.addNewProfile({
@@ -753,8 +759,8 @@ export default class DraftBuilder extends React.Component {
                   customStyle: {
                     background:
                       gradients[Math.floor(Math.random() * gradients.length)] ||
-                      "linear-gradient(to right, #00c6ff, #0072ff)"
-                  }
+                      'linear-gradient(to right, #00c6ff, #0072ff)',
+                  },
                 });
               }
             }}
@@ -821,8 +827,8 @@ export default class DraftBuilder extends React.Component {
               box-shadow: none;
               outline: none;
             }
-            input[type="text"],
-            input[type="url"] {
+            input[type='text'],
+            input[type='url'] {
               border-radius: 30px;
               appearance: none;
               border: 0;
@@ -840,8 +846,8 @@ export default class DraftBuilder extends React.Component {
               box-sizing: border-box;
               transition: 140ms linear;
             }
-            input[type="text"]:focus,
-            input[type="url"]:focus {
+            input[type='text']:focus,
+            input[type='url']:focus {
               transform: scale(1.04);
             }
             .label {
