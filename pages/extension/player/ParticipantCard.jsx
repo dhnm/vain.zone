@@ -89,14 +89,14 @@ export default function ParticipantCard({
             style={{ borderRadius: '25%', margin: '0 2px', filter: afkFilter }}
             floated={side}
           />
-          {/* <Image
+          <Image
             size="mini"
             src={`/static/img/rank/c/${skillTierInfo.number}${
               skillTierInfo.color
             }.png`}
-            style={{ margin: "0 -6px", padding: "-5px" }}
-            floated={{ left: "right", right: "left" }[side]}
-          /> */}
+            style={{ margin: '0 -6px', padding: '-5px' }}
+            floated={{ left: 'right', right: 'left' }[side]}
+          />
           <strong
             style={{
               overflow: 'hidden',

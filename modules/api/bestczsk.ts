@@ -81,11 +81,14 @@ router.get(
               // const freshPlayerData = [].concat(
               //   ...axiosData.map((e) => e.data),
               // );
-              const freshPlayerData = axiosData.map((e) => e.data);
+              const freshPlayerData = [].concat(
+                ...axiosData.map((e) => e.data),
+              );
               freshPlayerData.forEach((e) => {
                 const relevantPlayer = toBeUpdated.find(
                   (p) => p.playerID === e.id,
                 );
+
                 relevantPlayer.rank_5v5 =
                   e.attributes.stats.rankPoints.ranked_5v5;
                 relevantPlayer.czSk.retrieval = now;

@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 
 import { Player, IPlayer } from './../../models/Player';
 import { Match, IMatch } from './../../models/Match';
+import { apiKey } from './constants';
 
 export default (IGN: string): Promise<PlayerWithMatches> => {
   return new Promise(
@@ -272,11 +273,6 @@ export const axiosAPI = (options: {
   params: any;
   key?: string;
 }) => {
-  // const mainKey = options.key ||
-  //   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxYWIwYmFhMC0xZTYxLTAxMzYtNGMyOC0wYTU4NjQ2MDBlZGYiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTIzMzA1MTE1LCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJ2YWluLXpvbmUiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.WRRbcDammhPrqWhDPenutkXJdCbGv3CpxvwscPyQK9Y';
-  const tempKey =
-    options.key ||
-    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwMDBlNDNiMC02NzEwLTAxMzYtMzRhOS0wYTU4NjQ2MGI5NDMiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTMxMjk2NzE2LCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJ0ZXN0LWJiZTZhNDMyLTFhZmUtNDlhNi04NjFjLTViZWEyODE2OTQwNCIsInNjb3BlIjoiY29tbXVuaXR5IiwibGltaXQiOjEwfQ.9E7C42jSzRTHo8rb-_Uy7ASt7wxru146x-pn-WoY_EU';
   return axios({
     method: 'get',
     url:
@@ -289,7 +285,7 @@ export const axiosAPI = (options: {
       'Content-Encoding': 'gzip',
       'Content-Type': 'application/json',
       'User-Agent': 'js/vainglory',
-      Authorization: tempKey,
+      Authorization: apiKey,
       'X-TITLE-ID': 'semc-vainglory',
       Accept: 'application/vnd.api+json',
     },

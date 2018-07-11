@@ -4,6 +4,7 @@ const router: Router = Router();
 import axios, { AxiosResponse } from 'axios';
 
 import { Match, IMatch } from './../../models/Match';
+import { filterApiKey } from './../functions/constants';
 
 export default router;
 
@@ -33,8 +34,7 @@ router.get(
         'Content-Encoding': 'gzip',
         'Content-Type': 'application/json',
         'User-Agent': 'js/vainglory',
-        Authorization:
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxYWIwYmFhMC0xZTYxLTAxMzYtNGMyOC0wYTU4NjQ2MDBlZGYiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTIzMzA1MTE1LCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJ2YWluLXpvbmUiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.WRRbcDammhPrqWhDPenutkXJdCbGv3CpxvwscPyQK9Y',
+        Authorization: filterApiKey,
         'X-TITLE-ID': 'semc-vainglory',
         Accept: 'application/vnd.api+json',
       },

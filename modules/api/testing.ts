@@ -3,6 +3,7 @@ const router: Router = Router();
 
 import { axiosAPI } from './../functions/getData';
 import skillTierCalculator from './../functions/skillTierCalculator';
+import { testingApiKey } from './../functions/constants';
 
 export default router;
 
@@ -22,8 +23,7 @@ router.get(
             'filter[playerIds]': '682fecfc-d732-11e6-9b38-06388a2f2ea7',
             'filter[gameMode]': '5v5_pvp_ranked',
           },
-          key:
-            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI5ZGI0MTNjMC02NzE0LTAxMzYtOTQ4Mi0wYTU4NjQ2MTRkYjUiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTMxMjk4Njk4LCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJ0ZW1wX3Rlc3QiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.kZZ1kSvyT447fc_hKmvoZ5qXUmXWftX2eYrYzL6ganE',
+          key: testingApiKey,
         }),
       );
     }
