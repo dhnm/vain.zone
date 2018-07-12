@@ -17,7 +17,7 @@ const output = players => {
       .map(p => ({
         name: p.name,
         rankPoints: p.rank_5v5,
-        mixedRank: `${p.processedRankPoints.number} ${
+        mixedRank: `${p.processedRankPoints.number}${
           p.processedRankPoints.color
         }`
       }))
