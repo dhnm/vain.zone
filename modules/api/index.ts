@@ -22,9 +22,16 @@ router.use("/applyfilter", applyfilter);
 router.use("/bestczsk", bestczsk);
 router.use(
 	"/rankimage/c",
-	router_static(path.join(__dirname, "../../static/img/rank/c"))
+	router_static(
+		path.join(process.env.PWD, "../../static/img/rank/c")
+	)
 );
-console.log("keylog", path.join(__dirname, "../../static/img/rank/c"));
+console.log(
+	"keylog",
+	process.cwd(),
+	path.join(process.env.PWD, "../../static/img/rank/c"),
+	path.normalize(path.join(process.env.PWD, "../../static/img/rank/c"))
+);
 router.use("/testing", testing);
 
 router.use("/uuidv4", uuidv4);

@@ -9,8 +9,7 @@
   "main": "production/server/index.js",
   "scripts": {
     "dev": "nodemon server/index.ts",
-    "build":
-      "NODE_ENV=production next build && tsc --project tsconfig.server.json",
+    "build": "NODE_ENV=production next build && tsc --project tsconfig.server.json",
     "export": "next export",
     "postinstall": "npm run build",
     "start": "NODE_ENV=production node production/server/index.js"
@@ -31,6 +30,7 @@
     "json-parse-better-errors": "^1.0.2",
     "moment": "^2.22.1",
     "mongoose": "^5.1.1",
+    "morgan": "^1.9.0",
     "multer": "^1.3.0",
     "next": "^6.0.3",
     "prop-types": "^15.6.1",
@@ -69,10 +69,16 @@
     "ts-node": "^6.0.3"
   },
   "babel": {
-    "presets": ["next/babel", "@zeit/next-typescript/babel"]
+    "presets": [
+      "next/babel",
+      "@zeit/next-typescript/babel"
+    ]
   },
   "nodemonConfig": {
-    "watch": ["server/**/*.ts", "modules/**/*.ts"],
+    "watch": [
+      "server/**/*.ts",
+      "modules/**/*.ts"
+    ],
     "execMap": {
       "ts": "ts-node --compilerOptions '{\"module\":\"commonjs\"}'"
     }
