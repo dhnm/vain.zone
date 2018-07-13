@@ -1,4 +1,4 @@
-import { Router, router_static } from 'express';
+import { Router, static as router_static } from 'express';
 const path = require('path');
 const router: Router = Router();
 
