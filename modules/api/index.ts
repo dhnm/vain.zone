@@ -24,6 +24,7 @@ router.use(
 	"/rankimage/c",
 	router_static(path.join(__dirname, "../../static/img/rank/c"))
 );
+console.log("keylog", path.join(__dirname, "../../static/img/rank/c"));
 router.use("/testing", testing);
 
 router.use("/uuidv4", uuidv4);
