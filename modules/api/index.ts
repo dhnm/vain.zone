@@ -1,4 +1,4 @@
-import { Router, static as router_static } from 'express';
+import { Router, router_static } from 'express';
 const path = require('path');
 const router: Router = Router();
 
@@ -24,6 +24,14 @@ router.use(
   '/rankimage/c',
   router_static(path.join(process.env.PWD, '/static/img/rank/c')),
 );
+router.get('/rankimage/c/:mixed_rank', (req, res) => {
+  res.sendFile(
+    path.join(
+      process.env.PWD,
+      `/static/img/rank/c/${req.params.mixed_rank}.png`,
+    ),
+  );
+});
 console.log(
   'keylog',
   process.env.PWD,
