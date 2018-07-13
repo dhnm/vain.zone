@@ -24,10 +24,19 @@ const output = players => {
       .sort((a, b) => b.rankPoints - a.rankPoints),
     byGrowth: players
       .map(p => {
-        const growthPoints =
+        let growthPoints =
           (p.rank_5v5 - p.czSk.first_of_month) *
-            (p.processedRankPoints.skillTier * 2 / 3) +
-          p.rank_5v5 / 10000;
+            Math.sqrt(p.processedRankPoints.skillTier) +
+          p.rank_5v5 / 77;
+        if (p.rank_5v5 > 2400 && p.czSk.first_of_month < 2400) {
+          growthPoints =
+            (p.rank_5v5 - p.czSk.first_of_month) * Math.sqrt(26.26) +
+            p.rank_5v5 / 77 +
+            (p.rank_5v5 - 2400) *
+              (Math.sqrt(p.processedRankPoints.skillTier) * 2 - // * 4 eventually
+                Math.sqrt(26));
+        }
+        growthPoints = growthPoints * 10 / 3;
         return { name: p.name, growthPoints };
       })
       .sort((a, b) => b.growthPoints - a.growthPoints)

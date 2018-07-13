@@ -32,13 +32,6 @@ router.get('/rankimage/c/:mixed_rank', (req, res) => {
     ),
   );
 });
-console.log(
-  'keylog',
-  process.env.PWD,
-  process.cwd(),
-  path.join(process.env.PWD, '/static/img/rank/c'),
-  path.normalize(path.join(process.env.PWD, '/static/img/rank/c')),
-);
 router.use('/testing', testing);
 
 router.use('/uuidv4', uuidv4);
