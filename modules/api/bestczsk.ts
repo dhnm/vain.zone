@@ -19,7 +19,8 @@ const output = players => {
         rankPoints: p.rank_5v5,
         mixedRank: `${p.processedRankPoints.number}${
           p.processedRankPoints.color
-        }`
+        }`,
+        lastUpdated: p.czSk.retrieval
       }))
       .sort((a, b) => b.rankPoints - a.rankPoints),
     byGrowth: players
@@ -73,6 +74,7 @@ router.get("/", (_, res: Response): void => {
         toBeUpdated
           .sort((a, b) => b.rank_5v5 - a.rank_5v5)
           .splice(6 * requestLimit, toBeUpdated.length - 6 * requestLimit);
+        // can call 6 names in one request
 
         const axiosArray: any[] = [];
         for (let i = 0; i < toBeUpdated.length / 6; i++) {

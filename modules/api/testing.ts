@@ -18,24 +18,25 @@ router.get("/", (_, res: Response): void => {
         params: {
           "page[offset]": i,
           "page[limit]": 1,
-          sort: "-createdAt",
+          sort: "-createdAt", // -
           "filter[playerIds]": playerID,
           "filter[gameMode]": "5v5_pvp_ranked"
+          // "filter[createdAt-start]": "2018-06-15T12:36:00Z", // delet
+          // "filter[createdAt-end]": "2018-06-22T12:36:00Z"
         },
         key: testingApiKey
-      })
+      }).catch(e => ({ e }))
     );
   }
 
   Promise.all(axiosArray)
     .then(axiosData => {
-      const retrievedData = axiosData.map(e => {
+      const retrievedData = axiosData.filter(e => !e.e).map(e => {
         const player = e.included.find(e2 => e2.id === playerID);
-
         return {
           name: player.attributes.name,
           rankPoints: player.attributes.stats.rankPoints.ranked_5v5,
-          createdAt: e.data.createdAt
+          createdAt: e.data[0].attributes.createdAt
         };
       });
 
@@ -53,7 +54,8 @@ router.get("/", (_, res: Response): void => {
           elo_gain: diff
         };
       });
-      res.json(output);
+      const result = { length: output.length, output };
+      res.json(result);
     })
     .catch(err => {
       console.error(err);

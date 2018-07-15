@@ -61,7 +61,7 @@ const draftProfiles = [
     name: "Vainglory Premiere League",
     banTime: 30000,
     pickTime: 30000,
-    bonusTime: 60000,
+    bonusTime: 0,
     sequence: [
       { team: 0, action: "ban" },
       { team: 1, action: "ban" },
@@ -193,6 +193,9 @@ const SharingLink = ({ lobby, roomID, teamID }) => {
               height: 32px;
               cursor: default;
               cursor: copy;
+
+              color: HSLA(0, 0%, 90%, 1);
+              background-color: HSLA(197, 44%, 10%, 1);
             }
             .link:focus {
               outline: none;
