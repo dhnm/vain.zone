@@ -66,10 +66,8 @@ router.get("/:IGN", (req: Request, res: Response): void => {
         }" />
           </head>
           <body>
-            <p>${player.name} je lepší než ${Math.round(
-          playersPercentRank
-        )} % všech hráčů Vainglory na světě!</p>
-            <p><a href="https://m.me/VAIN.ZONE">Přejít na Messenger Bot</a>
+            <p>Nepostupuješ podle návodu! Vlož odkaz na tuto stránku do komentářů na Facebooku a zjistíš, v jakém percentilu se nacházíš!</p>
+            <p><a href="https://m.me/VAIN.ZONE">Přejít na Messenger Bot</a></p>
           </body>
           </html>
           `);
@@ -104,7 +102,8 @@ router.get("/:IGN", (req: Request, res: Response): void => {
             <meta property="og:image:alt" content="VAIN.ZONE" />
           </head>
           <body>
-            <a href="https://m.me/VAIN.ZONE">Klikni sem a vyzkoušej náš Messenger Bot!</a>
+            <p>${req.params.IGN} není v naší databázi.</p>
+            <p><a href="https://m.me/VAIN.ZONE">Klikni sem a vyzkoušej náš Messenger Bot!</a></p>
             <script type="text/javascript">
               window.location.replace("https://m.me/VAIN.ZONE");
             </script>
