@@ -106,7 +106,7 @@ router.get("/:IGN", (req: Request, res: Response): void => {
           <body>
             <a href="https://m.me/VAIN.ZONE">Klikni sem a vyzkoušej náš Messenger Bot!</a>
             <script type="text/javascript">
-              window.location.replace = "https://m.me/VAIN.ZONE"
+              window.location.replace("https://m.me/VAIN.ZONE");
             </script>
           </body>
           </html>
