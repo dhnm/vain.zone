@@ -161,6 +161,10 @@ nextApp
     app.use("/draft", draft(nextApp));
     app.use("/api", api);
 
+    app.get("/top/:IGN", (req, res) => {
+      res.redirect(`/api/percentrank/${req.params.IGN}`);
+    });
+
     app.get("*", (req, res) => {
       return nextHandler(req, res);
     });
