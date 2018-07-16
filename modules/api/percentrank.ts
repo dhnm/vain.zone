@@ -35,9 +35,13 @@ router.get("/:IGN", (req: Request, res: Response): void => {
         const processedSkillTier = skillTierCalculator(player.rank_5v5);
         res.send(`
           <!doctype html>
-          <html prefix="og: http://ogp.me/ns#">
+          <html prefix="og: http://ogp.me/ns#"y>
           <head prefix>
           <title>VAIN.ZONE TOP</title>
+          <meta
+            name="viewport"
+            content="initial-scale=1.0, width=device-width, shrink-to-fit=no"
+          />
           <meta property="fb:app_id" content="617200295335676" />
           <meta property="og:type" content="website" />
           <meta property="og:title" content="${
@@ -51,7 +55,7 @@ router.get("/:IGN", (req: Request, res: Response): void => {
           <meta property="og:url" content="https://vain.zone/top/${
             player.name
           }" />
-          <meta property="og:image" content="https://vain.zone/api/rankimage/c/${
+          <meta property="og:image" content="https://vain.zone/static/img/rank/c/${
             processedSkillTier.number
           }${processedSkillTier.color}" />
           <meta property="og:image:type" content="image/png" />
@@ -62,9 +66,10 @@ router.get("/:IGN", (req: Request, res: Response): void => {
         }" />
           </head>
           <body>
-          ${player.name} je lepší než ${Math.round(
+            <p>${player.name} je lepší než ${Math.round(
           playersPercentRank
-        )} % všech hráčů Vainglory na světě!
+        )} % všech hráčů Vainglory na světě!</p>
+            <p><a href="https://m.me/VAIN.ZONE">Přejít na Messenger Bot</a>
           </body>
           </html>
           `);
@@ -79,6 +84,10 @@ router.get("/:IGN", (req: Request, res: Response): void => {
           <html prefix="og: http://ogp.me/ns#">
           <head>
             <title>VAIN.ZONE TOP</title>
+            <meta
+              name="viewport"
+              content="initial-scale=1.0, width=device-width, shrink-to-fit=no"
+            />
             <meta property="fb:app_id" content="617200295335676" />
             <meta property="og:type" content="website" />
             <meta property="og:title" content="${
