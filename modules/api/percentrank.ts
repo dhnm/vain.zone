@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 const router: Router = Router();
 
 import { Player, IPlayer } from "./../../models/Player";
-const rankData = require("./../functions/rankData.json");
+import rankData from "./../functions/rankData";
 import skillTierCalculator from "./../functions/skillTierCalculator";
 
 export default router;
