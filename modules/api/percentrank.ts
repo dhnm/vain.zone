@@ -57,7 +57,7 @@ router.get("/:IGN", (req: Request, res: Response): void => {
           }" />
           <meta property="og:image" content="https://vain.zone/static/img/rank/c/${
             processedSkillTier.number
-          }${processedSkillTier.color}" />
+          }${processedSkillTier.color}.png" />
           <meta property="og:image:type" content="image/png" />
           <meta property="og:image:width" content="300" />
           <meta property="og:image:height" content="300" />
