@@ -111,10 +111,10 @@ function sendSuccessMessage(res, req, playersPercentRank, processedSkillTier) {
             <meta property="og:type" content="website" />
             <meta property="og:title" content="${
               req.params.IGN
-            } is in TOP ${Math.round(100 - playersPercentRank)}%!" />
+            } is in TOP ${Math.ceil(100 - playersPercentRank)}%!" />
             <meta property="og:description" content="${
               req.params.IGN
-            } is ranked higher than ${Math.round(
+            } is ranked higher than ${Math.floor(
     playersPercentRank
   )}% of all Vainglory players!" />
             <meta property="og:url" content="https://vain.zone/top/en/${
@@ -157,10 +157,10 @@ router.get("/:IGN", (req: Request, res: Response): void => {
             <meta property="og:type" content="website" />
             <meta property="og:title" content="${
               player.name
-            } je v TOP ${Math.round(100 - playersPercentRank)} %!" />
+            } je v TOP ${Math.ceil(100 - playersPercentRank)} %!" />
             <meta property="og:description" content="${
               player.name
-            } je lepší než ${Math.round(
+            } je lepší než ${Math.floor(
           playersPercentRank
         )} % všech hráčů Vainglory na světě." />
             <meta property="og:url" content="https://vain.zone/top/${

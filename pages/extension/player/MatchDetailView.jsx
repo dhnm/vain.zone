@@ -1,26 +1,28 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Link from 'next/link';
-import { Segment, Label, Grid, Image } from 'semantic-ui-react';
-import * as moment from 'moment';
+import React from "react";
+import PropTypes from "prop-types";
+import Link from "next/link";
+import { Segment, Label, Grid, Image } from "semantic-ui-react";
+import * as moment from "moment";
 
-import VZIcon from './../../../components/Icon';
-import { ICONS } from './../../../modules/functions/constants';
-import ParticipantCard from './ParticipantCard';
+import VZIcon from "./../../../components/Icon";
+import { ICONS } from "./../../../modules/functions/constants";
+import ParticipantCard from "./ParticipantCard";
+
+import skillTierCalculator from "../../../modules/functions/skillTierCalculator";
 
 const TeamStatPropTypes = {
   icon: PropTypes.string.isRequired,
-  stat: PropTypes.string.isRequired,
+  stat: PropTypes.string.isRequired
 };
 
 function TeamStat({ icon, stat }) {
   return (
     <span
       style={{
-        display: 'inline-block',
-        padding: '0 3px',
-        margin: '1px 2px 1px 0',
-        fontSize: '1.05rem',
+        display: "inline-block",
+        padding: "0 3px",
+        margin: "1px 1px 1px 1px",
+        fontSize: "1.05rem"
       }}
     >
       <VZIcon icon={icon} color="white" size={11 * 1.05} />&zwj;{stat}
@@ -35,7 +37,7 @@ const propTypes = {
   match: PropTypes.object.isRequired,
   TLData: PropTypes.object.isRequired,
   appLoading: PropTypes.bool.isRequired,
-  childRef: PropTypes.func.isRequired,
+  childRef: PropTypes.func.isRequired
 };
 
 export default function MatchDetailView({
@@ -43,31 +45,39 @@ export default function MatchDetailView({
   match,
   TLData,
   appLoading,
-  childRef,
+  childRef
 }) {
   const maxParticipantValues = converter({
-    rosters: match.rosters,
+    rosters: match.rosters
   }).getMaxParticipantValues();
   const { playerInTheMatch } = converter({
-    rosters: match.rosters,
+    rosters: match.rosters
   }).identifyPlayerInTheMatch();
+  const processedAverageSkillTiers = match.rosters.map((_, i) =>
+    skillTierCalculator(
+      match.rosters[i].participants.reduce(
+        (accu, currVa) => accu + TLData.rankPoints[currVa.player.name],
+        0
+      ) / match.rosters[i].participants.length
+    )
+  );
   return (
-    <div ref={childRef} style={{ marginTop: '14px' }}>
+    <div ref={childRef} style={{ marginTop: "14px" }}>
       <Segment
         id="matchDetailView"
         style={{
-          paddingTop: '1.6rem',
-          paddingLeft: '0.5em',
-          paddingRight: '0.5em',
+          paddingTop: "1.6rem",
+          paddingLeft: "0.5em",
+          paddingRight: "0.5em"
         }}
         attached="top"
       >
         <Label attached="top">
           <div
             style={{
-              marginBottom: '2px',
+              marginBottom: "2px",
               padding: 0,
-              textAlign: 'center',
+              textAlign: "center"
             }}
           >
             {converter({ gameMode: match.gameMode })
@@ -75,72 +85,72 @@ export default function MatchDetailView({
               .toUpperCase()}
           </div>
           {`${converter({
-            duration: match.duration,
+            duration: match.duration
           }).humanDuration()}min`}
-          <span style={{ float: 'right' }}>
+          <span style={{ float: "right" }}>
             {moment(match.createdAt).fromNow()}
           </span>
         </Label>
-        <Segment basic style={{ padding: 0, textAlign: 'center' }}>
+        <Segment basic style={{ padding: 0, textAlign: "center" }}>
           <Label
             color={
               converter({
                 rosterWon: match.rosters[0].won,
-                endGameReason: match.endGameReason,
+                endGameReason: match.endGameReason
               }).longMatchConclusion().matchConclusionColors[1]
             }
             style={{
-              width: '90px',
-              textAlign: 'center',
-              float: 'left',
+              width: "90px",
+              textAlign: "center",
+              float: "left"
             }}
           >
             {
               converter({
                 rosterWon: match.rosters[0].won,
-                endGameReason: match.endGameReason,
+                endGameReason: match.endGameReason
               }).longMatchConclusion().longMatchConclusion
             }
           </Label>
           <div
             style={{
-              display: 'inline-block',
-              margin: 'auto',
-              fontSize: '1.4rem',
-              fontWeight: 'bold',
-              marginTop: '3px',
-              width: '75px',
-              position: 'absolute',
-              left: '50%',
-              transform: 'translateX(-50%)',
+              display: "inline-block",
+              margin: "auto",
+              fontSize: "1.4rem",
+              fontWeight: "bold",
+              marginTop: "3px",
+              width: "75px",
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)"
             }}
           >
-            {match.rosters[0].heroKills}{' '}
-            <VZIcon icon={ICONS.swords} color="white" size={1.4 * 11} />{' '}
+            {match.rosters[0].heroKills}{" "}
+            <VZIcon icon={ICONS.swords} color="white" size={1.4 * 11} />{" "}
             {match.rosters[1].heroKills}
           </div>
           <Label
             color={
               converter({
                 rosterWon: match.rosters[1].won,
-                endGameReason: match.endGameReason,
+                endGameReason: match.endGameReason
               }).longMatchConclusion().matchConclusionColors[1]
             }
             style={{
-              float: 'right',
-              width: '90px',
-              textAlign: 'center',
+              float: "right",
+              width: "90px",
+              textAlign: "center"
             }}
           >
             {
               converter({
                 rosterWon: match.rosters[1].won,
-                endGameReason: match.endGameReason,
+                endGameReason: match.endGameReason
               }).longMatchConclusion().longMatchConclusion
             }
           </Label>
-          <Grid columns={2} style={{ clear: 'both' }}>
-            <Grid.Row style={{ padding: '0.4rem 0 0 0' }}>
+          <Grid columns={2} style={{ clear: "both" }}>
+            <Grid.Row style={{ padding: "0.4rem 0 0 0" }}>
               <Grid.Column textAlign="left">
                 <TeamStat icon={ICONS.coin} stat={match.rosters[0].gold} />
                 <TeamStat
@@ -155,14 +165,42 @@ export default function MatchDetailView({
                   icon={ICONS.turret}
                   stat={match.rosters[0].turretKills}
                 />
+                {TLData.banData.rosters[0].length ? (
+                  <React.Fragment>
+                    <br />
+                    <TeamStat icon={ICONS.ban} />
+                    {TLData.banData.rosters[0].map(b => (
+                      <React.Fragment>
+                        {<React.Fragment>&nbsp;</React.Fragment>}
+                        <Image
+                          size="mini"
+                          style={{
+                            display: "inline-block",
+                            borderRadius: "50%",
+                            marginBottom: "4px",
+                            marginTop: "1px",
+                            filter: "grayscale(33%)",
+                            width: "32px"
+                          }}
+                          src={`/static/img/heroes/c/${b.toLowerCase()}.jpg`}
+                        />
+                      </React.Fragment>
+                    ))}
+                  </React.Fragment>
+                ) : (
+                  false
+                )}
                 <br />
-                {TLData.banData.rosters[0].map((b) => (
-                  <Label image style={{ margin: '0.2rem 0' }}>
-                    <Image
-                      src={`/static/img/heroes/c/${b.toLowerCase()}.jpg`}
-                    />BAN
-                  </Label>
-                ))}
+                <Label style={{ padding: "2px 6px" }}>
+                  Avg. rank{" "}
+                  <Image
+                    avatar
+                    src={`/static/img/rank/c/${
+                      processedAverageSkillTiers[0].number
+                    }${processedAverageSkillTiers[0].color}.png`}
+                  />
+                  {Math.round(processedAverageSkillTiers[0].value)}
+                </Label>
               </Grid.Column>
               <Grid.Column textAlign="right" style={{}}>
                 <TeamStat icon={ICONS.coin} stat={match.rosters[1].gold} />
@@ -178,23 +216,49 @@ export default function MatchDetailView({
                   icon={ICONS.turret}
                   stat={match.rosters[1].turretKills}
                 />
+                {TLData.banData.rosters[1].length ? (
+                  <React.Fragment>
+                    <br />
+                    {TLData.banData.rosters[1].map(b => (
+                      <React.Fragment>
+                        <Image
+                          style={{
+                            display: "inline-block",
+                            borderRadius: "50%",
+                            marginBottom: "4px",
+                            marginTop: "1px",
+                            filter: "grayscale(33%)",
+                            width: "32px"
+                          }}
+                          src={`/static/img/heroes/c/${b.toLowerCase()}.jpg`}
+                        />{" "}
+                      </React.Fragment>
+                    ))}
+                    <TeamStat icon={ICONS.ban} />
+                  </React.Fragment>
+                ) : (
+                  false
+                )}
                 <br />
-                {TLData.banData.rosters[1].map((b) => (
-                  <Label image style={{ margin: '0.2rem 0' }}>
-                    <Image
-                      src={`/static/img/heroes/c/${b.toLowerCase()}.jpg`}
-                    />BAN
-                  </Label>
-                ))}
+                <Label style={{ padding: "2px 6px" }}>
+                  Avg. rank{" "}
+                  <Image
+                    avatar
+                    src={`/static/img/rank/c/${
+                      processedAverageSkillTiers[1].number
+                    }${processedAverageSkillTiers[1].color}.png`}
+                  />
+                  {Math.round(processedAverageSkillTiers[1].value)}
+                </Label>
               </Grid.Column>
             </Grid.Row>
             <Grid.Row
               style={{
-                paddingTop: '0.1rem',
-                paddingBottom: '0',
+                paddingTop: "0.1rem",
+                paddingBottom: "0"
               }}
             >
-              <Grid.Column textAlign="left" style={{ paddingRight: '0.1em' }}>
+              <Grid.Column textAlign="left" style={{ paddingRight: "0.1em" }}>
                 {match.rosters[0].participants.map((participant, index) => (
                   <ParticipantCard
                     playerInTheMatch={playerInTheMatch}
@@ -207,11 +271,13 @@ export default function MatchDetailView({
                     appLoading={appLoading}
                     damage={TLData.damageData.rosters[0][participant.actor]}
                     highestDamage={TLData.damageData.highest}
-                    rankPoints={TLData.rankPoints[participant.player.name]}
+                    processedSkillTier={skillTierCalculator(
+                      TLData.rankPoints[participant.player.name]
+                    )}
                   />
                 ))}
               </Grid.Column>
-              <Grid.Column textAlign="right" style={{ paddingLeft: '0.1em' }}>
+              <Grid.Column textAlign="right" style={{ paddingLeft: "0.1em" }}>
                 {match.rosters[1].participants.map((participant, index) => (
                   <ParticipantCard
                     playerInTheMatch={playerInTheMatch}
@@ -224,14 +290,16 @@ export default function MatchDetailView({
                     appLoading={appLoading}
                     damage={TLData.damageData.rosters[1][participant.actor]}
                     highestDamage={TLData.damageData.highest}
-                    rankPoints={TLData.rankPoints[participant.player.name]}
+                    processedSkillTier={skillTierCalculator(
+                      TLData.rankPoints[participant.player.name]
+                    )}
                   />
                 ))}
               </Grid.Column>
             </Grid.Row>
-            <Grid.Row style={{ padding: '0 0.4em 0.1rem 0.4em' }}>
+            <Grid.Row style={{ padding: "0 0.4em 0.1rem 0.4em" }}>
               <Grid.Column width={16}>
-                {match.spectators.map((spectator) => (
+                {match.spectators.map(spectator => (
                   <Link
                     prefetch
                     href={`/extension/player?error=false&extension=false&IGN=${
@@ -241,7 +309,7 @@ export default function MatchDetailView({
                   >
                     <Label
                       as="a"
-                      style={{ margin: '0.2rem 0' }}
+                      style={{ margin: "0.2rem 0" }}
                       content={spectator.name}
                       detail="Spectator"
                     />

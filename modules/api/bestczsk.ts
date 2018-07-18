@@ -49,7 +49,8 @@ router.get("/", (_, res: Response): void => {
     .exec()
     .then((czSkPlayers: ICzSk[]) =>
       Player.find({
-        name: { $in: czSkPlayers.map(p => p.name) }
+        name: { $in: czSkPlayers.map(p => p.name) },
+        exists: true
       }).exec()
     )
     .then((players: IPlayer[]) => {
@@ -59,14 +60,23 @@ router.get("/", (_, res: Response): void => {
 
         players.forEach(p => {
           if (!p.czSk) p.czSk = {};
-          const retrievalDate = new Date(p.czSk.retrieval);
-          if (
-            !p.czSk.retrieval ||
-            retrievalDate.setDate(retrievalDate.getDate() + 1) <=
-              now.getTime() ||
-            p.czSk.of_month != now.getMonth()
-          ) {
+          const czSkRetrievalDate = new Date(p.czSk.retrieval);
+          const retrievalDate = new Date(p.retrieval);
+          if (!p.czSk.retrieval || p.czSk.of_month != now.getMonth()) {
             toBeUpdated.push(p);
+          } else if (
+            czSkRetrievalDate.setDate(czSkRetrievalDate.getDate() + 1) <=
+            now.getTime()
+          ) {
+            if (
+              retrievalDate.setDate(retrievalDate.getDate() + 1) <=
+              now.getTime()
+            ) {
+              toBeUpdated.push(p);
+            } else {
+              p.czSk.retrieval = p.retrieval;
+              p.save();
+            }
           }
         });
 

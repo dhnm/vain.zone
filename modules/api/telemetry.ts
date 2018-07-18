@@ -1,10 +1,10 @@
-import { Router, Response, Request } from 'express';
+import { Router, Response, Request } from "express";
 const router: Router = Router();
 
-import axios, { AxiosResponse } from 'axios';
-import { IMatch } from 'models/Match';
+import axios, { AxiosResponse } from "axios";
+import { IMatch } from "models/Match";
 
-import { gameModeDict, apiKey } from './../functions/constants';
+import { gameModeDict, apiKey } from "./../functions/constants";
 
 export default router;
 
@@ -15,92 +15,85 @@ export type IOutput = {
   error: boolean;
 };
 
-router.get(
-  '/',
-  (req: Request, res: Response): void => {
-    const matchData = JSON.parse(req.query.match);
-    axios({
-      method: 'get',
-      url: matchData.telemetryURL,
-      headers: {
-        'Content-Encoding': 'gzip',
-        'Content-Type': 'application/json',
-        'User-Agent': 'js/vainglory',
-        'X-TITLE-ID': 'semc-vainglory',
-        Accept: 'application/json',
-      },
+router.get("/", (req: Request, res: Response): void => {
+  const matchData = JSON.parse(req.query.match);
+  axios({
+    method: "get",
+    url: matchData.telemetryURL,
+    headers: {
+      "Content-Encoding": "gzip",
+      "Content-Type": "application/json",
+      "User-Agent": "js/vainglory",
+      "X-TITLE-ID": "semc-vainglory",
+      Accept: "application/json"
+    }
+  })
+    .then((response: AxiosResponse<any>): any => {
+      console.log("obtaining telemetry with status", response.status);
+      return response.data;
     })
-      .then(
-        (response: AxiosResponse<any>): any => {
-          console.log('obtaining telemetry with status', response.status);
-          return response.data;
-        },
-      )
-      .then(
-        (telemetryData: any): void => {
-          const damageData = calculateDamagesFromTelemetry(
-            telemetryData,
-            matchData,
-          );
+    .then((telemetryData: any): void => {
+      const damageData = calculateDamagesFromTelemetry(
+        telemetryData,
+        matchData
+      );
 
-          const banData = detectBans(telemetryData);
+      const banData = detectBans(telemetryData);
 
-          getRankPoints(matchData).then((rankPoints) => {
-            const output: IOutput = {
-              damageData: damageData,
-              banData: banData,
-              rankPoints: rankPoints,
-              error: false,
-            };
-
-            res.writeHead(200, {
-              'Content-Type': 'application/json',
-            });
-            res.write(JSON.stringify(output));
-            res.end();
-          });
-        },
-      )
-      .catch(function(error) {
+      getRankPoints(matchData).then(rankPoints => {
         const output: IOutput = {
-          error: true,
+          damageData: damageData,
+          banData: banData,
+          rankPoints: rankPoints,
+          error: false
         };
-        res.writeHead(404, {
-          'Content-Type': 'application/json',
+
+        res.writeHead(200, {
+          "Content-Type": "application/json"
         });
         res.write(JSON.stringify(output));
         res.end();
+      });
+    })
+    .catch(function(error) {
+      const output: IOutput = {
+        error: true
+      };
+      res.writeHead(404, {
+        "Content-Type": "application/json"
+      });
+      res.write(JSON.stringify(output));
+      res.end();
 
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
 
-          if (error.response.status == 404) {
-            console.log(
-              `${JSON.stringify(error.response.data)} ${
-                error.response.status
-              } ${JSON.stringify(error.response.headers)}`,
-            );
-          }
-
+        if (error.response.status == 404) {
           console.log(
             `${JSON.stringify(error.response.data)} ${
               error.response.status
-            } ${JSON.stringify(error.response.headers)}`,
+            } ${JSON.stringify(error.response.headers)}`
           );
-        } else if (error.request) {
-          // The request was made but no response was received
-          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-          // http.ClientRequest in node.js
-          console.log(error.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.log('Error', error.message);
         }
-        console.log(error.config);
-      });
-  },
-);
+
+        console.log(
+          `${JSON.stringify(error.response.data)} ${
+            error.response.status
+          } ${JSON.stringify(error.response.headers)}`
+        );
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log("Error", error.message);
+      }
+      console.log(error.config);
+    });
+});
 
 export type IDamages = {
   rosters: { [key: string]: number }[];
@@ -109,7 +102,7 @@ export type IDamages = {
 
 const calculateDamagesFromTelemetry = (
   telemetry: any,
-  match: any,
+  match: any
 ): IDamages => {
   const damagesData: IDamages = { rosters: [{}, {}], highest: 0 };
 
@@ -122,13 +115,13 @@ const calculateDamagesFromTelemetry = (
       const totalDamage: number = telemetry
         .filter(
           (e: any) =>
-            e.type === 'DealDamage' &&
+            e.type === "DealDamage" &&
             e.payload.Actor ===
-              '*' +
+              "*" +
                 match.rosters[rosterIndex].participants[participantIndex]
                   .actor +
-                '*' &&
-            e.payload.Team == ['Left', 'Right'][rosterIndex],
+                "*" &&
+            e.payload.Team == ["Left", "Right"][rosterIndex]
         )
         .map((e: any) => e.payload.Dealt)
         .reduce((a: number, b: number) => a + b, 0);
@@ -153,9 +146,9 @@ export type IBans = {
 const detectBans = (telemetry: any): IBans => {
   const rostersBans: any[][] = [[], []];
 
-  telemetry.filter((e: any) => e.type == 'HeroBan').forEach((e: any) => {
+  telemetry.filter((e: any) => e.type == "HeroBan").forEach((e: any) => {
     rostersBans[parseInt(e.payload.Team) - 1].push(
-      e.payload.Hero.substring(1, e.payload.Hero.length - 1),
+      e.payload.Hero.substring(1, e.payload.Hero.length - 1)
     );
   });
 
@@ -170,57 +163,53 @@ export type IRankPoints = {
 
 const getRankPoints = (matchData: IMatch): Promise<IRankPoints> => {
   return axios({
-    method: 'get',
+    method: "get",
     url: `https://api.dc01.gamelockerapp.com/shards/${
       matchData.shardId
     }/matches/${matchData.matchID}`,
     headers: {
-      'Content-Encoding': 'gzip',
-      'Content-Type': 'application/json',
-      'User-Agent': 'js/vainglory',
+      "Content-Encoding": "gzip",
+      "Content-Type": "application/json",
+      "User-Agent": "js/vainglory",
       Authorization: apiKey,
-      'X-TITLE-ID': 'semc-vainglory',
-      Accept: 'application/vnd.api+json',
-    },
+      "X-TITLE-ID": "semc-vainglory",
+      Accept: "application/vnd.api+json"
+    }
   })
-    .then(
-      (response: AxiosResponse<any>): any => {
-        console.log('obtaining single match data with status', response.status);
-        return response.data;
-      },
-    )
-    .then(
-      (match: any): IRankPoints => {
-        const rankPoints: IRankPoints = {};
+    .then((response: AxiosResponse<any>): any => {
+      console.log("obtaining single match data with status", response.status);
+      return response.data;
+    })
+    .then((match: any): IRankPoints => {
+      const rankPoints: IRankPoints = {};
 
+      for (
+        let rosterIndex = 0;
+        rosterIndex < matchData.rosters.length;
+        rosterIndex++
+      ) {
+        const currentRoster = matchData.rosters[rosterIndex];
         for (
-          let rosterIndex = 0;
-          rosterIndex < matchData.rosters.length;
-          rosterIndex++
+          let participantIndex = 0;
+          participantIndex < currentRoster.participants.length;
+          participantIndex++
         ) {
-          const currentRoster = matchData.rosters[rosterIndex];
-          for (
-            let participantIndex = 0;
-            participantIndex < currentRoster.participants.length;
-            participantIndex++
-          ) {
-            const currentParticipant =
-              currentRoster.participants[participantIndex];
+          const currentParticipant =
+            currentRoster.participants[participantIndex];
 
-            const player = match.included.find(
-              (e: any) => e.id === currentParticipant.player.id,
-            );
+          const player = match.included.find(
+            (e: any) => e.id === currentParticipant.player.id
+          );
 
-            rankPoints[currentParticipant.player.name] =
-              player.attributes.stats.rankPoints[
-                gameModeDict[matchData.gameMode][2]
-              ];
-          }
+          rankPoints[currentParticipant.player.name] =
+            player.attributes.stats.rankPoints[
+              gameModeDict[matchData.gameMode][2]
+            ];
         }
-        return rankPoints;
-      },
-    )
-    .catch((error) => {
+      }
+      return rankPoints;
+    })
+    .catch(error => {
       console.error(error);
 
       return {};
