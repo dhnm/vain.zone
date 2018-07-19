@@ -125,8 +125,6 @@ export default class MainView extends React.Component {
               this.props.data.player.name
             }/${this.props.selectedMatch.matchID}`
           : window.location.href;
-        console.log(url);
-        return;
         const message = {
           attachment: {
             type: "template",
