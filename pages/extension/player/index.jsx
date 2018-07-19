@@ -317,9 +317,9 @@ class Extension extends React.Component {
         />
       );
     }
+    console.log("gg", this.props);
     return (
       <MainView
-        key={this.props.data.player.playerID}
         data={this.state.data}
         sidebarVisible={this.state.sidebarVisible}
         showSidebar={this.showSidebar}
