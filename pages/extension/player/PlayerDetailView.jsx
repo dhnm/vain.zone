@@ -85,7 +85,7 @@ export default function PlayerDetailView({ player, childRef }) {
       >
         <Card fluid id="playerDetailView">
           <Card.Content>
-            <SkillTierPopup rankPoints={player.rank_blitz} mode="Blitz" />
+            <SkillTierPopup rankPoints={player.rank_blitz} mode="BRAWL" />
             <SkillTierPopup rankPoints={player.rank_3v3} mode="3v3" />
             {(() => {
               if (player.patchVersion >= "3.2") {
@@ -95,7 +95,9 @@ export default function PlayerDetailView({ player, childRef }) {
               }
               return <span />;
             })()}
-            <Card.Header>{player.name}</Card.Header>
+            <Card.Header style={{ fontSize: "1.2rem" }}>
+              {player.name}
+            </Card.Header>
             <Card.Meta>{`Level: ${player.level}`}</Card.Meta>
             <Label content={player.shardId.toUpperCase()} />
             {(() => {
@@ -120,7 +122,7 @@ export default function PlayerDetailView({ player, childRef }) {
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row>
-                <Grid.Column>
+                <Grid.Column style={{ fontSize: "0.96rem" }}>
                   3v3 Ranked:
                   <div style={{ float: "right" }}>{player.played_ranked}×</div>
                   <br />
@@ -145,7 +147,7 @@ export default function PlayerDetailView({ player, childRef }) {
                   Blitz:
                   <div style={{ float: "right" }}>{player.played_blitz}×</div>
                 </Grid.Column>
-                <Grid.Column>
+                <Grid.Column style={{ fontSize: "0.96rem" }}>
                   3v3 Casuals:
                   <div style={{ float: "right" }}>{player.played_casual}×</div>
                   <br />
@@ -154,7 +156,7 @@ export default function PlayerDetailView({ player, childRef }) {
                     {player.played_casual_5v5}×
                   </div>
                   <br />
-                  Battle Royale:
+                  B. Royale:
                   <div style={{ float: "right" }}>{player.played_aral}×</div>
                 </Grid.Column>
               </Grid.Row>

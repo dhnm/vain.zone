@@ -35,13 +35,13 @@ export default function ParticipantCard({
       items.push("empty");
     }
   }
-  let kdaPerTenMinutes =
+  let kdaPerTwentyMinutes =
     (participant.kills + participant.assists) /
     participant.deaths /
-    (matchDuration / 600);
+    (matchDuration / 1200);
   if (participant.deaths === 0) {
-    kdaPerTenMinutes =
-      (participant.kills + participant.assists) / (matchDuration / 600);
+    kdaPerTwentyMinutes =
+      (participant.kills + participant.assists * 0.66) / (matchDuration / 1200);
   }
   let cardBg = `linear-gradient(${
     { left: "135deg", right: "225deg" }[side]
@@ -73,7 +73,8 @@ export default function ParticipantCard({
         style={{
           color: "initial",
           margin: "3px 1px 3px 0",
-          background: cardBg
+          background: cardBg,
+          boxShadow: "none"
         }}
       >
         <Dimmer active={appLoading}>
@@ -83,9 +84,16 @@ export default function ParticipantCard({
           <Image
             size="mini"
             src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
-            style={{ borderRadius: "25%", margin: "0 2px", filter: afkFilter }}
+            style={{
+              borderRadius: "25%",
+              margin: "0 2px",
+              filter: afkFilter,
+              border: "1px solid hsla(0, 0%, 100%, 0.25)",
+              boxSizing: "border-box"
+            }}
             floated={side}
           />
+          <span>{participant.player.guildTag}</span>
           <Image
             size="mini"
             src={`/static/img/rank/c/${processedSkillTier.number}${
@@ -109,14 +117,14 @@ export default function ParticipantCard({
           <div style={{ fontSize: "0.88rem" }}>
             {participant.kills}/{participant.deaths}/{participant.assists}{" "}
             <em style={{ fontSize: "0.75rem" }}>
-              {`(${kdaPerTenMinutes.toFixed(1)})`}
+              {`(${kdaPerTwentyMinutes.toFixed(1)})`}
             </em>
             {/* <span
               style={{
                 float: { right: 'left', left: 'right' }[side],
               }}
             >
-              {`(${kdaPerTenMinutes.toFixed(1)})`}
+              {`(${kdaPerTwentyMinutes.toFixed(1)})`}
             </span> */}
           </div>
           <Grid style={{ margin: 0, marginBottom: "2px" }} columns={6}>

@@ -361,10 +361,10 @@ const sendTextMessage = (userID: string, messageText: string) => {
 
 const sendInstructions = (userID: string) => {
   const instructions = [
-    'You can access this extension from any of your personal or group chats by clicking on the "(+)" sign in the bottom left corner. (You cannot do it here, you must switch to another chat.)',
+    'You can access this app from any of your personal or group chats by clicking on the "(+)" sign in the bottom left corner (on the phone). (You cannot do it here, you must switch to another chat.)',
     "We will not recognize the nick if it has an incorrect spelling and/or capitalisation.",
-    "Type a player's nick and send the message for the player's statistics.\nFor example:\nL3oN\nESQuire\nPalmatoro\netc.",
-    "If you set a default nick, the extension will always show your latest match instead of L3oN's ;)"
+    "Type a player's nick and send the message to display the player's statistics.\nFor example:\nL3oN\nFlashX\nPalmatoro\netc.",
+    "If you set a default nick, the app will remember it and it will always display your stats when you open the app."
   ];
   for (let i = 0; i < instructions.length; i++) {
     (function(index) {

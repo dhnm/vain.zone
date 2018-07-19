@@ -1,21 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Router from 'next/router';
+import React from "react";
+import PropTypes from "prop-types";
+import Router from "next/router";
 import {
   Sidebar,
   Segment,
   Button,
   Icon,
   Label,
-  Message,
-} from 'semantic-ui-react';
-import axios from 'axios';
-import html2canvas from 'html2canvas';
+  Message
+} from "semantic-ui-react";
+import axios from "axios";
+import html2canvas from "html2canvas";
 
-import MatchesSidebar from './MatchesSidebar';
-import InputPanel from './InputPanel';
-import PlayerDetailView from './PlayerDetailView';
-import MatchDetailView from './MatchDetailView';
+import MatchesSidebar from "./MatchesSidebar";
+import InputPanel from "./InputPanel";
+import PlayerDetailView from "./PlayerDetailView";
+import MatchDetailView from "./MatchDetailView";
 
 const propTypes = {
   extension: PropTypes.bool.isRequired,
@@ -35,26 +35,26 @@ const propTypes = {
   filterFailed: PropTypes.bool.isRequired,
   scrollPosition: PropTypes.number.isRequired,
   sendLoading: PropTypes.bool.isRequired,
-  toggleSendLoading: PropTypes.func.isRequired,
+  toggleSendLoading: PropTypes.func.isRequired
 };
 
 export default class MainView extends React.Component {
   static identifyExtensionUser() {
-    const genericUsername = 'L3oN';
+    const genericUsername = "L3oN";
     return new Promise((resolve, reject) => {
       window.MessengerExtensions.getContext(
-        '617200295335676',
-        (threadContext) => {
+        "617200295335676",
+        threadContext => {
           const { psid } = threadContext;
           axios({
-            method: 'get',
-            url: '/api/botuser',
+            method: "get",
+            url: "/api/botuser",
             params: {
-              psid,
-            },
+              psid
+            }
           })
-            .then((res) => res.data)
-            .then((user) => {
+            .then(res => res.data)
+            .then(user => {
               if (user.currentUser) {
                 // window.document.getElementById("FBButton").style.display = "inline-block";
                 if (user.defaultIGN) {
@@ -63,88 +63,88 @@ export default class MainView extends React.Component {
                   resolve(genericUsername);
                 }
               } else {
-                reject(new Error('User has not yet interacted with the bot.'));
+                reject(new Error("User has not yet interacted with the bot."));
               }
             })
-            .catch((err) => {
-              console.log('err', err);
+            .catch(err => {
+              console.log("err", err);
               resolve(genericUsername);
             });
         },
-        (err) => {
+        err => {
           console.log("Couldn't get context:", err);
           resolve(genericUsername);
-        },
+        }
       );
     });
   }
   static generateImage(element) {
     html2canvas(element, {
-      backgroundColor: null,
+      backgroundColor: null
     })
-      .then((canvas) => {
-        const imgBase64 = canvas.toDataURL('image/png');
+      .then(canvas => {
+        const imgBase64 = canvas.toDataURL("image/png");
 
-        const imageData = window.atob(imgBase64.split(',')[1]);
+        const imageData = window.atob(imgBase64.split(",")[1]);
         const arraybuffer = new ArrayBuffer(imageData.length);
         const view = new Uint8Array(arraybuffer);
         for (let i = 0; i < imageData.length; i += 1) {
           view[i] = imageData.charCodeAt(i);
         }
-        return new window.Blob([view], { type: 'image/png' });
+        return new window.Blob([view], { type: "image/png" });
       })
-      .then((blob) => {
+      .then(blob => {
         const formData = new window.FormData();
-        formData.append('blob', blob, {
-          filename: 'image.png',
+        formData.append("blob", blob, {
+          filename: "image.png"
         });
         return new Promise((resolve, reject) => {
           axios({
-            method: 'post',
-            url: '/api/fbattachment',
-            data: formData,
+            method: "post",
+            url: "/api/fbattachment",
+            data: formData
             // headers: formData.getHeaders(), maybe works only on server-side
           })
-            .then((res) => res.data)
-            .then((resJson) => {
+            .then(res => res.data)
+            .then(resJson => {
               if (resJson.error) {
-                return Promise.reject(new Error('Error uploading to FB'));
+                return Promise.reject(new Error("Error uploading to FB"));
               }
               console.log(resJson);
               return resolve(resJson.attachmentId);
             })
-            .catch((err) => {
+            .catch(err => {
               window.document.getElementById(
-                'debugConsole',
+                "debugConsole"
               ).value += `\nerror uploading image ${err}`;
               reject(err);
             });
         });
       })
-      .then((attachmentId) => {
+      .then(attachmentId => {
         const message = {
           attachment: {
-            type: 'template',
+            type: "template",
             payload: {
-              template_type: 'media',
+              template_type: "media",
               elements: [
                 {
-                  media_type: 'image',
+                  media_type: "image",
                   attachment_id: attachmentId,
                   buttons: [
                     {
-                      type: 'web_url',
-                      webview_share_button: 'hide',
+                      type: "web_url",
+                      webview_share_button: "hide",
                       url: window.location.href,
-                      title: 'Open',
-                      webview_height_ratio: 'full',
-                      messenger_extensions: true,
-                    },
-                  ],
-                },
-              ],
-            },
-          },
+                      title: "Open",
+                      webview_height_ratio: "full",
+                      messenger_extensions: true
+                    }
+                  ]
+                }
+              ]
+            }
+          }
         };
         window.MessengerExtensions.beginShareFlow(
           (/* share_response */) => {
@@ -171,7 +171,7 @@ export default class MainView extends React.Component {
             this.props.toggleSendLoading(true);
 
             window.document.getElementById(
-              'debugConsole',
+              "debugConsole"
             ).value += `\nError opening share window: ${errorCode} ${errorMessage}`;
             // alert(
             //   'Error! Please contact the developers.' +
@@ -182,14 +182,14 @@ export default class MainView extends React.Component {
             // handle error in ui here
           },
           message,
-          'broadcast',
+          "broadcast"
         );
       })
-      .catch((err) => {
+      .catch(err => {
         this.props.toggleSendLoading(true);
 
         window.document.getElementById(
-          'debugConsole',
+          "debugConsole"
         ).value += `\nError L ${err}`;
         // alert('Error! Please notify the developers. ' + err);
       });
@@ -204,17 +204,17 @@ export default class MainView extends React.Component {
     const FBLoaded = () => {
       if (this.props.extension) {
         MainView.identifyExtensionUser()
-          .then((IGN) => {
+          .then(IGN => {
             Router.replace(
               `/extension/player?error=false&extension=false&IGN=${IGN}`,
-              `/extension/player/${IGN}`,
+              `/extension/player/${IGN}`
             );
           })
           .catch(() => {
             try {
-              window.location.replace('https://m.me/VAIN.ZONE');
+              window.location.replace("https://m.me/VAIN.ZONE");
             } catch (e) {
-              window.location = 'https://m.me/VAIN.ZONE';
+              window.location = "https://m.me/VAIN.ZONE";
             }
           });
       }
@@ -228,9 +228,9 @@ export default class MainView extends React.Component {
       }
       const js = d.createElement(s);
       js.id = id;
-      js.src = '//connect.facebook.com/en_US/messenger.Extensions.js';
+      js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";
       fjs.parentNode.insertBefore(js, fjs);
-    })(window.document, 'script', 'Messenger');
+    })(window.document, "script", "Messenger");
 
     this.saveNameInLocalStorage();
   }
@@ -249,11 +249,11 @@ export default class MainView extends React.Component {
     if (!this.props.extension) {
       if (window.localStorage) {
         console.log(this.props);
-        console.log('---------- counted');
-        const fromStorage = window.localStorage.getItem('favorites');
+        console.log("---------- counted");
+        const fromStorage = window.localStorage.getItem("favorites");
         const favorites = fromStorage ? JSON.parse(fromStorage) : [];
         const existingIndex = favorites.findIndex(
-          (e) => e.name === this.props.data.player.name,
+          e => e.name === this.props.data.player.name
         );
 
         if (existingIndex > -1) {
@@ -262,7 +262,7 @@ export default class MainView extends React.Component {
           favorites.push({ name: this.props.data.player.name, count: 1 });
         }
 
-        window.localStorage.setItem('favorites', JSON.stringify(favorites));
+        window.localStorage.setItem("favorites", JSON.stringify(favorites));
       }
     }
   }
@@ -279,7 +279,7 @@ export default class MainView extends React.Component {
       );
     }
     return (
-      <Sidebar.Pushable style={{ minHeight: '100vh' }}>
+      <Sidebar.Pushable style={{ minHeight: "100vh" }}>
         <MatchesSidebar
           data={this.props.data}
           playerName={this.props.data.player.name}
@@ -304,11 +304,11 @@ export default class MainView extends React.Component {
             </Message> */}
             <PlayerDetailView
               player={this.props.data.player}
-              childRef={(c) => {
+              childRef={c => {
                 this.playerDetailView = c;
               }}
             />
-            <Button.Group attached="bottom" style={{ overflow: 'hidden' }}>
+            <Button.Group attached="bottom" style={{ overflow: "hidden" }}>
               <Button
                 onClick={() => {
                   this.props.toggleSendLoading(true);
@@ -317,8 +317,9 @@ export default class MainView extends React.Component {
                 loading={this.props.sendLoading}
                 disabled={this.props.sendLoading}
               >
-                <Icon name="send" />Send Profile{' '}
-                <Label color="blue">Beta</Label>
+                <Label color="blue">
+                  <Icon name="send" />Share in Chat
+                </Label>
               </Button>
               <Button
                 onClick={() => {
@@ -331,9 +332,9 @@ export default class MainView extends React.Component {
             <textarea
               id="debugConsole"
               style={{
-                width: '100%',
-                height: '120px',
-                display: 'none',
+                width: "100%",
+                height: "120px",
+                display: "none"
               }}
               value="Debugging"
               readOnly
@@ -351,7 +352,7 @@ export default class MainView extends React.Component {
                       converter={this.props.converter}
                       TLData={this.props.TLData}
                       appLoading={this.props.appLoading}
-                      childRef={(c) => {
+                      childRef={c => {
                         this.matchDetailView = c;
                       }}
                     />
@@ -364,8 +365,9 @@ export default class MainView extends React.Component {
                       disabled={this.props.sendLoading}
                       attached="bottom"
                     >
-                      <Icon name="send" />Send Match{' '}
-                      <Label color="blue">Beta</Label>
+                      <Label color="blue">
+                        <Icon name="send" />Share in Chat
+                      </Label>
                     </Button>
                   </React.Fragment>
                 );

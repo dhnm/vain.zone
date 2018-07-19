@@ -50,7 +50,7 @@ export default function MatchDetailView({
   const maxParticipantValues = converter({
     rosters: match.rosters
   }).getMaxParticipantValues();
-  const { playerInTheMatch } = converter({
+  const { playerInTheMatch, playerInTheMatchTeam } = converter({
     rosters: match.rosters
   }).identifyPlayerInTheMatch();
   const processedAverageSkillTiers = match.rosters.map((_, i) =>
@@ -94,15 +94,24 @@ export default function MatchDetailView({
         <Segment basic style={{ padding: 0, textAlign: "center" }}>
           <Label
             color={
-              converter({
-                rosterWon: match.rosters[0].won,
-                endGameReason: match.endGameReason
-              }).longMatchConclusion().matchConclusionColors[1]
+              playerInTheMatchTeam === 0
+                ? converter({
+                    rosterWon: match.rosters[0].won,
+                    endGameReason: match.endGameReason
+                  }).longMatchConclusion().matchConclusionColors[1]
+                : null
             }
             style={{
               width: "90px",
               textAlign: "center",
-              float: "left"
+              float: "left",
+              color:
+                playerInTheMatchTeam === 0
+                  ? null
+                  : converter({
+                      rosterWon: match.rosters[0].won,
+                      endGameReason: match.endGameReason
+                    }).longMatchConclusion().matchConclusionColors[0]
             }}
           >
             {
@@ -131,15 +140,24 @@ export default function MatchDetailView({
           </div>
           <Label
             color={
-              converter({
-                rosterWon: match.rosters[1].won,
-                endGameReason: match.endGameReason
-              }).longMatchConclusion().matchConclusionColors[1]
+              playerInTheMatchTeam === 1
+                ? converter({
+                    rosterWon: match.rosters[1].won,
+                    endGameReason: match.endGameReason
+                  }).longMatchConclusion().matchConclusionColors[1]
+                : null
             }
             style={{
               float: "right",
               width: "90px",
-              textAlign: "center"
+              textAlign: "center",
+              color:
+                playerInTheMatchTeam === 1
+                  ? null
+                  : converter({
+                      rosterWon: match.rosters[1].won,
+                      endGameReason: match.endGameReason
+                    }).longMatchConclusion().matchConclusionColors[0]
             }}
           >
             {
@@ -152,19 +170,42 @@ export default function MatchDetailView({
           <Grid columns={2} style={{ clear: "both" }}>
             <Grid.Row style={{ padding: "0.4rem 0 0 0" }}>
               <Grid.Column textAlign="left">
-                <TeamStat icon={ICONS.coin} stat={match.rosters[0].gold} />
+                <TeamStat
+                  icon={ICONS.coin}
+                  stat={`${(match.rosters[0].gold / 1000).toFixed(1)}k`}
+                />
                 <TeamStat
                   icon={ICONS.spades}
                   stat={match.rosters[0].acesEarned}
                 />
                 <TeamStat
-                  icon={ICONS.kraken}
-                  stat={match.rosters[0].krakenCaptures}
-                />
-                <TeamStat
                   icon={ICONS.turret}
                   stat={match.rosters[0].turretKills}
                 />
+                {[
+                  "ranked",
+                  "private_party_draft_match",
+                  "casual",
+                  "private"
+                ].indexOf(match.gameMode) > -1 && (
+                  <TeamStat
+                    icon={ICONS.kraken}
+                    stat={match.rosters[0].krakenCaptures}
+                  />
+                )}
+                {match.gameMode.indexOf("5v5") > -1 && (
+                  <React.Fragment>
+                    <br />
+                    <TeamStat
+                      icon={ICONS.blackclaw}
+                      stat={TLData.creatures5v5[0].blackclaw}
+                    />
+                    <TeamStat
+                      icon={ICONS.ghostwing}
+                      stat={TLData.creatures5v5[0].ghostwing}
+                    />
+                  </React.Fragment>
+                )}
                 {TLData.banData.rosters[0].length ? (
                   <React.Fragment>
                     <br />
@@ -179,8 +220,9 @@ export default function MatchDetailView({
                             borderRadius: "50%",
                             marginBottom: "4px",
                             marginTop: "1px",
-                            filter: "grayscale(33%)",
-                            width: "32px"
+                            filter: "grayscale(40%)",
+                            width: "32px",
+                            border: "1px solid hsla(0, 0%, 100%, 0.25)"
                           }}
                           src={`/static/img/heroes/c/${b.toLowerCase()}.jpg`}
                         />
@@ -203,19 +245,42 @@ export default function MatchDetailView({
                 </Label>
               </Grid.Column>
               <Grid.Column textAlign="right" style={{}}>
-                <TeamStat icon={ICONS.coin} stat={match.rosters[1].gold} />
+                <TeamStat
+                  icon={ICONS.coin}
+                  stat={`${(match.rosters[1].gold / 1000).toFixed(1)}k`}
+                />
                 <TeamStat
                   icon={ICONS.spades}
                   stat={match.rosters[1].acesEarned}
                 />
                 <TeamStat
-                  icon={ICONS.kraken}
-                  stat={match.rosters[1].krakenCaptures}
-                />
-                <TeamStat
                   icon={ICONS.turret}
                   stat={match.rosters[1].turretKills}
                 />
+                {[
+                  "ranked",
+                  "private_party_draft_match",
+                  "casual",
+                  "private"
+                ].indexOf(match.gameMode) > -1 && (
+                  <TeamStat
+                    icon={ICONS.kraken}
+                    stat={match.rosters[1].krakenCaptures}
+                  />
+                )}
+                {match.gameMode.indexOf("5v5") > -1 && (
+                  <React.Fragment>
+                    <br />
+                    <TeamStat
+                      icon={ICONS.blackclaw}
+                      stat={TLData.creatures5v5[1].blackclaw}
+                    />
+                    <TeamStat
+                      icon={ICONS.ghostwing}
+                      stat={TLData.creatures5v5[1].ghostwing}
+                    />
+                  </React.Fragment>
+                )}
                 {TLData.banData.rosters[1].length ? (
                   <React.Fragment>
                     <br />
@@ -227,8 +292,9 @@ export default function MatchDetailView({
                             borderRadius: "50%",
                             marginBottom: "4px",
                             marginTop: "1px",
-                            filter: "grayscale(33%)",
-                            width: "32px"
+                            filter: "grayscale(40%)",
+                            width: "32px",
+                            border: "1px solid hsla(0, 0%, 100%, 0.25)"
                           }}
                           src={`/static/img/heroes/c/${b.toLowerCase()}.jpg`}
                         />{" "}
@@ -259,42 +325,52 @@ export default function MatchDetailView({
               }}
             >
               <Grid.Column textAlign="left" style={{ paddingRight: "0.1em" }}>
-                {match.rosters[0].participants.map((participant, index) => (
-                  <ParticipantCard
-                    playerInTheMatch={playerInTheMatch}
-                    matchDuration={match.duration}
-                    participant={participant}
-                    gameMode={match.gameMode}
-                    maxParticipantValues={maxParticipantValues}
-                    side="left"
-                    key={index}
-                    appLoading={appLoading}
-                    damage={TLData.damageData.rosters[0][participant.actor]}
-                    highestDamage={TLData.damageData.highest}
-                    processedSkillTier={skillTierCalculator(
-                      TLData.rankPoints[participant.player.name]
-                    )}
-                  />
-                ))}
+                {TLData.draftOrder[0].map((actor, index) => {
+                  const participant = match.rosters[0].participants.find(
+                    e => e.actor === actor
+                  );
+                  return (
+                    <ParticipantCard
+                      playerInTheMatch={playerInTheMatch}
+                      matchDuration={match.duration}
+                      participant={participant}
+                      gameMode={match.gameMode}
+                      maxParticipantValues={maxParticipantValues}
+                      side="left"
+                      key={index}
+                      appLoading={appLoading}
+                      damage={TLData.damagesData.rosters[0][participant.actor]}
+                      highestDamage={TLData.damagesData.highest}
+                      processedSkillTier={skillTierCalculator(
+                        TLData.rankPoints[participant.player.name]
+                      )}
+                    />
+                  );
+                })}
               </Grid.Column>
               <Grid.Column textAlign="right" style={{ paddingLeft: "0.1em" }}>
-                {match.rosters[1].participants.map((participant, index) => (
-                  <ParticipantCard
-                    playerInTheMatch={playerInTheMatch}
-                    matchDuration={match.duration}
-                    participant={participant}
-                    gameMode={match.gameMode}
-                    maxParticipantValues={maxParticipantValues}
-                    side="right"
-                    key={index}
-                    appLoading={appLoading}
-                    damage={TLData.damageData.rosters[1][participant.actor]}
-                    highestDamage={TLData.damageData.highest}
-                    processedSkillTier={skillTierCalculator(
-                      TLData.rankPoints[participant.player.name]
-                    )}
-                  />
-                ))}
+                {TLData.draftOrder[1].map((actor, index) => {
+                  const participant = match.rosters[1].participants.find(
+                    e => e.actor === actor
+                  );
+                  return (
+                    <ParticipantCard
+                      playerInTheMatch={playerInTheMatch}
+                      matchDuration={match.duration}
+                      participant={participant}
+                      gameMode={match.gameMode}
+                      maxParticipantValues={maxParticipantValues}
+                      side="right"
+                      key={index}
+                      appLoading={appLoading}
+                      damage={TLData.damagesData.rosters[1][participant.actor]}
+                      highestDamage={TLData.damagesData.highest}
+                      processedSkillTier={skillTierCalculator(
+                        TLData.rankPoints[participant.player.name]
+                      )}
+                    />
+                  );
+                })}
               </Grid.Column>
             </Grid.Row>
             <Grid.Row style={{ padding: "0 0.4em 0.1rem 0.4em" }}>

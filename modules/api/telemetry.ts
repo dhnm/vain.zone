@@ -9,9 +9,11 @@ import { gameModeDict, apiKey } from "./../functions/constants";
 export default router;
 
 export type IOutput = {
-  damageData?: IDamages;
+  damagesData?: IDamages;
   banData?: IBans;
   rankPoints?: IRankPoints;
+  creatures5v5?: ICreatures5v5;
+  draftOrder?: IDraftOrder;
   error: boolean;
 };
 
@@ -33,18 +35,20 @@ router.get("/", (req: Request, res: Response): void => {
       return response.data;
     })
     .then((telemetryData: any): void => {
-      const damageData = calculateDamagesFromTelemetry(
-        telemetryData,
-        matchData
-      );
-
-      const banData = detectBans(telemetryData);
+      const {
+        damagesData,
+        banData,
+        creatures5v5,
+        draftOrder
+      } = loopThroughTelemetry(telemetryData, matchData);
 
       getRankPoints(matchData).then(rankPoints => {
         const output: IOutput = {
-          damageData: damageData,
-          banData: banData,
-          rankPoints: rankPoints,
+          damagesData,
+          banData,
+          rankPoints,
+          creatures5v5,
+          draftOrder,
           error: false
         };
 
@@ -95,67 +99,83 @@ router.get("/", (req: Request, res: Response): void => {
     });
 });
 
-export type IDamages = {
-  rosters: { [key: string]: number }[];
-  highest: number;
-};
+// const calculateDamagesFromTelemetry = (
+//   telemetry: any,
+//   match: any
+// ): IDamages => {
+//   const damagesData: IDamages = { rosters: [{}, {}], highest: 0 };
 
-const calculateDamagesFromTelemetry = (
-  telemetry: any,
-  match: any
-): IDamages => {
-  const damagesData: IDamages = { rosters: [{}, {}], highest: 0 };
+//   for (let rosterIndex = 0; rosterIndex < match.rosters.length; rosterIndex++) {
+//     for (
+//       let participantIndex = 0;
+//       participantIndex < match.rosters[rosterIndex].participants.length;
+//       participantIndex++
+//     ) {
+//       const totalDamage: number = telemetry
+//         .filter(
+//           (e: any) =>
+//             e.type === "DealDamage" &&
+//             e.payload.Actor ===
+//               "*" +
+//                 match.rosters[rosterIndex].participants[participantIndex]
+//                   .actor +
+//                 "*" &&
+//             e.payload.Team == ["Left", "Right"][rosterIndex]
+//         )
+//         .map((e: any) => e.payload.Dealt)
+//         .reduce((a: number, b: number) => a + b, 0);
 
-  for (let rosterIndex = 0; rosterIndex < match.rosters.length; rosterIndex++) {
-    for (
-      let participantIndex = 0;
-      participantIndex < match.rosters[rosterIndex].participants.length;
-      participantIndex++
-    ) {
-      const totalDamage: number = telemetry
-        .filter(
-          (e: any) =>
-            e.type === "DealDamage" &&
-            e.payload.Actor ===
-              "*" +
-                match.rosters[rosterIndex].participants[participantIndex]
-                  .actor +
-                "*" &&
-            e.payload.Team == ["Left", "Right"][rosterIndex]
-        )
-        .map((e: any) => e.payload.Dealt)
-        .reduce((a: number, b: number) => a + b, 0);
+//       if (totalDamage > damagesData.highest) {
+//         damagesData.highest = totalDamage;
+//       }
 
-      if (totalDamage > damagesData.highest) {
-        damagesData.highest = totalDamage;
-      }
+//       damagesData.rosters[rosterIndex][
+//         match.rosters[rosterIndex].participants[participantIndex].actor
+//       ] = totalDamage;
+//     }
+//   }
 
-      damagesData.rosters[rosterIndex][
-        match.rosters[rosterIndex].participants[participantIndex].actor
-      ] = totalDamage;
-    }
-  }
+//   return damagesData;
+// };
 
-  return damagesData;
-};
+// const detectBans = (telemetry: any): IBans => {
+//   const rostersBans: any[][] = [[], []];
 
-export type IBans = {
-  rosters: string[][];
-};
+//   telemetry.filter((e: any) => e.type == "HeroBan").forEach((e: any) => {
+//     rostersBans[parseInt(e.payload.Team) - 1].push(
+//       e.payload.Hero.substring(1, e.payload.Hero.length - 1)
+//     );
+//   });
 
-const detectBans = (telemetry: any): IBans => {
-  const rostersBans: any[][] = [[], []];
+//   const bansData: IBans = { rosters: rostersBans };
 
-  telemetry.filter((e: any) => e.type == "HeroBan").forEach((e: any) => {
-    rostersBans[parseInt(e.payload.Team) - 1].push(
-      e.payload.Hero.substring(1, e.payload.Hero.length - 1)
-    );
-  });
+//   return bansData;
+// };
 
-  const bansData: IBans = { rosters: rostersBans };
+// const getCreatures5v5 = (telemetry: any): ICreatures5v5 => {
+//   const rosters: ICreatures5v5 = [
+//     { blackclaw: 0, ghostwing: 0 },
+//     { blackclaw: 0, ghostwing: 0 }
+//   ];
 
-  return bansData;
-};
+//   telemetry
+//     .filter(
+//       (e: any) =>
+//         e.type == "KillActor" &&
+//         (e.payload.Killed === "*5v5_Ghostwing*" ||
+//           e.payload.Killed === "*5v5_Blackclaw_Uncaptured*")
+//     )
+//     .forEach((e: any) => {
+//       rosters[{ Left: 0, Right: 1 }[e.payload.Team]][
+//         {
+//           "*5v5_Ghostwing*": "ghostwing",
+//           "*5v5_Blackclaw_Uncaptured*": "blackclaw"
+//         }[e.payload.Killed]
+//       ]++;
+//     });
+
+//   return rosters;
+// };
 
 export type IRankPoints = {
   [key: string]: number;
@@ -214,4 +234,87 @@ const getRankPoints = (matchData: IMatch): Promise<IRankPoints> => {
 
       return {};
     });
+};
+
+export type IDamages = {
+  rosters: { [key: string]: number }[];
+  highest: number;
+};
+
+export type IBans = {
+  rosters: string[][];
+};
+
+export type ICreatures5v5 = {
+  blackclaw: number;
+  ghostwing: number;
+}[];
+
+export type IDraftOrder = string[][];
+
+const loopThroughTelemetry = (telemetryData, matchData) => {
+  const damagesData: IDamages = { rosters: [{}, {}], highest: 0 };
+
+  const banData: IBans = { rosters: [[], []] };
+
+  const is5v5 = matchData.gameMode.includes("5v5");
+  const creatures5v5: ICreatures5v5 = [
+    { blackclaw: 0, ghostwing: 0 },
+    { blackclaw: 0, ghostwing: 0 }
+  ];
+
+  const draftOrder = [[], []];
+
+  for (let i = 0; i < telemetryData.length; i++) {
+    const currVa = telemetryData[i];
+
+    if (currVa.type === "DealDamage") {
+      // get damages
+      const reference =
+        damagesData.rosters[{ Left: 0, Right: 1 }[currVa.payload.Team]];
+      const actorName = currVa.payload.Actor.replace(/\*/g, "");
+      if (reference[actorName]) {
+        reference[actorName] += currVa.payload.Dealt;
+      } else {
+        reference[actorName] = currVa.payload.Dealt;
+      }
+    } else if (currVa.type === "HeroBan") {
+      // get bans
+      banData.rosters[parseInt(currVa.payload.Team) - 1].push(
+        currVa.payload.Hero.replace(/\*/g, "")
+      );
+    } else if (
+      is5v5 &&
+      currVa.type === "KillActor" &&
+      (currVa.payload.Killed === "*5v5_Ghostwing*" ||
+        currVa.payload.Killed === "*5v5_Blackclaw_Uncaptured*")
+    ) {
+      // get 5v5 creatures
+      creatures5v5[{ Left: 0, Right: 1 }[currVa.payload.Team]][
+        {
+          "*5v5_Ghostwing*": "ghostwing",
+          "*5v5_Blackclaw_Uncaptured*": "blackclaw"
+        }[currVa.payload.Killed]
+      ]++;
+    } else if (currVa.type === "HeroSelect") {
+      draftOrder[parseInt(currVa.payload.Team) - 1].push(
+        currVa.payload.Hero.replace(/\*/g, "")
+      );
+    }
+  }
+
+  damagesData.highest = damagesData.rosters.reduce((accu, currVa): any => {
+    const highestInTeam = Object.keys(currVa).reduce(
+      (accu2, currVa2) => (currVa[currVa2] > accu2 ? currVa[currVa2] : accu2),
+      0
+    );
+    return highestInTeam > accu ? highestInTeam : accu;
+  }, 0);
+
+  return {
+    damagesData,
+    banData,
+    creatures5v5,
+    draftOrder
+  };
 };

@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Popup, Image, Progress } from 'semantic-ui-react';
+import React from "react";
+import PropTypes from "prop-types";
+import { Popup, Image, Progress } from "semantic-ui-react";
 
-import skillTierCalculator from '../../../modules/functions/skillTierCalculator';
+import skillTierCalculator from "../../../modules/functions/skillTierCalculator";
 
 const propTypes = {
   rankPoints: PropTypes.number.isRequired,
-  mode: PropTypes.string.isRequired,
+  mode: PropTypes.string.isRequired
 };
 
 export default function SkillTierPopup({ rankPoints, mode }) {
@@ -15,25 +15,30 @@ export default function SkillTierPopup({ rankPoints, mode }) {
   return (
     <Popup
       trigger={
-        <div style={{ float: 'right', position: 'relative' }}>
+        <div
+          style={{
+            float: "right",
+            position: "relative",
+            marginRight: "-5px",
+            marginLeft: "2px"
+          }}
+        >
           <Image
             size="tiny"
             src={`/static/img/rank/c/${skillTierInfo.number}${
               skillTierInfo.color
             }.png`}
             style={{
-              width: '40px',
+              width: "40px",
               margin: 0,
-              marginBottom: '-6px',
-              marginRight: '14px',
+              marginBottom: "-6px"
+              // marginRight: "18px"
             }}
           />
           <strong
             style={{
-              position: 'absolute',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              marginLeft: '-24px',
+              fontSize: "0.85rem",
+              marginLeft: "-9px" // -24
             }}
           >
             {mode}
