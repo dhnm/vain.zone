@@ -57,15 +57,10 @@ class Extension extends React.Component {
     // Router.onRouteChangeComplete = () => console.log("Complete");
     Router.onRouteChangeError = () => this.setState({ appLoading: false });
   }
-  // componentWillReceiveProps(nextProps) {
-  //   // UNSAFE, but componentDidUdpate is NEVER called here
-
-  //   console.log("there");
-  // }
-  static getDerivedStateFromProps(props, state) {
-    if (props.data && props.TLData) {
-      return {
-        data: props.data,
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.data && nextProps.TLData) {
+      this.setState({
+        data: nextProps.data,
         sidebarVisible: false,
         filters: {
           page: 1,
@@ -73,20 +68,17 @@ class Extension extends React.Component {
           gameMode: ""
         },
         filterFailed: false,
-        selectedMatch: props.data
-          ? props.data.matches ? props.data.matches[0] : undefined
+        selectedMatch: nextProps.data
+          ? nextProps.data.matches ? nextProps.data.matches[0] : undefined
           : undefined,
-        TLData: props.TLData,
+        TLData: nextProps.TLData,
         appLoading: false
-      };
-    } else if (props.error) {
-      return {
+      });
+    } else if (nextProps.error) {
+      this.setState({
         appLoading: false
-      };
+      });
     }
-
-    return null;
-    console.log("hello", this);
   }
   setSelectedMatch = index => {
     this.showSidebar(false);
@@ -317,7 +309,6 @@ class Extension extends React.Component {
         />
       );
     }
-    console.log("gg", this.props);
     return (
       <MainView
         data={this.state.data}
