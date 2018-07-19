@@ -81,6 +81,10 @@ class Extension extends React.Component {
           appLoading: false
         };
       }
+    } else if (props.error) {
+      return {
+        appLoading: false
+      };
     }
 
     return null;
