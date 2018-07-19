@@ -51,8 +51,6 @@ export default function ExtensionLayout({ children }) {
           #container {
             min-height: 100vh;
             margin: auto;
-          }
-          #container {
             max-width: 414px;
           }
         `}

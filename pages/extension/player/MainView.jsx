@@ -20,8 +20,6 @@ import MatchDetailView from "./MatchDetailView";
 const propTypes = {
   extension: PropTypes.bool.isRequired,
   data: PropTypes.object.isRequired,
-  name: PropTypes.string.isRequired,
-  playerID: PropTypes.string.isRequired,
   matches: PropTypes.arrayOf(PropTypes.object).isRequired,
   sidebarVisible: PropTypes.bool.isRequired,
   showSidebar: PropTypes.func.isRequired,
@@ -78,7 +76,7 @@ export default class MainView extends React.Component {
       );
     });
   }
-  static generateImage(element) {
+  static generateImage(element, isMatch) {
     html2canvas(element, {
       backgroundColor: null
     })
@@ -122,6 +120,13 @@ export default class MainView extends React.Component {
         });
       })
       .then(attachmentId => {
+        const url = isMatch
+          ? `https://vain.zone/extension/player/${
+              this.props.data.player.name
+            }/${this.props.selectedMatch.matchID}`
+          : window.location.href;
+        console.log(url);
+        return;
         const message = {
           attachment: {
             type: "template",
@@ -135,7 +140,7 @@ export default class MainView extends React.Component {
                     {
                       type: "web_url",
                       webview_share_button: "hide",
-                      url: window.location.href,
+                      url,
                       title: "Open",
                       webview_height_ratio: "full",
                       messenger_extensions: true
@@ -311,7 +316,7 @@ export default class MainView extends React.Component {
               <Button
                 onClick={() => {
                   this.props.toggleSendLoading(true);
-                  MainView.generateImage(this.playerDetailView);
+                  MainView.generateImage(this.playerDetailView, false);
                 }}
                 loading={this.props.sendLoading}
                 disabled={this.props.sendLoading}
@@ -354,7 +359,7 @@ export default class MainView extends React.Component {
                     <Button
                       onClick={() => {
                         this.props.toggleSendLoading(true);
-                        MainView.generateImage(this.matchDetailView);
+                        MainView.generateImage(this.matchDetailView, true);
                       }}
                       loading={this.props.sendLoading}
                       disabled={this.props.sendLoading}

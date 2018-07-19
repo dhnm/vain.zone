@@ -38,7 +38,7 @@ function MatchesSidebar({
   return (
     <Sidebar
       as={Menu}
-      animation="scale down"
+      animation={true ? "overlay" : "scale down"}
       direction="right"
       width="wide"
       visible={sidebarVisible}

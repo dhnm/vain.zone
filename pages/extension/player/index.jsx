@@ -64,23 +64,21 @@ class Extension extends React.Component {
   // }
   static getDerivedStateFromProps(props, state) {
     if (props.data && props.TLData) {
-      if (props.data.player.playerID !== state.data.player.playerID) {
-        return {
-          data: props.data,
-          sidebarVisible: false,
-          filters: {
-            page: 1,
-            createdAt: "",
-            gameMode: ""
-          },
-          filterFailed: false,
-          selectedMatch: props.data
-            ? props.data.matches ? props.data.matches[0] : undefined
-            : undefined,
-          TLData: props.TLData,
-          appLoading: false
-        };
-      }
+      return {
+        data: props.data,
+        sidebarVisible: false,
+        filters: {
+          page: 1,
+          createdAt: "",
+          gameMode: ""
+        },
+        filterFailed: false,
+        selectedMatch: props.data
+          ? props.data.matches ? props.data.matches[0] : undefined
+          : undefined,
+        TLData: props.TLData,
+        appLoading: false
+      };
     } else if (props.error) {
       return {
         appLoading: false
