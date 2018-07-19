@@ -10,8 +10,9 @@ export default router;
 
 export type IOutput = {
   damagesData?: IDamages;
+  towersDamagesData?: IDamages;
   banData?: IBans;
-  rankPoints?: IRankPoints;
+  singleMatchData?: ISingleMatchData;
   creatures5v5?: ICreatures5v5;
   draftOrder?: IDraftOrder;
   error: boolean;
@@ -37,16 +38,18 @@ router.get("/", (req: Request, res: Response): void => {
     .then((telemetryData: any): void => {
       const {
         damagesData,
+        towersDamagesData,
         banData,
         creatures5v5,
         draftOrder
       } = loopThroughTelemetry(telemetryData, matchData);
 
-      getRankPoints(matchData).then(rankPoints => {
+      retrieveSingleMatch(matchData).then(singleMatchData => {
         const output: IOutput = {
           damagesData,
+          towersDamagesData,
           banData,
-          rankPoints,
+          singleMatchData,
           creatures5v5,
           draftOrder,
           error: false
@@ -177,11 +180,11 @@ router.get("/", (req: Request, res: Response): void => {
 //   return rosters;
 // };
 
-export type IRankPoints = {
-  [key: string]: number;
+export type ISingleMatchData = {
+  [key: string]: { rankPoints: number; guildTag: string };
 };
 
-const getRankPoints = (matchData: IMatch): Promise<IRankPoints> => {
+const retrieveSingleMatch = (matchData: IMatch) => {
   return axios({
     method: "get",
     url: `https://api.dc01.gamelockerapp.com/shards/${
@@ -200,8 +203,8 @@ const getRankPoints = (matchData: IMatch): Promise<IRankPoints> => {
       console.log("obtaining single match data with status", response.status);
       return response.data;
     })
-    .then((match: any): IRankPoints => {
-      const rankPoints: IRankPoints = {};
+    .then((match: any) => {
+      const singleMatchData: ISingleMatchData = {};
 
       for (
         let rosterIndex = 0;
@@ -221,18 +224,29 @@ const getRankPoints = (matchData: IMatch): Promise<IRankPoints> => {
             (e: any) => e.id === currentParticipant.player.id
           );
 
-          rankPoints[currentParticipant.player.name] =
+          if (!singleMatchData[currentParticipant.player.name]) {
+            singleMatchData[currentParticipant.player.name] = {
+              rankPoints: 0,
+              guildTag: ""
+            };
+          }
+
+          singleMatchData[currentParticipant.player.name].rankPoints =
             player.attributes.stats.rankPoints[
               gameModeDict[matchData.gameMode][2]
             ];
+
+          singleMatchData[currentParticipant.player.name].guildTag =
+            player.attributes.stats.guildTag;
         }
       }
-      return rankPoints;
+
+      return singleMatchData;
     })
     .catch(error => {
       console.error(error);
 
-      return {};
+      return undefined;
     });
 };
 
@@ -254,6 +268,7 @@ export type IDraftOrder = string[][];
 
 const loopThroughTelemetry = (telemetryData, matchData) => {
   const damagesData: IDamages = { rosters: [{}, {}], highest: 0 };
+  const towersDamagesData: IDamages = { rosters: [{}, {}], highest: 0 };
 
   const banData: IBans = { rosters: [[], []] };
 
@@ -268,10 +283,23 @@ const loopThroughTelemetry = (telemetryData, matchData) => {
   for (let i = 0; i < telemetryData.length; i++) {
     const currVa = telemetryData[i];
 
-    if (currVa.type === "DealDamage") {
+    if (currVa.type === "DealDamage" && currVa.payload.TargetIsHero == 1) {
       // get damages
       const reference =
         damagesData.rosters[{ Left: 0, Right: 1 }[currVa.payload.Team]];
+      const actorName = currVa.payload.Actor.replace(/\*/g, "");
+      if (reference[actorName]) {
+        reference[actorName] += currVa.payload.Dealt;
+      } else {
+        reference[actorName] = currVa.payload.Dealt;
+      }
+    } else if (
+      currVa.type === "DealDamage" &&
+      currVa.payload.TargetIsHero == 0
+    ) {
+      // get damages to turrets
+      const reference =
+        towersDamagesData.rosters[{ Left: 0, Right: 1 }[currVa.payload.Team]];
       const actorName = currVa.payload.Actor.replace(/\*/g, "");
       if (reference[actorName]) {
         reference[actorName] += currVa.payload.Dealt;
@@ -305,14 +333,26 @@ const loopThroughTelemetry = (telemetryData, matchData) => {
 
   damagesData.highest = damagesData.rosters.reduce((accu, currVa): any => {
     const highestInTeam = Object.keys(currVa).reduce(
-      (accu2, currVa2) => (currVa[currVa2] > accu2 ? currVa[currVa2] : accu2),
+      (accu2, currVa2) => Math.max(currVa[currVa2], accu2),
       0
     );
-    return highestInTeam > accu ? highestInTeam : accu;
+    return Math.max(highestInTeam, accu);
   }, 0);
+
+  towersDamagesData.highest = towersDamagesData.rosters.reduce(
+    (accu, currVa): any => {
+      const highestInTeam = Object.keys(currVa).reduce(
+        (accu2, currVa2) => Math.max(currVa[currVa2], accu2),
+        0
+      );
+      return Math.max(highestInTeam, accu);
+    },
+    0
+  );
 
   return {
     damagesData,
+    towersDamagesData,
     banData,
     creatures5v5,
     draftOrder

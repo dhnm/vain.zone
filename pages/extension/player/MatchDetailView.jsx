@@ -56,10 +56,35 @@ export default function MatchDetailView({
   const processedAverageSkillTiers = match.rosters.map((_, i) =>
     skillTierCalculator(
       match.rosters[i].participants.reduce(
-        (accu, currVa) => accu + TLData.rankPoints[currVa.player.name],
+        (accu, currVa) =>
+          accu + TLData.singleMatchData[currVa.player.name].rankPoints,
         0
       ) / match.rosters[i].participants.length
     )
+  );
+  const draftOrder = TLData.draftOrder.map((sides, i) =>
+    sides.map(actor =>
+      match.rosters[i].participants.find(p => p.actor === actor)
+    )
+  );
+  const KDAs = draftOrder.map(sides =>
+    sides.map(participant => {
+      if (participant.kills === 0) {
+        return participant.assists * 0.8 / (participant.deaths + 1);
+      }
+      return (
+        (participant.kills + participant.assists * 0.6) /
+        ((participant.deaths + 1) / participant.kills)
+      );
+    })
+  );
+  const highestKDA = KDAs.reduce(
+    (accu, currVa) =>
+      Math.max(
+        accu,
+        currVa.reduce((accu2, currVa2) => Math.max(accu2, currVa2), 0)
+      ),
+    0
   );
   return (
     <div ref={childRef} style={{ marginTop: "14px" }}>
@@ -210,8 +235,8 @@ export default function MatchDetailView({
                   <React.Fragment>
                     <br />
                     <TeamStat icon={ICONS.ban} />
-                    {TLData.banData.rosters[0].map(b => (
-                      <React.Fragment>
+                    {TLData.banData.rosters[0].map((b, i) => (
+                      <React.Fragment key={`0${b}${i}`}>
                         {<React.Fragment>&nbsp;</React.Fragment>}
                         <Image
                           size="mini"
@@ -284,8 +309,8 @@ export default function MatchDetailView({
                 {TLData.banData.rosters[1].length ? (
                   <React.Fragment>
                     <br />
-                    {TLData.banData.rosters[1].map(b => (
-                      <React.Fragment>
+                    {TLData.banData.rosters[1].map((b, i) => (
+                      <React.Fragment key={`1${b}${i}`}>
                         <Image
                           style={{
                             display: "inline-block",
@@ -324,54 +349,47 @@ export default function MatchDetailView({
                 paddingBottom: "0"
               }}
             >
-              <Grid.Column textAlign="left" style={{ paddingRight: "0.1em" }}>
-                {TLData.draftOrder[0].map((actor, index) => {
-                  const participant = match.rosters[0].participants.find(
-                    e => e.actor === actor
-                  );
-                  return (
+              {draftOrder.map((draftSide, sideIndex) => (
+                <Grid.Column
+                  textAlign={["left", "right"][sideIndex]}
+                  style={{
+                    [`padding${["Right", "Left"][sideIndex]}`]: "0.1em"
+                  }}
+                  key={sideIndex}
+                >
+                  {draftSide.map((participant, index) => (
                     <ParticipantCard
                       playerInTheMatch={playerInTheMatch}
                       matchDuration={match.duration}
                       participant={participant}
                       gameMode={match.gameMode}
                       maxParticipantValues={maxParticipantValues}
-                      side="left"
-                      key={index}
+                      side={["left", "right"][sideIndex]}
+                      key={`${sideIndex}${index}${participant.player.id}`}
                       appLoading={appLoading}
-                      damage={TLData.damagesData.rosters[0][participant.actor]}
+                      damage={
+                        TLData.damagesData.rosters[sideIndex][participant.actor]
+                      }
+                      towersDamage={
+                        TLData.towersDamagesData.rosters[sideIndex][
+                          participant.actor
+                        ]
+                      }
                       highestDamage={TLData.damagesData.highest}
+                      highestTowersDamage={TLData.towersDamagesData.highest}
                       processedSkillTier={skillTierCalculator(
-                        TLData.rankPoints[participant.player.name]
+                        TLData.singleMatchData[participant.player.name]
+                          .rankPoints
                       )}
+                      KDA={KDAs[sideIndex][index]}
+                      highestKDA={highestKDA}
+                      guildTag={
+                        TLData.singleMatchData[participant.player.name].guildTag
+                      }
                     />
-                  );
-                })}
-              </Grid.Column>
-              <Grid.Column textAlign="right" style={{ paddingLeft: "0.1em" }}>
-                {TLData.draftOrder[1].map((actor, index) => {
-                  const participant = match.rosters[1].participants.find(
-                    e => e.actor === actor
-                  );
-                  return (
-                    <ParticipantCard
-                      playerInTheMatch={playerInTheMatch}
-                      matchDuration={match.duration}
-                      participant={participant}
-                      gameMode={match.gameMode}
-                      maxParticipantValues={maxParticipantValues}
-                      side="right"
-                      key={index}
-                      appLoading={appLoading}
-                      damage={TLData.damagesData.rosters[1][participant.actor]}
-                      highestDamage={TLData.damagesData.highest}
-                      processedSkillTier={skillTierCalculator(
-                        TLData.rankPoints[participant.player.name]
-                      )}
-                    />
-                  );
-                })}
-              </Grid.Column>
+                  ))}
+                </Grid.Column>
+              ))}
             </Grid.Row>
             <Grid.Row style={{ padding: "0 0.4em 0.1rem 0.4em" }}>
               <Grid.Column width={16}>

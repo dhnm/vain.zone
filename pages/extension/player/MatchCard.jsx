@@ -11,24 +11,31 @@ import {
 } from "semantic-ui-react";
 import * as moment from "moment";
 
+import VZIcon from "./../../../components/Icon";
+import { ICONS } from "./../../../modules/functions/constants";
+
 const propTypes = {
   match: PropTypes.object.isRequired,
   playerInTheMatch: PropTypes.object.isRequired,
   playerInTheMatchWon: PropTypes.bool.isRequired,
+  playerInTheMatchTeam: PropTypes.number.isRequired,
   converter: PropTypes.func.isRequired,
   setSelectedMatch: PropTypes.func.isRequired,
   matchIndex: PropTypes.number.isRequired,
-  matchCardsLoading: PropTypes.bool.isRequired
+  matchCardsLoading: PropTypes.bool.isRequired,
+  selectedMatchID: PropTypes.string.isRequired
 };
 
 export default function MatchCard({
   match,
   playerInTheMatch,
   playerInTheMatchWon,
+  playerInTheMatchTeam,
   converter,
   setSelectedMatch,
   matchIndex,
-  matchCardsLoading
+  matchCardsLoading,
+  selectedMatchID
 }) {
   const { shortMatchConclusion, matchConclusionColors } = converter({
     shortMatchConclusion: playerInTheMatchWon
@@ -47,16 +54,29 @@ export default function MatchCard({
       items.push("empty");
     }
   }
-  let kdaPerTenMinutes =
-    (playerInTheMatch.kills + playerInTheMatch.assists) /
-    playerInTheMatch.deaths /
-    (match.duration / 600);
-  if (playerInTheMatch.deaths === 0) {
-    kdaPerTenMinutes =
-      (playerInTheMatch.kills + playerInTheMatch.assists) /
-      (match.duration / 600);
-  }
-  const goldPerMinute = playerInTheMatch.gold / (match.duration / 60);
+
+  const KDAs = match.rosters.map(roster =>
+    roster.participants.map(participant => {
+      let KDAScore =
+        (participant.kills + participant.assists * 0.6) /
+        ((participant.deaths + 1) / participant.kills);
+      if (participant.kills === 0) {
+        KDAScore = participant.assists * 0.8 / (participant.deaths + 1);
+      }
+      return {
+        name: participant.player.name,
+        KDAScore
+      };
+    })
+  );
+  const highestKDA = KDAs.reduce(
+    (accu, currVa) =>
+      Math.max(
+        accu,
+        currVa.reduce((accu2, currVa2) => Math.max(accu2, currVa2.KDAScore), 0)
+      ),
+    0
+  );
   return (
     <Menu.Item
       // style={{ padding: '10px', paddingBottom: '5px' }}
@@ -69,7 +89,10 @@ export default function MatchCard({
       link
       fluid
       style={{
-        background: `linear-gradient(hsla(0, 0%, 10%, 0.9), hsla(0, 0%, 10%, 0.9)), url(/static/img/heroes/c/${playerInTheMatch.actor.toLowerCase()}.jpg)`,
+        background:
+          match.matchID === selectedMatchID
+            ? "hsla(0, 0%, 10%, 0.6)"
+            : "hsla(0, 0%, 10%, 1)",
         backgroundSize: "cover",
         backgroundPositionY: "40%",
         color: "hsla(0, 0%, 90%, 1)"
@@ -78,40 +101,104 @@ export default function MatchCard({
       <Dimmer active={matchCardsLoading} inverted>
         <Loader />
       </Dimmer>
-      <Card.Content>
+      <Card.Content style={{ padding: "4px" }}>
         <Image
-          size="mini"
+          size="tiny"
           src={`/static/img/heroes/c/${playerInTheMatch.actor.toLowerCase()}.jpg`}
-          style={{ borderRadius: "25%", marginBottom: 0 }}
+          style={{
+            borderRadius: "25%",
+            marginBottom: 0,
+            border: "1px solid hsla(0, 0%, 100%, 0.25"
+          }}
           floated="right"
         />
-        <Card.Header>
-          <span>
-            <Label
-              color={matchConclusionColors[1]}
-              style={{ verticalAlign: "top" }}
-              horizontal
-            >
-              {shortMatchConclusion.toUpperCase()}
-            </Label>
-          </span>{" "}
+        <Card.Meta
+          style={{
+            marginBottom: "12px",
+            textAlign: "left",
+            lineHeight: "18px"
+          }}
+        >
+          <Label
+            color={matchConclusionColors[1]}
+            style={{
+              verticalAlign: "middle",
+              padding: "2px 4px",
+              fontSize: "0.8rem"
+            }}
+            horizontal
+          >
+            {shortMatchConclusion.toUpperCase()}
+          </Label>
+          <Label
+            style={{
+              verticalAlign: "middle",
+              padding: "2px 4px",
+              fontWeight: "normal",
+              fontSize: "0.8rem"
+            }}
+          >
+            {humanDuration}min
+          </Label>
+          <Label
+            style={{
+              verticalAlign: "middle",
+              padding: "2px 4px",
+              fontWeight: "normal",
+              fontSize: "0.8rem"
+            }}
+          >
+            {moment(match.createdAt).fromNow()}
+          </Label>
+        </Card.Meta>
+        <Card.Header style={{ textAlign: "left" }}>
           <span
             style={{
-              fontStyle: "italic"
+              fontStyle: "italic",
+              fontSize: "1.25rem"
               // color: matchConclusionColors[1],
             }}
           >
             {humanGameMode.toUpperCase()}
           </span>
+          <div
+            style={{
+              fontSize: "0.95rem",
+              fontWeight: "normal",
+              marginTop: "2px",
+              lineHeight: "1.15rem"
+            }}
+          >
+            {playerInTheMatch.kills} / {playerInTheMatch.deaths} /{" "}
+            {playerInTheMatch.assists}
+            <br />
+            <VZIcon icon={ICONS.coin} color="white" size={10} />&zwj;{(
+              playerInTheMatch.gold / 1000
+            ).toFixed(1)}k
+            <span style={{ display: "inline-block", width: "10px" }} />
+            <VZIcon
+              icon={ICONS.creepscore}
+              color="white"
+              size={10}
+            />&zwj;{playerInTheMatch.farm.toFixed(0)}
+            <span style={{ display: "inline-block", width: "10px" }} />
+            {KDAs[playerInTheMatchTeam].find(
+              e => e.name === playerInTheMatch.player.name
+            ).KDAScore === highestKDA && (
+              <Label color="teal" style={{ padding: "4px 6px" }}>
+                MVP
+              </Label>
+            )}
+          </div>
         </Card.Header>
-        <Card.Meta style={{ fontSize: "0.9em", marginTop: "3px" }}>
-          {moment(match.createdAt).fromNow()} | {humanDuration}min game
-        </Card.Meta>
       </Card.Content>
-      <Card.Content>
+      <Card.Content style={{ padding: "11px" }}>
         <Grid columns="equal">
-          <Grid.Row>
-            <Grid.Column style={{ margin: "auto", padding: "0 0.5rem" }}>
+          <Grid.Row style={{ paddingBottom: "5px", paddingTop: "6px" }}>
+            <Grid.Column
+              style={{ margin: "auto", padding: "0 0.5rem" }}
+              width={11}
+            >
               <div
                 style={{
                   display: "inline-block",
@@ -134,12 +221,14 @@ export default function MatchCard({
                         display: "block",
                         float: "left"
                       }}
+                      key={index}
                     >
                       <Image
                         avatar
                         src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
                         style={{
                           borderRadius: "25%",
+                          border: "1px solid hsla(0, 0%, 100%, 0.25)",
                           width: "22px",
                           height: "22px",
                           margin: "1px",
@@ -163,22 +252,26 @@ export default function MatchCard({
                             participant.player.name !==
                             playerInTheMatch.player.name
                           ) {
-                            return <>{participant.player.name}</>;
+                            return (
+                              <React.Fragment>
+                                {participant.player.name}
+                              </React.Fragment>
+                            );
                           }
                           return <strong>{participant.player.name}</strong>;
                         })()}
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: `${index * 24}px`,
-                            left: 0,
-                            display: "block",
-                            width: "50%",
-                            height: "24px",
-                            background:
-                              "linear-gradient(to right, transparent 80%, hsla(0, 0%, 0%, 0.2))"
-                          }}
-                        />
+                        {/*<div
+                                                  style={{
+                                                    position: "absolute",
+                                                    top: `${index * 24}px`,
+                                                    left: 0,
+                                                    display: "block",
+                                                    width: "50%",
+                                                    height: "24px",
+                                                    background:
+                                                      "linear-gradient(to right, transparent 80%, hsla(0, 0%, 0%, 0.2))"
+                                                  }}
+                                                />*/}
                       </div>
                     </div>
                   );
@@ -212,6 +305,7 @@ export default function MatchCard({
                         src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
                         style={{
                           borderRadius: "25%",
+                          border: "1px solid hsla(0, 0%, 100%, 0.25)",
                           width: "22px",
                           height: "22px",
                           margin: "1px",
@@ -236,7 +330,11 @@ export default function MatchCard({
                             participant.player.name !==
                             playerInTheMatch.player.name
                           ) {
-                            return <>{participant.player.name}</>;
+                            return (
+                              <React.Fragment>
+                                {participant.player.name}
+                              </React.Fragment>
+                            );
                           }
                           return <strong>{participant.player.name}</strong>;
                         })()}{" "}
@@ -267,28 +365,34 @@ export default function MatchCard({
               }}
             >
               <div style={{ margin: "auto" }}>
-                {playerInTheMatch.kills} / {playerInTheMatch.deaths} /{" "}
-                {playerInTheMatch.assists}
-                <br />
-                <strong>{kdaPerTenMinutes.toFixed(1)}</strong> KDA Score
-                <br />
-                <strong>{goldPerMinute.toFixed(0)}</strong> Gold/min
-                <br />
-                {items.map((item, index) => (
-                  <Image
-                    avatar
-                    src={`/static/img/items/c/${item
-                      .replace(/ /g, "-")
-                      .toLowerCase()}.png`}
-                    style={{
-                      width: "21px",
-                      height: "21px",
-                      margin: 0,
-                      marginTop: "4px"
-                    }}
-                    key={index}
-                  />
-                ))}
+                <div
+                  style={{
+                    marginTop: "3px",
+                    textAlign: "right",
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                >
+                  {items.map((item, index) => (
+                    <React.Fragment>
+                      <Image
+                        avatar
+                        src={`/static/img/items/c/${item
+                          .replace(/ /g, "-")
+                          .toLowerCase()}.png`}
+                        style={{
+                          width: "35px",
+                          height: "35px",
+                          margin: 0,
+                          margin: "1px 1px 0 1px"
+                        }}
+                        key={index}
+                      />
+                    </React.Fragment>
+                  ))}
+                </div>
               </div>
             </Grid.Column>
           </Grid.Row>

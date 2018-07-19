@@ -148,10 +148,10 @@ export default function PlayerDetailView({ player, childRef }) {
                   <div style={{ float: "right" }}>{player.played_blitz}×</div>
                 </Grid.Column>
                 <Grid.Column style={{ fontSize: "0.96rem" }}>
-                  3v3 Casuals:
+                  3v3 Casual:
                   <div style={{ float: "right" }}>{player.played_casual}×</div>
                   <br />
-                  5v5 Casuals:
+                  5v5 Casual:
                   <div style={{ float: "right" }}>
                     {player.played_casual_5v5}×
                   </div>

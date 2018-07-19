@@ -248,8 +248,6 @@ export default class MainView extends React.Component {
   saveNameInLocalStorage() {
     if (!this.props.extension) {
       if (window.localStorage) {
-        console.log(this.props);
-        console.log("---------- counted");
         const fromStorage = window.localStorage.getItem("favorites");
         const favorites = fromStorage ? JSON.parse(fromStorage) : [];
         const existingIndex = favorites.findIndex(
@@ -288,6 +286,7 @@ export default class MainView extends React.Component {
           sidebarVisible={this.props.sidebarVisible}
           showSidebar={this.props.showSidebar}
           converter={this.props.converter}
+          selectedMatchID={this.props.selectedMatch.matchID}
           setSelectedMatch={this.props.setSelectedMatch}
           applyFilter={this.props.applyFilter}
           filters={this.props.filters}
@@ -340,15 +339,11 @@ export default class MainView extends React.Component {
               readOnly
             />
             {(() => {
-              if (
-                this.props.data.matches.length > 0 &&
-                (this.props.selectedMatch || this.props.selectedMatch === 0)
-              ) {
-                console.log(this.props.selectedMatch, this.props.selectedMatch);
+              if (this.props.selectedMatch) {
                 return (
                   <React.Fragment>
                     <MatchDetailView
-                      match={this.props.data.matches[this.props.selectedMatch]}
+                      match={this.props.selectedMatch}
                       converter={this.props.converter}
                       TLData={this.props.TLData}
                       appLoading={this.props.appLoading}
@@ -372,7 +367,7 @@ export default class MainView extends React.Component {
                   </React.Fragment>
                 );
               }
-              return <></>;
+              return <React.Fragment />;
             })()}
           </Segment>
         </Sidebar.Pusher>

@@ -37,7 +37,11 @@ class Extension extends React.Component {
         gameMode: ""
       },
       filterFailed: false,
-      selectedMatch: 0,
+      selectedMatch:
+        props.selectedMatch ||
+        (props.data
+          ? props.data.matches ? props.data.matches[0] : undefined
+          : undefined),
       TLData: props.TLData,
       appLoading: false,
       sendLoading: false
@@ -53,45 +57,64 @@ class Extension extends React.Component {
     // Router.onRouteChangeComplete = () => console.log("Complete");
     Router.onRouteChangeError = () => this.setState({ appLoading: false });
   }
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      data: nextProps.data,
-      sidebarVisible: false,
-      filters: {
-        page: 1,
-        createdAt: "",
-        gameMode: ""
-      },
-      filterFailed: false,
-      selectedMatch: 0,
-      TLData: nextProps.TLData,
-      appLoading: false
-    });
+  // componentWillReceiveProps(nextProps) {
+  //   // UNSAFE, but componentDidUdpate is NEVER called here
+
+  //   console.log("there");
+  // }
+  static getDerivedStateFromProps(props, state) {
+    if (props.data && props.TLData) {
+      if (props.data.player.playerID !== state.data.player.playerID) {
+        return {
+          data: props.data,
+          sidebarVisible: false,
+          filters: {
+            page: 1,
+            createdAt: "",
+            gameMode: ""
+          },
+          filterFailed: false,
+          selectedMatch: props.data
+            ? props.data.matches ? props.data.matches[0] : undefined
+            : undefined,
+          TLData: props.TLData,
+          appLoading: false
+        };
+      }
+    }
+
+    return null;
+    console.log("hello", this);
   }
   setSelectedMatch = index => {
     this.showSidebar(false);
-    this.setState({ appLoading: true });
-    const that = this;
-    axios({
-      method: "get",
-      url: "/api/telemetry",
-      params: {
-        match: this.state.data.matches[index]
-      }
-    })
-      .then(res => res.data)
-      .then(processedTelemetry => {
-        that.setState({
-          selectedMatch: index,
-          TLData: processedTelemetry,
-          appLoading: false
-        });
+    const selectedMatchID = this.state.selectedMatch
+      ? this.state.selectedMatch.matchID
+      : undefined;
+    if (this.state.data.matches[index].matchID !== selectedMatchID) {
+      this.setState({ appLoading: true });
+      const that = this;
+      axios({
+        method: "get",
+        url: "/api/telemetry",
+        params: {
+          match: this.state.data.matches[index]
+        }
       })
-      .catch(err => {
-        that.setState({ appLoading: false });
-        // alert('Error retrieving telemetry data.');
-        console.log(err);
-      });
+        .then(res => res.data)
+        .then(processedTelemetry => {
+          that.setState({
+            selectedMatch: this.state.data.matches[index],
+            TLData: processedTelemetry,
+            appLoading: false
+          });
+        })
+        .catch(err => {
+          that.setState({ appLoading: false });
+          // alert('Error retrieving telemetry data.');
+          console.log(err);
+        });
+    }
   };
 
   toggleSendLoading = newState => {
@@ -134,8 +157,7 @@ class Extension extends React.Component {
             this.setState({
               data,
               appLoading: false,
-              scrollPosition: window.scrollY,
-              selectedMatch: null
+              scrollPosition: window.scrollY
             });
           })
           .catch(err => {
@@ -272,16 +294,30 @@ class Extension extends React.Component {
   });
   render() {
     if (this.props.error) {
-      console.log("errorMessage", this.props.errorMessage);
+      if (
+        this.props.errorMessage &&
+        typeof this.props.errorMessage.error === "string" &&
+        this.props.errorMessage.error.indexOf("404") > -1
+      ) {
+        return (
+          <ErrorLayout
+            appLoading={this.state.appLoading}
+            appLoadingOn={this.appLoadingOn}
+            errorType="404"
+          />
+        );
+      }
       return (
         <ErrorLayout
           appLoading={this.state.appLoading}
           appLoadingOn={this.appLoadingOn}
+          errorType="general"
         />
       );
     }
     return (
       <MainView
+        key={this.props.data.player.playerID}
         data={this.state.data}
         sidebarVisible={this.state.sidebarVisible}
         showSidebar={this.showSidebar}
@@ -337,14 +373,24 @@ App.getInitialProps = async function getInitialProps(context) {
         const data = await requestMatches.data;
 
         if (data.error) {
-          console.log(JSON.stringify(data));
           return {
             data: null,
             TLData: null,
             extension: false,
-            error: true
+            error: true,
+            errorMessage: data.errorMessage
           };
         }
+        if (query.matchData) {
+          return {
+            data,
+            selectedMatch: query.matchData.match,
+            TLData: query.matchData.TLData,
+            extension: false,
+            error: false
+          };
+        }
+
         const requestProcessedTelemetry = await axios({
           method: "get",
           url: `${urlPath}/api/telemetry`,
@@ -353,6 +399,7 @@ App.getInitialProps = async function getInitialProps(context) {
           }
         });
         const processedTelemetry = await requestProcessedTelemetry.data;
+
         return {
           data,
           TLData: processedTelemetry,

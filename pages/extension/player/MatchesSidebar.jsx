@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Sidebar, Menu, Button, Icon, Dropdown } from 'semantic-ui-react';
+import React from "react";
+import PropTypes from "prop-types";
+import { Sidebar, Menu, Button, Icon, Dropdown } from "semantic-ui-react";
 
-import MatchCard from './MatchCard';
+import MatchCard from "./MatchCard";
 
 const propTypes = {
   matches: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -17,6 +17,7 @@ const propTypes = {
   appLoading: PropTypes.bool.isRequired,
   selectedMode: PropTypes.string.isRequired,
   handleSelect: PropTypes.func.isRequired,
+  selectedMatchID: PropTypes.string.isRequired
 };
 
 function MatchesSidebar({
@@ -32,25 +33,26 @@ function MatchesSidebar({
   appLoading,
   selectedMode,
   handleSelect,
+  selectedMatchID
 }) {
   return (
     <Sidebar
       as={Menu}
-      animation="scale down"
+      animation="uncover"
       direction="right"
       width="wide"
       visible={sidebarVisible}
       icon="labeled"
       style={{
-        maxWidth: '100vw',
-        maxHeight: '100vh',
-        top: `${scrollPosition}px`,
+        maxWidth: "100vw",
+        maxHeight: "100vh",
+        top: `${scrollPosition}px`
       }}
       // inverted
       vertical
     >
       <Menu.Item
-        style={{ padding: '10px', paddingBottom: '5px', textAlign: 'center' }}
+        style={{ padding: "10px", paddingBottom: "5px", textAlign: "center" }}
         icon={false}
       >
         <Button
@@ -58,10 +60,10 @@ function MatchesSidebar({
             showSidebar(false);
           }}
           style={{
-            verticalAlign: 'top',
-            width: 'calc(50% - 4px)',
-            height: '55px',
-            fontSize: '1.05rem',
+            verticalAlign: "top",
+            width: "calc(50% - 4px)",
+            height: "55px",
+            fontSize: "1.05rem"
             // background: 'transparent',
             // border: '1px solid hsla(0, 0%, 0%, 0.53)',
           }}
@@ -76,14 +78,14 @@ function MatchesSidebar({
           button
           className="icon black"
           style={{
-            verticalAlign: 'top',
-            width: 'calc(50% - 4px)',
-            height: '55px',
-            fontSize: '1.05rem',
-            border: '1px solid transparent',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            verticalAlign: "top",
+            width: "calc(50% - 4px)",
+            height: "55px",
+            fontSize: "1.05rem",
+            border: "1px solid transparent",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center"
           }}
           loading={appLoading}
         >
@@ -92,32 +94,32 @@ function MatchesSidebar({
               text="All modes"
               value=""
               onClick={handleSelect}
-              active={selectedMode === 'All modes'}
+              active={selectedMode === "All modes"}
             />
             <Dropdown.Header content="Sovereign's Rise" />
             <Dropdown.Item
               text="5v5 Ranked"
               value="5v5_pvp_ranked"
               onClick={handleSelect}
-              active={selectedMode === '5v5 Ranked'}
+              active={selectedMode === "5v5 Ranked"}
             />
             <Dropdown.Item
               text="5v5 Casual"
               value="5v5_pvp_casual"
               onClick={handleSelect}
-              active={selectedMode === '5v5 Casual'}
+              active={selectedMode === "5v5 Casual"}
             />
             <Dropdown.Item
               text="5v5 Private Draft"
               value="private_party_draft_match_5v5"
               onClick={handleSelect}
-              active={selectedMode === '5v5 Private Draft'}
+              active={selectedMode === "5v5 Private Draft"}
             />
             <Dropdown.Item
               text="SR Private Blind"
               value="private_party_vg_5v5"
               onClick={handleSelect}
-              active={selectedMode === 'SR Private Blind'}
+              active={selectedMode === "SR Private Blind"}
             />
             <Dropdown.Divider />
             <Dropdown.Header content="Halcyon Fold" />
@@ -125,25 +127,25 @@ function MatchesSidebar({
               text="3v3 Ranked"
               value="ranked"
               onClick={handleSelect}
-              active={selectedMode === '3v3 Ranked'}
+              active={selectedMode === "3v3 Ranked"}
             />
             <Dropdown.Item
               text="3v3 Casual"
               value="casual"
               onClick={handleSelect}
-              active={selectedMode === '3v3 Casual'}
+              active={selectedMode === "3v3 Casual"}
             />
             <Dropdown.Item
               text="3v3 Private Draft"
               value="private_party_draft_match"
               onClick={handleSelect}
-              active={selectedMode === '3v3 Private Draft'}
+              active={selectedMode === "3v3 Private Draft"}
             />
             <Dropdown.Item
               text="HF Private Blind"
               value="private"
               onClick={handleSelect}
-              active={selectedMode === 'HF Private Blind'}
+              active={selectedMode === "HF Private Blind"}
             />
             <Dropdown.Divider />
             <Dropdown.Header content="BRAWL" />
@@ -151,32 +153,36 @@ function MatchesSidebar({
               text="Battle Royale"
               value="casual_aral"
               onClick={handleSelect}
-              active={selectedMode === 'Battle Royale'}
+              active={selectedMode === "Battle Royale"}
             />
             <Dropdown.Item
               text="Blitz"
               value="blitz_pvp_ranked"
               onClick={handleSelect}
-              active={selectedMode === 'Blitz'}
+              active={selectedMode === "Blitz"}
             />
             <Dropdown.Item
               text="Private B. Royale"
               value="private_party_aral_match"
               onClick={handleSelect}
-              active={selectedMode === 'Private B. Royale'}
+              active={selectedMode === "Private B. Royale"}
             />
             <Dropdown.Item
               text="Private Blitz"
               value="private_party_blitz_match"
               onClick={handleSelect}
-              active={selectedMode === 'Private Blitz'}
+              active={selectedMode === "Private Blitz"}
             />
           </Dropdown.Menu>
         </Dropdown>
       </Menu.Item>
       {matches.map((match, index) => {
-        const { playerInTheMatch, playerInTheMatchWon } = converter({
-          rosters: match.rosters,
+        const {
+          playerInTheMatch,
+          playerInTheMatchWon,
+          playerInTheMatchTeam
+        } = converter({
+          rosters: match.rosters
         }).identifyPlayerInTheMatch();
         return (
           <MatchCard
@@ -184,7 +190,9 @@ function MatchesSidebar({
             match={match}
             playerInTheMatch={playerInTheMatch}
             playerInTheMatchWon={playerInTheMatchWon}
+            playerInTheMatchTeam={playerInTheMatchTeam}
             converter={converter}
+            selectedMatchID={selectedMatchID}
             setSelectedMatch={setSelectedMatch}
             matchIndex={index}
           />
@@ -199,25 +207,25 @@ function MatchesSidebar({
       >
         <Button
           style={{
-            width: '100%',
+            width: "100%"
             // background: 'transparent',
             // border: '1px solid hsla(0, 0%, 0%, 0.53)',
           }}
           onClick={() => {
             applyFilter({
               page: filters.page + 1,
-              createdAt: matches[matches.length - 1].createdAt,
+              createdAt: matches[matches.length - 1].createdAt
             });
           }}
           loading={appLoading}
           disabled={appLoading || filterFailed || matches.length % 12 !== 0}
         >
-          <div style={{ lineHeight: '2.4rem', fontSize: '1.2rem' }}>
+          <div style={{ lineHeight: "2.4rem", fontSize: "1.2rem" }}>
             {(() => {
               if (matches.length % 12 !== 0 || filterFailed) {
-                return 'Nothing here.';
+                return "Nothing here.";
               }
-              return 'Show more matches...';
+              return "Show more matches...";
             })()}
           </div>
         </Button>
@@ -230,26 +238,26 @@ export default class ExportedMatchesSidebar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedMode: 'All modes',
+      selectedMode: "All modes"
     };
   }
   componentDidMount() {
-    console.log('mounted');
+    console.log("mounted");
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.filters.gameMode === '') {
-      this.setState({ selectedMode: 'All modes' });
+    if (nextProps.filters.gameMode === "") {
+      this.setState({ selectedMode: "All modes" });
     }
   }
   componentWillUnmount() {
-    console.log('will unmount');
+    console.log("will unmount");
   }
   handleSelect = (_, optionProps) => {
     this.setState({ selectedMode: optionProps.text });
     this.props.applyFilter({
       gameMode: optionProps.value,
       page: 1,
-      createdAt: '',
+      createdAt: ""
     });
   };
   render() {

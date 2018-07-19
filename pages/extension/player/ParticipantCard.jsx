@@ -1,7 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Dimmer, Loader, Image, Grid, Progress, Card } from "semantic-ui-react";
+import {
+  Dimmer,
+  Loader,
+  Image,
+  Grid,
+  Progress,
+  Card,
+  Label
+} from "semantic-ui-react";
 import Link from "next/link";
+
+import VZIcon from "./../../../components/Icon";
+import { ICONS } from "./../../../modules/functions/constants";
 
 const propTypes = {
   matchDuration: PropTypes.number.isRequired,
@@ -10,10 +21,15 @@ const propTypes = {
   maxParticipantValues: PropTypes.object.isRequired,
   appLoading: PropTypes.bool.isRequired,
   highestDamage: PropTypes.number.isRequired,
+  highestTowersDamage: PropTypes.number.isRequired,
   damage: PropTypes.number.isRequired,
+  towersDamage: PropTypes.number.isRequired,
   playerInTheMatch: PropTypes.object.isRequired,
   gameMode: PropTypes.string.isRequired,
-  processedSkillTier: PropTypes.object.isRequired
+  processedSkillTier: PropTypes.object.isRequired,
+  KDA: PropTypes.number.isRequired,
+  highestKDA: PropTypes.number.isRequired,
+  guildTag: PropTypes.string.isRequired
 };
 
 export default function ParticipantCard({
@@ -23,10 +39,15 @@ export default function ParticipantCard({
   maxParticipantValues,
   appLoading,
   highestDamage,
+  highestTowersDamage,
   damage,
+  towersDamage,
   playerInTheMatch,
   gameMode,
-  processedSkillTier
+  processedSkillTier,
+  KDA,
+  highestKDA,
+  guildTag
 }) {
   const items = participant.items.slice();
   items.splice(0, 2);
@@ -35,14 +56,7 @@ export default function ParticipantCard({
       items.push("empty");
     }
   }
-  let kdaPerTwentyMinutes =
-    (participant.kills + participant.assists) /
-    participant.deaths /
-    (matchDuration / 1200);
-  if (participant.deaths === 0) {
-    kdaPerTwentyMinutes =
-      (participant.kills + participant.assists * 0.66) / (matchDuration / 1200);
-  }
+
   let cardBg = `linear-gradient(${
     { left: "135deg", right: "225deg" }[side]
   }, hsla(0, 0%, 83%, 0.2), hsla(0, 0%, 83%, 0.05), hsla(0, 0%, 83%, 0.1))`;
@@ -93,7 +107,23 @@ export default function ParticipantCard({
             }}
             floated={side}
           />
-          <span>{participant.player.guildTag}</span>
+          {/*<div
+            style={{
+              position: "absolute",
+              [`${{ left: "right", right: "left" }[side]}`]: {
+                left: "3px",
+                right: "2px"
+              }[side],
+              top: "26px",
+              fontSize: "0.8rem",
+              zIndex: "1000",
+              display: appLoading ? "none" : null,
+              width: "25px",
+              textAlign: "center"
+            }}
+          >
+            {Math.floor(processedSkillTier.value)}
+          </div>*/}
           <Image
             size="mini"
             src={`/static/img/rank/c/${processedSkillTier.number}${
@@ -109,23 +139,70 @@ export default function ParticipantCard({
               fontSize: "1.05rem",
               display: "block",
               whiteSpace: "nowrap",
-              textDecoration: afkTextDecoration
+              textDecoration: afkTextDecoration,
+              marginTop: "0px",
+              marginBottom: "-2px"
             }}
           >
             {participant.player.name}
           </strong>
-          <div style={{ fontSize: "0.88rem" }}>
-            {participant.kills}/{participant.deaths}/{participant.assists}{" "}
-            <em style={{ fontSize: "0.75rem" }}>
-              {`(${kdaPerTwentyMinutes.toFixed(1)})`}
-            </em>
-            {/* <span
+          {KDA === highestKDA && (
+            <React.Fragment>
+              <Label
+                color="teal"
+                style={{
+                  fontSize: "0.8rem",
+                  color: "white",
+                  fontWeight: "normal",
+                  padding: "2px 2px",
+                  marginLeft: 0,
+                  marginRight: 0
+                }}
+              >
+                MVP
+              </Label>&nbsp;
+            </React.Fragment>
+          )}
+          {guildTag ? (
+            <Label
               style={{
-                float: { right: 'left', left: 'right' }[side],
+                fontSize: "0.82rem",
+                color: "white",
+                fontWeight: "normal",
+                padding: "2px 2px",
+                marginLeft: "-1px",
+                marginRight: "-1px"
               }}
             >
-              {`(${kdaPerTwentyMinutes.toFixed(1)})`}
-            </span> */}
+              {guildTag}
+            </Label>
+          ) : (
+            <React.Fragment>&nbsp;</React.Fragment>
+          )}
+          <div
+            style={{
+              fontSize: "0.88rem",
+              display: "flex",
+              justifyContent: "space-between",
+              margin: "0 2px",
+              marginTop: "0px"
+            }}
+          >
+            <span>
+              <strong>
+                {participant.kills}/{participant.deaths}/{participant.assists}
+              </strong>
+            </span>
+            <span>
+              <VZIcon icon={ICONS.coin} color="white" size={10} />&zwj;{(
+                participant.gold / 1000
+              ).toFixed(1)}k
+            </span>
+            <span>
+              <VZIcon icon={ICONS.creepscore} color="white" size={10} />&zwj;{participant.farm.toFixed(
+                0
+              )}
+            </span>
           </div>
           <Grid style={{ margin: 0, marginBottom: "2px" }} columns={6}>
             <Grid.Row style={{ padding: 0 }}>
@@ -153,15 +230,16 @@ export default function ParticipantCard({
           </Grid>
           <div
             style={{
-              marginTop: "1px",
-              marginBottom: "-4px"
+              marginTop: "4px",
+              marginBottom: "-2px"
             }}
           >
-            <Progress
+            {/* <Progress
               value={participant.gold}
               total={maxParticipantValues.maxGold}
               size="small"
               color="yellow"
+              style={{minWidth: 0}}
             />
             <div className="progressLabelWrapper">
               <span className="progressLabel">Gold/min</span>{" "}
@@ -174,33 +252,49 @@ export default function ParticipantCard({
               total={maxParticipantValues.maxFarm}
               size="small"
               color="teal"
+              style={{minWidth: 0}}
             />
             <div className="progressLabelWrapper">
               <span className="progressLabel">CS/min</span>{" "}
               <span className="progressLabelValue">
                 {(participant.farm / (matchDuration / 60)).toFixed(2)}
               </span>
+            </div>*/}
+            <Progress
+              value={damage || 0}
+              total={highestDamage || 0}
+              size="small"
+              color="red"
+            />
+            <div className="progressLabelWrapper">
+              <span className="progressLabel">Dmg to Heroes</span>{" "}
+              <span className="progressLabelValue">
+                {damage ? damage.toFixed(0) : 0}
+              </span>
             </div>
             <Progress
-              value={damage}
-              total={highestDamage}
+              value={towersDamage || 0}
+              total={highestTowersDamage || 0}
               size="small"
               color="orange"
             />
             <div className="progressLabelWrapper">
-              <span className="progressLabel">DPS</span>{" "}
+              <span className="progressLabel">Dmg to Structures</span>{" "}
               <span className="progressLabelValue">
-                {(damage / (matchDuration / 60) / 60).toFixed(2)}
+                {towersDamage ? towersDamage.toFixed(0) : 0}
               </span>
             </div>
           </div>
         </Card.Content>
         <style jsx global>
           {`
-            .progress {
+            .ui.progress {
               margin: 0 0 2px 0 !important;
               position: relative;
               z-index: 0;
+            }
+            .ui.progress .bar {
+              min-width: 0;
             }
           `}
         </style>
@@ -211,7 +305,7 @@ export default function ParticipantCard({
               font-weight: bold;
               position: absolute;
               width: 100%;
-              margin-top: -17px;
+              margin-top: -17.3px;
               z-index: 1;
               clear: both;
             }
