@@ -70,11 +70,11 @@ export default function MatchDetailView({
   const KDAs = draftOrder.map(sides =>
     sides.map(participant => {
       if (participant.kills === 0) {
-        return participant.assists * 0.8 / (participant.deaths + 1);
+        return participant.assists * 0.75 / (participant.deaths + 1);
       }
       return (
         (participant.kills + participant.assists * 0.6) /
-        ((participant.deaths + 1) / participant.kills)
+        ((participant.deaths + 1) / participant.kills + 1)
       );
     })
   );

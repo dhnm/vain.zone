@@ -35,9 +35,14 @@ export default function ErrorLayout({ appLoading, appLoadingOn, errorType }) {
               <React.Fragment>
                 <Message.Item>
                   There is probably an issue with SEMC (developers of
-                  Vainglory). You can try other API sites, such as VGPRO,
-                  vgminer or VainAura. If other sites are working but this site
-                  is not, please contact me! thisBoy$4399 (Discord)
+                  Vainglory).<Message.Item>
+                    You can try other API sites, such as VGPRO, vgminer or
+                    VainAura.{" "}
+                  </Message.Item>
+                  <Message.Item>
+                    If other sites are working but this site is not, please
+                    contact me! thisBoy$4399 (Discord)
+                  </Message.Item>
                 </Message.Item>
               </React.Fragment>
             )}

@@ -59,9 +59,9 @@ export default function MatchCard({
     roster.participants.map(participant => {
       let KDAScore =
         (participant.kills + participant.assists * 0.6) /
-        ((participant.deaths + 1) / participant.kills);
+        ((participant.deaths + 1) / participant.kills + 1);
       if (participant.kills === 0) {
-        KDAScore = participant.assists * 0.8 / (participant.deaths + 1);
+        KDAScore = participant.assists * 0.75 / (participant.deaths + 1);
       }
       return {
         name: participant.player.name,
