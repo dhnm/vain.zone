@@ -38,7 +38,7 @@ function MatchesSidebar({
   return (
     <Sidebar
       as={Menu}
-      animation="uncover"
+      animation="scale down"
       direction="right"
       width="wide"
       visible={sidebarVisible}

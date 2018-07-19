@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Head from 'next/head';
+import React from "react";
+import PropTypes from "prop-types";
+import Head from "next/head";
 
 const propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]).isRequired,
+    PropTypes.node
+  ]).isRequired
 };
 
 export default function ExtensionLayout({ children }) {
@@ -36,7 +36,7 @@ export default function ExtensionLayout({ children }) {
                 hsla(227, 32%, 9%, 0.8),
                 hsla(227, 32%, 9%, 1)
               ),
-              url('/static/img/bg.jpg') !important;
+              url("/static/img/bg.jpg") !important;
             background-repeat: no-repeat;
             background-position: center center;
             background-attachment: fixed;
@@ -50,9 +50,10 @@ export default function ExtensionLayout({ children }) {
         {`
           #container {
             min-height: 100vh;
-
-            max-width: 414px;
             margin: auto;
+          }
+          #container {
+            max-width: 414px;
           }
         `}
       </style>

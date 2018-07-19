@@ -219,7 +219,8 @@ export default function MatchCard({
                     <div
                       style={{
                         display: "block",
-                        float: "left"
+                        float: "left",
+                        width: "98%"
                       }}
                       key={index}
                     >
@@ -242,7 +243,8 @@ export default function MatchCard({
                           display: "block",
                           overflow: "hidden",
                           lineHeight: "24px",
-                          fontSize: "0.85em",
+                          fontSize: "0.9rem",
+                          textAlign: "center",
                           whiteSpace: "nowrap",
                           textDecoration: afkTextDecoration
                         }}
@@ -297,7 +299,7 @@ export default function MatchCard({
                       style={{
                         display: "block",
                         float: "right",
-                        width: "100%"
+                        width: "98%"
                       }}
                     >
                       <Image
@@ -319,8 +321,7 @@ export default function MatchCard({
                           display: "block",
                           overflow: "hidden",
                           lineHeight: "24px",
-                          fontSize: "0.85em",
-                          textAlign: "center",
+                          fontSize: "0.9rem",
                           whiteSpace: "nowrap",
                           textDecoration: afkTextDecoration
                         }}
@@ -338,7 +339,7 @@ export default function MatchCard({
                           }
                           return <strong>{participant.player.name}</strong>;
                         })()}{" "}
-                        <div
+                        {/*<div
                           style={{
                             position: "absolute",
                             top: `${index * 24}px`,
@@ -349,7 +350,7 @@ export default function MatchCard({
                             background:
                               "linear-gradient(to right, transparent 80%, hsla(0, 0%, 0%, 0.2))"
                           }}
-                        />
+                        />*/}
                       </div>
                     </div>
                   );
