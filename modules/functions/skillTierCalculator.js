@@ -1,7 +1,7 @@
-export default (rankPoints) => {
-  const processedRankPoints = ((rawRankPoints) => {
+export default rankPoints => {
+  const processedRankPoints = (rawRankPoints => {
     const rankPointLimits = [
-      -1,
+      -2800,
       0,
       109,
       218,
@@ -31,7 +31,7 @@ export default (rankPoints) => {
       2267,
       2400,
       2600,
-      2800,
+      2800
     ];
     let rankProgress = 0.0;
     for (let i = 1; i < rankPointLimits.length; i += 1) {
@@ -45,7 +45,7 @@ export default (rankPoints) => {
         return {
           value: rawRankPoints,
           progress: rankProgress * 100,
-          skillTier: i - 2,
+          skillTier: i - 2
         };
       }
     }
@@ -53,67 +53,67 @@ export default (rankPoints) => {
     return {
       value: rawRankPoints,
       progress: 100,
-      skillTier: rankPointLimits.length - 2,
+      skillTier: rankPointLimits.length - 2
     };
   })(rankPoints);
 
-  const skillTierFormats = ((rawSkillTier) => {
+  const skillTierFormats = (rawSkillTier => {
     let tierNumber = Math.floor(rawSkillTier / 3) + 1;
-    let tierName = '';
+    let tierName = "";
     const colorNumber = rawSkillTier % 3;
-    let colorName = '';
+    let colorName = "";
     switch (tierNumber) {
       case 1:
-        tierName = 'Just Beginning';
+        tierName = "Just Beginning";
         break;
       case 2:
-        tierName = 'Getting There';
+        tierName = "Getting There";
         break;
       case 3:
-        tierName = 'Rock Solid';
+        tierName = "Rock Solid";
         break;
       case 4:
-        tierName = 'Worthy Foe';
+        tierName = "Worthy Foe";
         break;
       case 5:
-        tierName = 'Got Swagger';
+        tierName = "Got Swagger";
         break;
       case 6:
-        tierName = 'Credible Threat';
+        tierName = "Credible Threat";
         break;
       case 7:
-        tierName = 'The Hotness';
+        tierName = "The Hotness";
         break;
       case 8:
-        tierName = 'Simply Amazing';
+        tierName = "Simply Amazing";
         break;
       case 9:
-        tierName = 'Pinnacle of Awesome';
+        tierName = "Pinnacle of Awesome";
         break;
       case 10:
-        tierName = 'Vainglorious';
+        tierName = "Vainglorious";
         break;
       default:
         tierNumber = 0;
-        tierName = 'Unranked';
+        tierName = "Unranked";
     }
     switch (colorNumber) {
       case 0:
-        colorName = ' Bronze';
+        colorName = " Bronze";
         break;
       case 1:
-        colorName = ' Silver';
+        colorName = " Silver";
         break;
       case 2:
-        colorName = ' Gold';
+        colorName = " Gold";
         break;
       default:
-        colorName = '';
+        colorName = "";
     }
     return {
       number: tierNumber,
       name: tierName,
-      color: colorName,
+      color: colorName
     };
   })(processedRankPoints.skillTier);
 
