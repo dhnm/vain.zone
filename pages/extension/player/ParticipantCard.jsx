@@ -181,7 +181,7 @@ export default function ParticipantCard({
           )}
           <div
             style={{
-              fontSize: "0.88rem",
+              fontSize: "0.85rem",
               display: "flex",
               justifyContent: "space-between",
               margin: "0 2px",
@@ -194,14 +194,12 @@ export default function ParticipantCard({
               </strong>
             </span>
             <span>
-              <VZIcon icon={ICONS.coin} color="white" size={10} />&zwj;{(
-                participant.gold / 1000
-              ).toFixed(1)}k
+              <VZIcon icon={ICONS.coin} color="white" size={9} />
+              {(participant.gold / 1000).toFixed(1)}k
             </span>
             <span>
-              <VZIcon icon={ICONS.creepscore} color="white" size={10} />&zwj;{participant.farm.toFixed(
-                0
-              )}
+              <VZIcon icon={ICONS.creepscore} color="white" size={9} />
+              {participant.farm.toFixed(0)}
             </span>
           </div>
           <Grid style={{ margin: 0, marginBottom: "2px" }} columns={6}>
