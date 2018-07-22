@@ -28,7 +28,8 @@ export default function MessageLayout({
             display: "block",
             margin: "auto",
             marginTop: !errorType && browserView ? "10%" : null,
-            marginBottom: "14px"
+            marginBottom: "14px",
+            cursor: "pointer"
           }}
         />
       </Link>

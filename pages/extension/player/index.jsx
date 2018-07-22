@@ -71,28 +71,36 @@ class Extension extends React.Component {
     } else {
       this.setState({ screenCategory: "phone" });
     }
+
+    let resizeTimer;
     window.addEventListener("resize", () => {
-      const scrollWidth = Math.max(
-        document.body.scrollWidth,
-        document.documentElement.scrollWidth,
-        document.body.offsetWidth,
-        document.documentElement.offsetWidth,
-        document.documentElement.clientWidth
-      );
-      this.setState(prevState => {
-        if (scrollWidth >= 1024 && prevState.screenCategory !== "wide") {
-          return { screenCategory: "wide" };
-        } else if (
-          scrollWidth >= 768 &&
-          scrollWidth < 1024 &&
-          prevState.screenCategory !== "tablet"
-        ) {
-          return { screenCategory: "tablet" };
-        } else if (scrollWidth < 768 && prevState.screenCategory !== "phone") {
-          return { screenCategory: "phone" };
-        }
-        return null;
-      });
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const scrollWidth = Math.max(
+          document.body.scrollWidth,
+          document.documentElement.scrollWidth,
+          document.body.offsetWidth,
+          document.documentElement.offsetWidth,
+          document.documentElement.clientWidth
+        );
+        this.setState(prevState => {
+          if (scrollWidth >= 1024 && prevState.screenCategory !== "wide") {
+            return { screenCategory: "wide" };
+          } else if (
+            scrollWidth >= 768 &&
+            scrollWidth < 1024 &&
+            prevState.screenCategory !== "tablet"
+          ) {
+            return { screenCategory: "tablet" };
+          } else if (
+            scrollWidth < 768 &&
+            prevState.screenCategory !== "phone"
+          ) {
+            return { screenCategory: "phone" };
+          }
+          return null;
+        });
+      }, 250);
     });
   }
   componentWillReceiveProps(nextProps) {
@@ -396,6 +404,23 @@ function App(props) {
           rel="stylesheet"
           href="//semantic-ui-forest.com/static/dist/semantic-ui/forest-themes/bootswatch/semantic.slate.min.css"
         />
+
+        <meta property="fb:app_id" content="617200295335676" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="VAIN.ZONE" />
+        <meta
+          property="og:description"
+          content="Vainglory Tools and Statistics"
+        />
+        <meta property="og:url" content="https://vain.zone/" />
+        <meta
+          property="og:image"
+          content="https://vain.zone/static/img/og-VAINZONE-logo.png"
+        />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="480" />
+        <meta property="og:image:alt" content="VAIN.ZONE" />
       </Head>
       <Extension {...props} />
       <style jsx global>

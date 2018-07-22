@@ -10,7 +10,7 @@ class Draft extends React.Component {
   static async getInitialProps({ query }) {
     return query;
   }
-  state = { timeLeft: 0, heroSearchPhrase: "", lastKnownScrollPosition: 0 };
+  state = { timeLeft: 0, heroSearchPhrase: "" };
   componentDidMount() {
     this.setState({
       windowWidth: Math.max(
@@ -21,29 +21,32 @@ class Draft extends React.Component {
         document.documentElement.clientWidth
       )
     });
-    window.addEventListener("resize", () =>
-      this.setState({
-        windowWidth: Math.max(
-          document.body.scrollWidth,
-          document.documentElement.scrollWidth,
-          document.body.offsetWidth,
-          document.documentElement.offsetWidth,
-          document.documentElement.clientWidth
-        )
-      })
-    );
-    let lastKnownScrollPosition = 0;
-    let ticking = false;
-    window.addEventListener("scroll", () => {
-      lastKnownScrollPosition = window.scrollY;
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          this.setState({ lastKnownScrollPosition });
-          ticking = false;
+
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        this.setState({
+          windowWidth: Math.max(
+            document.body.scrollWidth,
+            document.documentElement.scrollWidth,
+            document.body.offsetWidth,
+            document.documentElement.offsetWidth,
+            document.documentElement.clientWidth
+          )
         });
-        ticking = true;
-      }
+      }, 250);
     });
+
+    // let scrollTimer;
+    // window.addEventListener("scroll", () => {
+    //   clearTimeout(scrollTimer);
+    //   scrollTimer = setTimeout(() => {
+    //     window.requestAnimationFrame(() => {
+    //       this.setState({ lastKnownScrollPosition: window.scrollY });
+    //     });
+    //   }, 250);
+    // });
 
     this.socket = io();
 
@@ -375,7 +378,6 @@ class Draft extends React.Component {
 
     const fixedHUDScreenHeight =
       446.578 / 320 * (this.state.windowWidth ? this.state.windowWidth : 1000);
-    const lastKnownScrollPosition = this.state.lastKnownScrollPosition;
     const stickyScreenHeight = Math.min(
       675 / 1024 * (this.state.windowWidth ? this.state.windowWidth : 1024),
       675

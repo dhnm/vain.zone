@@ -285,6 +285,20 @@ export default class MainView extends React.Component {
     }
     return (
       <Sidebar.Pushable style={{ minHeight: "100vh" }}>
+        <Head>
+          <meta
+            property="og:title"
+            content={`${this.props.data.player.name}'s VAIN.ZONE`}
+          />
+          <meta
+            property="og:description"
+            content="Vainglory Tools and Statistics"
+          />
+          <meta
+            property="og:url"
+            content={`https://vain.zone/player/${this.props.data.player.name}`}
+          />
+        </Head>
         {this.props.screenCategory !== "wide" && (
           <MatchesSidebar
             data={this.props.data}
@@ -331,7 +345,11 @@ export default class MainView extends React.Component {
                     : this.props.screenCategory === "tablet" ? 8 : 5
                 }
               >
-                <Link prefetch href={`/extension/player?browserView=true`} as="/">
+                <Link
+                  prefetch
+                  href={`/extension/player?browserView=true`}
+                  as="/"
+                >
                   <img
                     src="/static/img/draft/VAINZONE-logo-darkbg.png"
                     alt="VAIN.ZONE"
