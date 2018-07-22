@@ -407,8 +407,8 @@ export default function MatchDetailView({
                 {match.spectators.map(spectator => (
                   <Link
                     prefetch
-                    href={`${browserView ? "" : "/extension"}/player?${
-                      browserView ? "" : "browserView=true&"
+                    href={`/extension/player?${
+                      browserView ? "browserView=true&" : ""
                     }error=false&extension=false&IGN=${spectator.name}`}
                     as={`${browserView ? "" : "/extension"}/player/${
                       spectator.name

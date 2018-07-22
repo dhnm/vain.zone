@@ -78,8 +78,8 @@ export default function ParticipantCard({
   return (
     <Link
       prefetch
-      href={`${browserView ? "" : "/extension"}/player?${
-        browserView ? "" : "browserView=true&"
+      href={`/extension/player?${
+        browserView ? "browserView=true&" : ""
       }error=false&extension=false&IGN=${participant.player.name}`}
       as={`${browserView ? "" : "/extension"}/player/${
         participant.player.name
