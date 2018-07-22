@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = require("axios");
 const Player_1 = require("./../../models/Player");
 const Match_1 = require("./../../models/Match");
+const constants_1 = require("./constants");
 exports.default = (IGN) => {
     return new Promise((resolve, reject) => {
         getPlayer(IGN)
@@ -131,7 +132,7 @@ const getPlayerAPI = (IGN, dbRegion) => {
         //const regions = ["eu"];
         let regionIndex = 0;
         const tryRegion = (region) => {
-            axiosAPI({
+            exports.axiosAPI({
                 shardId: region,
                 endPoint: 'players',
                 params: { 'filter[playerNames]': IGN },
@@ -212,7 +213,7 @@ const compareIDs = (APIData, DBData) => {
 };
 // Match
 const getMatches = (command, playerData) => {
-    return axiosAPI({
+    return exports.axiosAPI({
         shardId: playerData.shardId,
         endPoint: 'matches',
         params: {
@@ -239,7 +240,7 @@ const getMatches = (command, playerData) => {
         throw new Error('id: 8 ' + err);
     });
 };
-const axiosAPI = (options) => {
+exports.axiosAPI = (options) => {
     return axios_1.default({
         method: 'get',
         url: 'https://api.dc01.gamelockerapp.com/shards/' +
@@ -251,7 +252,7 @@ const axiosAPI = (options) => {
             'Content-Encoding': 'gzip',
             'Content-Type': 'application/json',
             'User-Agent': 'js/vainglory',
-            Authorization: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxYWIwYmFhMC0xZTYxLTAxMzYtNGMyOC0wYTU4NjQ2MDBlZGYiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTIzMzA1MTE1LCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJ2YWluLXpvbmUiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.WRRbcDammhPrqWhDPenutkXJdCbGv3CpxvwscPyQK9Y',
+            Authorization: constants_1.apiKey,
             'X-TITLE-ID': 'semc-vainglory',
             Accept: 'application/vnd.api+json',
         },
@@ -322,6 +323,13 @@ const uploadMatches = (matches) => {
                 //     .catch(err => {
                 //         throw new Error("id: 8 " + err);
                 //     });
+                const telemetryAssetId = match.relationships.assets.data[0]
+                    ? match.relationships.assets.data[0].id
+                    : undefined;
+                const findTelemetry = matches.included.find((e) => e.id === telemetryAssetId);
+                const telemetryURL = findTelemetry.attributes
+                    ? findTelemetry.attributes.URL
+                    : undefined;
                 var customMatchDataModel = {
                     matchID: match.id,
                     createdAt: new Date(match.attributes.createdAt),
@@ -332,7 +340,7 @@ const uploadMatches = (matches) => {
                     endGameReason: match.attributes.stats.endGameReason,
                     spectators: new Array(),
                     rosters: new Array(),
-                    telemetryURL: matches.included.find((e) => e.id === match.relationships.assets.data[0].id).attributes.URL,
+                    telemetryURL,
                 };
                 for (var spectatorIndex = 0; spectatorIndex < match.relationships.spectators.data.length; spectatorIndex++) {
                     const spectatorParticipant = matches.included.find((e) => e.id === match.relationships.spectators.data[spectatorIndex].id);
@@ -385,7 +393,9 @@ const uploadMatches = (matches) => {
                     }
                     customMatchDataModel.rosters.push(customRosterDataModel);
                 }
-                newMatches.push(new Match_1.Match(customMatchDataModel));
+                if (telemetryAssetId !== undefined) {
+                    newMatches.push(new Match_1.Match(customMatchDataModel));
+                }
             }
         });
         return newMatches;
@@ -402,6 +412,7 @@ const uploadMatches = (matches) => {
         });
     })
         .catch((err) => {
+        console.log(err);
         throw new Error('id: 15 ' + err);
     });
 };

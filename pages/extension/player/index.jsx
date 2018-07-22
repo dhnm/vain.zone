@@ -407,10 +407,10 @@ function App(props) {
 
         <meta property="fb:app_id" content="617200295335676" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="VAIN.ZONE" />
+        <meta property="og:title" content="VAIN.ZONE for Vainglory" />
         <meta
           property="og:description"
-          content="Vainglory Tools and Statistics"
+          content="Tools and Statistics for Vainglory players!"
         />
         <meta property="og:url" content="https://vain.zone/" />
         <meta

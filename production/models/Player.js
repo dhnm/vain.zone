@@ -25,6 +25,11 @@ const playerSchema = new mongoose_1.Schema({
     skillTier: Number,
     wins: Number,
     matchRefs: [{ type: String, ref: 'matches' }],
+    czSk: {
+        retrieval: Date,
+        of_month: Number,
+        first_of_month: Number,
+    },
 });
 exports.Player = mongoose_1.model('players', playerSchema);
 //# sourceMappingURL=Player.js.map

@@ -7,7 +7,9 @@ const getData_1 = require("./../functions/getData");
 const axios_1 = require("axios");
 exports.default = router;
 // Webhook validation
-router.get("/webhook", (req, res) => {
+router
+    .route("/webhook")
+    .get((req, res) => {
     if (req.query["hub.mode"] === "subscribe" &&
         req.query["hub.verify_token"] === "vgeuverify") {
         console.log("Validating webhook");
@@ -17,9 +19,9 @@ router.get("/webhook", (req, res) => {
         console.error("Failed validation. Make sure the validation tokens match.");
         res.sendStatus(403);
     }
-});
-// Message processing
-router.post("/webhook", (req, res) => {
+})
+    // Message processing
+    .post((req, res) => {
     var data = req.body;
     // Make sure this is a page subscription
     if (data.object === "page") {
@@ -137,8 +139,7 @@ const receivedPostback = (event) => {
     // The 'payload' param is a developer-defined field which is set in a postback
     // button for Structured Messages.
     var payload = event.postback.payload;
-    console.log("Received postback for user %d and page %d with payload '%s' " +
-        "at %d", userID, pageID, payload, timeOfPostback);
+    console.log("Received postback for user %d and page %d with payload '%s' " + "at %d", userID, pageID, payload, timeOfPostback);
     // When a postback is called, we'll send a message back to the sender to
     // let them know it was successful
     payload = payload.split(" ");
@@ -214,8 +215,7 @@ const sendMyData = (userID) => {
             messaging_type: "RESPONSE",
             recipient: { id: userID },
             message: {
-                text: "An error has occured, please contact the devlopers. " +
-                    err
+                text: "An error has occured, please contact the devlopers. " + err
             }
         };
         callSendAPI(messageData);
@@ -303,10 +303,10 @@ const sendTextMessage = (userID, messageText) => {
 // };
 const sendInstructions = (userID) => {
     const instructions = [
-        'You can access this extension from any of your personal or group chats by clicking on the "(+)" sign in the bottom left corner. (You cannot do it here, you must switch to another chat.)',
+        'You can access this app from any of your personal or group chats by clicking on the "(+)" sign in the bottom left corner (on the phone). (You cannot do it here, you must switch to another chat.)',
         "We will not recognize the nick if it has an incorrect spelling and/or capitalisation.",
-        "Type a player's nick and send the message for the player's statistics.\nFor example:\nL3oN\nESQuire\nPalmatoro\netc.",
-        "If you set a default nick, the extension will always show your latest match instead of L3oN's ;)"
+        "Type a player's nick and send the message to display the player's statistics.\nFor example:\nL3oN\nFlashX\nPalmatoro\netc.",
+        "If you set a default nick, the app will remember it and it will always display your stats when you open the app."
     ];
     for (let i = 0; i < instructions.length; i++) {
         (function (index) {
@@ -398,7 +398,7 @@ const processRankPoints = (rp_3v3, rp_5v5) => {
         return {
             value: rawRankPoints,
             progress: 100,
-            skillTier: rankPointLimits.length - 2,
+            skillTier: rankPointLimits.length - 2
         };
     })(rankPoints);
     const skillTierFormats = (rawSkillTier => {
@@ -507,12 +507,7 @@ const sendPlayerInfo = (userID, data) => {
                     top_element_style: "compact",
                     elements: [
                         {
-                            title: tier +
-                                " " +
-                                data.name +
-                                " [" +
-                                data.guildTag +
-                                "]",
+                            title: tier + " " + data.name + " [" + data.guildTag + "]",
                             subtitle: data.karma + "\nLevel: " + data.level
                         },
                         {
@@ -534,8 +529,7 @@ const sendPlayerInfo = (userID, data) => {
                     buttons: [
                         {
                             type: "web_url",
-                            url: "https://test.vainglory.eu/extension/player/" +
-                                data.name,
+                            url: "https://vain.zone/extension/player/" + data.name,
                             title: "See more",
                             webview_height_ratio: "full",
                             webview_share_button: "hide",
@@ -583,8 +577,7 @@ const sendPlayerInfo = (userID, data) => {
             messaging_type: "RESPONSE",
             recipient: { id: userID },
             message: {
-                text: "An error has occured, please contact the developers. " +
-                    err
+                text: "An error has occured, please contact the developers. " + err
             }
         };
         callSendAPI(messageData);
@@ -654,12 +647,12 @@ const updateInfo = () => {
                 text: "Welcome to Vainglory Messenger Extension! Tap on the button below and then type in your In-Game Nickname to see your stats." // must be lte 160 characters
             }
             /*{
-            locale: "en_US",
-            text: "Hi!"
-        }*/
+                  locale: "en_US",
+                  text: "Hi!"
+              }*/
         ],
         home_url: {
-            url: "https://test.vainglory.eu/extension",
+            url: "https://vain.zone/extension",
             webview_height_ratio: "tall",
             webview_share_button: "hide",
             in_test: false

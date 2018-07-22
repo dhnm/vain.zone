@@ -4,6 +4,7 @@ const express_1 = require("express");
 const router = express_1.Router();
 const axios_1 = require("axios");
 const Match_1 = require("./../../models/Match");
+const constants_1 = require("./../functions/constants");
 exports.default = router;
 router.get('/', (req, res) => {
     const filters = JSON.parse(req.query.filters);
@@ -25,7 +26,7 @@ router.get('/', (req, res) => {
             'Content-Encoding': 'gzip',
             'Content-Type': 'application/json',
             'User-Agent': 'js/vainglory',
-            Authorization: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxYWIwYmFhMC0xZTYxLTAxMzYtNGMyOC0wYTU4NjQ2MDBlZGYiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTIzMzA1MTE1LCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJ2YWluLXpvbmUiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.WRRbcDammhPrqWhDPenutkXJdCbGv3CpxvwscPyQK9Y',
+            Authorization: constants_1.filterApiKey,
             'X-TITLE-ID': 'semc-vainglory',
             Accept: 'application/vnd.api+json',
         },
@@ -56,6 +57,13 @@ router.get('/', (req, res) => {
 function formatMatches(matches) {
     const formattedMatches = [];
     matches.data.forEach((match) => {
+        const telemetryAssetId = match.relationships.assets.data[0]
+            ? match.relationships.assets.data[0].id
+            : undefined;
+        const findTelemetry = matches.included.find((e) => e.id === telemetryAssetId);
+        const telemetryURL = findTelemetry
+            ? findTelemetry.attributes.URL
+            : undefined;
         const customMatchDataModel = {
             matchID: match.id,
             createdAt: new Date(match.attributes.createdAt),
@@ -66,7 +74,7 @@ function formatMatches(matches) {
             endGameReason: match.attributes.stats.endGameReason,
             spectators: new Array(),
             rosters: new Array(),
-            telemetryURL: matches.included.find((e) => e.id === match.relationships.assets.data[0].id).attributes.URL,
+            telemetryURL,
         };
         for (let spectatorIndex = 0; spectatorIndex < match.relationships.spectators.data.length; spectatorIndex++) {
             const spectatorParticipant = matches.included.find((e) => e.id === match.relationships.spectators.data[spectatorIndex].id);
@@ -119,7 +127,9 @@ function formatMatches(matches) {
             }
             customMatchDataModel.rosters.push(customRosterDataModel);
         }
-        formattedMatches.push(new Match_1.Match(customMatchDataModel));
+        if (telemetryAssetId !== undefined) {
+            formattedMatches.push(new Match_1.Match(customMatchDataModel));
+        }
     });
     return formattedMatches;
 }
