@@ -29,7 +29,8 @@ const propTypes = {
   processedSkillTier: PropTypes.object.isRequired,
   KDA: PropTypes.number.isRequired,
   highestKDA: PropTypes.number.isRequired,
-  guildTag: PropTypes.string.isRequired
+  guildTag: PropTypes.string.isRequired,
+  browserView: PropTypes.bool.isRequired
 };
 
 export default function ParticipantCard({
@@ -47,7 +48,8 @@ export default function ParticipantCard({
   processedSkillTier,
   KDA,
   highestKDA,
-  guildTag
+  guildTag,
+  browserView
 }) {
   const items = participant.items.slice();
   items.splice(0, 2);
@@ -76,10 +78,12 @@ export default function ParticipantCard({
   return (
     <Link
       prefetch
-      href={`/extension/player?error=false&extension=false&IGN=${
+      href={`${browserView ? "" : "/extension"}/player?${
+        browserView ? "" : "browserView=true&"
+      }error=false&extension=false&IGN=${participant.player.name}`}
+      as={`${browserView ? "" : "/extension"}/player/${
         participant.player.name
       }`}
-      as={`/extension/player/${participant.player.name}`}
     >
       <Card
         as="a"

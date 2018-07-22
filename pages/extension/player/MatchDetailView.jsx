@@ -37,7 +37,9 @@ const propTypes = {
   match: PropTypes.object.isRequired,
   TLData: PropTypes.object.isRequired,
   appLoading: PropTypes.bool.isRequired,
-  childRef: PropTypes.func.isRequired
+  childRef: PropTypes.func.isRequired,
+  screenCategory: PropTypes.string.isRequired,
+  browserView: PropTypes.bool.isRequired
 };
 
 export default function MatchDetailView({
@@ -45,7 +47,9 @@ export default function MatchDetailView({
   match,
   TLData,
   appLoading,
-  childRef
+  childRef,
+  screenCategory,
+  browserView
 }) {
   const maxParticipantValues = converter({
     rosters: match.rosters
@@ -91,15 +95,16 @@ export default function MatchDetailView({
     0
   );
   return (
-    <div ref={childRef} style={{ marginTop: "14px" }}>
+    <div ref={childRef}>
       <Segment
         id="matchDetailView"
         style={{
+          display: "block",
           paddingTop: "1.6rem",
           paddingLeft: "0.5em",
           paddingRight: "0.5em"
         }}
-        attached="top"
+        attached={browserView ? false : "top"}
       >
         <Label attached="top">
           <div
@@ -390,6 +395,7 @@ export default function MatchDetailView({
                       guildTag={
                         TLData.singleMatchData[participant.player.name].guildTag
                       }
+                      browserView={browserView}
                     />
                   ))}
                 </Grid.Column>

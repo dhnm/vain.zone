@@ -1,13 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Router from "next/router";
+import Link from "next/link";
 import {
   Sidebar,
   Segment,
   Button,
   Icon,
   Label,
-  Message
+  Message,
+  Grid
 } from "semantic-ui-react";
 import axios from "axios";
 import html2canvas from "html2canvas";
@@ -33,7 +35,9 @@ const propTypes = {
   filterFailed: PropTypes.bool.isRequired,
   scrollPosition: PropTypes.number.isRequired,
   sendLoading: PropTypes.bool.isRequired,
-  toggleSendLoading: PropTypes.func.isRequired
+  toggleSendLoading: PropTypes.func.isRequired,
+  browserView: PropTypes.bool.isRequired,
+  screenCategory: PropTypes.string.isRequired
 };
 
 export default class MainView extends React.Component {
@@ -268,7 +272,7 @@ export default class MainView extends React.Component {
     }
   }
   render() {
-    if (this.props.extension) {
+    if (this.props.extension || !this.props.screenCategory) {
       return (
         <Message icon>
           <Icon name="circle notched" loading />
@@ -281,97 +285,211 @@ export default class MainView extends React.Component {
     }
     return (
       <Sidebar.Pushable style={{ minHeight: "100vh" }}>
-        <MatchesSidebar
-          data={this.props.data}
-          playerName={this.props.data.player.name}
-          playerID={this.props.data.player.playerID}
-          matches={this.props.data.matches}
-          sidebarVisible={this.props.sidebarVisible}
-          showSidebar={this.props.showSidebar}
-          converter={this.props.converter}
-          selectedMatchID={this.props.selectedMatch.matchID}
-          setSelectedMatch={this.props.setSelectedMatch}
-          applyFilter={this.props.applyFilter}
-          filters={this.props.filters}
-          filterFailed={this.props.filterFailed}
-          scrollPosition={this.props.scrollPosition}
-          appLoading={this.props.appLoading}
-        />
+        {this.props.screenCategory !== "wide" && (
+          <MatchesSidebar
+            data={this.props.data}
+            playerName={this.props.data.player.name}
+            playerID={this.props.data.player.playerID}
+            matches={this.props.data.matches}
+            sidebarVisible={this.props.sidebarVisible}
+            showSidebar={this.props.showSidebar}
+            converter={this.props.converter}
+            selectedMatchID={this.props.selectedMatch.matchID}
+            setSelectedMatch={this.props.setSelectedMatch}
+            applyFilter={this.props.applyFilter}
+            filters={this.props.filters}
+            filterFailed={this.props.filterFailed}
+            scrollPosition={this.props.scrollPosition}
+            appLoading={this.props.appLoading}
+            screenCategory={this.props.screenCategory}
+          />
+        )}
         <Sidebar.Pusher dimmed={this.props.sidebarVisible}>
           <Segment basic>
-            <InputPanel appLoading={this.props.appLoading} />
-            {/* <Message warning>
+            <Grid>
+              <Grid.Column
+                style={{
+                  paddingRight:
+                    this.props.screenCategory === "wide" ||
+                    this.props.screenCategory === "tablet"
+                      ? 0
+                      : null,
+                  maxHeight:
+                    this.props.screenCategory === "phone"
+                      ? null
+                      : "calc(100vh)",
+                  overflowY:
+                    this.props.screenCategory === "phone" ? null : "scroll",
+                  overflowX: "hidden",
+                  paddingBottom:
+                    this.props.screenCategory === "phone" ? 0 : "10px",
+                  paddingTop: "10px"
+                }}
+                width={
+                  this.props.screenCategory === "phone"
+                    ? 16
+                    : this.props.screenCategory === "tablet" ? 8 : 5
+                }
+              >
+                <Link prefetch href={`/extension/player?browserView=true`} as="/">
+                  <img
+                    src="/static/img/draft/VAINZONE-logo-darkbg.png"
+                    alt="VAIN.ZONE"
+                    style={{
+                      width: "50%",
+                      display: this.props.browserView ? "block" : "none",
+                      margin: "auto",
+                      cursor: "pointer"
+                    }}
+                  />
+                </Link>
+                <InputPanel
+                  appLoading={this.props.appLoading}
+                  browserView={this.props.browserView}
+                />
+                {/* <Message warning>
               <strong>Alpha disclaimer:</strong> Only EU is supported right now.
               We will support other regions soon.
             </Message> */}
-            <PlayerDetailView
-              player={this.props.data.player}
-              childRef={c => {
-                this.playerDetailView = c;
-              }}
-            />
-            <Button.Group attached="bottom" style={{ overflow: "hidden" }}>
-              <Button
-                onClick={() => {
-                  this.props.toggleSendLoading(true);
-                  MainView.generateImage(this.playerDetailView, false);
+                <PlayerDetailView
+                  player={this.props.data.player}
+                  childRef={c => {
+                    this.playerDetailView = c;
+                  }}
+                  screenCategory={this.props.screenCategory}
+                  browserView={this.props.browserView}
+                />
+                <Button.Group
+                  attached="bottom"
+                  style={{
+                    overflow: "hidden",
+                    display:
+                      this.props.screenCategory === "wide" &&
+                      this.props.browserView
+                        ? "none"
+                        : null
+                  }}
+                >
+                  <Button
+                    onClick={() => {
+                      this.props.toggleSendLoading(true);
+                      MainView.generateImage(this.playerDetailView, false);
+                    }}
+                    loading={this.props.sendLoading}
+                    disabled={this.props.sendLoading}
+                    style={this.props.browserView ? { display: "none" } : null}
+                  >
+                    <Label color="blue">
+                      <Icon name="send" />Share in Chat
+                    </Label>
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      this.props.showSidebar(true);
+                    }}
+                  >
+                    <Icon name="sidebar" /> Matches
+                  </Button>
+                </Button.Group>
+                <textarea
+                  id="debugConsole"
+                  style={{
+                    width: "100%",
+                    height: "120px",
+                    display: "none"
+                  }}
+                  value="Debugging"
+                  readOnly
+                />
+              </Grid.Column>
+              <Grid.Column
+                width={
+                  this.props.screenCategory === "phone"
+                    ? 16
+                    : this.props.screenCategory === "tablet" ? 8 : 6
+                }
+                style={{
+                  paddingRight: this.props.screenCategory === "wide" ? 0 : null,
+                  paddingBottom: 0,
+                  paddingTop: 0
                 }}
-                loading={this.props.sendLoading}
-                disabled={this.props.sendLoading}
               >
-                <Label color="blue">
-                  <Icon name="send" />Share in Chat
-                </Label>
-              </Button>
-              <Button
-                onClick={() => {
-                  this.props.showSidebar(true);
-                }}
-              >
-                <Icon name="sidebar" /> Matches
-              </Button>
-            </Button.Group>
-            <textarea
-              id="debugConsole"
-              style={{
-                width: "100%",
-                height: "120px",
-                display: "none"
-              }}
-              value="Debugging"
-              readOnly
-            />
-            {(() => {
-              if (this.props.selectedMatch) {
-                return (
-                  <React.Fragment>
-                    <MatchDetailView
-                      match={this.props.selectedMatch}
-                      converter={this.props.converter}
-                      TLData={this.props.TLData}
-                      appLoading={this.props.appLoading}
-                      childRef={c => {
-                        this.matchDetailView = c;
-                      }}
-                    />
-                    <Button
-                      onClick={() => {
-                        this.props.toggleSendLoading(true);
-                        MainView.generateImage(this.matchDetailView, true);
-                      }}
-                      loading={this.props.sendLoading}
-                      disabled={this.props.sendLoading}
-                      attached="bottom"
-                    >
-                      <Label color="blue">
-                        <Icon name="send" />Share in Chat
-                      </Label>
-                    </Button>
-                  </React.Fragment>
-                );
-              }
-              return <React.Fragment />;
-            })()}
+                {(() => {
+                  if (this.props.selectedMatch) {
+                    return (
+                      <div
+                        style={{
+                          paddingBottom: "8px",
+                          paddingTop: "12px",
+                          maxHeight:
+                            this.props.screenCategory === "phone"
+                              ? null
+                              : "100vh",
+                          overflowY:
+                            this.props.screenCategory === "phone"
+                              ? null
+                              : "visible",
+                          overflowX: "hidden"
+                        }}
+                      >
+                        <MatchDetailView
+                          match={this.props.selectedMatch}
+                          converter={this.props.converter}
+                          TLData={this.props.TLData}
+                          appLoading={this.props.appLoading}
+                          childRef={c => {
+                            this.matchDetailView = c;
+                          }}
+                          screenCategory={this.props.screenCategory}
+                          browserView={this.props.browserView}
+                        />
+                        <Button
+                          onClick={() => {
+                            this.props.toggleSendLoading(true);
+                            MainView.generateImage(this.matchDetailView, true);
+                          }}
+                          loading={this.props.sendLoading}
+                          disabled={this.props.sendLoading}
+                          attached="bottom"
+                          style={
+                            this.props.browserView ? { display: "none" } : null
+                          }
+                        >
+                          <Label color="blue">
+                            <Icon name="send" />Share in Chat
+                          </Label>
+                        </Button>
+                      </div>
+                    );
+                  }
+                  return <React.Fragment />;
+                })()}
+              </Grid.Column>
+              {this.props.screenCategory === "wide" && (
+                <Grid.Column
+                  width={5}
+                  style={{ paddingRight: 0, paddingBottom: 0, paddingTop: 0 }}
+                >
+                  <MatchesSidebar
+                    data={this.props.data}
+                    playerName={this.props.data.player.name}
+                    playerID={this.props.data.player.playerID}
+                    matches={this.props.data.matches}
+                    sidebarVisible={true}
+                    showSidebar={this.props.showSidebar}
+                    converter={this.props.converter}
+                    selectedMatchID={this.props.selectedMatch.matchID}
+                    setSelectedMatch={this.props.setSelectedMatch}
+                    applyFilter={this.props.applyFilter}
+                    filters={this.props.filters}
+                    filterFailed={this.props.filterFailed}
+                    scrollPosition={this.props.scrollPosition}
+                    appLoading={this.props.appLoading}
+                    screenCategory={this.props.screenCategory}
+                  />
+                </Grid.Column>
+              )}
+            </Grid>
           </Segment>
         </Sidebar.Pusher>
       </Sidebar.Pushable>

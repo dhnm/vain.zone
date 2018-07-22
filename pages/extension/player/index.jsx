@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import Router from "next/router";
+import Head from "next/head";
 
-import Layout from "./../../../components/ExtensionLayout";
 import MainView from "./MainView";
-import ErrorLayout from "./ErrorView";
+import MessageLayout from "./MessageView";
 
 import { gameModeDict } from "./../../../modules/functions/constants";
 
@@ -56,6 +56,31 @@ class Extension extends React.Component {
     Router.onRouteChangeStart = () => this.setState({ appLoading: true });
     // Router.onRouteChangeComplete = () => console.log("Complete");
     Router.onRouteChangeError = () => this.setState({ appLoading: false });
+
+    if (window.screen.width >= 1024) {
+      this.setState({ screenCategory: "wide" });
+    } else if (window.screen.width >= 768) {
+      this.setState({ screenCategory: "tablet" });
+    } else {
+      this.setState({ screenCategory: "phone" });
+    }
+    window.addEventListener("resize", () => {
+      const screenWidth = window.screen.width;
+      this.setState(prevState => {
+        if (screenWidth >= 1024 && prevState.screenCategory !== "wide") {
+          return { screenCategory: "wide" };
+        } else if (
+          screenWidth >= 768 &&
+          screenWidth < 1024 &&
+          prevState.screenCategory !== "tablet"
+        ) {
+          return { screenCategory: "tablet" };
+        } else if (screenWidth < 768 && prevState.screenCategory !== "phone") {
+          return { screenCategory: "phone" };
+        }
+        return null;
+      });
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.data && nextProps.TLData) {
@@ -294,15 +319,23 @@ class Extension extends React.Component {
         this.props.errorMessage.error.indexOf("404") > -1
       ) {
         return (
-          <ErrorLayout
+          <MessageLayout
             appLoading={this.state.appLoading}
             appLoadingOn={this.appLoadingOn}
             errorType="404"
           />
         );
+      } else if (this.props.browserView) {
+        return (
+          <MessageLayout
+            appLoading={this.state.appLoading}
+            appLoadingOn={this.appLoadingOn}
+            browserView={this.props.browserView}
+          />
+        );
       }
       return (
-        <ErrorLayout
+        <MessageLayout
           appLoading={this.state.appLoading}
           appLoadingOn={this.appLoadingOn}
           errorType="general"
@@ -327,6 +360,8 @@ class Extension extends React.Component {
         scrollPosition={this.state.scrollPosition}
         sendLoading={this.state.sendLoading}
         toggleSendLoading={this.toggleSendLoading}
+        browserView={this.props.browserView}
+        screenCategory={this.state.screenCategory}
       />
     );
   }
@@ -337,9 +372,61 @@ Extension.defaultProps = defaultProps;
 
 function App(props) {
   return (
-    <Layout>
+    <div id="container">
+      <Head>
+        <title>VAIN.ZONE</title>
+        <link
+          rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"
+        />
+        <link
+          rel="stylesheet"
+          href="//semantic-ui-forest.com/static/dist/semantic-ui/forest-themes/bootswatch/semantic.slate.min.css"
+        />
+      </Head>
       <Extension {...props} />
-    </Layout>
+      <style jsx global>
+        {`
+          body {
+            background-color: black !important;
+
+            background-image: linear-gradient(
+                hsla(0, 0%, 0%, 0.7),
+                hsla(0, 0%, 0%, 0.6),
+                hsla(0, 0%, 0%, 0.8),
+                hsla(227, 32%, 9%, 0.9),
+                hsla(227, 32%, 9%, 1)
+              ),
+              url("/static/img/bg.jpg") !important;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: cover;
+
+            min-height: 100vh;
+          }
+        `}
+      </style>
+      <style jsx>
+        {`
+          #container {
+            min-height: 100vh;
+            margin: auto;
+            max-width: 1024px;
+          }
+          @media (min-width: 768px) and (max-width: 1023px) {
+            #container {
+              max-width: 768px;
+            }
+          }
+          @media (max-width: 767px) {
+            #container {
+              max-width: 414px;
+            }
+          }
+        `}
+      </style>
+    </div>
   );
 }
 
@@ -354,8 +441,11 @@ App.getInitialProps = async function getInitialProps(context) {
       urlPath = "http://localhost:3000";
     }
 
-    if (!JSON.parse(query.error)) {
-      if (!JSON.parse(query.extension)) {
+    if (!query.error || query.error === "false") {
+      if (!query.extension || query.extension === "false") {
+        if (!query.IGN) {
+          return { error: true, browserView: true };
+        }
         const requestMatches = await axios({
           method: "get",
           url: `${urlPath}/api/matches`,
@@ -380,7 +470,8 @@ App.getInitialProps = async function getInitialProps(context) {
             selectedMatch: query.matchData.match,
             TLData: query.matchData.TLData,
             extension: false,
-            error: false
+            error: false,
+            browserView: query.browserView
           };
         }
 
@@ -397,7 +488,8 @@ App.getInitialProps = async function getInitialProps(context) {
           data,
           TLData: processedTelemetry,
           extension: false,
-          error: false
+          error: false,
+          browserView: query.browserView
         };
       }
       return {

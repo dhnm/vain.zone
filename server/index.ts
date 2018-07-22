@@ -157,6 +157,18 @@ nextApp
       return callback();
     });
 
+    app.get("/", (req, res) => {
+      nextApp.render(req, res, "/extension/player", {
+        browserView: true
+      });
+    });
+    app.get("/player/:IGN", (req, res) => {
+      nextApp.render(req, res, "/extension/player", {
+        IGN: req.params.IGN,
+        browserView: true
+      });
+    });
+
     app.use("/extension", extension(nextApp));
     app.use("/draft", draft(nextApp));
     app.use("/api", api);

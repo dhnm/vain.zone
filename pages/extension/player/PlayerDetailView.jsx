@@ -6,10 +6,17 @@ import SkillTierPopup from "./SkillTierPopup";
 
 const propTypes = {
   player: PropTypes.object.isRequired,
-  childRef: PropTypes.func.isRequired
+  childRef: PropTypes.func.isRequired,
+  screenCategory: PropTypes.string.isRequired,
+  browserView: PropTypes.bool.isRequired
 };
 
-export default function PlayerDetailView({ player, childRef }) {
+export default function PlayerDetailView({
+  player,
+  childRef,
+  screenCategory,
+  browserView
+}) {
   let experienceHours =
     (player.played_casual_5v5 * 22 +
       player.played_aral * 10 +
@@ -80,7 +87,7 @@ export default function PlayerDetailView({ player, childRef }) {
     <div ref={childRef}>
       <Segment
         basic
-        attached="top"
+        attached={screenCategory === "wide" && browserView ? false : "top"}
         style={{ padding: 0, margin: "1em 0 0 -1px" }}
       >
         <Card fluid id="playerDetailView">

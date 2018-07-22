@@ -1,42 +1,45 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Router from 'next/router';
-import { Form, Search } from 'semantic-ui-react';
+import React from "react";
+import PropTypes from "prop-types";
+import Router from "next/router";
+import { Form, Search } from "semantic-ui-react";
 
 const propTypes = {
   appLoading: PropTypes.bool.isRequired,
+  browserView: PropTypes.bool.isRequired
 };
 
 export default class InputPanel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      IGNInput: '',
+      IGNInput: "",
       favorites: [],
-      results: [],
+      results: []
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleSubmit(event) {
     event.preventDefault();
-    // window.location.href = "/extension/player/" + this.state.IGNInput;
+    // window.location.href = "${this.props.browserView ? "" : "/extension"}/player/" + this.state.IGNInput;
 
     this.setState({ results: [] });
 
     Router.push(
-      `/extension/player?error=false&extension=false&IGN=${
+      `${this.props.browserView ? "" : "/extension"}/player?${
+        this.props.browserView ? "" : "browserView=true&"
+      }error=false&extension=false&IGN=${this.state.IGNInput}`,
+      `${this.props.browserView ? "" : "/extension"}/player/${
         this.state.IGNInput
       }`,
-      `/extension/player/${this.state.IGNInput}`,
-      { shallow: false },
+      { shallow: false }
     );
   }
   handleInputChange(event) {
     // const value = event.target.type === "checkbox" ? event.target.checked : event.target.value;
     this.setState({
       // [event.target.id]: event.target.value.trim(),
-      [event.target.id]: event.target.value.replace(/\s+/g, ''),
+      [event.target.id]: event.target.value.replace(/\s+/g, "")
     });
   }
   render() {
@@ -55,27 +58,27 @@ export default class InputPanel extends React.Component {
           /> */}
           <Search
             placeholder="In-Game Name"
-            style={{ fontSize: '16px' }}
+            style={{ fontSize: "16px" }}
             loading={this.props.appLoading}
             onFocus={() => {
               if (window.localStorage) {
-                const favorites = window.localStorage.getItem('favorites');
+                const favorites = window.localStorage.getItem("favorites");
 
                 if (favorites) {
                   const sortedFavorites = JSON.parse(favorites).sort(
-                    (a, b) => b.count - a.count,
+                    (a, b) => b.count - a.count
                   );
 
                   if (this.state.IGNInput) {
                     this.setState({
-                      favorites: sortedFavorites,
+                      favorites: sortedFavorites
                     });
                   } else {
                     this.setState({
                       favorites: sortedFavorites,
                       results: sortedFavorites.map(({ name }) => ({
-                        title: name,
-                      })),
+                        title: name
+                      }))
                     });
                   }
                 }
@@ -84,11 +87,13 @@ export default class InputPanel extends React.Component {
             onResultSelect={(_, { result }) => {
               this.setState({ IGNInput: result.title });
               Router.push(
-                `/extension/player?error=false&extension=false&IGN=${
+                `${this.props.browserView ? "" : "/extension"}/player?${
+                  this.props.browserView ? "" : "browserView=true&"
+                }error=false&extension=false&IGN=${result.title}`,
+                `${this.props.browserView ? "" : "/extension"}/player/${
                   result.title
                 }`,
-                `/extension/player/${result.title}`,
-                { shallow: false },
+                { shallow: false }
               );
             }}
             onSearchChange={(_, { value }) => {
@@ -99,7 +104,7 @@ export default class InputPanel extends React.Component {
                     acc.push({ title: name });
                   }
                   return acc;
-                }, []),
+                }, [])
               });
             }}
             minCharacters={0}

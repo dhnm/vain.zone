@@ -17,7 +17,8 @@ const propTypes = {
   appLoading: PropTypes.bool.isRequired,
   selectedMode: PropTypes.string.isRequired,
   handleSelect: PropTypes.func.isRequired,
-  selectedMatchID: PropTypes.string.isRequired
+  selectedMatchID: PropTypes.string.isRequired,
+  screenCategory: PropTypes.string.isRequired
 };
 
 function MatchesSidebar({
@@ -33,20 +34,23 @@ function MatchesSidebar({
   appLoading,
   selectedMode,
   handleSelect,
-  selectedMatchID
+  selectedMatchID,
+  screenCategory
 }) {
   return (
     <Sidebar
       as={Menu}
-      animation={true ? "overlay" : "scale down"}
+      animation={screenCategory === "wide" ? "overlay" : "scale down"}
       direction="right"
-      width="wide"
       visible={sidebarVisible}
       icon="labeled"
       style={{
-        maxWidth: "100vw",
+        position: screenCategory === "wide" ? "relative" : null,
+        width: "100%",
+        maxWidth: "340px",
+        height: "100%",
         maxHeight: "100vh",
-        top: `${scrollPosition}px`
+        top: screenCategory === "phone" ? scrollPosition : null
       }}
       // inverted
       vertical
@@ -63,7 +67,8 @@ function MatchesSidebar({
             verticalAlign: "top",
             width: "calc(50% - 4px)",
             height: "55px",
-            fontSize: "1.05rem"
+            fontSize: "1.05rem",
+            display: screenCategory === "wide" ? "none" : null
             // background: 'transparent',
             // border: '1px solid hsla(0, 0%, 0%, 0.53)',
           }}
@@ -79,7 +84,7 @@ function MatchesSidebar({
           className="icon black"
           style={{
             verticalAlign: "top",
-            width: "calc(50% - 4px)",
+            width: screenCategory === "wide" ? "100%" : "calc(50% - 4px)",
             height: "55px",
             fontSize: "1.05rem",
             border: "1px solid transparent",
