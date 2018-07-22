@@ -161,65 +161,70 @@ class Extension extends React.Component {
     this.setState({ sendLoading: newState });
   };
   applyFilter = modifiedValues => {
-    this.setState(
-      prevState => ({
-        filters: {
-          ...prevState.filters,
-          ...modifiedValues
-        },
-        filterFailed: false,
-        appLoading: true
-      }),
-      () => {
-        axios({
-          method: "get",
-          url: "/api/applyfilter",
-          params: {
-            player: this.state.data.player.name,
-            shardId: this.state.data.player.shardId,
-            filters: this.state.filters
-          }
-        })
-          .then(res => res.data)
-          .then(newMatches => {
-            if (!newMatches || !newMatches.length) {
-              throw new Error(newMatches);
+    if (
+      JSON.stringify({ ...this.state.filters, ...modifiedValues }) !==
+      JSON.stringify(this.state.filters)
+    ) {
+      this.setState(
+        prevState => ({
+          filters: {
+            ...prevState.filters,
+            ...modifiedValues
+          },
+          filterFailed: false,
+          appLoading: true
+        }),
+        () => {
+          axios({
+            method: "get",
+            url: "/api/applyfilter",
+            params: {
+              player: this.state.data.player.name,
+              shardId: this.state.data.player.shardId,
+              filters: this.state.filters
             }
-
-            const data = Object.assign({}, this.state.data);
-
-            if (this.state.filters.page > 1) {
-              data.matches.push(...newMatches);
-            } else {
-              data.matches = newMatches.slice();
-            }
-
-            this.setState({
-              data,
-              appLoading: false,
-              scrollPosition: window.scrollY
-            });
           })
-          .catch(err => {
-            const data = Object.assign({}, this.state.data);
-            if (this.state.filters.page === 1) {
-              data.matches = [];
-            }
-            console.log(window.scrollY);
-            this.setState(
-              () => ({
-                appLoading: false,
-                filterFailed: true,
-                data
-              }),
-              () => {
-                this.setState({ scrollPosition: window.scrollY });
+            .then(res => res.data)
+            .then(newMatches => {
+              if (!newMatches || !newMatches.length) {
+                throw new Error(newMatches);
               }
-            );
-            console.error(err);
-          });
-      }
-    );
+
+              const data = Object.assign({}, this.state.data);
+
+              if (this.state.filters.page > 1) {
+                data.matches.push(...newMatches);
+              } else {
+                data.matches = newMatches.slice();
+              }
+
+              this.setState({
+                data,
+                appLoading: false,
+                scrollPosition: window.scrollY
+              });
+            })
+            .catch(err => {
+              const data = Object.assign({}, this.state.data);
+              if (this.state.filters.page === 1) {
+                data.matches = [];
+              }
+              console.log(window.scrollY);
+              this.setState(
+                () => ({
+                  appLoading: false,
+                  filterFailed: true,
+                  data
+                }),
+                () => {
+                  this.setState({ scrollPosition: window.scrollY });
+                }
+              );
+              console.error(err);
+            });
+        }
+      );
+    }
   };
   appLoadingOn = () => {
     this.setState({ appLoading: true });

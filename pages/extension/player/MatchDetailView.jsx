@@ -51,6 +51,7 @@ export default function MatchDetailView({
   screenCategory,
   browserView
 }) {
+  console.log(match);
   const maxParticipantValues = converter({
     rosters: match.rosters
   }).getMaxParticipantValues();
@@ -406,10 +407,12 @@ export default function MatchDetailView({
                 {match.spectators.map(spectator => (
                   <Link
                     prefetch
-                    href={`/extension/player?error=false&extension=false&IGN=${
+                    href={`${browserView ? "" : "/extension"}/player?${
+                      browserView ? "" : "browserView=true&"
+                    }error=false&extension=false&IGN=${spectator.name}`}
+                    as={`${browserView ? "" : "/extension"}/player/${
                       spectator.name
                     }`}
-                    as={`/extension/player/${spectator.name}`}
                   >
                     <Label
                       as="a"
