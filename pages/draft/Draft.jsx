@@ -12,9 +12,25 @@ class Draft extends React.Component {
   }
   state = { timeLeft: 0, heroSearchPhrase: "", lastKnownScrollPosition: 0 };
   componentDidMount() {
-    this.setState({ windowWidth: window.screen.width });
+    this.setState({
+      windowWidth: Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+      )
+    });
     window.addEventListener("resize", () =>
-      this.setState({ windowWidth: window.screen.width })
+      this.setState({
+        windowWidth: Math.max(
+          document.body.scrollWidth,
+          document.documentElement.scrollWidth,
+          document.body.offsetWidth,
+          document.documentElement.offsetWidth,
+          document.documentElement.clientWidth
+        )
+      })
     );
     let lastKnownScrollPosition = 0;
     let ticking = false;
@@ -79,35 +95,35 @@ class Draft extends React.Component {
         new Date(this.props.timeLeft).getTime() - new Date().getTime();
 
       if (timeLeft >= 0) {
-        this.setState({
-          timeLeft,
-          waitingTimeLeft
+        window.requestAnimationFrame(() => {
+          this.setState({
+            timeLeft,
+            waitingTimeLeft
+          });
         });
       } else if (typeof this.state[sideBonus] === "undefined") {
-        console.log(
-          "new time left",
-          new Date(this.props.timeLeft).getTime() +
-            this.props[`${sideBonus}Left`] -
-            new Date().getTime()
-        );
-        this.setState({
-          timeLeft: 0,
-          [sideBonus]: new Date(
-            new Date(this.props.timeLeft).getTime() +
-              this.props[`${sideBonus}Left`]
-          ),
-          [`${sideBonus}Left`]:
-            new Date(this.props.timeLeft).getTime() +
-            this.props[`${sideBonus}Left`] -
-            new Date().getTime(),
-          waitingTimeLeft
+        window.requestAnimationFrame(() => {
+          this.setState({
+            timeLeft: 0,
+            [sideBonus]: new Date(
+              new Date(this.props.timeLeft).getTime() +
+                this.props[`${sideBonus}Left`]
+            ),
+            [`${sideBonus}Left`]:
+              new Date(this.props.timeLeft).getTime() +
+              this.props[`${sideBonus}Left`] -
+              new Date().getTime(),
+            waitingTimeLeft
+          });
         });
       } else {
-        this.setState(prevState => ({
-          [`${sideBonus}Left`]:
-            new Date(prevState[sideBonus]).getTime() - new Date().getTime(),
-          waitingTimeLeft
-        }));
+        window.requestAnimationFrame(() => {
+          this.setState(prevState => ({
+            [`${sideBonus}Left`]:
+              new Date(prevState[sideBonus]).getTime() - new Date().getTime(),
+            waitingTimeLeft
+          }));
+        });
       }
     }, 1000);
 

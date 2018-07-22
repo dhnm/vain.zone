@@ -57,25 +57,38 @@ class Extension extends React.Component {
     // Router.onRouteChangeComplete = () => console.log("Complete");
     Router.onRouteChangeError = () => this.setState({ appLoading: false });
 
-    if (window.screen.width >= 1024) {
+    const scrollWidth = Math.max(
+      document.body.scrollWidth,
+      document.documentElement.scrollWidth,
+      document.body.offsetWidth,
+      document.documentElement.offsetWidth,
+      document.documentElement.clientWidth
+    );
+    if (scrollWidth >= 1024) {
       this.setState({ screenCategory: "wide" });
-    } else if (window.screen.width >= 768) {
+    } else if (scrollWidth >= 768) {
       this.setState({ screenCategory: "tablet" });
     } else {
       this.setState({ screenCategory: "phone" });
     }
     window.addEventListener("resize", () => {
-      const screenWidth = window.screen.width;
+      const scrollWidth = Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+      );
       this.setState(prevState => {
-        if (screenWidth >= 1024 && prevState.screenCategory !== "wide") {
+        if (scrollWidth >= 1024 && prevState.screenCategory !== "wide") {
           return { screenCategory: "wide" };
         } else if (
-          screenWidth >= 768 &&
-          screenWidth < 1024 &&
+          scrollWidth >= 768 &&
+          scrollWidth < 1024 &&
           prevState.screenCategory !== "tablet"
         ) {
           return { screenCategory: "tablet" };
-        } else if (screenWidth < 768 && prevState.screenCategory !== "phone") {
+        } else if (scrollWidth < 768 && prevState.screenCategory !== "phone") {
           return { screenCategory: "phone" };
         }
         return null;
