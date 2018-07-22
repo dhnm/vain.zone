@@ -62,11 +62,15 @@ export default function MatchDetailView({
       ) / match.rosters[i].participants.length
     )
   );
-  const draftOrder = TLData.draftOrder.map((sides, i) =>
-    sides
-      .map(actor => match.rosters[i].participants.find(p => p.actor === actor))
-      .filter(e => e)
-  );
+  const draftOrder = TLData.draftOrder.map((sides, i) => [
+    ...new Set(
+      sides
+        .map(actor =>
+          match.rosters[i].participants.find(p => p.actor === actor)
+        )
+        .filter(e => e)
+    )
+  ]);
   const KDAs = draftOrder.map(sides =>
     sides.map(participant => {
       if (participant.kills === 0) {
