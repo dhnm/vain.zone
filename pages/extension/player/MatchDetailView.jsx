@@ -77,12 +77,12 @@ export default function MatchDetailView({
   ]);
   const KDAs = draftOrder.map(sides =>
     sides.map(participant => {
-      if (participant.kills === 0) {
-        return participant.assists * 0.75 / (participant.deaths + 1);
-      }
       return (
-        (participant.kills + participant.assists * 0.6) /
-        ((participant.deaths + 1) / participant.kills + 1)
+        participant.kills /
+          ((participant.deaths + 2) / (participant.kills + 1) + 1) +
+        participant.assists /
+          ((participant.deaths + 3) / (participant.assists + 1) + 1) *
+          0.6
       );
     })
   );

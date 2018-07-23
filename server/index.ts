@@ -1,5 +1,4 @@
 const app = require("express")();
-const morgan = require("morgan");
 const bodyParser = require("body-parser");
 
 const mongoose = require("mongoose");
@@ -106,7 +105,6 @@ setInterval(() => {
 nextApp
   .prepare()
   .then(() => {
-    app.use(morgan("combined"));
     app.use(compression());
     app.use(
       helmet({

@@ -10,7 +10,8 @@ import {
   Icon,
   Label,
   Message,
-  Grid
+  Grid,
+  Progress
 } from "semantic-ui-react";
 import axios from "axios";
 import html2canvas from "html2canvas";
@@ -414,6 +415,31 @@ export default class MainView extends React.Component {
                     <Icon name="sidebar" /> Matches
                   </Button>
                 </Button.Group>
+                {this.props.browserView &&
+                  this.props.screenCategory !== "phone" && (
+                    <Segment padded style={{ marginBottom: "5px" }}>
+                      <Label attached="top">Lifetime Win Rate</Label>
+                      <Progress
+                        style={{ marginBottom: 0 }}
+                        percent={(
+                          this.props.data.player.wins /
+                          (this.props.data.player.played_ranked +
+                            (this.props.data.player.played_ranked_5v5
+                              ? this.props.data.player.played_ranked_5v5
+                              : 0) +
+                            this.props.data.player.played_blitz +
+                            this.props.data.player.played_casual +
+                            this.props.data.player.played_casual_5v5 +
+                            this.props.data.player.played_aral) *
+                          100
+                        ).toFixed(1)}
+                        progress
+                        size="medium"
+                        color="green"
+                        inverted
+                      />
+                    </Segment>
+                  )}
                 <textarea
                   id="debugConsole"
                   style={{
@@ -491,7 +517,12 @@ export default class MainView extends React.Component {
               {this.props.screenCategory === "wide" && (
                 <Grid.Column
                   width={5}
-                  style={{ paddingRight: 0, paddingBottom: 0, paddingTop: 0 }}
+                  style={{
+                    paddingRight: 0,
+                    paddingBottom: 0,
+                    paddingTop: 0,
+                    maxHeight: "100vh"
+                  }}
                 >
                   <MatchesSidebar
                     data={this.props.data}
