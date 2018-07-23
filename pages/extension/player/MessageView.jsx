@@ -17,6 +17,28 @@ export default function MessageLayout({
   errorType,
   browserView
 }) {
+  let msgHeader = "Player not found";
+  let messages = [];
+  let msgColor = "yellow";
+
+  if (["veryold"].indexOf(errorType) > -1) {
+    msgHeader = "Long time no see :(";
+    messages = [
+      "This player hasn't played Vainglory for a long time. We don't have data for them."
+    ];
+  } else if (["404"].indexOf(errorType) > -1) {
+    messages = [
+      "Please check the spelling and capitalisation of the nick.",
+      "Maybe the player has changed their nick?"
+    ];
+  } else if (["SEMC"].indexOf(errorType) > -1) {
+    msgHeader = "Error!";
+    messages = [
+      "There is probably an issue with SEMC (developers of Vainglory), try again later.",
+      "If you have a minute, please tell me about this! thisBoy$4399 (Discord)"
+    ];
+  }
+
   return (
     <Segment basic>
       <Link prefetch href={`/extension/player?browserView=true`} as="/">
@@ -39,40 +61,12 @@ export default function MessageLayout({
         browserView={browserView}
       />
       {errorType || !browserView ? (
-        <Message info icon>
+        <Message color={msgColor} icon>
           <Icon name="frown" />
           <Message.Content>
-            <Message.Header>Player not found :(</Message.Header>
+            <Message.Header>{msgHeader}</Message.Header>
             <Message.List as="ol">
-              {["404"].indexOf(errorType) > -1 && (
-                <React.Fragment>
-                  <Message.Item>
-                    Please check the spelling and capitalisation of the nick.
-                  </Message.Item>
-                  <Message.Item>
-                    Maybe the player has changed their nick?
-                  </Message.Item>
-                  <Message.Item>
-                    If the player hasn't played a PvP match in the last 28 days,
-                    we don't have data for them.
-                  </Message.Item>
-                </React.Fragment>
-              )}
-              {["general"].indexOf(errorType) > -1 && (
-                <React.Fragment>
-                  <Message.Item>
-                    There is probably an issue with SEMC (developers of
-                    Vainglory).<Message.Item>
-                      You can try other API sites, such as VGPRO, vgminer or
-                      VainAura.{" "}
-                    </Message.Item>
-                    <Message.Item>
-                      If other sites are working but this site is not, please
-                      contact me! thisBoy$4399 (Discord)
-                    </Message.Item>
-                  </Message.Item>
-                </React.Fragment>
-              )}
+              {messages.map(msg => <Message.Item content={msg} />)}
             </Message.List>
           </Message.Content>
         </Message>

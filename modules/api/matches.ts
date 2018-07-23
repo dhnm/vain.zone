@@ -8,23 +8,12 @@ export default router;
 router.get("/", (req: Request, res: Response): void => {
   getData(req.query.IGN)
     .then((data: any): void => {
-      res.writeHead(200, {
-        "Content-Type": "application/json"
-      });
-      res.write(JSON.stringify(data));
-      res.end();
+      res.json(data);
     })
     .catch(error => {
-      res.writeHead(200, {
-        // 200 to handle error myself, otherwise it renders 404 page
-        "Content-Type": "application/json"
+      res.json({
+        error: true,
+        errorMessage: error
       });
-      res.write(
-        JSON.stringify({
-          error: true,
-          errorMessage: error
-        })
-      );
-      res.end();
     });
 });

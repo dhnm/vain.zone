@@ -339,32 +339,23 @@ class Extension extends React.Component {
   });
   render() {
     if (this.props.error) {
+      let errorType;
       if (
         this.props.errorMessage &&
-        typeof this.props.errorMessage.error === "string" &&
-        this.props.errorMessage.error.indexOf("404") > -1
+        typeof this.props.errorMessage.error === "string"
       ) {
-        return (
-          <MessageLayout
-            appLoading={this.state.appLoading}
-            appLoadingOn={this.appLoadingOn}
-            errorType="404"
-          />
-        );
-      } else if (this.props.browserView) {
-        return (
-          <MessageLayout
-            appLoading={this.state.appLoading}
-            appLoadingOn={this.appLoadingOn}
-            browserView={this.props.browserView}
-          />
-        );
+        if (this.props.errorMessage.error.indexOf("404") > -1)
+          errorType = "404";
+        if (this.props.errorMessage.error.indexOf("veryold") > -1)
+          errorType = "veryold";
+        if (!errorType) errorType = "SEMC";
       }
       return (
         <MessageLayout
           appLoading={this.state.appLoading}
           appLoadingOn={this.appLoadingOn}
-          errorType="general"
+          browserView={this.props.browserView}
+          errorType={errorType}
         />
       );
     }
@@ -512,6 +503,17 @@ App.getInitialProps = async function getInitialProps(context) {
             data,
             selectedMatch: query.matchData.match,
             TLData: query.matchData.TLData,
+            extension: false,
+            error: false,
+            browserView: query.browserView
+          };
+        }
+
+        if (!data.matches[0]) {
+          console.log("ishere", data);
+          return {
+            data,
+            TLData: processedTelemetry,
             extension: false,
             error: false,
             browserView: query.browserView

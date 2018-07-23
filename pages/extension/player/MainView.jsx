@@ -309,7 +309,9 @@ export default class MainView extends React.Component {
             sidebarVisible={this.props.sidebarVisible}
             showSidebar={this.props.showSidebar}
             converter={this.props.converter}
-            selectedMatchID={this.props.selectedMatch.matchID}
+            selectedMatchID={
+              this.props.selectedMatch && this.props.selectedMatch.matchID
+            }
             setSelectedMatch={this.props.setSelectedMatch}
             applyFilter={this.props.applyFilter}
             filters={this.props.filters}
@@ -319,7 +321,9 @@ export default class MainView extends React.Component {
             screenCategory={this.props.screenCategory}
           />
         )}
-        <Sidebar.Pusher dimmed={this.props.sidebarVisible}>
+        <Sidebar.Pusher
+          dimmed={this.props.sidebarVisible && !this.props.browserView}
+        >
           <Segment basic>
             <Grid>
               <Grid.Column
@@ -497,7 +501,10 @@ export default class MainView extends React.Component {
                     sidebarVisible={true}
                     showSidebar={this.props.showSidebar}
                     converter={this.props.converter}
-                    selectedMatchID={this.props.selectedMatch.matchID}
+                    selectedMatchID={
+                      this.props.selectedMatch &&
+                      this.props.selectedMatch.matchID
+                    }
                     setSelectedMatch={this.props.setSelectedMatch}
                     applyFilter={this.props.applyFilter}
                     filters={this.props.filters}

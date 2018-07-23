@@ -51,7 +51,6 @@ export default function MatchDetailView({
   screenCategory,
   browserView
 }) {
-  console.log(match);
   const maxParticipantValues = converter({
     rosters: match.rosters
   }).getMaxParticipantValues();

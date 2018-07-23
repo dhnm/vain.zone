@@ -50,7 +50,10 @@ function MatchesSidebar({
         maxWidth: "340px",
         height: "100%",
         maxHeight: "100vh",
-        top: screenCategory === "phone" ? scrollPosition : null
+        top: screenCategory === "phone" ? scrollPosition : null,
+        minHeight: "100vh",
+        maxHeight: "100vh",
+        boxSizing: "border-box"
       }}
       // inverted
       vertical
@@ -223,11 +226,20 @@ function MatchesSidebar({
             });
           }}
           loading={appLoading}
-          disabled={appLoading || filterFailed || matches.length % 12 !== 0}
+          disabled={
+            appLoading ||
+            filterFailed ||
+            matches.length % 12 !== 0 ||
+            matches.length == 0
+          }
         >
           <div style={{ lineHeight: "2.4rem", fontSize: "1.2rem" }}>
             {(() => {
-              if (matches.length % 12 !== 0 || filterFailed) {
+              if (
+                matches.length % 12 !== 0 ||
+                filterFailed ||
+                matches.length == 0
+              ) {
                 return "Nothing here.";
               }
               return "Show more matches...";
