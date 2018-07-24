@@ -473,14 +473,12 @@ export default class MainView extends React.Component {
                                           <td style={{ textAlign: "left" }}>
                                             <Image
                                               style={{
-                                                width: "32px",
+                                                width: "26px",
                                                 borderRadius: "25%",
                                                 display: "inline-block",
                                                 margin: "3px"
                                               }}
-                                              src={`/static/img/heroes/c/${
-                                                h._id
-                                              }.jpg`}
+                                              src={`/static/img/heroes/c/${h._id.toLowerCase()}.jpg`}
                                             />{" "}
                                             {h._id}
                                           </td>
@@ -539,14 +537,12 @@ export default class MainView extends React.Component {
                                           <td style={{ textAlign: "left" }}>
                                             <Image
                                               style={{
-                                                width: "32px",
+                                                width: "26px",
                                                 borderRadius: "25%",
                                                 display: "inline-block",
                                                 margin: "3px"
                                               }}
-                                              src={`/static/img/heroes/c/${
-                                                h._id
-                                              }.jpg`}
+                                              src={`/static/img/heroes/c/${h._id.toLowerCase()}.jpg`}
                                             />{" "}
                                             {h._id}
                                           </td>
