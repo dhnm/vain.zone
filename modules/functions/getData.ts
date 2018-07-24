@@ -818,12 +818,13 @@ const uploadMatches = (matches: any) => {
           const telemetryAssetId = match.relationships.assets.data[0]
             ? match.relationships.assets.data[0].id
             : undefined;
-          const findTelemetry = matches.included.find(
-            (e: any) => e.id === telemetryAssetId
-          );
-          const telemetryURL = findTelemetry.attributes
+          const findTelemetry = telemetryAssetId
+            ? matches.included.find((e: any) => e.id === telemetryAssetId)
+            : undefined;
+          const telemetryURL = findTelemetry
             ? findTelemetry.attributes.URL
             : undefined;
+
           var customMatchDataModel = {
             matchID: match.id,
             createdAt: new Date(match.attributes.createdAt),
