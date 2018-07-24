@@ -396,10 +396,7 @@ function App(props) {
           rel="stylesheet"
           href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"
         />
-        <link
-          rel="stylesheet"
-          href="//semantic-ui-forest.com/static/dist/semantic-ui/forest-themes/bootswatch/semantic.slate.min.css"
-        />
+        <link rel="stylesheet" href="/static/css/semantic.slate.min.css" />
 
         <meta property="fb:app_id" content="617200295335676" />
         <meta property="og:type" content="website" />
@@ -446,7 +443,7 @@ function App(props) {
           #container {
             min-height: 100vh;
             margin: auto;
-            max-width: 1024px;
+            max-width: 1280px;
           }
           @media (min-width: 768px) and (max-width: 1023px) {
             #container {

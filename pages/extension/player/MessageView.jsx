@@ -46,7 +46,7 @@ export default function MessageLayout({
           src="/static/img/draft/VAINZONE-logo-darkbg.png"
           alt="VAIN.ZONE"
           style={{
-            width: "25%",
+            width: "200px",
             display: "block",
             margin: "auto",
             marginTop: !errorType && browserView ? "10%" : null,
@@ -55,24 +55,26 @@ export default function MessageLayout({
           }}
         />
       </Link>
-      <InputPanel
-        appLoading={appLoading}
-        appLoadingOn={appLoadingOn}
-        browserView={browserView}
-      />
-      {errorType || !browserView ? (
-        <Message color={msgColor} icon>
-          <Icon name="frown" />
-          <Message.Content>
-            <Message.Header>{msgHeader}</Message.Header>
-            <Message.List as="ol">
-              {messages.map(msg => <Message.Item content={msg} />)}
-            </Message.List>
-          </Message.Content>
-        </Message>
-      ) : (
-        "Welcome to VAIN.ZONE Beta! Type your nick in the box above and hit Enter."
-      )}
+      <div style={{ maxWidth: "414px", margin: "auto" }}>
+        <InputPanel
+          appLoading={appLoading}
+          appLoadingOn={appLoadingOn}
+          browserView={browserView}
+        />
+        {errorType || !browserView ? (
+          <Message color={msgColor} icon>
+            <Icon name="frown" />
+            <Message.Content>
+              <Message.Header>{msgHeader}</Message.Header>
+              <Message.List as="ol">
+                {messages.map(msg => <Message.Item content={msg} />)}
+              </Message.List>
+            </Message.Content>
+          </Message>
+        ) : (
+          "Welcome to VAIN.ZONE Beta! Type your nick in the box above and hit Enter."
+        )}
+      </div>
     </Segment>
   );
 }

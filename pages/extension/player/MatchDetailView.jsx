@@ -102,7 +102,9 @@ export default function MatchDetailView({
           display: "block",
           paddingTop: "1.6rem",
           paddingLeft: "0.5em",
-          paddingRight: "0.5em"
+          paddingRight: "0.5em",
+          maxWidth: "414px",
+          margin: "auto"
         }}
         attached={browserView ? false : "top"}
       >

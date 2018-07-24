@@ -47,7 +47,7 @@ function MatchesSidebar({
       style={{
         position: screenCategory === "wide" ? "relative" : null,
         width: "100%",
-        maxWidth: "340px",
+        maxWidth: screenCategory !== "wide" ? "340px" : null,
         height: "100%",
         maxHeight: "100vh",
         top: screenCategory === "phone" ? scrollPosition : null,

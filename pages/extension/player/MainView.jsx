@@ -11,7 +11,9 @@ import {
   Label,
   Message,
   Grid,
-  Progress
+  Progress,
+  Image,
+  Tab
 } from "semantic-ui-react";
 import axios from "axios";
 import html2canvas from "html2canvas";
@@ -416,29 +418,273 @@ export default class MainView extends React.Component {
                   </Button>
                 </Button.Group>
                 {this.props.browserView &&
+                  this.props.data.aggregatedData &&
                   this.props.screenCategory !== "phone" && (
-                    <Segment padded style={{ marginBottom: "5px" }}>
-                      <Label attached="top">Lifetime Win Rate</Label>
-                      <Progress
-                        style={{ marginBottom: 0 }}
-                        percent={(
-                          this.props.data.player.wins /
-                          (this.props.data.player.played_ranked +
-                            (this.props.data.player.played_ranked_5v5
-                              ? this.props.data.player.played_ranked_5v5
-                              : 0) +
-                            this.props.data.player.played_blitz +
-                            this.props.data.player.played_casual +
-                            this.props.data.player.played_casual_5v5 +
-                            this.props.data.player.played_aral) *
-                          100
-                        ).toFixed(1)}
-                        progress
-                        size="medium"
-                        color="green"
-                        inverted
+                    <React.Fragment>
+                      <Segment style={{}}>
+                        <Label attached="top">
+                          Win Rate (since Summer 2018)
+                        </Label>
+                        <Progress
+                          style={{ marginBottom: 0 }}
+                          percent={(
+                            this.props.data.aggregatedData.winrate.won *
+                            100 /
+                            this.props.data.aggregatedData.winrate.of_matches
+                          ).toFixed(1)}
+                          progress
+                          size="medium"
+                          color="green"
+                          inverted
+                        />
+                      </Segment>
+                      <Segment basic style={{ padding: 0 }}>
+                        <Tab
+                          panes={[
+                            {
+                              menuItem: "Favorites",
+                              render: () => (
+                                <Tab.Pane>
+                                  <table
+                                    style={{
+                                      width: "100%",
+                                      textAlign: "center",
+                                      borderSpacing: 0
+                                    }}
+                                  >
+                                    <tr>
+                                      <th>Hero</th>
+                                      <th>Pick%</th>
+                                      <th>Win%</th>
+                                      <th>KDA</th>
+                                    </tr>
+                                    {this.props.data.aggregatedData.favorites.map(
+                                      (h, i) => (
+                                        <tr
+                                          style={
+                                            i % 2
+                                              ? {}
+                                              : {
+                                                  backgroundColor:
+                                                    "hsla(0, 0%, 100%, 0.05"
+                                                }
+                                          }
+                                        >
+                                          <td style={{ textAlign: "left" }}>
+                                            <Image
+                                              style={{
+                                                width: "32px",
+                                                borderRadius: "25%",
+                                                display: "inline-block",
+                                                margin: "3px"
+                                              }}
+                                              src={`/static/img/heroes/c/${
+                                                h._id
+                                              }.jpg`}
+                                            />{" "}
+                                            {h._id}
+                                          </td>
+                                          <td>
+                                            {Math.round(
+                                              h.count / h.totalCount * 100
+                                            )}%
+                                          </td>
+                                          <td
+                                            style={{
+                                              color: "HSLA(127, 63%, 49%, 1.00)"
+                                            }}
+                                          >
+                                            {Math.round(h.won / h.count * 100)}%
+                                          </td>
+                                          <td>
+                                            {Math.round(h.kills / h.count)}/{Math.round(
+                                              h.deaths / h.count
+                                            )}/{Math.round(h.assists / h.count)}
+                                          </td>
+                                        </tr>
+                                      )
+                                    )}
+                                  </table>
+                                </Tab.Pane>
+                              )
+                            },
+                            {
+                              menuItem: "Nightmares",
+                              render: () => (
+                                <Tab.Pane>
+                                  <table
+                                    style={{
+                                      width: "100%",
+                                      textAlign: "center",
+                                      borderSpacing: 0
+                                    }}
+                                  >
+                                    <tr>
+                                      <th>Hero</th>
+                                      <th>Played Against%</th>
+                                      <th>Lose%</th>
+                                    </tr>
+                                    {this.props.data.aggregatedData.nightmares.map(
+                                      (h, i) => (
+                                        <tr
+                                          style={
+                                            i % 2
+                                              ? {}
+                                              : {
+                                                  backgroundColor:
+                                                    "hsla(0, 0%, 100%, 0.05"
+                                                }
+                                          }
+                                        >
+                                          <td style={{ textAlign: "left" }}>
+                                            <Image
+                                              style={{
+                                                width: "32px",
+                                                borderRadius: "25%",
+                                                display: "inline-block",
+                                                margin: "3px"
+                                              }}
+                                              src={`/static/img/heroes/c/${
+                                                h._id
+                                              }.jpg`}
+                                            />{" "}
+                                            {h._id}
+                                          </td>
+                                          <td>
+                                            {Math.round(
+                                              h.count / h.totalCount * 100
+                                            )}%
+                                          </td>
+                                          <td
+                                            style={{
+                                              color: "HSLA(360, 72%, 51%, 1.00)"
+                                            }}
+                                          >
+                                            {Math.round(h.lost / h.count * 100)}%
+                                          </td>
+                                        </tr>
+                                      )
+                                    )}
+                                  </table>
+                                </Tab.Pane>
+                              )
+                            }
+                          ]}
+                        />
+                      </Segment>
+                      <Tab
+                        panes={[
+                          {
+                            menuItem: "Friends",
+                            render: () => (
+                              <Tab.Pane>
+                                <table
+                                  style={{
+                                    width: "100%",
+                                    textAlign: "center",
+                                    borderSpacing: 0
+                                  }}
+                                >
+                                  <tr>
+                                    <th>Name</th>
+                                    <th>Played Together%</th>
+                                    <th>Win%</th>
+                                  </tr>
+                                  {this.props.data.aggregatedData.friends.map(
+                                    (p, i) => (
+                                      <tr
+                                        style={
+                                          i % 2
+                                            ? {}
+                                            : {
+                                                backgroundColor:
+                                                  "hsla(0, 0%, 100%, 0.05"
+                                              }
+                                        }
+                                      >
+                                        <td
+                                          style={{
+                                            textAlign: "left",
+                                            height: "40px",
+                                            paddingLeft: "5px",
+                                            fontWeight: "bold"
+                                          }}
+                                        >
+                                          {p._id}
+                                        </td>
+                                        <td>
+                                          {Math.round(
+                                            p.count / p.totalCount * 100
+                                          )}%
+                                        </td>
+                                        <td
+                                          style={{
+                                            color: "HSLA(127, 63%, 49%, 1.00)"
+                                          }}
+                                        >
+                                          {Math.round(p.won / p.count * 100)}%
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                                </table>
+                              </Tab.Pane>
+                            )
+                          },
+                          {
+                            menuItem: "Nemeses",
+                            render: () => (
+                              <Tab.Pane>
+                                <table
+                                  style={{
+                                    width: "100%",
+                                    textAlign: "center",
+                                    borderSpacing: 0
+                                  }}
+                                >
+                                  <tr>
+                                    <th>Name</th>
+                                    <th>Lose%</th>
+                                  </tr>
+                                  {this.props.data.aggregatedData.nemeses.map(
+                                    (p, i) => (
+                                      <tr
+                                        style={
+                                          i % 2
+                                            ? {}
+                                            : {
+                                                backgroundColor:
+                                                  "hsla(0, 0%, 100%, 0.05"
+                                              }
+                                        }
+                                      >
+                                        <td
+                                          style={{
+                                            textAlign: "left",
+                                            height: "40px",
+                                            paddingLeft: "5px",
+                                            fontWeight: "bold"
+                                          }}
+                                        >
+                                          {p._id}
+                                        </td>
+                                        <td
+                                          style={{
+                                            color: "HSLA(360, 72%, 51%, 1.00)"
+                                          }}
+                                        >
+                                          {Math.round(p.lost / p.count * 100)}%
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                                </table>
+                              </Tab.Pane>
+                            )
+                          }
+                        ]}
                       />
-                    </Segment>
+                    </React.Fragment>
                   )}
                 <textarea
                   id="debugConsole"
@@ -518,7 +764,6 @@ export default class MainView extends React.Component {
                 <Grid.Column
                   width={5}
                   style={{
-                    paddingRight: 0,
                     paddingBottom: 0,
                     paddingTop: 0,
                     maxHeight: "100vh"

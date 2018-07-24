@@ -10,7 +10,8 @@ export default (IGN: string): Promise<PlayerWithMatches> => {
   return new Promise((resolve, reject): void => {
     getPlayer(IGN)
       .then((playerData: IPlayer) => formatDataPopulateMatches(playerData))
-      .then(playerAndMatchesData => resolve(playerAndMatchesData))
+      .then(playerAndMatchesData => aggregateData(playerAndMatchesData))
+      .then(aggregatedData => resolve(aggregatedData))
       .catch(error => {
         reject({ errorID: "10", error: error });
       });
@@ -145,6 +146,432 @@ const formatDataPopulateMatches = (
   // });
 };
 
+const aggregateData = data => {
+  const season = "3.4"; // summer season start ?
+
+  return Promise.all([
+    Match.aggregate([
+      {
+        $match: {
+          patchVersion: {
+            $gte: season
+          },
+          "rosters.participants.player.name": data.player.name
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          rosters: {
+            $push: "$rosters"
+          },
+          count: {
+            $sum: 1.0
+          }
+        }
+      },
+      {
+        $unwind: "$rosters"
+      },
+      {
+        $unwind: "$rosters"
+      },
+      {
+        $match: {
+          "rosters.participants.player.name": data.player.name,
+          "rosters.won": true
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalCount: {
+            $addToSet: "$count"
+          },
+          won: {
+            $sum: 1.0
+          }
+        }
+      },
+      {
+        $unwind: "$totalCount"
+      }
+    ]).exec(),
+    Match.aggregate([
+      {
+        $match: {
+          patchVersion: {
+            $gte: season
+          },
+          "rosters.participants.player.name": data.player.name
+        }
+      },
+      {
+        $project: {
+          rosters: 1.0
+        }
+      },
+      {
+        $unwind: "$rosters"
+      },
+      {
+        $unwind: "$rosters.participants"
+      },
+      {
+        $match: {
+          "rosters.participants.player.name": data.player.name
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          rosters: {
+            $push: "$rosters"
+          },
+          totalCount: {
+            $sum: 1.0
+          }
+        }
+      },
+      {
+        $unwind: "$rosters"
+      },
+      {
+        $group: {
+          _id: "$rosters.participants.actor",
+          totalCount: {
+            $addToSet: "$totalCount"
+          },
+          won: {
+            $sum: {
+              $cond: [
+                {
+                  $eq: ["$rosters.won", true]
+                },
+                1.0,
+                0.0
+              ]
+            }
+          },
+          kills: {
+            $sum: "$rosters.participants.kills"
+          },
+          assists: {
+            $sum: "$rosters.participants.assists"
+          },
+          deaths: {
+            $sum: "$rosters.participants.deaths"
+          },
+          count: {
+            $sum: 1.0
+          }
+        }
+      },
+      {
+        $match: {
+          won: {
+            $gte: 5.0
+          }
+        }
+      },
+      {
+        $unwind: "$totalCount"
+      },
+      {
+        $sort: {
+          count: -1.0
+        }
+      },
+      {
+        $limit: 5.0
+      }
+    ]).exec(),
+    Match.aggregate([
+      {
+        $match: {
+          patchVersion: {
+            $gte: season
+          },
+          "rosters.participants.player.name": data.player.name
+        }
+      },
+      {
+        $project: {
+          rosters: 1.0
+        }
+      },
+      {
+        $unwind: "$rosters"
+      },
+      {
+        $match: {
+          "rosters.participants.player.name": {
+            $ne: data.player.name
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          rosters: {
+            $push: "$rosters"
+          },
+          totalCount: {
+            $sum: 1.0
+          }
+        }
+      },
+      {
+        $unwind: "$rosters"
+      },
+      {
+        $unwind: "$rosters.participants"
+      },
+      {
+        $group: {
+          _id: "$rosters.participants.actor",
+          totalCount: {
+            $addToSet: "$totalCount"
+          },
+          lost: {
+            $sum: {
+              $cond: [
+                {
+                  $eq: ["$rosters.won", true]
+                },
+                1.0,
+                0.0
+              ]
+            }
+          },
+          count: {
+            $sum: 1.0
+          }
+        }
+      },
+      {
+        $match: {
+          lost: {
+            $gte: 5.0
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 1.0,
+          totalCount: 1.0,
+          lost: 1.0,
+          count: 1.0,
+          loseRate: {
+            $multiply: [
+              {
+                $divide: ["$lost", "$count"]
+              },
+              100.0
+            ]
+          }
+        }
+      },
+      {
+        $unwind: "$totalCount"
+      },
+      {
+        $sort: {
+          loseRate: -1.0
+        }
+      },
+      {
+        $limit: 5.0
+      }
+    ]).exec(),
+    Match.aggregate([
+      {
+        $match: {
+          patchVersion: {
+            $gte: season
+          },
+          "rosters.participants.player.name": data.player.name
+        }
+      },
+      {
+        $project: {
+          rosters: 1.0
+        }
+      },
+      {
+        $unwind: "$rosters"
+      },
+      {
+        $match: {
+          "rosters.participants.player.name": data.player.name
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          rosters: {
+            $push: "$rosters"
+          },
+          totalCount: {
+            $sum: 1.0
+          }
+        }
+      },
+      {
+        $unwind: "$rosters"
+      },
+      {
+        $unwind: "$rosters.participants"
+      },
+      {
+        $match: {
+          "rosters.participants.player.name": {
+            $ne: data.player.name
+          }
+        }
+      },
+      {
+        $group: {
+          _id: "$rosters.participants.player.name",
+          won: {
+            $sum: {
+              $cond: ["$rosters.won", 1.0, 0.0]
+            }
+          },
+          count: {
+            $sum: 1.0
+          },
+          totalCount: {
+            $addToSet: "$totalCount"
+          }
+        }
+      },
+      {
+        $match: {
+          won: {
+            $gte: 3.0
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 1.0,
+          won: 1.0,
+          count: 1.0,
+          totalCount: 1.0,
+          winRate: {
+            $multiply: [
+              {
+                $divide: ["$won", "$count"]
+              },
+              100.0
+            ]
+          }
+        }
+      },
+      {
+        $unwind: "$totalCount"
+      },
+      {
+        $sort: {
+          count: -1.0
+        }
+      },
+      {
+        $limit: 5.0
+      }
+    ]).exec(),
+    Match.aggregate([
+      {
+        $match: {
+          patchVersion: {
+            $gte: season
+          },
+          "rosters.participants.player.name": data.player.name
+        }
+      },
+      {
+        $project: {
+          rosters: 1.0
+        }
+      },
+      {
+        $unwind: "$rosters"
+      },
+      {
+        $match: {
+          "rosters.participants.player.name": {
+            $ne: data.player.name
+          }
+        }
+      },
+      {
+        $unwind: "$rosters.participants"
+      },
+      {
+        $group: {
+          _id: "$rosters.participants.player.name",
+          lost: {
+            $sum: {
+              $cond: ["$rosters.won", 1.0, 0.0]
+            }
+          },
+          count: {
+            $sum: 1.0
+          }
+        }
+      },
+      {
+        $match: {
+          lost: {
+            $gte: 2.0
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 1.0,
+          lost: 1.0,
+          count: 1.0,
+          loseRate: {
+            $multiply: [
+              {
+                $divide: ["$lost", "$count"]
+              },
+              100.0
+            ]
+          }
+        }
+      },
+      {
+        $sort: {
+          lost: -1.0
+        }
+      },
+      {
+        $limit: 5.0
+      }
+    ]).exec()
+  ])
+    .then(aggregatedData => ({
+      ...data,
+      aggregatedData: {
+        winrate: {
+          won: aggregatedData[0][0].won,
+          of_matches: aggregatedData[0][0].totalCount
+        },
+        favorites: aggregatedData[1],
+        nightmares: aggregatedData[2],
+        friends: aggregatedData[3],
+        nemeses: aggregatedData[4]
+      }
+    }))
+    .catch(err => {
+      console.error(err);
+      return data;
+    });
+};
+
 const getPlayerAPI = (IGN: string, dbRegion?: string): Promise<any> => {
   return new Promise((resolve, reject) => {
     const regions = ["na", "eu", "sg", "sa", "ea", "cn"];
@@ -250,7 +677,7 @@ const getMatches = (command: string, playerData: IPlayer): Promise<IPlayer> => {
     endPoint: "matches",
     params: {
       "page[offset]": 0,
-      "page[limit]": 12,
+      "page[limit]": 50,
       sort: "-createdAt",
       "filter[playerNames]": playerData.name
     }

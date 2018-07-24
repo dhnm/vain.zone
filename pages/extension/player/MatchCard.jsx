@@ -101,7 +101,7 @@ export default function MatchCard({
       <Dimmer active={matchCardsLoading} inverted>
         <Loader />
       </Dimmer>
-      <Card.Content style={{ padding: "4px" }}>
+      <Card.Content style={{ padding: "4px 0" }}>
         <Image
           size="tiny"
           src={`/static/img/heroes/c/${playerInTheMatch.actor.toLowerCase()}.jpg`}
@@ -192,7 +192,7 @@ export default function MatchCard({
           </div>
         </Card.Header>
       </Card.Content>
-      <Card.Content style={{ padding: "11px" }}>
+      <Card.Content style={{ padding: "11px 6px" }}>
         <Grid columns="equal">
           <Grid.Row style={{ paddingBottom: "5px", paddingTop: "6px" }}>
             <Grid.Column
