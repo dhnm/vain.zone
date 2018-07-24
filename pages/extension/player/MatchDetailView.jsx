@@ -54,7 +54,8 @@ export default function MatchDetailView({
   screenCategory,
   browserView,
   generateImage,
-  sendLoading
+  sendLoading,
+  MatchesButton
 }) {
   const maxParticipantValues = converter({
     rosters: match.rosters
@@ -119,7 +120,6 @@ export default function MatchDetailView({
     <div
       ref={childRef}
       style={{
-        maxWidth: "414px",
         margin: "auto"
       }}
     >
@@ -129,7 +129,8 @@ export default function MatchDetailView({
           display: "block",
           paddingTop: "1.6rem",
           paddingLeft: "0.5em",
-          paddingRight: "0.5em"
+          paddingRight: "0.5em",
+          marginBottom: 0
         }}
         attached={browserView ? false : "top"}
       >
@@ -461,7 +462,6 @@ export default function MatchDetailView({
           </Grid>
         </Segment>
       </Segment>
-
       <Button
         onClick={() => {
           toggleSendLoading(true);
@@ -470,12 +470,16 @@ export default function MatchDetailView({
         loading={sendLoading}
         disabled={sendLoading}
         attached="bottom"
-        style={browserView ? { display: "none" } : null}
+        style={{
+          display: browserView ? "none" : null
+        }}
       >
         <Label color="blue">
           <Icon name="send" />Share in Chat
         </Label>
       </Button>
+
+      {MatchesButton}
       <Segment
         style={{
           marginTop: "15px"

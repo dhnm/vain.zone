@@ -553,19 +553,25 @@ const aggregateData = data => {
       }
     ]).exec()
   ])
-    .then(aggregatedData => ({
-      ...data,
-      aggregatedData: {
-        winrate: {
-          won: aggregatedData[0][0].won,
-          of_matches: aggregatedData[0][0].totalCount
-        },
-        favorites: aggregatedData[1],
-        nightmares: aggregatedData[2],
-        friends: aggregatedData[3],
-        nemeses: aggregatedData[4]
+    .then(aggregatedData => {
+      try {
+        return {
+          ...data,
+          aggregatedData: {
+            winrate: {
+              won: aggregatedData[0][0].won,
+              of_matches: aggregatedData[0][0].totalCount
+            },
+            favorites: aggregatedData[1],
+            nightmares: aggregatedData[2],
+            friends: aggregatedData[3],
+            nemeses: aggregatedData[4]
+          }
+        };
+      } catch (err) {
+        throw new Error(err);
       }
-    }))
+    })
     .catch(err => {
       console.error(err);
       return data;
