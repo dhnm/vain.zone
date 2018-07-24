@@ -267,6 +267,8 @@ export type ICreatures5v5 = {
 export type IDraftOrder = string[][];
 
 const loopThroughTelemetry = (telemetryData, matchData) => {
+  // const awards = {}
+
   const damagesData: IDamages = { rosters: [{}, {}], highest: 0 };
   const towersDamagesData: IDamages = { rosters: [{}, {}], highest: 0 };
 

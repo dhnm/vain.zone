@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Segment, Message, Icon } from "semantic-ui-react";
+import { Segment, Message, Icon, Card, Image } from "semantic-ui-react";
 import Link from "next/link";
+import axios from "axios";
+import { css } from "glamor";
+
 import InputPanel from "./InputPanel";
 
 const propTypes = {
@@ -72,11 +75,198 @@ export default function MessageLayout({
             </Message.Content>
           </Message>
         ) : (
-          "Welcome to VAIN.ZONE Beta! Type your nick in the box above and hit Enter."
+          <React.Fragment>
+            Welcome to VAIN.ZONE Beta! Type your nick in the box above and hit
+            Enter.
+          </React.Fragment>
         )}
       </div>
+      <News />
     </Segment>
   );
+}
+
+class News extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      news: [],
+      featuredImages: []
+    };
+  }
+  componentDidMount() {
+    axios(
+      "https://cors-anywhere.herokuapp.com/https://www.vainglorygame.com/wp-json/wp/v2/posts?per_page=5"
+    )
+      .then(axiosData => axiosData.data)
+      .then(news => {
+        this.setState({ news: news });
+        return Promise.all(
+          news.map(n => {
+            return axios(
+              `https://cors-anywhere.herokuapp.com/${
+                n._links["wp:featuredmedia"][0].href
+              }`
+            );
+          })
+        );
+      })
+      .then(featuredImagesData => {
+        this.setState({
+          featuredImages: featuredImagesData.map(f => f.data.guid.rendered)
+        });
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+  render() {
+    try {
+      return (
+        <div style={{ margin: "120px 0px 20px 0px", textAlign: "center" }}>
+          <h2>Favorite Projects</h2>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1.1rem",
+              flexWrap: "wrap",
+              marginBottom: "110px"
+            }}
+          >
+            <a target="_blank" href="//m.me/VAIN.ZONE">
+              <div
+                {...css({
+                  width: "320px",
+                  padding: "20px 30px",
+                  borderRadius: "20px",
+                  margin: "10px",
+                  background: "linear-gradient(to right, #00c6ff, #0072ff)",
+                  cursor: "pointer",
+                  transition: "100ms linear",
+                  boxSizing: "border-box",
+                  ":hover": {
+                    transform: "translateY(-3px)"
+                  }
+                })}
+              >
+                <h3
+                  style={{
+                    color: "white"
+                  }}
+                >
+                  Facebook Messenger Extension
+                </h3>
+                <small>https://m.me/VAIN.ZONE</small>
+              </div>
+            </a>
+            <a target="_blank" href="//vain.zone/draft">
+              <div
+                {...css({
+                  width: "320px",
+                  padding: "20px 30px",
+                  borderRadius: "20px",
+                  margin: "10px",
+                  background: "linear-gradient(to left, #11998e, #38ef7d)",
+                  cursor: "pointer",
+                  transition: "100ms linear",
+                  ":hover": {
+                    transform: "translateY(-3px)"
+                  }
+                })}
+              >
+                <h3
+                  style={{
+                    color: "white",
+                    width: "100%"
+                  }}
+                >
+                  Universal Draft Tool
+                </h3>
+                <small>https://vain.zone/draft</small>
+              </div>
+            </a>
+            <a target="_blank" href="//vainglory.eu">
+              <div
+                {...css({
+                  width: "320px",
+                  padding: "20px 30px",
+                  borderRadius: "20px",
+                  margin: "10px",
+                  background: "linear-gradient(to left, #232526, #414345)",
+                  cursor: "pointer",
+                  transition: "100ms linear",
+                  ":hover": {
+                    transform: "translateY(-3px)"
+                  }
+                })}
+              >
+                <h3
+                  style={{
+                    color: "white"
+                  }}
+                >
+                  Czech and Slovak Community
+                </h3>
+                <small>https://vainglory.eu</small>
+              </div>
+            </a>
+          </div>
+          {this.state.news.length &&
+            this.state.news.length && (
+              <React.Fragment>
+                <h2>
+                  News from{" "}
+                  <a href="https://www.vainglorygame.com/news">
+                    vainglorygame.com
+                  </a>
+                </h2>
+                <Card.Group centered itemsPerRow={5} doubling stackable>
+                  {this.state.news.map((n, i) => (
+                    <Card
+                      href={n.link}
+                      link
+                      style={{ background: "HSLA(211, 11%, 22%, 1.00)" }}
+                    >
+                      <Image src={this.state.featuredImages[i]} />
+                      <Card.Content style={{ paddingBottom: 0 }}>
+                        <Card.Header>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: n.title.rendered
+                            }}
+                          />
+                        </Card.Header>
+                        <Card.Meta>
+                          <span className="date">{n.date_gmt}</span>
+                        </Card.Meta>
+                        <Card.Description>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: n.excerpt.rendered.substring(0, 120)
+                            }}
+                          />&hellip;
+                        </Card.Description>
+                      </Card.Content>
+                      <Card.Content extra style={{ paddingTop: 0 }}>
+                        <a>
+                          <Icon name="globe" />
+                          vainglorygame.com
+                        </a>
+                      </Card.Content>
+                    </Card>
+                  ))}
+                </Card.Group>
+              </React.Fragment>
+            )}
+        </div>
+      );
+    } catch (err) {
+      console.error(err);
+      return <React.Fragment />;
+    }
+  }
 }
 
 MessageLayout.propTypes = propTypes;

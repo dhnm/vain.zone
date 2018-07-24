@@ -601,7 +601,7 @@ export default class MainView extends React.Component {
                                         <td
                                           style={{
                                             textAlign: "left",
-                                            height: "40px",
+                                            height: "34px",
                                             paddingLeft: "5px",
                                             fontWeight: "bold"
                                           }}
@@ -657,7 +657,7 @@ export default class MainView extends React.Component {
                                         <td
                                           style={{
                                             textAlign: "left",
-                                            height: "40px",
+                                            height: "34px",
                                             paddingLeft: "5px",
                                             fontWeight: "bold"
                                           }}
@@ -733,23 +733,10 @@ export default class MainView extends React.Component {
                           }}
                           screenCategory={this.props.screenCategory}
                           browserView={this.props.browserView}
+                          toggleSendLoading={this.props.toggleSendLoading}
+                          generateImage={MainView.generateImage}
+                          sendLoading={this.props.sendLoading}
                         />
-                        <Button
-                          onClick={() => {
-                            this.props.toggleSendLoading(true);
-                            MainView.generateImage(this.matchDetailView, true);
-                          }}
-                          loading={this.props.sendLoading}
-                          disabled={this.props.sendLoading}
-                          attached="bottom"
-                          style={
-                            this.props.browserView ? { display: "none" } : null
-                          }
-                        >
-                          <Label color="blue">
-                            <Icon name="send" />Share in Chat
-                          </Label>
-                        </Button>
                       </div>
                     );
                   }

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
-import { Segment, Label, Grid, Image } from "semantic-ui-react";
+import { Segment, Label, Grid, Image, Button, Icon } from "semantic-ui-react";
 import * as moment from "moment";
 
 import VZIcon from "./../../../components/Icon";
@@ -39,7 +39,10 @@ const propTypes = {
   appLoading: PropTypes.bool.isRequired,
   childRef: PropTypes.func.isRequired,
   screenCategory: PropTypes.string.isRequired,
-  browserView: PropTypes.bool.isRequired
+  browserView: PropTypes.bool.isRequired,
+  toggleSendLoading: PropTypes.func.isRequired,
+  generateImage: PropTypes.func.isRequired,
+  sendLoading: PropTypes.bool.isRequired
 };
 
 export default function MatchDetailView({
@@ -49,7 +52,9 @@ export default function MatchDetailView({
   appLoading,
   childRef,
   screenCategory,
-  browserView
+  browserView,
+  generateImage,
+  sendLoading
 }) {
   const maxParticipantValues = converter({
     rosters: match.rosters
@@ -57,15 +62,31 @@ export default function MatchDetailView({
   const { playerInTheMatch, playerInTheMatchTeam } = converter({
     rosters: match.rosters
   }).identifyPlayerInTheMatch();
-  const processedAverageSkillTiers = match.rosters.map((_, i) =>
-    skillTierCalculator(
-      match.rosters[i].participants.reduce(
-        (accu, currVa) =>
-          accu + TLData.singleMatchData[currVa.player.name].rankPoints,
-        0
-      ) / match.rosters[i].participants.length
-    )
+
+  const blueSkillTiers = match.rosters[0].participants.reduce(
+    (accu, currVa) => {
+      accu.push(TLData.singleMatchData[currVa.player.name].rankPoints);
+      return accu;
+    },
+    []
   );
+  const redSkillTiers = match.rosters[1].participants.reduce((accu, currVa) => {
+    accu.push(TLData.singleMatchData[currVa.player.name].rankPoints);
+    return accu;
+  }, []);
+  const highestBlueST = skillTierCalculator(Math.max(...blueSkillTiers));
+  const lowestBlueST = skillTierCalculator(Math.min(...blueSkillTiers));
+  const highestRedST = skillTierCalculator(Math.max(...redSkillTiers));
+  const lowestRedST = skillTierCalculator(Math.min(...redSkillTiers));
+  const processedAverageSkillTiers = [
+    skillTierCalculator(
+      blueSkillTiers.reduce((a, b) => a + b) / blueSkillTiers.length
+    ),
+    skillTierCalculator(
+      redSkillTiers.reduce((a, b) => a + b) / redSkillTiers.length
+    )
+  ];
+
   const draftOrder = TLData.draftOrder.map((sides, i) => [
     ...new Set(
       sides
@@ -95,16 +116,20 @@ export default function MatchDetailView({
     0
   );
   return (
-    <div ref={childRef}>
+    <div
+      ref={childRef}
+      style={{
+        maxWidth: "414px",
+        margin: "auto"
+      }}
+    >
       <Segment
         id="matchDetailView"
         style={{
           display: "block",
           paddingTop: "1.6rem",
           paddingLeft: "0.5em",
-          paddingRight: "0.5em",
-          maxWidth: "414px",
-          margin: "auto"
+          paddingRight: "0.5em"
         }}
         attached={browserView ? false : "top"}
       >
@@ -268,17 +293,21 @@ export default function MatchDetailView({
                 ) : (
                   false
                 )}
-                <br />
-                <Label style={{ padding: "2px 6px" }}>
-                  Avg. rank{" "}
-                  <Image
-                    avatar
-                    src={`/static/img/rank/c/${
-                      processedAverageSkillTiers[0].number
-                    }${processedAverageSkillTiers[0].color}.png`}
-                  />
-                  {Math.round(processedAverageSkillTiers[0].value)}
-                </Label>
+                {!browserView && (
+                  <React.Fragment>
+                    <br />
+                    <Label style={{ padding: "2px 6px" }}>
+                      Avg. rank{" "}
+                      <Image
+                        avatar
+                        src={`/static/img/rank/c/${
+                          processedAverageSkillTiers[0].number
+                        }${processedAverageSkillTiers[0].color}.png`}
+                      />
+                      {Math.round(processedAverageSkillTiers[0].value)}
+                    </Label>
+                  </React.Fragment>
+                )}
               </Grid.Column>
               <Grid.Column textAlign="right" style={{}}>
                 <TeamStat
@@ -341,17 +370,21 @@ export default function MatchDetailView({
                 ) : (
                   false
                 )}
-                <br />
-                <Label style={{ padding: "2px 6px" }}>
-                  Avg. rank{" "}
-                  <Image
-                    avatar
-                    src={`/static/img/rank/c/${
-                      processedAverageSkillTiers[1].number
-                    }${processedAverageSkillTiers[1].color}.png`}
-                  />
-                  {Math.round(processedAverageSkillTiers[1].value)}
-                </Label>
+                {!browserView && (
+                  <React.Fragment>
+                    <br />
+                    <Label style={{ padding: "2px 6px" }}>
+                      Avg. rank{" "}
+                      <Image
+                        avatar
+                        src={`/static/img/rank/c/${
+                          processedAverageSkillTiers[1].number
+                        }${processedAverageSkillTiers[1].color}.png`}
+                      />
+                      {Math.round(processedAverageSkillTiers[1].value)}
+                    </Label>
+                  </React.Fragment>
+                )}
               </Grid.Column>
             </Grid.Row>
             <Grid.Row
@@ -427,6 +460,95 @@ export default function MatchDetailView({
             </Grid.Row>
           </Grid>
         </Segment>
+      </Segment>
+
+      <Button
+        onClick={() => {
+          toggleSendLoading(true);
+          generateImage(this.matchDetailView, true);
+        }}
+        loading={sendLoading}
+        disabled={sendLoading}
+        attached="bottom"
+        style={browserView ? { display: "none" } : null}
+      >
+        <Label color="blue">
+          <Icon name="send" />Share in Chat
+        </Label>
+      </Button>
+      <Segment
+        style={{
+          marginTop: "15px"
+        }}
+      >
+        <Label attached="top">Match-Making Quality</Label>
+        <div style={{ textAlign: "center" }}>Average Ranks</div>
+        <Grid columns="equal">
+          <Grid.Column>
+            <Image
+              style={{ width: "50px", margin: "auto" }}
+              src={`/static/img/rank/c/${processedAverageSkillTiers[0].number}${
+                processedAverageSkillTiers[0].color
+              }.png`}
+            />
+          </Grid.Column>
+          <Grid.Column>
+            <Image
+              style={{ width: "50px", margin: "auto" }}
+              src={`/static/img/rank/c/${processedAverageSkillTiers[1].number}${
+                processedAverageSkillTiers[1].color
+              }.png`}
+            />
+          </Grid.Column>
+        </Grid>
+        <div style={{ textAlign: "center" }}>Highest Ranks</div>
+        <Grid columns="equal">
+          <Grid.Column>
+            <Image
+              style={{ width: "50px", margin: "auto" }}
+              src={`/static/img/rank/c/${highestBlueST.number}${
+                highestBlueST.color
+              }.png`}
+            />
+          </Grid.Column>
+          <Grid.Column>
+            <Image
+              style={{ width: "50px", margin: "auto" }}
+              src={`/static/img/rank/c/${highestRedST.number}${
+                highestRedST.color
+              }.png`}
+            />
+          </Grid.Column>
+        </Grid>
+        <div style={{ textAlign: "center" }}>Lowest Ranks</div>
+        <Grid columns="equal">
+          <Grid.Column>
+            <Image
+              style={{ width: "50px", margin: "auto" }}
+              src={`/static/img/rank/c/${lowestBlueST.number}${
+                lowestBlueST.color
+              }.png`}
+            />
+          </Grid.Column>
+          <Grid.Column>
+            <Image
+              style={{ width: "50px", margin: "auto" }}
+              src={`/static/img/rank/c/${lowestRedST.number}${
+                lowestRedST.color
+              }.png`}
+            />
+          </Grid.Column>
+        </Grid>
+      </Segment>
+      <Segment
+        style={{
+          marginTop: "17px"
+        }}
+      >
+        More analysis coming soon.{" "}
+        <a target="_blank" href="https://discord.gg/QCKsjtJ">
+          Send us your suggestions
+        </a>!
       </Segment>
     </div>
   );
