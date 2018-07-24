@@ -4,6 +4,7 @@ import { Segment, Message, Icon, Card, Image } from "semantic-ui-react";
 import Link from "next/link";
 import axios from "axios";
 import { css } from "glamor";
+import * as moment from "moment";
 
 import InputPanel from "./InputPanel";
 
@@ -239,7 +240,9 @@ class News extends React.Component {
                           />
                         </Card.Header>
                         <Card.Meta>
-                          <span className="date">{n.date_gmt}</span>
+                          <span className="date">
+                            {moment(n.date_gmt).format("MMMM D")}
+                          </span>
                         </Card.Meta>
                         <Card.Description>
                           <div

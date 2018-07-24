@@ -815,136 +815,10 @@ const uploadMatches = (matches: any) => {
           //     .catch(err => {
           //         throw new Error("id: 8 " + err);
           //     });
-          const telemetryAssetId = match.relationships.assets.data[0]
-            ? match.relationships.assets.data[0].id
-            : undefined;
-          const findTelemetry = telemetryAssetId
-            ? matches.included.find((e: any) => e.id === telemetryAssetId)
-            : undefined;
-          const telemetryURL = findTelemetry
-            ? findTelemetry.attributes.URL
-            : undefined;
+          const processedMatch = processRawMatch(match, matches.included);
 
-          var customMatchDataModel = {
-            matchID: match.id,
-            createdAt: new Date(match.attributes.createdAt),
-            duration: match.attributes.duration,
-            gameMode: match.attributes.gameMode,
-            patchVersion: match.attributes.patchVersion,
-            shardId: match.attributes.shardId,
-            endGameReason: match.attributes.stats.endGameReason,
-            spectators: new Array(),
-            rosters: new Array(),
-            telemetryURL
-          };
-
-          for (
-            var spectatorIndex = 0;
-            spectatorIndex < match.relationships.spectators.data.length;
-            spectatorIndex++
-          ) {
-            const spectatorParticipant = matches.included.find(
-              (e: any) =>
-                e.id === match.relationships.spectators.data[spectatorIndex].id
-            );
-            const spectatorPlayer = matches.included.find(
-              (e: any) =>
-                e.id === spectatorParticipant.relationships.player.data.id
-            );
-
-            customMatchDataModel.spectators.push({
-              id: spectatorPlayer.id,
-              name: spectatorPlayer.attributes.name
-            });
-          }
-
-          for (
-            var rosterIndex = 0;
-            rosterIndex < match.relationships.rosters.data.length;
-            rosterIndex++
-          ) {
-            const roster = matches.included.find(
-              (e: any) =>
-                e.id === match.relationships.rosters.data[rosterIndex].id
-            );
-
-            var customRosterDataModel = {
-              acesEarned: roster.attributes.stats.acesEarned,
-              gold: roster.attributes.stats.gold,
-              heroKills: roster.attributes.stats.heroKills,
-              krakenCaptures: roster.attributes.stats.krakenCaptures,
-              side: roster.attributes.stats.side,
-              turretKills: roster.attributes.stats.turretKills,
-              turretsRemaining: roster.attributes.stats.turretsRemaining,
-              won: JSON.parse(roster.attributes.won),
-              participants: new Array()
-            };
-
-            for (
-              var participantIndex = 0;
-              participantIndex < roster.relationships.participants.data.length;
-              participantIndex++
-            ) {
-              const participant = matches.included.find(
-                (e: any) =>
-                  e.id ===
-                  roster.relationships.participants.data[participantIndex].id
-              );
-
-              const player = matches.included.find(
-                (e: any) => e.id === participant.relationships.player.data.id
-              );
-
-              var customParticipantDataModel = {
-                actor: participant.attributes.actor.substring(
-                  1,
-                  participant.attributes.actor.length - 1
-                ),
-                skillTier: participant.attributes.stats.skillTier,
-                assists: participant.attributes.stats.assists,
-                crystalMineCaptures:
-                  participant.attributes.stats.crystalMineCaptures,
-                deaths: participant.attributes.stats.deaths,
-                farm: participant.attributes.stats.farm,
-                firstAfkTime: participant.attributes.stats.firstAfkTime,
-                gold: participant.attributes.stats.gold,
-                goldMineCaptures: participant.attributes.stats.goldMineCaptures,
-                items: participant.attributes.stats.items,
-                jungleKills: participant.attributes.stats.jungleKills,
-                kills: participant.attributes.stats.kills,
-                krakenCaptures: participant.attributes.stats.krakenCaptures,
-                nonJungleMinionKills:
-                  participant.attributes.stats.nonJungleMinionKills,
-                skinKey: participant.attributes.stats.skinKey,
-                wentAfk: participant.attributes.stats.wentAfk,
-                player: {
-                  id: player.id,
-                  name: player.attributes.name
-                  // played_aral: player.attributes.stats.gamesPlayed.aral,
-                  // played_blitz: player.attributes.stats.gamesPlayed.blitz,
-                  // played_casual: player.attributes.stats.gamesPlayed.casual,
-                  // played_ranked: player.attributes.stats.gamesPlayed.ranked,
-                  // played_casual_5v5:
-                  //   player.attributes.stats.gamesPlayed.casual_5v5,
-                  // guildTag: player.attributes.stats.guildTag,
-                  // karmaLevel: player.attributes.stats.karmaLevel,
-                  // rank_3v3: player.attributes.stats.rankPoints.ranked,
-                  // rank_blitz: player.attributes.stats.rankPoints.blitz,
-                  // skillTier: player.attributes.stats.skillTier,
-                  // wins: player.attributes.stats.wins
-                }
-              };
-
-              customRosterDataModel.participants.push(
-                customParticipantDataModel
-              );
-            }
-
-            customMatchDataModel.rosters.push(customRosterDataModel);
-          }
-
-          if (telemetryAssetId !== undefined) {
-            newMatches.push(new Match(customMatchDataModel));
+          if (processedMatch) {
+            newMatches.push(new Match(processedMatch));
           }
         }
       });
@@ -966,6 +840,133 @@ const uploadMatches = (matches: any) => {
       console.log(err);
       throw new Error("id: 15 " + err);
     });
+};
+
+export const processRawMatch = (match, included) => {
+  const telemetryAssetId = match.relationships.assets.data[0]
+    ? match.relationships.assets.data[0].id
+    : undefined;
+  const findTelemetry = telemetryAssetId
+    ? included.find((e: any) => e.id === telemetryAssetId)
+    : undefined;
+  const telemetryURL = findTelemetry ? findTelemetry.attributes.URL : undefined;
+
+  if (!telemetryURL) {
+    return undefined;
+  }
+
+  const customMatchDataModel = {
+    matchID: match.id,
+    createdAt: new Date(match.attributes.createdAt),
+    duration: match.attributes.duration,
+    gameMode: match.attributes.gameMode,
+    patchVersion: match.attributes.patchVersion,
+    shardId: match.attributes.shardId,
+    endGameReason: match.attributes.stats.endGameReason,
+    spectators: new Array(),
+    rosters: new Array(),
+    telemetryURL
+  };
+
+  for (
+    let spectatorIndex = 0;
+    spectatorIndex < match.relationships.spectators.data.length;
+    spectatorIndex++
+  ) {
+    const spectatorParticipant = included.find(
+      (e: any) =>
+        e.id === match.relationships.spectators.data[spectatorIndex].id
+    );
+    const spectatorPlayer = included.find(
+      (e: any) => e.id === spectatorParticipant.relationships.player.data.id
+    );
+
+    customMatchDataModel.spectators.push({
+      id: spectatorPlayer.id,
+      name: spectatorPlayer.attributes.name
+    });
+  }
+
+  for (
+    let rosterIndex = 0;
+    rosterIndex < match.relationships.rosters.data.length;
+    rosterIndex++
+  ) {
+    const roster = included.find(
+      (e: any) => e.id === match.relationships.rosters.data[rosterIndex].id
+    );
+
+    const customRosterDataModel = {
+      acesEarned: roster.attributes.stats.acesEarned,
+      gold: roster.attributes.stats.gold,
+      heroKills: roster.attributes.stats.heroKills,
+      krakenCaptures: roster.attributes.stats.krakenCaptures,
+      side: roster.attributes.stats.side,
+      turretKills: roster.attributes.stats.turretKills,
+      turretsRemaining: roster.attributes.stats.turretsRemaining,
+      won: JSON.parse(roster.attributes.won),
+      participants: new Array()
+    };
+
+    for (
+      let participantIndex = 0;
+      participantIndex < roster.relationships.participants.data.length;
+      participantIndex++
+    ) {
+      const participant = included.find(
+        (e: any) =>
+          e.id === roster.relationships.participants.data[participantIndex].id
+      );
+
+      const player = included.find(
+        (e: any) => e.id === participant.relationships.player.data.id
+      );
+
+      const customParticipantDataModel = {
+        actor: participant.attributes.actor.substring(
+          1,
+          participant.attributes.actor.length - 1
+        ),
+        skillTier: participant.attributes.stats.skillTier,
+        assists: participant.attributes.stats.assists,
+        crystalMineCaptures: participant.attributes.stats.crystalMineCaptures,
+        deaths: participant.attributes.stats.deaths,
+        farm: participant.attributes.stats.farm,
+        firstAfkTime: participant.attributes.stats.firstAfkTime,
+        gold: participant.attributes.stats.gold,
+        goldMineCaptures: participant.attributes.stats.goldMineCaptures,
+        items: participant.attributes.stats.items,
+        jungleKills: participant.attributes.stats.jungleKills,
+        kills: participant.attributes.stats.kills,
+        krakenCaptures: participant.attributes.stats.krakenCaptures,
+        nonJungleMinionKills: participant.attributes.stats.nonJungleMinionKills,
+        skinKey: participant.attributes.stats.skinKey,
+        wentAfk: participant.attributes.stats.wentAfk,
+        player: {
+          id: player.id,
+          name: player.attributes.name
+          // played_aral: player.attributes.stats.gamesPlayed.aral,
+          // played_blitz: player.attributes.stats.gamesPlayed.blitz,
+          // played_casual: player.attributes.stats.gamesPlayed.casual,
+          // played_ranked: player.attributes.stats.gamesPlayed.ranked,
+          // played_casual_5v5:
+          //   player.attributes.stats.gamesPlayed.casual_5v5,
+          // guildTag: player.attributes.stats.guildTag,
+          // karmaLevel: player.attributes.stats.karmaLevel,
+          // rank_3v3: player.attributes.stats.rankPoints.ranked,
+          // rank_blitz: player.attributes.stats.rankPoints.blitz,
+          // skillTier: player.attributes.stats.skillTier,
+          // wins: player.attributes.stats.wins
+        }
+      };
+
+      customRosterDataModel.participants.push(customParticipantDataModel);
+    }
+
+    customMatchDataModel.rosters.push(customRosterDataModel);
+  }
+
+  return customMatchDataModel;
 };
 
 const updatePlayerDB = (
