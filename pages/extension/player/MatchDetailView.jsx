@@ -53,6 +53,7 @@ export default function MatchDetailView({
   childRef,
   screenCategory,
   browserView,
+  toggleSendLoading,
   generateImage,
   sendLoading,
   MatchesButton
