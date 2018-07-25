@@ -634,11 +634,14 @@ export default class DraftBuilder extends React.Component {
                 }}
                 action={() => {
                   this.setState(prevState => {
-                    if (prevState.newHeroName && prevState.newHeroImageURL) {
+                    if (
+                      prevState.newHeroName.trim() &&
+                      prevState.newHeroImageURL.trim()
+                    ) {
                       const sliced = prevState.heroes.slice();
                       sliced.unshift({
-                        name: prevState.newHeroName,
-                        img: prevState.newHeroImageURL
+                        name: prevState.newHeroName.trim(),
+                        img: prevState.newHeroImageURL.trim()
                       });
                       return {
                         heroes: sliced,
@@ -667,7 +670,7 @@ export default class DraftBuilder extends React.Component {
           <button
             id="submit_button"
             onClick={() => {
-              if (!this.state.draftName) {
+              if (!this.state.draftName.trim()) {
                 toast.error("Profile Name field is empty.", {
                   position: toast.POSITION.TOP_CENTER,
                   autoClose: 2750,
@@ -744,7 +747,7 @@ export default class DraftBuilder extends React.Component {
                 ];
 
                 this.props.addNewProfile({
-                  name: this.state.draftName,
+                  name: this.state.draftName.trim(),
                   banTime: this.state.banTime * 1000,
                   pickTime: this.state.pickTime * 1000,
                   bonusTime: this.state.bonusTime * 1000,

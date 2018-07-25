@@ -382,15 +382,15 @@ class Draft extends React.Component {
       675 / 1024 * (this.state.windowWidth ? this.state.windowWidth : 1024),
       675
     );
-    console.log(stickyScreenHeight);
+
+    const blueName = this.props.blueName || "Blue Team";
+    const redName = this.props.redName || "Red Team";
     return (
       <div id="draft_wrapper">
         <Head>
           <title>
             {typeof this.props.team === "number"
-              ? this.props.team
-                ? `${this.props.redName} in`
-                : `${this.props.blueName} in`
+              ? this.props.team ? `${redName} in` : `${blueName} in`
               : "Spectating"}{" "}
             {this.props.matchName || "VAIN.ZONE Draft"}
           </title>
@@ -567,7 +567,7 @@ class Draft extends React.Component {
               </svg>
             </div>
             <div id="team_names">
-              <span>{this.props.blueName}</span>
+              <span>{blueName}</span>
               <span
                 style={{
                   display:
@@ -582,7 +582,7 @@ class Draft extends React.Component {
               >
                 Your Turn
               </span>
-              <span>{this.props.redName}</span>
+              <span>{redName}</span>
             </div>
           </div>
           {this.props.spectator && (

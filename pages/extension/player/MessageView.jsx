@@ -219,7 +219,7 @@ class News extends React.Component {
               <React.Fragment>
                 <h2>
                   News from{" "}
-                  <a href="https://www.vainglorygame.com/news">
+                  <a href="https://www.vainglorygame.com/news" target="_blank">
                     vainglorygame.com
                   </a>
                 </h2>
@@ -227,6 +227,7 @@ class News extends React.Component {
                   {this.state.news.map((n, i) => (
                     <Card
                       href={n.link}
+                      target="_blank"
                       link
                       style={{ background: "HSLA(211, 11%, 22%, 1.00)" }}
                     >

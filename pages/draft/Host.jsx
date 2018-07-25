@@ -228,8 +228,8 @@ class Host extends React.Component {
       draftSequence: draftProfiles[0].sequence,
       heroes: draftProfiles[0].heroes,
       matchName: "",
-      blueName: "Blue Team",
-      redName: "Red Team",
+      blueName: "",
+      redName: "",
       waitingTime: 5000,
       banTime: draftProfiles[0].banTime,
       pickTime: draftProfiles[0].pickTime,
@@ -572,7 +572,12 @@ class Host extends React.Component {
   };
   generateLinks = event => {
     event.preventDefault();
-    this.setState({ lobby: true });
+    this.setState(prevState => ({
+      lobby: true,
+      matchName: prevState.matchName.trim(),
+      blueName: prevState.blueName.trim(),
+      redName: prevState.redName.trim()
+    }));
   };
   startDraft = event => {
     event.preventDefault();
@@ -643,6 +648,7 @@ class Host extends React.Component {
               name="matchName"
               placeholder="Match Name"
               onChange={this.handleChange}
+              value={this.state.matchName}
               readOnly={this.state.lobby}
             />
             <div className="panel">
@@ -652,6 +658,7 @@ class Host extends React.Component {
                 name="blueName"
                 placeholder="Blue Team"
                 onChange={this.handleChange}
+                value={this.state.blueName}
                 readOnly={this.state.lobby}
               />
               {this.state.lobby && (
@@ -689,6 +696,7 @@ class Host extends React.Component {
                 name="redName"
                 placeholder="Red Team"
                 onChange={this.handleChange}
+                value={this.state.redName}
                 readOnly={this.state.lobby}
               />
               {this.state.lobby && (

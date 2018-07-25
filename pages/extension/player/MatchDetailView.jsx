@@ -465,7 +465,7 @@ export default function MatchDetailView({
       <Button
         onClick={() => {
           toggleSendLoading(true);
-          generateImage(this.matchDetailView, true);
+          generateImage("match", true);
         }}
         loading={sendLoading}
         disabled={sendLoading}

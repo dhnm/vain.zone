@@ -84,7 +84,11 @@ export default class MainView extends React.Component {
       );
     });
   }
-  static generateImage(element, isMatch) {
+  static generateImage(elementName, isMatch) {
+    let element = this.matchDetailView;
+    if (elementName === "player") {
+      element = this.playerDetailView;
+    }
     html2canvas(element, {
       backgroundColor: null
     })
@@ -389,7 +393,7 @@ export default class MainView extends React.Component {
                   attached="bottom"
                   onClick={() => {
                     this.props.toggleSendLoading(true);
-                    MainView.generateImage(this.playerDetailView, false);
+                    MainView.generateImage("player", false);
                   }}
                   loading={this.props.sendLoading}
                   disabled={this.props.sendLoading}
@@ -702,7 +706,7 @@ export default class MainView extends React.Component {
                   }}
                 >
                   <Button
-                            size="large"
+                    size="large"
                     onClick={() => {
                       this.props.showSidebar(true);
                     }}
@@ -733,7 +737,7 @@ export default class MainView extends React.Component {
                           sendLoading={this.props.sendLoading}
                           MatchesButton={
                             <Button
-                            size="large"
+                              size="large"
                               onClick={() => {
                                 this.props.showSidebar(true);
                               }}
