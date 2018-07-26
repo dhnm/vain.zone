@@ -175,7 +175,7 @@ Guild.getInitialProps = async function getInitialProps() {
       url: `${urlPath}/api/fame`
     });
     const data = await requestData.data;
-
+    console.log(data);
     if (data.error) {
       return {
         error: data.error

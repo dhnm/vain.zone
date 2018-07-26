@@ -20,7 +20,7 @@ router.get("/", (_, res): void => {
 
     if (cachedBody && cachedBody.lastUpdated >= endPrevSaturday) {
         console.log(`Serving cached data from ${cachedBody.lastUpdated}`);
-        res.json(cachedBody.fames);
+        res.json(cachedBody);
     } else {
         const prevSunday = new Date().setDate(date.getDate() - 7 - day);
         const startPrevSunday = new Date(
