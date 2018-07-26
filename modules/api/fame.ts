@@ -17,8 +17,8 @@ router.get("/", (_, res): void => {
     );
 
     const cachedBody = mcache.get("guild/Blue Oyster Bar");
-    const f = false;
-    if (f && cachedBody && cachedBody.lastUpdated >= endPrevSaturday) {
+
+    if (cachedBody && cachedBody.lastUpdated >= endPrevSaturday) {
         console.log(`Serving cached data from ${cachedBody.lastUpdated}`);
         res.json(cachedBody.fames);
     } else {
