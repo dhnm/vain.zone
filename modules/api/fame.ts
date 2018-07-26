@@ -16,7 +16,7 @@ router.get("/", (_, res): void => {
         new Date(prevSaturday).setHours(23, 59, 59, 999)
     );
 
-    const cachedBody = mcache.get("fames/Blue Oyster Bar");
+    const cachedBody = mcache.get("guild/Blue Oyster Bar");
 
     if (cachedBody && cachedBody.lastUpdated >= endPrevSaturday) {
         console.log(`Serving cached data from ${cachedBody.lastUpdated}`);
@@ -166,38 +166,34 @@ router.get("/", (_, res): void => {
                     } else {
                         fames.push({
                             name: guildArray[pi],
-                            fame:
-                                2 *
-                                Math.floor(
-                                    playerStats[pi].reduce((accu, currVa) => {
-                                        if (
-                                            gameModeDict[currVa._id.gameMode][3]
-                                        ) {
-                                            if (currVa._id.won) {
-                                                return (
-                                                    accu +
-                                                    gameModeDict[
-                                                        currVa._id.gameMode
-                                                    ][3][currVa._id.mates - 1]
-                                                );
-                                            }
+                            fame: Math.floor(
+                                playerStats[pi].reduce((accu, currVa) => {
+                                    if (gameModeDict[currVa._id.gameMode][3]) {
+                                        if (currVa._id.won) {
                                             return (
                                                 accu +
                                                 gameModeDict[
                                                     currVa._id.gameMode
-                                                ][3][currVa._id.mates - 1] *
-                                                    0.75
+                                                ][3][currVa._id.mates - 1]
                                             );
                                         }
-                                        return accu;
-                                    }, 0)
-                                )
+                                        return (
+                                            accu +
+                                            gameModeDict[
+                                                currVa._id.gameMode
+                                            ][3][currVa._id.mates - 1] *
+                                                0.75
+                                        );
+                                    }
+                                    return accu;
+                                }, 0)
+                            )
                         });
                     }
                 }
                 fames.sort((a, b) => b.fame - a.fame);
                 res.json(fames);
-                mcache.put("fames/Blue Oyster Bar", {
+                mcache.put("guild/Blue Oyster Bar", {
                     lastUpdated: endPrevSaturday,
                     fames
                 });

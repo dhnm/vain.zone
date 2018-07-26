@@ -1,26 +1,38 @@
+// BR 3 W140 L105 1BOOST
+// BR 2 L50 0BOOST
+// BR 1 L8 W11 0BOOSTT
+
+// Blitz 2 L30 0BOOST (15/1)
+// Blitz 2 L38 1BOOST
+// Blitz 1 W6 0BOOST
+
+// 5V5R 3(4) W585 (fame booster - how many?)
+// 5V5R 5 950 1BOOST
+// 3V3C 2 W250 1BOOST
+
 export const gameModeDict = {
   // human readable mode name, private, rank points showed
   "5v5_pvp_ranked": [
     "5v5 Ranked",
     false,
     "ranked_5v5",
-    [30, 80, 100, 140, 180]
+    [35, 100, 120, 144, 173]
   ],
   "5v5_pvp_casual": [
     "5v5 Casual",
     false,
     "ranked_5v5",
-    [30, 80, 100, 140, 180]
+    [35, 100, 120, 144, 173]
   ],
   private_party_draft_match_5v5: ["5v5 Private Draft", true, "ranked_5v5"],
   private_party_vg_5v5: ["Sovereign's Rise Private Blind", true, "ranked_5v5"],
-  ranked: ["3v3 Ranked", false, "ranked", [30, 80, 100]],
+  ranked: ["3v3 Ranked", false, "ranked", [35, 100, 120]],
   private_party_draft_match: ["3v3 Private Draft", true, "ranked"],
-  casual: ["3v3 Casual", false, "ranked", [30, 80, 100]],
+  casual: ["3v3 Casual", false, "ranked", [35, 100, 120]],
   private: ["Halcyon Fold Private Blind", true, "ranked"],
-  casual_aral: ["Battle Royale", false, "blitz", [15, 40, 50]],
+  casual_aral: ["Battle Royale", false, "blitz", [12, 33, 40]],
   private_party_aral_match: ["Private Battle Royale", true, "blitz"],
-  blitz_pvp_ranked: ["Blitz", false, "blitz", [15, 40, 50]],
+  blitz_pvp_ranked: ["Blitz", false, "blitz", [7, 20, 24]],
   private_party_blitz_match: ["Private Blitz", true, "blitz"],
   blitz_rounds_pvp_casual: ["Onslaught", false, "blitz"],
   private_party_blitz_rounds_match: ["Private Onslaught", true, "blitz"]
