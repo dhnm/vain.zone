@@ -1,5 +1,6 @@
 import { Router, Response } from "express";
 const router: Router = Router();
+import cacheMW from "./../functions/cacheMW";
 
 import { axiosAPI } from "./../functions/getData";
 import skillTierCalculator from "./../functions/skillTierCalculator";
@@ -7,7 +8,7 @@ import { testingApiKey } from "./../functions/constants";
 
 export default router;
 
-router.get("/", (_, res: Response): void => {
+router.get("/", cacheMW(300), (_, res: Response): void => {
   const playerID = "682fecfc-d732-11e6-9b38-06388a2f2ea7";
   const axiosArray: any[] = [];
   for (let i = 0; i < 10; i++) {

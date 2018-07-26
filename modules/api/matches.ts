@@ -1,11 +1,12 @@
 import { Router, Response, Request } from "express";
 const router: Router = Router();
+import cacheMW from "./../functions/cacheMW";
 
 import getData from "./../functions/getData";
 
 export default router;
 
-router.get("/", (req: Request, res: Response): void => {
+router.get("/", cacheMW(300), (req: Request, res: Response): void => {
   getData(req.query.IGN)
     .then((data: any): void => {
       res.json(data);

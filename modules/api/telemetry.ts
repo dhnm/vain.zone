@@ -1,5 +1,6 @@
 import { Router, Response, Request } from "express";
 const router: Router = Router();
+import cacheMW from "./../functions/cacheMW";
 
 import axios, { AxiosResponse } from "axios";
 import { IMatch } from "models/Match";
@@ -18,7 +19,7 @@ export type IOutput = {
   error: boolean;
 };
 
-router.get("/", (req: Request, res: Response): void => {
+router.get("/", cacheMW(300), (req: Request, res: Response): void => {
   const matchData = JSON.parse(req.query.match);
   axios({
     method: "get",

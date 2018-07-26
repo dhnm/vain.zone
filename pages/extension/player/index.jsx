@@ -344,11 +344,14 @@ class Extension extends React.Component {
         this.props.errorMessage &&
         typeof this.props.errorMessage.error === "string"
       ) {
-        if (this.props.errorMessage.error.indexOf("404") > -1)
-          errorType = "404";
-        if (this.props.errorMessage.error.indexOf("veryold") > -1)
+        if (this.props.errorMessage.error.indexOf("veryold") > -1) {
           errorType = "veryold";
-        if (!errorType) errorType = "SEMC";
+        } else if (this.props.errorMessage.error.indexOf("404") > -1) {
+          errorType = "404";
+        } else {
+          errorType = "SEMC";
+          console.error(this.props.errorMessage);
+        }
       }
       return (
         <MessageLayout
@@ -507,7 +510,6 @@ App.getInitialProps = async function getInitialProps(context) {
         }
 
         if (!data.matches[0]) {
-          console.log("ishere", data);
           return {
             data,
             TLData: processedTelemetry,

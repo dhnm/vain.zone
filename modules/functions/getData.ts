@@ -629,8 +629,7 @@ const getPlayerAPI = (IGN: string, dbRegion?: string): Promise<any> => {
         .catch(err => {
           if (err.message === "veryold") {
             reject("veryold");
-          }
-          if (regionIndex + 1 == regions.length) {
+          } else if (regionIndex + 1 == regions.length) {
             if (err.message == "404") {
               saveNonExist(IGN);
               reject("404 Player was not found on any server.");

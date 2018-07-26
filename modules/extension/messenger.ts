@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 const router = Router();
+import cacheMW from "./../functions/cacheMW";
 
 import { BotUser } from "./../../models/BotUser";
 
@@ -28,7 +29,7 @@ router
   })
 
   // Message processing
-  .post((req: Request, res: Response) => {
+  .post(cacheMW(300), (req: Request, res: Response) => {
     var data = req.body;
 
     // Make sure this is a page subscription
@@ -157,12 +158,30 @@ const getPlayerInfo = (input: string, userID: string) => {
       sendPlayerInfo(userID, playerData);
     })
     .catch(err => {
-      console.log(err);
-      sendSystemMessage(
-        userID,
-        "Something went wrong :(\n\n1) Please check the spelling and capitalisation of the nick.\n\n2) If the player hasn't played a match recently, we don't have data for them.\n\n3) Maybe the player has changed their nick?\n\n4) There might be also an issue on SEMC side (developers of Vainglory). You can try again later.\n" +
-          err
-      );
+      console.error("messenger err", err);
+      if (err.message === "string") {
+        if (err.message.indexOf("404") > -1) {
+          sendSystemMessage(
+            userID,
+            "Player not found.(\n\n- Please check the spelling and capitalisation of the nick.\n\n- Maybe the player has changed their nick?\n"
+          );
+        } else if (err.message.indexOf("veryold") > -1) {
+          sendSystemMessage(
+            userID,
+            "Long time no see :(\n\nThe player hasn't played Vainglory for a long time. We don't have data for them.\n"
+          );
+        } else {
+          sendSystemMessage(
+            userID,
+            "Something went wrong.\n\nThere is probably an issue with SEMC (developers of Vainglory), try again later.\n"
+          );
+        }
+      } else {
+        sendSystemMessage(
+          userID,
+          "2 Something went wrong.\n\nThere is probably an issue with SEMC (developers of Vainglory), try again later.\n"
+        );
+      }
     });
 };
 

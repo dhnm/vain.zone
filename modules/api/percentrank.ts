@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 const router: Router = Router();
+import cacheMW from "./../functions/cacheMW";
 
 import { Player, IPlayer } from "./../../models/Player";
 import rankData from "./../functions/rankData";
@@ -32,7 +33,7 @@ router.get("/en", (_, res: Response): void => {
   res.json({ error: true });
 });
 
-router.get("/en/:IGN", (req: Request, res: Response): void => {
+router.get("/en/:IGN", cacheMW(3600), (req: Request, res: Response): void => {
   Player.findOne({ name: req.params.IGN })
     .exec()
     .then((player: IPlayer) => {
@@ -137,7 +138,7 @@ function sendSuccessMessage(res, req, playersPercentRank, processedSkillTier) {
           `);
 }
 
-router.get("/:IGN", (req: Request, res: Response): void => {
+router.get("/:IGN", cacheMW(3600), (req: Request, res: Response): void => {
   Player.findOne({ name: req.params.IGN })
     .exec()
     .then((player: IPlayer) => {

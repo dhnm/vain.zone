@@ -10,6 +10,7 @@ import bestczsk from "./bestczsk";
 import rankimage from "./rankimage";
 import percentrank from "./percentrank";
 import testing from "./testing";
+import fame from "./fame";
 
 import uuidv4 from "./uuidv4";
 
@@ -24,5 +25,6 @@ router.use("/bestczsk", bestczsk);
 router.use("/rankimage", rankimage);
 router.use("/percentrank", percentrank);
 router.use("/testing", testing);
+router.use("/fame", fame);
 
 router.use("/uuidv4", uuidv4);

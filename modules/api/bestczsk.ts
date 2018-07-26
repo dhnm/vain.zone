@@ -1,5 +1,6 @@
 import { Router, Response } from "express";
 const router: Router = Router();
+import cacheMW from "./../functions/cacheMW";
 
 import { Player, IPlayer } from "./../../models/Player";
 import { CzSk, ICzSk } from "./../../models/CzSk";
@@ -44,7 +45,7 @@ const output = players => {
   };
 };
 
-router.get("/", (_, res: Response): void => {
+router.get("/", cacheMW(30), (_, res: Response): void => {
   CzSk.find({})
     .exec()
     .then((czSkPlayers: ICzSk[]) =>
