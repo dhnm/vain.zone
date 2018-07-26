@@ -30,7 +30,7 @@ export const gameModeDict = {
   private_party_draft_match: ["3v3 Private Draft", true, "ranked"],
   casual: ["3v3 Casual", false, "ranked", [35, 100, 120]],
   private: ["Halcyon Fold Private Blind", true, "ranked"],
-  casual_aral: ["Battle Royale", false, "blitz", [12, 33, 40]],
+  casual_aral: ["Battle Royale", false, "blitz", [35 / 3, 100 / 3, 40]],
   private_party_aral_match: ["Private Battle Royale", true, "blitz"],
   blitz_pvp_ranked: ["Blitz", false, "blitz", [7, 20, 24]],
   private_party_blitz_match: ["Private Blitz", true, "blitz"],

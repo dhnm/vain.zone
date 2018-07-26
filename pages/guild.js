@@ -1,18 +1,11 @@
 import React from "react";
 import axios from "axios";
 import Head from "next/head";
-import { Table } from "semantic-ui-react";
+import { Table, Grid } from "semantic-ui-react";
 import Link from "next/link";
 import * as moment from "moment";
 
 const Guild = ({ data, error }) => {
-  const date = new Date();
-  const day = date.getDay();
-  const prevSaturday = new Date().setDate(date.getDate() - 7 + 6 - day);
-  const endPrevSaturday = new Date(
-    new Date(prevSaturday).setHours(23, 59, 59, 999)
-  );
-
   return (
     <div id="container">
       <Head>
@@ -57,19 +50,21 @@ const Guild = ({ data, error }) => {
         <div>Error: {JSON.stringify(error)}</div>
       ) : (
         <React.Fragment>
-          <h1>Blue Oyster Bar Guild Fame</h1>
-          <small>Last Updated {moment(endPrevSaturday).fromNow()}</small>
-          <Table unstackable style={{ margin: "20px auto" }}>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Name</Table.HeaderCell>
-                <Table.HeaderCell>Fame</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {data.map(p => (
-                <Table.Row>
-                  <Table.Cell>
+          <Grid columns="equal" stackable>
+            <Grid.Column>
+              <h1>Blue Oyster Bar</h1>
+              <p className="small">
+                Last Updated {moment(data.lastUpdated).fromNow()}
+              </p>
+              <Table unstackable selectable style={{ margin: "20px auto" }}>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Name</Table.HeaderCell>
+                    <Table.HeaderCell>Fame</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {data.guild.map(p => (
                     <Link
                       prefetch
                       href={`player?browserView=true&error=false&extension=false&IGN=${
@@ -77,14 +72,46 @@ const Guild = ({ data, error }) => {
                       }`}
                       as={`/player/${p.name}`}
                     >
-                      <a>{p.name}</a>
+                      <Table.Row style={{ cursor: "pointer" }}>
+                        <Table.Cell>{p.name}</Table.Cell>
+                        <Table.Cell>{Math.round(p.fame)}</Table.Cell>
+                      </Table.Row>
                     </Link>
-                  </Table.Cell>
-                  <Table.Cell>{Math.round(p.fame)}</Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
+                  ))}
+                </Table.Body>
+              </Table>
+            </Grid.Column>
+            <Grid.Column>
+              <h1>Police Academy</h1>
+              <p className="small">
+                Last Updated {moment(data.lastUpdated).fromNow()}
+              </p>
+              <Table unstackable selectable style={{ margin: "20px auto" }}>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Name</Table.HeaderCell>
+                    <Table.HeaderCell>Fame</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {data.academy.map(p => (
+                    <Link
+                      prefetch
+                      href={`player?browserView=true&error=false&extension=false&IGN=${
+                        p.name
+                      }`}
+                      as={`/player/${p.name}`}
+                    >
+                      <Table.Row style={{ cursor: "pointer" }}>
+                        <Table.Cell>{p.name}</Table.Cell>
+                        <Table.Cell>{Math.round(p.fame)}</Table.Cell>
+                      </Table.Row>
+                    </Link>
+                  ))}
+                </Table.Body>
+              </Table>
+            </Grid.Column>
+          </Grid>
         </React.Fragment>
       )}
       <style jsx global>
@@ -109,24 +136,22 @@ const Guild = ({ data, error }) => {
       </style>
       <style jsx>
         {`
+          h1,
+          .small {
+            text-align: center;
+          }
+          .small {
+            font-size: 0.85rem;
+          }
           #container {
             min-height: 100vh;
             margin: 40px auto;
-            max-width: 1280px;
-          }
-          @media (min-width: 768px) and (max-width: 1023px) {
-            #container {
-              max-width: 768px;
-            }
+            max-width: 768px;
           }
           @media (max-width: 767px) {
             #container {
               max-width: 414px;
             }
-          }
-          #container {
-            max-width: 414px;
-            padding: 0 15px;
           }
         `}
       </style>
