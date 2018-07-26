@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
 const router = Router();
-import cacheMW from "./../functions/cacheMW";
 
 import { BotUser } from "./../../models/BotUser";
 
@@ -29,7 +28,7 @@ router
   })
 
   // Message processing
-  .post(cacheMW(300), (req: Request, res: Response) => {
+  .post((req: Request, res: Response) => {
     var data = req.body;
 
     // Make sure this is a page subscription
