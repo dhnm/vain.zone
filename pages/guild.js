@@ -135,7 +135,7 @@ const Guild = ({ data, error }) => {
 
 export default Guild;
 
-Guild.getInitialProps = async function getInitialProps(context) {
+Guild.getInitialProps = async function getInitialProps() {
   try {
     // const { query } = context;
 

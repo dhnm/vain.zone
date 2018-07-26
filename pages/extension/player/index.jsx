@@ -466,10 +466,8 @@ function App(props) {
 
 export default App;
 
-App.getInitialProps = async function getInitialProps(context) {
+App.getInitialProps = async function getInitialProps({ query }) {
   try {
-    const { query } = context;
-
     let urlPath = "https://vain.zone";
     if (process.env.NODE_ENV !== "production") {
       urlPath = "http://localhost:3000";

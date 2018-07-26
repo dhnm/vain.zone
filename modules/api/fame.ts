@@ -166,28 +166,32 @@ router.get("/", (_, res): void => {
                     } else {
                         fames.push({
                             name: guildArray[pi],
-                            fame: Math.floor(
-                                playerStats[pi].reduce((accu, currVa) => {
-                                    if (gameModeDict[currVa._id.gameMode][3]) {
-                                        if (currVa._id.won) {
+                            fame:
+                                1.5 *
+                                Math.floor(
+                                    playerStats[pi].reduce((accu, currVa) => {
+                                        if (
+                                            gameModeDict[currVa._id.gameMode][3]
+                                        ) {
+                                            if (currVa._id.won) {
+                                                return (
+                                                    accu +
+                                                    gameModeDict[
+                                                        currVa._id.gameMode
+                                                    ][3][currVa._id.mates - 1]
+                                                );
+                                            }
                                             return (
                                                 accu +
                                                 gameModeDict[
                                                     currVa._id.gameMode
-                                                ][3][currVa._id.mates - 1]
+                                                ][3][currVa._id.mates - 1] *
+                                                    0.75
                                             );
                                         }
-                                        return (
-                                            accu +
-                                            gameModeDict[
-                                                currVa._id.gameMode
-                                            ][3][currVa._id.mates - 1] *
-                                                0.75
-                                        );
-                                    }
-                                    return accu;
-                                }, 0)
-                            )
+                                        return accu;
+                                    }, 0)
+                                )
                         });
                     }
                 }
