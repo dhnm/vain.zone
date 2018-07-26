@@ -80,7 +80,7 @@ const Guild = ({ data, error }) => {
                       <a>{p.name}</a>
                     </Link>
                   </Table.Cell>
-                  <Table.Cell>{p.fame}</Table.Cell>
+                  <Table.Cell>{Math.round(p.fame)}</Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>

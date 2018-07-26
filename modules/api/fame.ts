@@ -16,7 +16,7 @@ router.get("/", (_, res): void => {
         new Date(prevSaturday).setHours(23, 59, 59, 999)
     );
 
-    const cachedBody = mcache.get("guild:bar");
+    const cachedBody = mcache.get("fames/Blue Oyster Bar");
 
     if (cachedBody && cachedBody.lastUpdated >= endPrevSaturday) {
         console.log(`Serving cached data from ${cachedBody.lastUpdated}`);
@@ -167,7 +167,7 @@ router.get("/", (_, res): void => {
                         fames.push({
                             name: guildArray[pi],
                             fame:
-                                1.5 *
+                                2 *
                                 Math.floor(
                                     playerStats[pi].reduce((accu, currVa) => {
                                         if (
@@ -197,7 +197,7 @@ router.get("/", (_, res): void => {
                 }
                 fames.sort((a, b) => b.fame - a.fame);
                 res.json(fames);
-                mcache.put("guild:bar", {
+                mcache.put("fames/Blue Oyster Bar", {
                     lastUpdated: endPrevSaturday,
                     fames
                 });

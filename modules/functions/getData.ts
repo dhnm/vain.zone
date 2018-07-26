@@ -554,7 +554,7 @@ const aggregateData = data => {
     ]).exec()
   ])
     .then(aggregatedData => {
-      if (aggregatedData[0][0]) {
+      try {
         return {
           ...data,
           aggregatedData: {
@@ -568,8 +568,9 @@ const aggregateData = data => {
             nemeses: aggregatedData[4]
           }
         };
+      } catch (err) {
+        return Promise.reject(err);
       }
-      throw new Error("No Winrate Aggregated");
     })
     .catch(err => {
       console.error(err);
