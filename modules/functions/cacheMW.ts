@@ -4,7 +4,7 @@ export default duration => (req, res, next) => {
   const key = "__express__" + req.originalUrl || req.url;
   const cachedBody = mcache.get(key);
   if (cachedBody) {
-    console.log("sending cachedbody");
+    console.log("sending cachedbody", cachedBody);
     res.send(cachedBody);
     return;
   } else {

@@ -40,6 +40,19 @@ const Guild = ({ data, error }) => {
         <meta property="og:image:height" content="480" />
         <meta property="og:image:alt" content="VAIN.ZONE" />
       </Head>
+      <Link prefetch href={`/extension/player?browserView=true`} as="/">
+        <img
+          src="/static/img/draft/VAINZONE-logo-darkbg.png"
+          alt="VAIN.ZONE"
+          style={{
+            width: "200px",
+            display: "block",
+            margin: "auto",
+            marginBottom: "14px",
+            cursor: "pointer"
+          }}
+        />
+      </Link>
       {error ? (
         <div>Error: {JSON.stringify(error)}</div>
       ) : (

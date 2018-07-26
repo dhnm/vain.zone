@@ -159,13 +159,13 @@ const getPlayerInfo = (input: string, userID: string) => {
     })
     .catch(err => {
       console.error("messenger err", err);
-      if (err.message === "string") {
-        if (err.message.indexOf("404") > -1) {
+      if (err.error === "string") {
+        if (err.error.indexOf("404") > -1) {
           sendSystemMessage(
             userID,
             "Player not found.(\n\n- Please check the spelling and capitalisation of the nick.\n\n- Maybe the player has changed their nick?\n"
           );
-        } else if (err.message.indexOf("veryold") > -1) {
+        } else if (err.error.indexOf("veryold") > -1) {
           sendSystemMessage(
             userID,
             "Long time no see :(\n\nThe player hasn't played Vainglory for a long time. We don't have data for them.\n"
