@@ -59,7 +59,7 @@ const Guild = ({ data, error }) => {
         <React.Fragment>
           <h1>Blue Oyster Bar Guild Fame</h1>
           <small>Last Updated {moment(endPrevSaturday).fromNow()}</small>
-          <Table style={{ margin: "20px auto" }}>
+          <Table unstackable style={{ margin: "20px auto" }}>
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>Name</Table.HeaderCell>
@@ -126,6 +126,7 @@ const Guild = ({ data, error }) => {
           }
           #container {
             max-width: 414px;
+            padding: 0 15px;
           }
         `}
       </style>
