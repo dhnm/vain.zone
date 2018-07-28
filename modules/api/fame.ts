@@ -93,7 +93,8 @@ router.get("/", (_, res): void => {
             "ARA666",
             "LegendHeroCZ",
             "danOne",
-            "SimplyPerfect"
+            "SimplyPerfect",
+            "Gargoron"
         ];
 
         const guildAggregations = [];

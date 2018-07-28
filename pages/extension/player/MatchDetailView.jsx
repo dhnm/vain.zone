@@ -119,12 +119,12 @@ export default function MatchDetailView({
   );
   return (
     <div
-      ref={childRef}
       style={{
         margin: "auto"
       }}
     >
       <Segment
+        ref={childRef}
         id="matchDetailView"
         style={{
           display: "block",
