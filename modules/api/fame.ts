@@ -139,24 +139,14 @@ router.get("/", (_, res): void => {
                             name,
                             fame: Math.floor(
                                 playerStats[pi].reduce((accu, currVa) => {
-                                    if (gameModeDict[currVa._id.gameMode][3]) {
-                                        if (currVa._id.won) {
-                                            return (
-                                                accu +
-                                                gameModeDict[
-                                                    currVa._id.gameMode
-                                                ][3][currVa._id.mates - 1]
-                                            );
-                                        }
-                                        return (
-                                            accu +
-                                            gameModeDict[
-                                                currVa._id.gameMode
-                                            ][3][currVa._id.mates - 1] *
-                                                0.75
-                                        );
+                                    const matchFame =
+                                        gameModeDict[currVa._id.gameMode][3][
+                                            currVa._id.mates - 1
+                                        ] * currVa.count;
+                                    if (currVa._id.won) {
+                                        return accu + matchFame;
                                     }
-                                    return accu;
+                                    return accu + matchFame * 0.75;
                                 }, 0)
                             )
                         });
