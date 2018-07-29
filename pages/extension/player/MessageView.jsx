@@ -292,6 +292,7 @@ class News extends React.Component {
                       target="_blank"
                       link
                       style={{ background: "HSLA(211, 11%, 22%, 1.00)" }}
+                      key={n.link}
                     >
                       <Image src={this.state.featuredImages[i]} />
                       <Card.Content style={{ paddingBottom: 0 }}>
@@ -316,10 +317,8 @@ class News extends React.Component {
                         </Card.Description>
                       </Card.Content>
                       <Card.Content extra style={{ paddingTop: 0 }}>
-                        <a>
-                          <Icon name="globe" />
-                          vainglorygame.com
-                        </a>
+                        <Icon name="globe" />
+                        vainglorygame.com
                       </Card.Content>
                     </Card>
                   ))}
