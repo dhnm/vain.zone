@@ -7,6 +7,8 @@ import Head from "next/head";
 import MainView from "./MainView";
 import MessageLayout from "./MessageView";
 
+import backgroundStyle from "./../../backgroundStyle.css";
+
 import { gameModeDict } from "./../../../modules/functions/constants";
 
 const propTypes = {
@@ -422,21 +424,6 @@ function App(props) {
       <style jsx global>
         {`
           body {
-            background-color: black !important;
-
-            background-image: linear-gradient(
-                hsla(0, 0%, 0%, 0.7),
-                hsla(0, 0%, 0%, 0.6),
-                hsla(0, 0%, 0%, 0.8),
-                hsla(227, 32%, 9%, 0.9),
-                hsla(227, 32%, 9%, 1)
-              ),
-              url("/static/img/bg.jpg") !important;
-            background-repeat: no-repeat !important;
-            background-position: center center !important;
-            background-attachment: fixed !important;
-            background-size: cover !important;
-
             min-height: 100vh;
           }
         `}

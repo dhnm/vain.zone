@@ -4,29 +4,29 @@ import { Table, Grid, Button } from "semantic-ui-react";
 import Link from "next/link";
 import * as moment from "moment";
 
-import GuildWrapper from "./../../components/GuildWrapper";
+import Head from "./components/Head";
 
 const Guild = ({ data, error }) => {
   return (
-    <GuildWrapper>
-      <div id="container">
-        <Link prefetch href={`/extension/player?browserView=true`} as="/">
-          <img
-            src="/static/img/draft/VAINZONE-logo-darkbg.png"
-            alt="VAIN.ZONE"
-            style={{
-              width: "200px",
-              display: "block",
-              margin: "auto",
-              marginBottom: "14px",
-              cursor: "pointer"
-            }}
-          />
-        </Link>
-        {error ? (
-          <div>Error: {JSON.stringify(error)}</div>
-        ) : (
-          <React.Fragment>
+    <div id="container">
+      <Head />
+      <Link prefetch href={`/extension/player?browserView=true`} as="/">
+        <img
+          src="/static/img/draft/VAINZONE-logo-darkbg.png"
+          alt="VAIN.ZONE"
+          style={{
+            width: "200px",
+            display: "block",
+            margin: "auto",
+            marginBottom: "14px",
+            cursor: "pointer"
+          }}
+        />
+      </Link>
+      {error ? (
+        <div>Error: {JSON.stringify(error)}</div>
+      ) : (
+        <React.Fragment>
           <Link href="/guild/apply">
             <Button
               size="huge"
@@ -39,94 +39,93 @@ const Guild = ({ data, error }) => {
             >
               Track My Guild
             </Button>
-            </Link>
-            <Grid columns="equal" stackable>
-              <Grid.Column>
-                <h1>Blue Oyster Bar</h1>
-                <p className="small">
-                  Last Updated {moment(data.lastUpdated).fromNow()}
-                </p>
-                <Table unstackable selectable style={{ margin: "20px auto" }}>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell>Name</Table.HeaderCell>
-                      <Table.HeaderCell>Fame</Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                    {data.guild.map(p => (
-                      <Link
-                        prefetch
-                        href={`player?browserView=true&error=false&extension=false&IGN=${
-                          p.name
-                        }`}
-                        as={`/player/${p.name}`}
-                      >
-                        <Table.Row style={{ cursor: "pointer" }}>
-                          <Table.Cell>{p.name}</Table.Cell>
-                          <Table.Cell>{Math.round(p.fame)}</Table.Cell>
-                        </Table.Row>
-                      </Link>
-                    ))}
-                  </Table.Body>
-                </Table>
-              </Grid.Column>
-              <Grid.Column>
-                <h1>Police Academy</h1>
-                <p className="small">
-                  Last Updated {moment(data.lastUpdated).fromNow()}
-                </p>
-                <Table unstackable selectable style={{ margin: "20px auto" }}>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell>Name</Table.HeaderCell>
-                      <Table.HeaderCell>Fame</Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                    {data.academy.map(p => (
-                      <Link
-                        prefetch
-                        href={`player?browserView=true&error=false&extension=false&IGN=${
-                          p.name
-                        }`}
-                        as={`/player/${p.name}`}
-                      >
-                        <Table.Row style={{ cursor: "pointer" }}>
-                          <Table.Cell>{p.name}</Table.Cell>
-                          <Table.Cell>{Math.round(p.fame)}</Table.Cell>
-                        </Table.Row>
-                      </Link>
-                    ))}
-                  </Table.Body>
-                </Table>
-              </Grid.Column>
-            </Grid>
-          </React.Fragment>
-        )}
-        <style jsx>
-          {`
-            h1,
-            .small {
-              text-align: center;
-            }
-            .small {
-              font-size: 0.85rem;
-            }
+          </Link>
+          <Grid columns="equal" stackable>
+            <Grid.Column>
+              <h1>Blue Oyster Bar</h1>
+              <p className="small">
+                Last Updated {moment(data.lastUpdated).fromNow()}
+              </p>
+              <Table unstackable selectable style={{ margin: "20px auto" }}>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Name</Table.HeaderCell>
+                    <Table.HeaderCell>Fame</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {data.guild.map(p => (
+                    <Link
+                      prefetch
+                      href={`player?browserView=true&error=false&extension=false&IGN=${
+                        p.name
+                      }`}
+                      as={`/player/${p.name}`}
+                    >
+                      <Table.Row style={{ cursor: "pointer" }}>
+                        <Table.Cell>{p.name}</Table.Cell>
+                        <Table.Cell>{Math.round(p.fame)}</Table.Cell>
+                      </Table.Row>
+                    </Link>
+                  ))}
+                </Table.Body>
+              </Table>
+            </Grid.Column>
+            <Grid.Column>
+              <h1>Police Academy</h1>
+              <p className="small">
+                Last Updated {moment(data.lastUpdated).fromNow()}
+              </p>
+              <Table unstackable selectable style={{ margin: "20px auto" }}>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Name</Table.HeaderCell>
+                    <Table.HeaderCell>Fame</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {data.academy.map(p => (
+                    <Link
+                      prefetch
+                      href={`player?browserView=true&error=false&extension=false&IGN=${
+                        p.name
+                      }`}
+                      as={`/player/${p.name}`}
+                    >
+                      <Table.Row style={{ cursor: "pointer" }}>
+                        <Table.Cell>{p.name}</Table.Cell>
+                        <Table.Cell>{Math.round(p.fame)}</Table.Cell>
+                      </Table.Row>
+                    </Link>
+                  ))}
+                </Table.Body>
+              </Table>
+            </Grid.Column>
+          </Grid>
+        </React.Fragment>
+      )}
+      <style jsx>
+        {`
+          h1,
+          .small {
+            text-align: center;
+          }
+          .small {
+            font-size: 0.85rem;
+          }
+          #container {
+            min-height: 100vh;
+            margin: 40px auto;
+            max-width: 768px;
+          }
+          @media (max-width: 767px) {
             #container {
-              min-height: 100vh;
-              margin: 40px auto;
-              max-width: 768px;
+              max-width: 414px;
             }
-            @media (max-width: 767px) {
-              #container {
-                max-width: 414px;
-              }
-            }
-          `}
-        </style>
-      </div>
-    </GuildWrapper>
+          }
+        `}
+      </style>
+    </div>
   );
 };
 

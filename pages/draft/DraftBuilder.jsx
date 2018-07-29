@@ -664,8 +664,8 @@ export default class DraftBuilder extends React.Component {
             </div>
           </div>
           <div style={{ textAlign: "justify" }}>
-            Contact me if you need more customization options, including custom
-            heroes, colors, logos, etc! Add thisBoy#4399 on Discord.
+            Contact us if you need more customization options, including custom
+            heroes, colors, logos, etc! <a target="_blank" href="https://discord.gg/wDYKFaS">Join us on Discord (wDYKFaS)</a>.
           </div>
           <button
             id="submit_button"

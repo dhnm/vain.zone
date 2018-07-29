@@ -613,14 +613,19 @@ class Host extends React.Component {
     const profiles = [...draftProfiles, ...this.state.userProfiles];
     if (this.state.choosingProfile) {
       return (
-        <DraftBuilder
-          defaultProfiles={draftProfiles}
-          userProfiles={this.state.userProfiles}
-          defaultHeroes={this.state.heroes}
-          handleSelect={this.handleSelect}
-          addNewProfile={this.addNewProfile}
-          removeUserProfile={this.removeUserProfile}
-        />
+        <React.Fragment>
+          <Head>
+            <title>{this.state.matchName || "VAIN.ZONE Draft Tool"}</title>
+          </Head>
+          <DraftBuilder
+            defaultProfiles={draftProfiles}
+            userProfiles={this.state.userProfiles}
+            defaultHeroes={this.state.heroes}
+            handleSelect={this.handleSelect}
+            addNewProfile={this.addNewProfile}
+            removeUserProfile={this.removeUserProfile}
+          />
+        </React.Fragment>
       );
     } else if (this.state.draftLaunched) {
       return <Draft {...this.state} />;
@@ -628,11 +633,7 @@ class Host extends React.Component {
     return (
       <Lobby>
         <Head>
-          <title>
-            {!this.state.matchName
-              ? "VAIN.ZONE Draft Tool"
-              : this.state.matchName}
-          </title>
+          <title>{this.state.matchName || "VAIN.ZONE Draft Tool"}</title>
         </Head>
         <React.Fragment>
           <img
