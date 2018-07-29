@@ -169,7 +169,7 @@ class News extends React.Component {
                 >
                   Weekly Fame Tracker
                 </h3>
-                <small>Blue Oyster Bar & Police Academy</small>
+                <small>Sample & Application Form</small>
               </div>
             </Link>
             <a target="_blank" href="https://m.me/VAIN.ZONE">
