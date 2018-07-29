@@ -129,6 +129,8 @@ export default class GuildApplication extends React.Component {
                     name="guildMembers"
                     value={this.state.guildMembers}
                     onChange={this.handleChange}
+                    spellCheck={false}
+                    data-gramm={false}
                     required
                   />
                 </Form.Field>

@@ -45,10 +45,10 @@ const GuildWrapper = ({ children, guildName }) => (
               hsla(227, 32%, 9%, 1)
             ),
             url("/static/img/bg.jpg") !important;
-          background-repeat: no-repeat;
-          background-position: center center;
-          background-attachment: fixed;
-          background-size: cover;
+          background-repeat: no-repeat !important;
+          background-position: center center !important;
+          background-attachment: fixed !important;
+          background-size: cover !important;
         }
       `}
     </style>
