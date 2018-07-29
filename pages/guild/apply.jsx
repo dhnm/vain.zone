@@ -21,10 +21,9 @@ export default class GuildApplication extends React.Component {
     this.setState({ formLoading: true }, () => {
       axios
         .post("/api/fame", this.state)
-        .then(response => {
-          throw new Error("h");
-          this.setState({ formSuccess: true, formLoading: false });
-        })
+        .then(response =>
+          this.setState({ formSuccess: true, formLoading: false })
+        )
         .catch(err => {
           console.error(err);
           this.setState({ formError: true, formLoading: false });
@@ -146,11 +145,11 @@ export default class GuildApplication extends React.Component {
                 <Message error>
                   <Message.Header>Error!</Message.Header>
                   <Message.Content>
-                    Something went wrong :( Please message us on
-                    our{" "}
+                    Something went wrong :( Please message us on our{" "}
                     <a target="_blank" href="https://discord.gg/wDYKFaS">
                       Discord Server (wDYKFaS)
-                    </a> or try again later.
+                    </a>{" "}
+                    or try again later.
                   </Message.Content>
                 </Message>
                 {!this.state.formSuccess && (
