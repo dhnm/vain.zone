@@ -39,7 +39,16 @@ export default function MessageLayout({
     msgHeader = "Error!";
     messages = [
       "There is probably an issue with SEMC (developers of Vainglory), try again later.",
-      "If you have a minute, please tell me about this! thisBoy$4399 (Discord)"
+      <React.Fragment>
+        If you have a minute, please tell me about this{" "}
+        <a
+          target="_blank"
+          href="https://discord.gg/wDYKFaS"
+          style={{ color: "black" }}
+        >
+          on Discord (wDYKFaS)
+        </a>!
+      </React.Fragment>
     ];
   }
 
@@ -124,7 +133,7 @@ class News extends React.Component {
   render() {
     try {
       return (
-        <div style={{ margin: "120px 0px 20px 0px", textAlign: "center" }}>
+        <div style={{ margin: "120px 0px 40px 0px", textAlign: "center" }}>
           <h2>Favorite Projects</h2>
           <div
             style={{
@@ -133,10 +142,37 @@ class News extends React.Component {
               justifyContent: "center",
               fontSize: "1.1rem",
               flexWrap: "wrap",
+              margin: "auto",
               marginBottom: "110px"
             }}
           >
-            <a target="_blank" href="//m.me/VAIN.ZONE">
+            <Link href="/guild">
+              <div
+                {...css({
+                  width: "320px",
+                  padding: "20px 30px",
+                  borderRadius: "20px",
+                  margin: "10px",
+                  background: "linear-gradient(to left, #f12711, #f5af19)",
+                  cursor: "pointer",
+                  transition: "100ms linear",
+                  boxSizing: "border-box",
+                  ":hover": {
+                    transform: "translateY(-3px)"
+                  }
+                })}
+              >
+                <h3
+                  style={{
+                    color: "white"
+                  }}
+                >
+                  Weekly Fame Tracker
+                </h3>
+                <small>Blue Oyster Bar & Police Academy</small>
+              </div>
+            </Link>
+            <a target="_blank" href="https://m.me/VAIN.ZONE">
               <div
                 {...css({
                   width: "320px",
@@ -159,10 +195,10 @@ class News extends React.Component {
                 >
                   Facebook Messenger Extension
                 </h3>
-                <small>https://m.me/VAIN.ZONE</small>
+                <small>@VAIN.ZONE</small>
               </div>
             </a>
-            <a target="_blank" href="//vain.zone/draft">
+            <a target="_blank" href="/draft">
               <div
                 {...css({
                   width: "320px",
@@ -185,10 +221,10 @@ class News extends React.Component {
                 >
                   Universal Draft Tool
                 </h3>
-                <small>https://vain.zone/draft</small>
+                <small>VAIN.ZONE/draft</small>
               </div>
             </a>
-            <a target="_blank" href="//vainglory.eu">
+            <a target="_blank" href="https://vainglory.eu">
               <div
                 {...css({
                   width: "320px",
@@ -210,7 +246,33 @@ class News extends React.Component {
                 >
                   Czech and Slovak Community
                 </h3>
-                <small>https://vainglory.eu</small>
+                <small>Vainglory.eu</small>
+              </div>
+            </a>
+            <a target="_blank" href="https://discord.gg/wDYKFaS">
+              <div
+                {...css({
+                  width: "320px",
+                  padding: "20px 30px",
+                  borderRadius: "20px",
+                  margin: "10px",
+                  background:
+                    "linear-gradient(to right, HSLA(226, 47%, 63%, 1.00), HSLA(227, 48%, 54%, 1.00))",
+                  cursor: "pointer",
+                  transition: "100ms linear",
+                  ":hover": {
+                    transform: "translateY(-3px)"
+                  }
+                })}
+              >
+                <h3
+                  style={{
+                    color: "white"
+                  }}
+                >
+                  Discord Server
+                </h3>
+                <small>wDYKFaS</small>
               </div>
             </a>
           </div>

@@ -2,10 +2,32 @@ import { Router } from "express";
 const router: Router = Router();
 import * as mcache from "memory-cache";
 
+import axios from "axios";
+
 import { Match } from "./../../models/Match";
 import { gameModeDict } from "./../functions/constants";
 
 export default router;
+
+router.post("/", (req, res) => {
+    axios
+        .post(
+            "https://discordapp.com/api/webhooks/378865484344459264/ivZIqgRY9TL2y5Q1X8uh78RBEA03OeIksArPnhEvAIv7xQSoheS_NvCiAtHUVEEfleBv",
+            {
+                content: `**New Guild Application**\n\n**Guild Name:** ${
+                    req.body.guildName
+                }\n**Guild Tag:** ${req.body.guildTag}\n**Contact:** ${
+                    req.body.contact
+                }\n**Guild Members:** ${req.body.guildMembers}`,
+                avatar_url: "https://vain.zone/static/img/draft/logo.png"
+            }
+        )
+        .then(() => res.json({ success: true }))
+        .catch(err => {
+            console.error(err);
+            res.json({ error: true });
+        });
+});
 
 router.get("/", (_, res): void => {
     // counts from Sunday to Saturday, on Sunday shows data from previous 7 days

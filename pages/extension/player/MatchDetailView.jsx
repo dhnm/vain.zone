@@ -556,7 +556,7 @@ export default function MatchDetailView({
         }}
       >
         More analysis coming soon.{" "}
-        <a target="_blank" href="https://discord.gg/QCKsjtJ">
+        <a target="_blank" href="https://discord.gg/wDYKFaS">
           Send us your suggestions
         </a>!
       </Segment>
