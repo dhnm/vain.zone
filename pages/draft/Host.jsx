@@ -645,6 +645,7 @@ class Host extends React.Component {
           <form>
             <input
               type="text"
+              maxLength="50"
               className="names"
               name="matchName"
               placeholder="Match Name"
@@ -655,6 +656,7 @@ class Host extends React.Component {
             <div className="panel">
               <input
                 type="text"
+                maxLength="25"
                 className="names"
                 name="blueName"
                 placeholder="Blue Team"
@@ -693,6 +695,7 @@ class Host extends React.Component {
             <div className="panel">
               <input
                 type="text"
+                maxLength="25"
                 className="names"
                 name="redName"
                 placeholder="Red Team"

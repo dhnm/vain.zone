@@ -42,9 +42,19 @@ class GuildEdit extends React.Component {
     const formData = {
       name: this.state.guildName.trim(),
       tag: this.state.guildTag.trim(),
-      members: this.state.guildMembers.split("\n"),
       key: this.state.key
     };
+    const members = this.state.guildMembers.split("\n");
+    if (members.length > 50) {
+      this.setState({
+        formError: 50,
+        formLoading: false,
+        formSuccess: false
+      });
+      return;
+    } else {
+      formData.members = members;
+    }
     if (this.state.changeContact) {
       formData.contact = this.state.contact.trim();
     }
@@ -78,7 +88,14 @@ class GuildEdit extends React.Component {
   }
   render() {
     if (this.props.error) {
-      return "Access denied.";
+      return (
+        <div>
+          <p>Access denied.</p>
+          <p>
+            <a href="https://vain.zone">Go back to homepage</a>
+          </p>
+        </div>
+      );
     }
     return (
       <div id="container">
@@ -109,6 +126,7 @@ class GuildEdit extends React.Component {
           <Form.Field>
             <label>Guild Name</label>
             <Form.Input
+              maxLength={25}
               type="text"
               name="guildName"
               value={this.state.guildName}
@@ -119,6 +137,7 @@ class GuildEdit extends React.Component {
           <Form.Field>
             <label>Guild Tag</label>
             <Form.Input
+              maxLength={4}
               type="text"
               name="guildTag"
               value={this.state.guildTag}
@@ -138,6 +157,7 @@ class GuildEdit extends React.Component {
           <Form.Field>
             <label>New contact (E-mail/Twitter/Discord/...)</label>
             <Form.Input
+              maxLength={50}
               type="text"
               name="contact"
               value={this.state.contact}
@@ -149,6 +169,7 @@ class GuildEdit extends React.Component {
           <Form.Field>
             <label>Guild Members (one per line)</label>
             <Form.TextArea
+              maxLength={1400}
               autoHeight={true}
               rows={9}
               name="guildMembers"
@@ -162,6 +183,7 @@ class GuildEdit extends React.Component {
           <Form.Field>
             <label>Password</label>
             <Form.Input
+              maxLength={90}
               type="password"
               name="key"
               value={this.state.key}
@@ -179,6 +201,11 @@ class GuildEdit extends React.Component {
           <Message error>
             <Message.Header>Error!</Message.Header>
             <Message.Content>
+              {this.state.formError === 50 && (
+                <React.Fragment>
+                  Your guild can't have more than 50 members.
+                </React.Fragment>
+              )}
               {this.state.formError === 401 && (
                 <React.Fragment>Wrong password.</React.Fragment>
               )}
@@ -191,7 +218,8 @@ class GuildEdit extends React.Component {
                   or try again later.
                 </React.Fragment>
               )}
-              {this.state.formError !== 401 &&
+              {this.state.formError !== 50 &&
+                this.state.formError !== 401 &&
                 this.state.formError !== 404 && (
                   <React.Fragment>
                     Something went wrong :( Please message us on our{" "}

@@ -611,6 +611,7 @@ export default class DraftBuilder extends React.Component {
               />
               <input
                 type="url"
+                maxLength="1400"
                 placeholder="Image URL"
                 onChange={this.handleImageURL}
                 value={this.state.newHeroImageURL}

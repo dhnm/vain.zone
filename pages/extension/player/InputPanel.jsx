@@ -60,6 +60,7 @@ export default class InputPanel extends React.Component {
             placeholder="In-Game Name"
             style={{ fontSize: "16px" }}
             loading={this.props.appLoading}
+            maxLength={25}
             onFocus={() => {
               if (window.localStorage) {
                 const favorites = window.localStorage.getItem("favorites");

@@ -121,6 +121,7 @@ export default class GuildApplication extends React.Component {
               <Form.Field>
                 <label>Guild Name</label>
                 <Form.Input
+                  maxLength={25}
                   type="text"
                   name="guildName"
                   value={this.state.guildName}
@@ -131,6 +132,7 @@ export default class GuildApplication extends React.Component {
               <Form.Field>
                 <label>Guild Tag</label>
                 <Form.Input
+                  maxLength={4}
                   type="text"
                   name="guildTag"
                   value={this.state.guildTag}
@@ -141,6 +143,7 @@ export default class GuildApplication extends React.Component {
               <Form.Field>
                 <label>Contact (E-mail/Twitter/Discord/...)</label>
                 <Form.Input
+                  maxLength={50}
                   type="text"
                   name="contact"
                   value={this.state.contact}
@@ -151,6 +154,7 @@ export default class GuildApplication extends React.Component {
               <Form.Field>
                 <label>Guild Members</label>
                 <Form.TextArea
+                  maxLength={1400}
                   autoHeight={true}
                   rows={9}
                   name="guildMembers"
