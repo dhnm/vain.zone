@@ -8,25 +8,53 @@ import Head from "./components/Head";
 export default class GuildApplication extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { guildName: "", guildTag: "", contact: "", guildMembers: "" };
+    this.state = {
+      guildName: "",
+      guildTag: "",
+      contact: "",
+      guildMembers: "",
+
+      formLoading: false,
+      formSuccess: false,
+      formError: false
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+  handleChange(_, { name, value }) {
+    this.setState({
+      [name]: value
+    });
   }
   handleSubmit(event) {
     event.preventDefault();
+    if (this.state.formSuccess) {
+      return;
+    }
+    const formData = {
+      guildName: this.state.guildName.trim(),
+      guildTag: this.state.guildTag.trim(),
+      contact: this.state.contact.trim(),
+      guildMembers: this.state.guildMembers.trim().split("\n")
+    };
     this.setState({ formLoading: true }, () => {
       axios
-        .post("/api/fame", this.state)
+        .post("/api/fame", formData)
         .then(response =>
-          this.setState({ formSuccess: true, formLoading: false })
+          this.setState({
+            formSuccess: true,
+            formError: false,
+            formLoading: false
+          })
         )
         .catch(err => {
           console.error(err);
-          this.setState({ formError: true, formLoading: false });
+          this.setState({
+            formError: true,
+            formSuccess: false,
+            formLoading: false
+          });
         });
     });
   }

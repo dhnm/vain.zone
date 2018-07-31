@@ -1,0 +1,255 @@
+import React from "react";
+import axios from "axios";
+import { Message, Form } from "semantic-ui-react";
+import Link from "next/link";
+
+import Head from "./components/Head";
+
+class GuildEdit extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      guildName: this.props.guildName,
+      guildTag: this.props.guildTag,
+      changeContact: false,
+      contact: "",
+      guildMembers: this.props.guildMembers
+        ? JSON.parse(this.props.guildMembers)
+            .map(e => e.name)
+            .sort()
+            .join("\n")
+        : "",
+      key: "",
+
+      formLoading: false,
+      formSuccess: false,
+      formError: false
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  handleChange(_, { name, value, type, checked }) {
+    this.setState({
+      [name]: type === "checkbox" ? checked : value
+    });
+  }
+  handleSubmit(event) {
+    event.preventDefault();
+    if (this.state.formSuccess) {
+      return;
+    }
+    const formData = {
+      name: this.state.guildName.trim(),
+      tag: this.state.guildTag.trim(),
+      members: this.state.guildMembers.split("\n"),
+      key: this.state.key
+    };
+    if (this.state.changeContact) {
+      formData.contact = this.state.contact.trim();
+    }
+    this.setState({ formLoading: true }, () => {
+      axios
+        .post("/api/fame/edit", { guildID: this.props.guildID, data: formData })
+        .then(response => {
+          if (response.data.error) {
+            this.setState({
+              formError: response.data.message,
+              formLoading: false,
+              formSuccess: false
+            });
+          } else {
+            this.setState({
+              formSuccess: true,
+              formError: false,
+              formLoading: false
+            });
+          }
+        })
+        .catch(err => {
+          console.error("teza", err);
+          this.setState({
+            formError: true,
+            formSuccess: false,
+            formLoading: false
+          });
+        });
+    });
+  }
+  render() {
+    if (this.props.error) {
+      return "Access denied.";
+    }
+    return (
+      <div id="container">
+        <Head />
+        <Link prefetch href={`/extension/player?browserView=true`} as="/">
+          <img
+            src="/static/img/draft/VAINZONE-logo-darkbg.png"
+            alt="VAIN.ZONE"
+            style={{
+              width: "200px",
+              display: "block",
+              margin: "auto",
+              marginBottom: "14px",
+              cursor: "pointer"
+            }}
+          />
+        </Link>
+        <h2>VAIN.ZONE Fame Tracker Beta</h2>
+        <h1>Editing {this.state.guildName || "Guild"}</h1>
+        <Form
+          action="/api/fame"
+          method="post"
+          onSubmit={this.handleSubmit}
+          success={this.state.formSuccess}
+          error={this.state.formError}
+          loading={this.state.formLoading}
+        >
+          <Form.Field>
+            <label>Guild Name</label>
+            <Form.Input
+              type="text"
+              name="guildName"
+              value={this.state.guildName}
+              onChange={this.handleChange}
+              required
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>Guild Tag</label>
+            <Form.Input
+              type="text"
+              name="guildTag"
+              value={this.state.guildTag}
+              onChange={this.handleChange}
+              required
+            />
+          </Form.Field>
+          <Form.Field>
+            <Form.Checkbox
+              label="Change contact information"
+              name="changeContact"
+              toggle
+              checked={this.state.changeContact}
+              onChange={this.handleChange}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>New contact (E-mail/Twitter/Discord/...)</label>
+            <Form.Input
+              type="text"
+              name="contact"
+              value={this.state.contact}
+              onChange={this.handleChange}
+              disabled={!this.state.changeContact}
+              required
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>Guild Members (one per line)</label>
+            <Form.TextArea
+              autoHeight={true}
+              rows={9}
+              name="guildMembers"
+              value={this.state.guildMembers}
+              onChange={this.handleChange}
+              spellCheck={false}
+              data-gramm={false}
+              required
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>Password</label>
+            <Form.Input
+              type="password"
+              name="key"
+              value={this.state.key}
+              onChange={this.handleChange}
+              required
+            />
+          </Form.Field>
+          <Message success>
+            <Message.Header>Success!</Message.Header>
+            <Message.Content>
+              Your changes are saved and will be displayed latest on the next
+              update term.
+            </Message.Content>
+          </Message>
+          <Message error>
+            <Message.Header>Error!</Message.Header>
+            <Message.Content>
+              {this.state.formError === 401 && (
+                <React.Fragment>Wrong password.</React.Fragment>
+              )}
+              {this.state.formError === 404 && (
+                <React.Fragment>
+                  Guild not found. Please message us on our{" "}
+                  <a target="_blank" href="https://discord.gg/wDYKFaS">
+                    Discord Server (wDYKFaS)
+                  </a>{" "}
+                  or try again later.
+                </React.Fragment>
+              )}
+              {this.state.formError !== 401 &&
+                this.state.formError !== 404 && (
+                  <React.Fragment>
+                    Something went wrong :( Please message us on our{" "}
+                    <a target="_blank" href="https://discord.gg/wDYKFaS">
+                      Discord Server (wDYKFaS)
+                    </a>{" "}
+                    or try again later.
+                  </React.Fragment>
+                )}
+            </Message.Content>
+          </Message>
+          {!this.state.formSuccess && (
+            <Form.Field>
+              <Form.Button
+                type="submit"
+                color="orange"
+                style={{ width: "100%" }}
+                size="big"
+              >
+                Submit
+              </Form.Button>
+            </Form.Field>
+          )}
+        </Form>
+        <style jsx>
+          {`
+            h1,
+            h2,
+            .small {
+              text-align: center;
+            }
+            .small {
+              font-size: 0.85rem;
+            }
+            #container {
+              min-height: 100vh;
+              margin: 40px auto;
+              max-width: 414px;
+              padding: 0 15px 100px 15px;
+            }
+          `}
+        </style>
+      </div>
+    );
+  }
+}
+
+export default GuildEdit;
+
+GuildEdit.getInitialProps = async function getInitialProps({ query }) {
+  if (query.guildID) {
+    return {
+      guildID: query.guildID,
+      guildName: query.guildName,
+      guildTag: query.guildTag,
+      guildMembers: query.guildMembers
+    };
+  }
+
+  return { error: true };
+};

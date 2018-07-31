@@ -7,8 +7,6 @@ import Head from "next/head";
 import MainView from "./MainView";
 import MessageLayout from "./MessageView";
 
-import backgroundStyle from "./../../backgroundStyle.css";
-
 import { gameModeDict } from "./../../../modules/functions/constants";
 
 const propTypes = {
@@ -402,6 +400,7 @@ function App(props) {
           href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"
         />
         <link rel="stylesheet" href="/static/css/semantic.slate.min.css" />
+        <link rel="stylesheet" href="/static/css/backgroundStyle.css" />
 
         <meta property="fb:app_id" content="617200295335676" />
         <meta property="og:type" content="website" />

@@ -54,7 +54,7 @@ const Guild = ({ data, error }) => {
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {data.guild.map(p => (
+                  {data.members.map(p => (
                     <Link
                       prefetch
                       href={`player?browserView=true&error=false&extension=false&IGN=${
@@ -70,6 +70,15 @@ const Guild = ({ data, error }) => {
                   ))}
                 </Table.Body>
               </Table>
+              <Link
+                href={`/guild/edit?guildID=5b5f7af5ca91c80d160a8408&guildName=Blue Oyster Bar&guildTag=BAR&guildMembers=${JSON.stringify(
+                  data.members
+                )}`}
+                as="/guild/edit"
+              >
+                <Button
+                floated="right">Edit</Button>
+              </Link>
             </Grid.Column>
             <Grid.Column>
               <h1>Police Academy</h1>
@@ -100,6 +109,15 @@ const Guild = ({ data, error }) => {
                   ))}
                 </Table.Body>
               </Table>
+              <Link
+                href={`/guild/edit?guildID=5b5f7b32ca91c80d160a8409&guildName=Police Academy&guildTag=BAR&guildMembers=${JSON.stringify(
+                  data.academy
+                )}`}
+                as="/guild/edit"
+              >
+                <Button
+                floated="right">Edit</Button>
+              </Link>
             </Grid.Column>
           </Grid>
         </React.Fragment>
@@ -145,7 +163,6 @@ Guild.getInitialProps = async function getInitialProps() {
       url: `${urlPath}/api/fame`
     });
     const data = await requestData.data;
-    console.log(data);
     if (data.error) {
       return {
         error: data.error

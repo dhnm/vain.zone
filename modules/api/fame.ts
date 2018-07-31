@@ -5,9 +5,37 @@ import * as mcache from "memory-cache";
 import axios from "axios";
 
 import { Match } from "./../../models/Match";
+import { Guild } from "./../../models/Guild";
+
 import { gameModeDict } from "./../functions/constants";
 
 export default router;
+
+router.post("/edit", (req, res) => {
+    Guild.findById(req.body.guildID)
+        .then(guild => {
+            if (guild) {
+                if (req.body.data.key === guild.key) {
+                    console.log(
+                        JSON.stringify(guild.members),
+                        req.body.data.members
+                    );
+                    Object.assign(guild, req.body.data);
+                    console.log(JSON.stringify(guild.members));
+                    guild.save();
+                    res.json({ success: true });
+                } else {
+                    return Promise.reject(401);
+                }
+            } else {
+                return Promise.reject(404);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            res.json({ error: true, message: err });
+        });
+});
 
 router.post("/", (req, res) => {
     axios
@@ -29,7 +57,7 @@ router.post("/", (req, res) => {
         });
 });
 
-router.get("/", (_, res): void => {
+router.get("/", (req, res): void => {
     // counts from Sunday to Saturday, on Sunday shows data from previous 7 days
     const date = new Date();
     const day = date.getDay();
@@ -38,7 +66,9 @@ router.get("/", (_, res): void => {
         new Date(prevSaturday).setHours(23, 59, 59, 999)
     );
 
-    const cachedBody = mcache.get("guild/Blue Oyster Bar");
+    const guildID = req.query.id;
+
+    const cachedBody = mcache.get(`guild/${guildID}`);
 
     if (cachedBody && cachedBody.lastUpdated >= endPrevSaturday) {
         console.log(`Serving cached data from ${cachedBody.lastUpdated}`);
@@ -49,149 +79,120 @@ router.get("/", (_, res): void => {
             new Date(prevSunday).setHours(0, 0, 0, 0)
         );
 
-        const guildArray = [
-            "Waren1x",
-            "LookForward",
-            "Modrey",
-            "thisBoy",
-            "RooninCz",
-            "matys",
-            "JendaaaK",
-            "D3jv",
-            "Zcepeli",
-            "Snooky950",
-            "xXDragonHellXx",
-            "LookBack",
-            "Dreamberry",
-            "GreePixHD",
-            "MrTiko",
-            "adX",
-            "CrazyDeimos",
-            "Odysea001",
-            "Nablonfare",
-            "grostajl",
-            "Anitka11",
-            "mrazik",
-            "88Peter88",
-            "OhyCZ",
-            "Vindy61",
-            "Jakub1302",
-            "festerkoo",
-            "SumiSVK",
-            "TrueRich",
-            "Marnisar",
-            "ElrathCZ",
-            "BobyBrno",
-            "Pesar",
-            "DiginaltSVK",
-            "lKalix3l",
-            "EmPaT1C",
-            "Agaver",
-            "pinko727",
-            "Mangeky",
-            "Stone82",
-            "AsAs1INI",
-            "Samueliss",
-            "ARMATA14",
-            "killersdaniel",
-            "Dubcenko",
-            "jonplaya83",
-            "JirkaNguyen",
-            "bedna21",
-            "SkerCZ",
-            "nicolepipes"
-        ];
-
-        const academyArray = [
-            "mio007",
-            "krutypeta",
-            "Vykuchator",
-            "brouk",
-            "pralinka",
-            "Bloshatup",
-            "EricLassard",
-            "LuckyReaperCZ",
-            "Pa3k420",
-            "ARA666",
-            "LegendHeroCZ",
-            "danOne",
-            "SimplyPerfect",
-            "Gargoron"
-        ];
-
-        const guildAggregations = [];
-
-        for (let i = 0; i < guildArray.length; i++) {
-            guildAggregations.push(
-                aggregateFunc(
-                    startPrevSunday,
-                    endPrevSaturday,
-                    guildArray[i],
-                    guildArray
-                )
-            );
-        }
-
-        const academyAggregations = [];
-
-        for (let i = 0; i < academyArray.length; i++) {
-            academyAggregations.push(
-                aggregateFunc(
-                    startPrevSunday,
-                    endPrevSaturday,
-                    academyArray[i],
-                    guildArray.concat(academyArray)
-                )
-            );
-        }
-
-        Promise.all(guildAggregations.concat(academyAggregations))
-            .then(playerStats => {
-                const fames = [];
-                for (let pi = 0; pi < playerStats.length; pi++) {
-                    const name =
-                        guildArray[pi] || academyArray[pi - guildArray.length];
-                    if (playerStats[pi].length === 0) {
-                        fames.push({
-                            name,
-                            fame: 0
-                        });
-                    } else {
-                        fames.push({
-                            name,
-                            fame: Math.floor(
-                                playerStats[pi].reduce((accu, currVa) => {
-                                    const matchFame =
-                                        gameModeDict[currVa._id.gameMode][3][
-                                            currVa._id.mates - 1
-                                        ] * currVa.count;
-                                    if (currVa._id.won) {
-                                        return accu + matchFame;
-                                    }
-                                    return accu + matchFame * 0.75;
-                                }, 0)
+        if (!guildID) {
+            getBARPAFame(startPrevSunday, endPrevSaturday)
+                .then(fames => {
+                    res.json(fames);
+                    mcache.put(`guild/${guildID}`, fames);
+                })
+                .catch(err => {
+                    console.error(err);
+                    res.json({ error: true, errorMessage: err });
+                });
+        } else {
+            Guild.findById(guildID)
+                .then(guild => {
+                    if (guild) {
+                        return processGuild(
+                            startPrevSunday,
+                            endPrevSaturday,
+                            guild.members
+                        ).then(fames => ({
+                            name: "Blue Oyster Bar",
+                            tag: "BAR",
+                            lastUpdated: fames.lastUpdated,
+                            members: fames.members.filter(
+                                e => guild.members.indexOf(e.name) > -1
                             )
-                        });
+                        }));
+                    } else {
+                        return Promise.reject("Guild not found.");
                     }
-                }
-
-                const result = {
-                    lastUpdated: endPrevSaturday,
-                    guild: fames
-                        .slice(0, guildArray.length)
-                        .sort((a, b) => b.fame - a.fame),
-                    academy: fames
-                        .slice(guildArray.length)
-                        .sort((a, b) => b.fame - a.fame)
-                };
-                res.json(result);
-                mcache.put("guild/Blue Oyster Bar", result);
-            })
-            .catch(err => {
-                res.json({ error: err });
-            });
+                })
+                .then(fames => {
+                    res.json(fames);
+                    mcache.put(`guild/${guildID}`, fames);
+                })
+                .catch(err => {
+                    console.error(err);
+                    res.json({ error: true, errorMessage: err });
+                });
+        }
     }
 });
+
+function getBARPAFame(start, end) {
+    return Guild.find({ contact: "info@vainglory.eu" })
+        .exec()
+        .then(guilds => {
+            if (guilds.length === 2) {
+                return processGuild(
+                    start,
+                    end,
+                    guilds[0].members.concat(guilds[1].members)
+                )
+                    .then(fames => ({
+                        name: "Blue Oyster Bar",
+                        tag: "BAR",
+                        lastUpdated: fames.lastUpdated,
+                        members: fames.members.filter(
+                            e => guilds[0].members.indexOf(e.name) > -1
+                        ),
+                        academy: fames.members.filter(
+                            e => guilds[1].members.indexOf(e.name) > -1
+                        )
+                    }))
+                    .catch(err => Promise.reject(err));
+            } else {
+                return Promise.reject("CZ Guilds not found.");
+            }
+        })
+        .catch(err => Promise.reject(err));
+}
+
+const processGuild = (start, end, guildArray) => {
+    const guildAggregations = [];
+
+    for (let i = 0; i < guildArray.length; i++) {
+        guildAggregations.push(
+            aggregateFunc(start, end, guildArray[i], guildArray)
+        );
+    }
+
+    return Promise.all(guildAggregations).then(playerStats => {
+        const fames = [];
+        for (let pi = 0; pi < playerStats.length; pi++) {
+            const name = guildArray[pi];
+            if (playerStats[pi].length === 0) {
+                fames.push({
+                    name,
+                    fame: 0
+                });
+            } else {
+                fames.push({
+                    name,
+                    fame: Math.floor(
+                        playerStats[pi].reduce((accu, currVa) => {
+                            const matchFame =
+                                gameModeDict[currVa._id.gameMode][3][
+                                    currVa._id.mates - 1
+                                ] * currVa.count;
+                            if (currVa._id.won) {
+                                return accu + matchFame;
+                            }
+                            return accu + matchFame * 0.75;
+                        }, 0)
+                    )
+                });
+            }
+        }
+
+        return {
+            lastUpdated: end,
+            members: fames.sort((a, b) => b.fame - a.fame)
+        };
+    });
+};
 
 function aggregateFunc(start, end, name, guildMembers) {
     return Match.aggregate([

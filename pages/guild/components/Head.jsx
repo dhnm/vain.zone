@@ -1,8 +1,6 @@
 import React from "react";
 import Head from "next/head";
 
-import "./../../backgroundStyle.css";
-
 const GuildHead = ({ children, guildName }) => (
   <Head>
     <title>VAIN.ZONE</title>
@@ -11,6 +9,7 @@ const GuildHead = ({ children, guildName }) => (
       href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"
     />
     <link rel="stylesheet" href="/static/css/semantic.slate.min.css" />
+    <link rel="stylesheet" href="/static/css/backgroundStyle.css" />
 
     <meta property="fb:app_id" content="617200295335676" />
     <meta property="og:type" content="website" />
