@@ -144,8 +144,8 @@ nextApp
       res.setHeader("Access-Control-Allow-Headers", "Content-Type");
       //res.header('Access-Control-Allow-Credentials', true);
 
-      res.setHeader("X-Frame-Options", `ALLOW-FROM ${origin}`);
-      console.log(`${req.protocol}://${req.headers.host}`);
+      //res.setHeader("X-Frame-Options", `ALLOW-FROM ${origin}`);
+      console.log(req.query, `${req.protocol}://${req.headers.host}`);
 
       return callback();
     });
