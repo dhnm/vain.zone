@@ -11,6 +11,20 @@ import { gameModeDict } from "./../functions/constants";
 
 export default router;
 
+router.get("/edit", (req, res) => {
+    Guild.findById(req.query.id)
+        .then(guild => {
+            if (guild) {
+                res.json(guild);
+            } else {
+                return Promise.reject(404);
+            }
+        })
+        .catch(err => {
+            res.json({ error: true, message: err });
+        });
+});
+
 router.post("/edit", (req, res) => {
     Guild.findById(req.body.guildID)
         .then(guild => {

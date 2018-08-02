@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { Message, Form } from "semantic-ui-react";
+import { Message, Form, Button, Icon } from "semantic-ui-react";
 import Link from "next/link";
 
 import Head from "./components/Head";
@@ -14,10 +14,7 @@ class GuildEdit extends React.Component {
       changeContact: false,
       contact: "",
       guildMembers: this.props.guildMembers
-        ? JSON.parse(this.props.guildMembers)
-            .map(e => e.name)
-            .sort()
-            .join("\n")
+        ? this.props.guildMembers.sort().join("\n")
         : "",
       key: "",
 
@@ -92,7 +89,9 @@ class GuildEdit extends React.Component {
         <div>
           <p>Access denied.</p>
           <p>
-            <a href="https://vain.zone">Go back to homepage</a>
+            <Link href="/extension/player?browserView=true" as="/">
+              <a>Go back to homepage</a>
+            </Link>
           </p>
         </div>
       );
@@ -244,6 +243,12 @@ class GuildEdit extends React.Component {
             </Form.Field>
           )}
         </Form>
+        <br />
+        <Link href={`/guild?id=${this.props.guildID}`}>
+          <Button size="small">
+            <Icon name="chevron left" />Back to Guild
+          </Button>
+        </Link>
         <style jsx>
           {`
             h1,
@@ -271,11 +276,28 @@ export default GuildEdit;
 
 GuildEdit.getInitialProps = async function getInitialProps({ query }) {
   if (query.guildID) {
+    let urlPath = "https://vain.zone";
+    if (process.env.NODE_ENV !== "production") {
+      urlPath = "http://localhost:3000";
+    }
+
+    const requestData = await axios(
+      `${urlPath}/api/fame/edit?id=${query.guildID}`
+    );
+    const data = await requestData.data;
+    console.log(data);
+    if (data.error) {
+      console.error(data.message);
+      return {
+        error: true
+      };
+    }
+
     return {
       guildID: query.guildID,
-      guildName: query.guildName,
-      guildTag: query.guildTag,
-      guildMembers: query.guildMembers
+      guildName: data.name,
+      guildTag: data.tag,
+      guildMembers: data.members
     };
   }
 

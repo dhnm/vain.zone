@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { Table, Grid, Button } from "semantic-ui-react";
+import { Table, Grid, Button, Icon } from "semantic-ui-react";
 import Link from "next/link";
 import * as moment from "moment";
 
@@ -37,6 +37,7 @@ const Guild = ({ data, error }) => {
                 marginBottom: "28px"
               }}
             >
+              <Icon name="numbered list" />
               Track My Guild
             </Button>
           </Link>
@@ -76,8 +77,9 @@ const Guild = ({ data, error }) => {
                 )}`}
                 as="/guild/edit"
               >
-                <Button
-                floated="right">Edit</Button>
+                <Button floated="right">
+                  <Icon name="edit" />Edit
+                </Button>
               </Link>
             </Grid.Column>
             <Grid.Column>
@@ -115,8 +117,9 @@ const Guild = ({ data, error }) => {
                 )}`}
                 as="/guild/edit"
               >
-                <Button
-                floated="right">Edit</Button>
+                <Button floated="right">
+                  <Icon name="edit" />Edit
+                </Button>
               </Link>
             </Grid.Column>
           </Grid>
@@ -158,10 +161,7 @@ Guild.getInitialProps = async function getInitialProps() {
       urlPath = "http://localhost:3000";
     }
 
-    const requestData = await axios({
-      method: "get",
-      url: `${urlPath}/api/fame`
-    });
+    const requestData = await axios(`${urlPath}/api/fame`);
     const data = await requestData.data;
     if (data.error) {
       return {
