@@ -731,6 +731,7 @@ const callSendAPI = (messageData: any) => {
           fbRes.data.message_id,
           fbRes.data.recipient_id
         );
+        console.log(messageData);
       } else {
         console.error(fbRes.status);
         throw new Error("Bad status code #bscfbm");
