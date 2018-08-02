@@ -151,6 +151,7 @@ nextApp
       //res.header('Access-Control-Allow-Credentials', true);
 
       res.setHeader("X-Frame-Options", `ALLOW-FROM ${origin}`);
+      console.log(origin);
 
       return callback();
     });
