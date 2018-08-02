@@ -77,12 +77,7 @@ const receivedMessage = (event: any) => {
     pageID,
     timeOfMessage
   );
-
-  try {
-    console.log(JSON.stringify(message));
-  } catch (e) {
-    console.error(e);
-  }
+  console.log(message);
 
   //   var messageID = message.mid;
   var messageText = message.text;
@@ -736,7 +731,11 @@ const callSendAPI = (messageData: any) => {
           fbRes.data.message_id,
           fbRes.data.recipient_id
         );
-        console.log(messageData);
+        try {
+          console.log(JSON.stringify(messageData));
+        } catch (e) {
+          console.error(e);
+        }
       } else {
         console.error(fbRes.status);
         throw new Error("Bad status code #bscfbm");
