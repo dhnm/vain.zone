@@ -77,7 +77,12 @@ const receivedMessage = (event: any) => {
     pageID,
     timeOfMessage
   );
-  console.log(JSON.stringify(message));
+
+  try {
+    console.log(JSON.stringify(message));
+  } catch (e) {
+    console.error(e);
+  }
 
   //   var messageID = message.mid;
   var messageText = message.text;
