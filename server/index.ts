@@ -116,7 +116,7 @@ nextApp
     app.use(bodyParser.urlencoded({ extended: true }));
 
     app.use((req, res, callback) => {
-      var allowedOrigins = [
+      const allowedOrigins = [
         "http://localhost:3000",
         "https://localhost:3000",
         "http://x.vainglory.eu",
@@ -132,17 +132,11 @@ nextApp
         "https://www.vainglory.eu",
         "https://vainglory.eu"
       ];
-      var origin = req.headers.origin;
 
-      if (typeof origin === "string") {
+      const origin = `${req.protocol}://${req.headers.host}`;
+
+      if (req.protocol && req.headers.host) {
         if (allowedOrigins.indexOf(origin) > -1) {
-          res.setHeader("Access-Control-Allow-Origin", origin);
-        }
-      } else if (origin instanceof Array) {
-        const duplicates = allowedOrigins.filter((val: string) => {
-          return origin!.indexOf(val) != -1;
-        });
-        if (duplicates.length > 0) {
           res.setHeader("Access-Control-Allow-Origin", origin);
         }
       }
@@ -151,7 +145,7 @@ nextApp
       //res.header('Access-Control-Allow-Credentials', true);
 
       res.setHeader("X-Frame-Options", `ALLOW-FROM ${origin}`);
-      console.log(origin);
+      console.log(`${req.protocol}://${req.headers.host}`);
 
       return callback();
     });
