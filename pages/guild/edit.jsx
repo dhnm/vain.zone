@@ -125,6 +125,7 @@ class GuildEdit extends React.Component {
           <Form.Field>
             <label>Guild Name</label>
             <Form.Input
+              style={{ fontSize: "16px" }}
               maxLength={25}
               type="text"
               name="guildName"
@@ -136,6 +137,7 @@ class GuildEdit extends React.Component {
           <Form.Field>
             <label>Guild Tag</label>
             <Form.Input
+              style={{ fontSize: "16px" }}
               maxLength={4}
               type="text"
               name="guildTag"
@@ -146,6 +148,7 @@ class GuildEdit extends React.Component {
           </Form.Field>
           <Form.Field>
             <Form.Checkbox
+              style={{ fontSize: "16px" }}
               label="Change contact information"
               name="changeContact"
               toggle
@@ -156,6 +159,7 @@ class GuildEdit extends React.Component {
           <Form.Field>
             <label>New contact (E-mail/Twitter/Discord/...)</label>
             <Form.Input
+              style={{ fontSize: "16px" }}
               maxLength={50}
               type="text"
               name="contact"
@@ -168,6 +172,7 @@ class GuildEdit extends React.Component {
           <Form.Field>
             <label>Guild Members (one per line)</label>
             <Form.TextArea
+              style={{ fontSize: "16px" }}
               maxLength={1400}
               autoHeight={true}
               rows={9}
@@ -182,6 +187,7 @@ class GuildEdit extends React.Component {
           <Form.Field>
             <label>Password</label>
             <Form.Input
+              style={{ fontSize: "16px" }}
               maxLength={90}
               type="password"
               name="key"

@@ -121,6 +121,7 @@ export default class GuildApplication extends React.Component {
               <Form.Field>
                 <label>Guild Name</label>
                 <Form.Input
+                  style={{ fontSize: "16px" }}
                   maxLength={25}
                   type="text"
                   name="guildName"
@@ -132,6 +133,7 @@ export default class GuildApplication extends React.Component {
               <Form.Field>
                 <label>Guild Tag</label>
                 <Form.Input
+                  style={{ fontSize: "16px" }}
                   maxLength={4}
                   type="text"
                   name="guildTag"
@@ -143,6 +145,7 @@ export default class GuildApplication extends React.Component {
               <Form.Field>
                 <label>Contact (E-mail/Twitter/Discord/...)</label>
                 <Form.Input
+                  style={{ fontSize: "16px" }}
                   maxLength={50}
                   type="text"
                   name="contact"
@@ -154,6 +157,7 @@ export default class GuildApplication extends React.Component {
               <Form.Field>
                 <label>Guild Members</label>
                 <Form.TextArea
+                  style={{ fontSize: "16px" }}
                   maxLength={1400}
                   autoHeight={true}
                   rows={9}
