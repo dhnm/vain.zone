@@ -118,7 +118,9 @@ router.get("/", cacheMW(30), (_, res: Response): void => {
               if (relevantPlayer.czSk.of_month != now.getMonth()) {
                 relevantPlayer.czSk.of_month = now.getMonth();
                 relevantPlayer.czSk.first_of_month =
-                  e.attributes.stats.rankPoints.ranked_5v5;
+                  e.attributes.stats.rankPoints.ranked_5v5 >= 1090
+                    ? e.attributes.stats.rankPoints.ranked_5v5
+                    : 1090;
               }
               relevantPlayer.save();
             });

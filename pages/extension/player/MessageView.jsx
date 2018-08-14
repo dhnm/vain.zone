@@ -117,13 +117,18 @@ class News extends React.Component {
               `https://cors-anywhere.herokuapp.com/${
                 n._links["wp:featuredmedia"][0].href
               }`
-            );
+            )
+              .then(f => f.data.guid.rendered)
+              .catch(
+                e =>
+                  "https://jd3sljkvzi-flywheel.netdna-ssl.com/wp-content/themes/vainglory/images/logo.png"
+              );
           })
         );
       })
       .then(featuredImagesData => {
         this.setState({
-          featuredImages: featuredImagesData.map(f => f.data.guid.rendered)
+          featuredImages: featuredImagesData
         });
       })
       .catch(err => {
@@ -150,7 +155,7 @@ class News extends React.Component {
               <div
                 {...css({
                   width: "320px",
-                  padding: "20px 30px",
+                  padding: "20px",
                   borderRadius: "20px",
                   margin: "10px",
                   background: "linear-gradient(to left, #f12711, #f5af19)",
@@ -172,108 +177,108 @@ class News extends React.Component {
                 <small>Sample & Application Form</small>
               </div>
             </Link>
-            <a target="_blank" href="https://m.me/VAIN.ZONE">
-              <div
-                {...css({
-                  width: "320px",
-                  padding: "20px 30px",
-                  borderRadius: "20px",
-                  margin: "10px",
-                  background: "linear-gradient(to right, #00c6ff, #0072ff)",
-                  cursor: "pointer",
-                  transition: "100ms linear",
-                  boxSizing: "border-box",
-                  ":hover": {
-                    transform: "translateY(-3px)"
-                  }
-                })}
+            <a
+              target="_blank"
+              href="https://m.me/VAIN.ZONE"
+              {...css({
+                width: "320px",
+                padding: "20px",
+                borderRadius: "20px",
+                margin: "10px",
+                background: "linear-gradient(to right, #00c6ff, #0072ff)",
+                cursor: "pointer",
+                transition: "100ms linear",
+                boxSizing: "border-box",
+                ":hover": {
+                  transform: "translateY(-3px)"
+                }
+              })}
+            >
+              <h3
+                style={{
+                  color: "white"
+                }}
               >
-                <h3
-                  style={{
-                    color: "white"
-                  }}
-                >
-                  Facebook Messenger Extension
-                </h3>
-                <small>@VAIN.ZONE</small>
-              </div>
+                Facebook Messenger Extension
+              </h3>
+              <small>@VAIN.ZONE</small>
             </a>
-            <a target="_blank" href="/draft">
-              <div
-                {...css({
-                  width: "320px",
-                  padding: "20px 30px",
-                  borderRadius: "20px",
-                  margin: "10px",
-                  background: "linear-gradient(to left, #11998e, #38ef7d)",
-                  cursor: "pointer",
-                  transition: "100ms linear",
-                  ":hover": {
-                    transform: "translateY(-3px)"
-                  }
-                })}
+            <a
+              target="_blank"
+              href="/draft"
+              {...css({
+                width: "320px",
+                padding: "20px",
+                borderRadius: "20px",
+                margin: "10px",
+                background: "linear-gradient(to left, #11998e, #38ef7d)",
+                cursor: "pointer",
+                transition: "100ms linear",
+                ":hover": {
+                  transform: "translateY(-3px)"
+                }
+              })}
+            >
+              <h3
+                style={{
+                  color: "white",
+                  width: "100%"
+                }}
               >
-                <h3
-                  style={{
-                    color: "white",
-                    width: "100%"
-                  }}
-                >
-                  Universal Draft Tool
-                </h3>
-                <small>VAIN.ZONE/draft</small>
-              </div>
+                Universal Draft Tool
+              </h3>
+              <small>VAIN.ZONE/draft</small>
             </a>
-            <a target="_blank" href="https://vainglory.eu">
-              <div
-                {...css({
-                  width: "320px",
-                  padding: "20px 30px",
-                  borderRadius: "20px",
-                  margin: "10px",
-                  background: "linear-gradient(to left, #232526, #414345)",
-                  cursor: "pointer",
-                  transition: "100ms linear",
-                  ":hover": {
-                    transform: "translateY(-3px)"
-                  }
-                })}
+            <a
+              target="_blank"
+              href="https://vainglory.eu"
+              {...css({
+                width: "320px",
+                padding: "20px",
+                borderRadius: "20px",
+                margin: "10px",
+                background: "linear-gradient(to left, #232526, #414345)",
+                cursor: "pointer",
+                transition: "100ms linear",
+                ":hover": {
+                  transform: "translateY(-3px)"
+                }
+              })}
+            >
+              <h3
+                style={{
+                  color: "white"
+                }}
               >
-                <h3
-                  style={{
-                    color: "white"
-                  }}
-                >
-                  Czech and Slovak Community
-                </h3>
-                <small>Vainglory.eu</small>
-              </div>
+                Czech and Slovak Community
+              </h3>
+              <small>Vainglory.eu</small>
             </a>
-            <a target="_blank" href="https://discord.gg/wDYKFaS">
-              <div
-                {...css({
-                  width: "320px",
-                  padding: "20px 30px",
-                  borderRadius: "20px",
-                  margin: "10px",
-                  background:
-                    "linear-gradient(to right, HSLA(226, 47%, 63%, 1.00), HSLA(227, 48%, 54%, 1.00))",
-                  cursor: "pointer",
-                  transition: "100ms linear",
-                  ":hover": {
-                    transform: "translateY(-3px)"
-                  }
-                })}
+            <a
+              target="_blank"
+              href="https://discord.gg/wDYKFaS"
+              {...css({
+                width: "320px",
+                padding: "20px",
+                borderRadius: "20px",
+                margin: "10px",
+                background:
+                  "linear-gradient(to right, HSLA(226, 47%, 63%, 1.00), HSLA(227, 48%, 54%, 1.00))",
+                cursor: "pointer",
+                transition: "100ms linear",
+                ":hover": {
+                  transform: "translateY(-3px)"
+                }
+              })}
+            >
+              <h3
+                style={{
+                  color: "white"
+                }}
               >
-                <h3
-                  style={{
-                    color: "white"
-                  }}
-                >
-                  Discord Server
-                </h3>
-                <small>wDYKFaS</small>
-              </div>
+                Discord Server
+              </h3>
+              <small>wDYKFaS</small>
             </a>
           </div>
           {this.state.news.length &&

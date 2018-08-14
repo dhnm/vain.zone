@@ -48,6 +48,7 @@ const defaultHeroes = [
   { name: "Rona" },
   { name: "Samuel" },
   { name: "SAW" },
+  { name: "Silvernail" },
   { name: "Skaarf" },
   { name: "Skye" },
   { name: "Taka" },

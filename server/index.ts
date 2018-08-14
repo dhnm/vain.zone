@@ -115,7 +115,7 @@ nextApp
     app.use(bodyParser.json({ limit: "5mb" }));
     app.use(bodyParser.urlencoded({ extended: true }));
 
-    app.use((req, res, callback) => {
+    app.use((req, res, next) => {
       const allowedOrigins = [
         "http://localhost:3000",
         "https://localhost:3000",
@@ -137,17 +137,18 @@ nextApp
 
       if (req.protocol && req.headers.host) {
         if (allowedOrigins.indexOf(origin) > -1) {
-          res.setHeader("Access-Control-Allow-Origin", origin);
+          res.set("Access-Control-Allow-Origin", origin);
         }
       }
-      //res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-      //res.header('Access-Control-Allow-Credentials', true);
+      //res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+      res.set("Access-Control-Allow-Headers", "Content-Type");
+      //res.set('Access-Control-Allow-Credentials', true);
 
-      //res.setHeader("X-Frame-Options", `ALLOW-FROM ${origin}`);
+      //res.set("X-Frame-Options", `ALLOW-FROM ${origin}`);
+      //.header alias to .set, .setHeader native NodeJS
       console.log(req.query, `${req.protocol}://${req.headers.host}`);
 
-      return callback();
+      return next();
     });
 
     app.get("/", (req, res) => {
