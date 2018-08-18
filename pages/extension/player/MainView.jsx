@@ -335,11 +335,12 @@ export default class MainView extends React.Component {
             <Grid>
               <Grid.Column
                 style={{
+                  paddingLeft: "8px",
                   paddingRight:
                     this.props.screenCategory === "wide" ||
                     this.props.screenCategory === "tablet"
                       ? 0
-                      : null,
+                      : "8px",
                   maxHeight:
                     this.props.screenCategory === "phone"
                       ? null
@@ -687,7 +688,9 @@ export default class MainView extends React.Component {
                     : this.props.screenCategory === "tablet" ? 8 : 6
                 }
                 style={{
-                  paddingRight: this.props.screenCategory === "wide" ? 0 : null,
+                  paddingLeft: "8px",
+                  paddingRight:
+                    this.props.screenCategory === "wide" ? 0 : "8px",
                   paddingBottom: 0,
                   paddingTop: 0
                 }}
@@ -764,8 +767,7 @@ export default class MainView extends React.Component {
                 <Grid.Column
                   width={5}
                   style={{
-                    paddingBottom: 0,
-                    paddingTop: 0,
+                    padding: "0 8px",
                     maxHeight: "100vh"
                   }}
                 >

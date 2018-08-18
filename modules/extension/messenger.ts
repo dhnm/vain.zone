@@ -162,7 +162,7 @@ const getPlayerInfo = (input: string, userID: string) => {
         if (err.error.indexOf("404") > -1) {
           sendSystemMessage(
             userID,
-            "Player not found.(\n\n- Please check the spelling and capitalisation of the nick.\n\n- Maybe the player has changed their nick?\n"
+            "Player not found :(\n\n- Please check the spelling and capitalisation of the nick.\n\n- Maybe the player has changed their nick?\n"
           );
         } else if (err.error.indexOf("veryold") > -1) {
           sendSystemMessage(
