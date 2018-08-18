@@ -158,7 +158,7 @@ const getPlayerInfo = (input: string, userID: string) => {
     })
     .catch(err => {
       console.error("messenger err", err);
-      if (err.error === "string") {
+      if (err.error && typeof err.error === "string") {
         if (err.error.indexOf("404") > -1) {
           sendSystemMessage(
             userID,
