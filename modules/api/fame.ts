@@ -84,7 +84,11 @@ router.get("/", (req, res): void => {
 
     const cachedBody = mcache.get(`guild/${guildID}`);
 
-    if (cachedBody && cachedBody.lastUpdated >= endPrevSaturday) {
+    if (
+        cachedBody &&
+        cachedBody.lastUpdated >= endPrevSaturday &&
+        !req.query.clearCache
+    ) {
         console.log(`Serving cached data from ${cachedBody.lastUpdated}`);
         res.json(cachedBody);
     } else {
