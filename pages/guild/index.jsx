@@ -152,7 +152,7 @@ const Guild = ({ data, error }) => {
 
 export default Guild;
 
-Guild.getInitialProps = async function getInitialProps() {
+Guild.getInitialProps = async function getInitialProps({ query }) {
   try {
     // const { query } = context;
 
@@ -161,7 +161,11 @@ Guild.getInitialProps = async function getInitialProps() {
       urlPath = "http://localhost:3000";
     }
 
-    const requestData = await axios(`${urlPath}/api/fame`);
+    const requestData = await axios(`${urlPath}/api/fame`, {
+      params: {
+        clearCache: query.clearCache
+      }
+    });
     const data = await requestData.data;
     if (data.error) {
       return {

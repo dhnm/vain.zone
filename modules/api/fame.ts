@@ -83,6 +83,7 @@ router.get("/", (req, res): void => {
     const guildID = req.query.id;
 
     const cachedBody = mcache.get(`guild/${guildID}`);
+    console.log(req.query.clearCache);
 
     if (
         cachedBody &&

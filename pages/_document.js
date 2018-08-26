@@ -6,7 +6,7 @@ export default class MyDocument extends Document {
       <html>
         <Head>
           <link rel="stylesheet" href="/_next/static/style.css" />
-          <meta charset="UTF-8" />
+          <meta charSet="UTF-8" />
           <meta
             name="viewport"
             content="initial-scale=1.0, width=device-width, shrink-to-fit=no"
