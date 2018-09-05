@@ -8,7 +8,7 @@ body {
             hsla(227, 32%, 9%, 0.7),
             hsla(227, 32%, 9%, 0.8)
         ),
-        url("/static/img/summer2018bg.jpg") !important;
+        url("/static/img/bg.jpg") !important;
     background-repeat: no-repeat !important;
     background-position: center center !important;
     background-attachment: fixed !important;

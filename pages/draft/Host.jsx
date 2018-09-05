@@ -12,9 +12,10 @@ import DraftBuilder from "./DraftBuilder";
 import ProfileItem from "./ProfileItem";
 
 const defaultHeroes = [
-  { name: "Anka" },
+  { name: "Yates" },
   { name: "Adagio" },
   { name: "Alpha" },
+  { name: "Anka" },
   { name: "Ardan" },
   { name: "Baptiste" },
   { name: "Baron" },

@@ -467,7 +467,7 @@ export default function MatchDetailView({
           </Segment>
         </Segment>
       </div>
-      
+
       <Button
         onClick={() => {
           toggleSendLoading(true);

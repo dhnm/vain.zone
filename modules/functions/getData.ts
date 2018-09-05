@@ -1015,7 +1015,7 @@ const updatePlayerDB = (
           } else {
             // add this field to older entries
             if (!playerData.IGNHistory) {
-              customPlayerDataModel.IGNHistory = new Array();
+              customPlayerDataModel.IGNHistory = [];
             }
           }
 
