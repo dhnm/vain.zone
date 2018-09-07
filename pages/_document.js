@@ -5,6 +5,21 @@ export default class MyDocument extends Document {
     return (
       <html>
         <Head>
+          <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=UA-125429066-1"
+          />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'UA-125429066-1');
+              `
+            }}
+          />
           <link rel="stylesheet" href="/_next/static/style.css" />
           <meta charSet="UTF-8" />
           <meta
