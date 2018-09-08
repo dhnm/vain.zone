@@ -81,7 +81,7 @@ router.get("/", cacheMW(30), (_, res: Response): void => {
           }
         });
 
-        const requestLimit = 8;
+        const requestLimit = 7;
         toBeUpdated
           .sort((a, b) => b.rank_5v5 - a.rank_5v5)
           .splice(6 * requestLimit, toBeUpdated.length - 6 * requestLimit);
@@ -112,16 +112,29 @@ router.get("/", cacheMW(30), (_, res: Response): void => {
             freshPlayerData.forEach(e => {
               const relevantPlayer = toBeUpdated.find(p => p.playerID === e.id);
 
-              relevantPlayer.rank_5v5 =
-                e.attributes.stats.rankPoints.ranked_5v5;
-              relevantPlayer.czSk.retrieval = now;
-              if (relevantPlayer.czSk.of_month != now.getMonth()) {
-                relevantPlayer.czSk.of_month = now.getMonth();
-                relevantPlayer.czSk.first_of_month =
-                  e.attributes.stats.rankPoints.ranked_5v5 >= 1090
-                    ? e.attributes.stats.rankPoints.ranked_5v5
-                    : 1090;
+              if (e.attributes.patchVersion >= "3.7") {
+                relevantPlayer.rank_5v5 =
+                  e.attributes.stats.rankPoints.ranked_5v5;
+
+                if (
+                  relevantPlayer.czSk.of_month != now.getMonth() ||
+                  relevantPlayer.czSk.first_of_month === 9999
+                ) {
+                  relevantPlayer.czSk.of_month = now.getMonth();
+                  relevantPlayer.czSk.first_of_month =
+                    e.attributes.stats.rankPoints.ranked_5v5 >= 1090
+                      ? e.attributes.stats.rankPoints.ranked_5v5
+                      : 1090;
+                }
+              } else {
+                relevantPlayer.rank_5v5 = -9999;
+
+                if (relevantPlayer.czSk.of_month != now.getMonth()) {
+                  relevantPlayer.czSk.of_month = now.getMonth();
+                  relevantPlayer.czSk.first_of_month = 9999;
+                }
               }
+              relevantPlayer.czSk.retrieval = now;
               relevantPlayer.save();
             });
 
