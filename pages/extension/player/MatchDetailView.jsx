@@ -233,7 +233,9 @@ export default function MatchDetailView({
               }
             </Label>
             <Grid columns={2} style={{ clear: "both" }}>
-              <Grid.Row style={{ padding: "0.2rem 0 0 0" }}>
+              <Grid.Row
+                style={{ padding: "0.2rem 0 0 0", lineHeight: "0.93rem" }}
+              >
                 <Grid.Column textAlign="left">
                   <TeamStat
                     icon={ICONS.coin}
@@ -313,7 +315,10 @@ export default function MatchDetailView({
                     </React.Fragment>
                   )}
                 </Grid.Column>
-                <Grid.Column textAlign="right" style={{}}>
+                <Grid.Column
+                  textAlign="right"
+                  style={{ lineHeight: "0.93rem" }}
+                >
                   <TeamStat
                     icon={ICONS.coin}
                     stat={`${(match.rosters[1].gold / 1000).toFixed(1)}k`}
@@ -506,7 +511,8 @@ export default function MatchDetailView({
                 justifyContent: "flex-end",
                 marginBottom: "6px",
                 display: "flex",
-                alignItems: "center"
+                alignItems: "center",
+                textAlign: "right"
               }}
             >
               {processedAverageSkillTiers[0].name} ({
@@ -559,7 +565,8 @@ export default function MatchDetailView({
                 justifyContent: "flex-end",
                 marginBottom: "6px",
                 display: "flex",
-                alignItems: "center"
+                alignItems: "center",
+                textAlign: "right"
               }}
             >
               {highestBlueST.name} ({highestBlueST.number}
@@ -607,7 +614,8 @@ export default function MatchDetailView({
                 fontStyle: "italic",
                 justifyContent: "flex-end",
                 display: "flex",
-                alignItems: "center"
+                alignItems: "center",
+                textAlign: "right"
               }}
             >
               {lowestBlueST.name} ({lowestBlueST.number}

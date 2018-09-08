@@ -90,7 +90,7 @@ export default function ParticipantCard({
         // fluid
         style={{
           color: "initial",
-          margin: "3px 1px 3px 0",
+          margin: "2px 1px 2px 0",
           background: cardBg,
           boxShadow: "none"
         }}
@@ -98,7 +98,9 @@ export default function ParticipantCard({
         <Dimmer active={appLoading}>
           <Loader />
         </Dimmer>
-        <Card.Content style={{ padding: "4px", color: "hsla(0, 0%, 100%, 1)" }}>
+        <Card.Content
+          style={{ padding: "1px 3px 3px 2px", color: "hsla(0, 0%, 100%, 1)" }}
+        >
           <Image
             src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
             style={{
@@ -188,7 +190,8 @@ export default function ParticipantCard({
               display: "flex",
               justifyContent: "space-between",
               margin: "0 2px",
-              marginTop: "0px"
+              marginTop: "0px",
+              lineHeight: "0.85rem"
             }}
           >
             <span>
@@ -205,7 +208,7 @@ export default function ParticipantCard({
               {participant.farm.toFixed(0)}
             </span>
           </div>
-          <Grid style={{ margin: 0, marginBottom: "2px" }} columns={6}>
+          <Grid style={{ margin: 0, marginBottom: "0px" }} columns={6}>
             <Grid.Row style={{ padding: 0 }}>
               {items.map((item, index) => (
                 <Grid.Column
@@ -232,7 +235,7 @@ export default function ParticipantCard({
           </Grid>
           <div
             style={{
-              marginTop: "4px",
+              marginTop: "2px",
               marginBottom: "-2px"
             }}
           >
