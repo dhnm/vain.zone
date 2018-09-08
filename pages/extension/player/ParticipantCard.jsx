@@ -100,14 +100,14 @@ export default function ParticipantCard({
         </Dimmer>
         <Card.Content style={{ padding: "4px", color: "hsla(0, 0%, 100%, 1)" }}>
           <Image
-            size="mini"
             src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
             style={{
               borderRadius: "25%",
               margin: "0 2px",
               filter: afkFilter,
               border: "1px solid hsla(0, 0%, 100%, 0.25)",
-              boxSizing: "border-box"
+              boxSizing: "border-box",
+              height: "29px"
             }}
             floated={side}
           />
@@ -129,23 +129,22 @@ export default function ParticipantCard({
             {Math.floor(processedSkillTier.value)}
           </div>*/}
           <Image
-            size="mini"
             src={`/static/img/rank/c/${processedSkillTier.number}${
               processedSkillTier.color
             }.png`}
-            style={{ margin: "0 -6px", padding: "-5px" }}
+            style={{ margin: "0 -6px", padding: "-5px", height: "31px" }}
             floated={{ left: "right", right: "left" }[side]}
           />
           <strong
             style={{
               overflow: "hidden",
               textOverflow: "ellipsis",
-              fontSize: "1.05rem",
+              fontSize: "0.95rem",
               display: "block",
               whiteSpace: "nowrap",
               textDecoration: afkTextDecoration,
-              marginTop: "0px",
-              marginBottom: "-2px"
+              marginTop: "-1px",
+              marginBottom: "-6px"
             }}
           >
             {participant.player.name}
@@ -155,7 +154,7 @@ export default function ParticipantCard({
               <Label
                 color="teal"
                 style={{
-                  fontSize: "0.8rem",
+                  fontSize: "0.72rem",
                   color: "white",
                   fontWeight: "normal",
                   padding: "2px 2px",
@@ -170,7 +169,7 @@ export default function ParticipantCard({
           {guildTag ? (
             <Label
               style={{
-                fontSize: "0.82rem",
+                fontSize: "0.72rem",
                 color: "white",
                 fontWeight: "normal",
                 padding: "2px 2px",
@@ -185,7 +184,7 @@ export default function ParticipantCard({
           )}
           <div
             style={{
-              fontSize: "0.85rem",
+              fontSize: "0.8rem",
               display: "flex",
               justifyContent: "space-between",
               margin: "0 2px",
@@ -198,11 +197,11 @@ export default function ParticipantCard({
               </strong>
             </span>
             <span>
-              <VZIcon icon={ICONS.coin} color="white" size={9} />
+              <VZIcon icon={ICONS.coin} color="white" size={8} />
               {(participant.gold / 1000).toFixed(1)}k
             </span>
             <span>
-              <VZIcon icon={ICONS.creepscore} color="white" size={9} />
+              <VZIcon icon={ICONS.creepscore} color="white" size={8} />
               {participant.farm.toFixed(0)}
             </span>
           </div>
@@ -223,7 +222,8 @@ export default function ParticipantCard({
                       .toLowerCase()}.png`}
                     style={{
                       maxWidth: "3.5rem",
-                      margin: "0"
+                      margin: "0",
+                      padding: "0 1.5px"
                     }}
                   />
                 </Grid.Column>
@@ -267,6 +267,7 @@ export default function ParticipantCard({
               total={highestDamage || 0}
               size="small"
               color="red"
+              style={{ height: "10px", overflow: "hidden" }}
             />
             <div className="progressLabelWrapper">
               <span className="progressLabel">Dmg to Heroes</span>{" "}
@@ -279,6 +280,7 @@ export default function ParticipantCard({
               total={highestTowersDamage || 0}
               size="small"
               color="orange"
+              style={{ height: "10px", overflow: "hidden" }}
             />
             <div className="progressLabelWrapper">
               <span className="progressLabel">Dmg to Structures</span>{" "}

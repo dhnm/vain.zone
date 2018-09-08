@@ -127,7 +127,7 @@ router.get("/", cacheMW(30), (_, res: Response): void => {
                       : 1090;
                 }
               } else {
-                relevantPlayer.rank_5v5 = -9999;
+                relevantPlayer.rank_5v5 = 0;
 
                 if (relevantPlayer.czSk.of_month != now.getMonth()) {
                   relevantPlayer.czSk.of_month = now.getMonth();

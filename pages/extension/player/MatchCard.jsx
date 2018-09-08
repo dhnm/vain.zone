@@ -95,7 +95,12 @@ export default function MatchCard({
             : "hsla(0, 0%, 10%, 1)",
         backgroundSize: "cover",
         backgroundPositionY: "40%",
-        color: "hsla(0, 0%, 90%, 1)"
+        color: "hsla(0, 0%, 90%, 1)",
+        padding: "8px 14px 10px 14px",
+        margin: "10px 0"
+        // margin: "10px 6px",
+        // width: "calc(100% - 12px)",
+        // borderRadius: "50%",
       }}
     >
       <Dimmer active={matchCardsLoading} inverted>

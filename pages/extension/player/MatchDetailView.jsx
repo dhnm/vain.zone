@@ -20,12 +20,12 @@ function TeamStat({ icon, stat }) {
     <span
       style={{
         display: "inline-block",
-        padding: "0 3px",
+        padding: "0 2px",
         margin: "1px 1px 1px 1px",
-        fontSize: "1.05rem"
+        fontSize: "0.9rem"
       }}
     >
-      <VZIcon icon={icon} color="white" size={11 * 1.05} />&zwj;{stat}
+      <VZIcon icon={icon} color="white" size={11 * 0.9} />&zwj;{stat}
     </span>
   );
 }
@@ -165,6 +165,7 @@ export default function MatchDetailView({
                   : null
               }
               style={{
+                padding: "5px",
                 width: "90px",
                 textAlign: "center",
                 float: "left",
@@ -188,7 +189,7 @@ export default function MatchDetailView({
               style={{
                 display: "inline-block",
                 margin: "auto",
-                fontSize: "1.4rem",
+                fontSize: "1.2rem",
                 fontWeight: "bold",
                 marginTop: "3px",
                 width: "75px",
@@ -211,6 +212,7 @@ export default function MatchDetailView({
                   : null
               }
               style={{
+                padding: "5px",
                 float: "right",
                 width: "90px",
                 textAlign: "center",
@@ -231,7 +233,7 @@ export default function MatchDetailView({
               }
             </Label>
             <Grid columns={2} style={{ clear: "both" }}>
-              <Grid.Row style={{ padding: "0.4rem 0 0 0" }}>
+              <Grid.Row style={{ padding: "0.2rem 0 0 0" }}>
                 <Grid.Column textAlign="left">
                   <TeamStat
                     icon={ICONS.coin}
@@ -281,10 +283,10 @@ export default function MatchDetailView({
                             style={{
                               display: "inline-block",
                               borderRadius: "50%",
-                              marginBottom: "4px",
+                              marginBottom: "1px",
                               marginTop: "1px",
                               filter: "grayscale(40%)",
-                              width: "32px",
+                              width: "30px",
                               border: "1px solid hsla(0, 0%, 100%, 0.25)"
                             }}
                             src={`/static/img/heroes/c/${b.toLowerCase()}.jpg`}
@@ -357,10 +359,10 @@ export default function MatchDetailView({
                             style={{
                               display: "inline-block",
                               borderRadius: "50%",
-                              marginBottom: "4px",
+                              marginBottom: "1px",
                               marginTop: "1px",
                               filter: "grayscale(40%)",
-                              width: "32px",
+                              width: "30px",
                               border: "1px solid hsla(0, 0%, 100%, 0.25)"
                             }}
                             src={`/static/img/heroes/c/${b.toLowerCase()}.jpg`}
@@ -391,7 +393,7 @@ export default function MatchDetailView({
               </Grid.Row>
               <Grid.Row
                 style={{
-                  paddingTop: "0.1rem",
+                  paddingTop: "0",
                   paddingBottom: "0"
                 }}
               >
@@ -495,58 +497,134 @@ export default function MatchDetailView({
         <div style={{ textAlign: "center" }}>Average Ranks</div>
         <Grid columns="equal">
           <Grid.Column>
-            <Image
-              style={{ width: "50px", margin: "auto" }}
-              src={`/static/img/rank/c/${processedAverageSkillTiers[0].number}${
-                processedAverageSkillTiers[0].color
-              }.png`}
-            />
+            <div
+              style={{
+                fontSize: "0.9rem",
+                color: "hsla(0, 100%, 100%, 0.8",
+                fontStyle: "italic",
+                textAlign: "right",
+                whiteSpace: "nowrap"
+              }}
+            >
+              {processedAverageSkillTiers[0].name} ({
+                processedAverageSkillTiers[0].number
+              }
+              {processedAverageSkillTiers[0].color.charAt(1)}){" "}
+              <Image
+                style={{ width: "42px", display: "inline-block" }}
+                src={`/static/img/rank/c/${
+                  processedAverageSkillTiers[0].number
+                }${processedAverageSkillTiers[0].color}.png`}
+              />
+            </div>
           </Grid.Column>
           <Grid.Column>
-            <Image
-              style={{ width: "50px", margin: "auto" }}
-              src={`/static/img/rank/c/${processedAverageSkillTiers[1].number}${
-                processedAverageSkillTiers[1].color
-              }.png`}
-            />
+            <div
+              style={{
+                fontSize: "0.9rem",
+                color: "hsla(0, 100%, 100%, 0.8",
+                fontStyle: "italic",
+                textAlign: "left",
+                whiteSpace: "nowrap"
+              }}
+            >
+              <Image
+                style={{ width: "42px", display: "inline-block" }}
+                src={`/static/img/rank/c/${
+                  processedAverageSkillTiers[1].number
+                }${processedAverageSkillTiers[1].color}.png`}
+              />{" "}
+              {processedAverageSkillTiers[1].name} ({
+                processedAverageSkillTiers[1].number
+              }
+              {processedAverageSkillTiers[1].color.charAt(1)})
+            </div>
           </Grid.Column>
         </Grid>
         <div style={{ textAlign: "center" }}>Highest Ranks</div>
         <Grid columns="equal">
           <Grid.Column>
-            <Image
-              style={{ width: "50px", margin: "auto" }}
-              src={`/static/img/rank/c/${highestBlueST.number}${
-                highestBlueST.color
-              }.png`}
-            />
+            <div
+              style={{
+                fontSize: "0.9rem",
+                color: "hsla(0, 100%, 100%, 0.8",
+                fontStyle: "italic",
+                textAlign: "right",
+                whiteSpace: "nowrap"
+              }}
+            >
+              {highestBlueST.name} ({highestBlueST.number}
+              {highestBlueST.color.charAt(1)}){" "}
+              <Image
+                style={{ width: "42px", display: "inline-block" }}
+                src={`/static/img/rank/c/${highestBlueST.number}${
+                  highestBlueST.color
+                }.png`}
+              />
+            </div>
           </Grid.Column>
           <Grid.Column>
-            <Image
-              style={{ width: "50px", margin: "auto" }}
-              src={`/static/img/rank/c/${highestRedST.number}${
-                highestRedST.color
-              }.png`}
-            />
+            <div
+              style={{
+                fontSize: "0.9rem",
+                color: "hsla(0, 100%, 100%, 0.8",
+                fontStyle: "italic",
+                textAlign: "left",
+                whiteSpace: "nowrap"
+              }}
+            >
+              <Image
+                style={{ width: "42px", display: "inline-block" }}
+                src={`/static/img/rank/c/${highestRedST.number}${
+                  highestRedST.color
+                }.png`}
+              />{" "}
+              {highestRedST.name} ({highestRedST.number}
+              {highestRedST.color.charAt(1)})
+            </div>
           </Grid.Column>
         </Grid>
         <div style={{ textAlign: "center" }}>Lowest Ranks</div>
         <Grid columns="equal">
           <Grid.Column>
-            <Image
-              style={{ width: "50px", margin: "auto" }}
-              src={`/static/img/rank/c/${lowestBlueST.number}${
-                lowestBlueST.color
-              }.png`}
-            />
+            <div
+              style={{
+                fontSize: "0.9rem",
+                color: "hsla(0, 100%, 100%, 0.8",
+                fontStyle: "italic",
+                textAlign: "right",
+                whiteSpace: "nowrap"
+              }}
+            >
+              {lowestBlueST.name} ({lowestBlueST.number}
+              {lowestBlueST.color.charAt(1)}){" "}
+              <Image
+                style={{ width: "42px", display: "inline-block" }}
+                src={`/static/img/rank/c/${lowestBlueST.number}${
+                  lowestBlueST.color
+                }.png`}
+              />
+            </div>
           </Grid.Column>
           <Grid.Column>
-            <Image
-              style={{ width: "50px", margin: "auto" }}
-              src={`/static/img/rank/c/${lowestRedST.number}${
-                lowestRedST.color
-              }.png`}
-            />
+            <div
+              style={{
+                fontSize: "0.9rem",
+                color: "hsla(0, 100%, 100%, 0.8",
+                fontStyle: "italic",
+                textAlign: "left",
+                whiteSpace: "nowrap"
+              }}
+            >
+              <Image
+                style={{ width: "42px", display: "inline-block" }}
+                src={`/static/img/rank/c/${lowestRedST.number}${
+                  lowestRedST.color
+                }.png`}
+              />&nbsp;
+              {lowestRedST.name} ({lowestRedST.number}
+              {lowestRedST.color.charAt(1)})
+            </div>
           </Grid.Column>
         </Grid>
       </Segment>

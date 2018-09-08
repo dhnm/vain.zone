@@ -116,13 +116,11 @@ export default function PlayerDetailView({
               spaced
               src={`/static/img/karma/c/${player.karmaLevel}.png`}
             />
-          </Card.Content>
-          <Card.Content>
-            <Grid columns={2}>
+            <Grid columns={2} style={{ marginTop: 0 }}>
               <Grid.Row style={{ paddingBottom: 0 }}>
                 <Grid.Column width={16} style={{ textAlign: "center" }}>
-                  Experience Level
-                  <h2 style={{ margin: 0 }}>
+                  Played in total
+                  <h2 style={{ margin: 0, fontSize: "1.4rem" }}>
                     {experienceHours.toFixed(0)} hours
                   </h2>
                   <em>“{addictivenessRating}”</em>
