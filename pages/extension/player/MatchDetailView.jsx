@@ -288,7 +288,7 @@ export default function MatchDetailView({
                               marginBottom: "1px",
                               marginTop: "1px",
                               filter: "grayscale(40%)",
-                              width: "30px",
+                              width: "24px",
                               border: "1px solid hsla(0, 0%, 100%, 0.25)"
                             }}
                             src={`/static/img/heroes/c/${b.toLowerCase()}.jpg`}
@@ -315,10 +315,7 @@ export default function MatchDetailView({
                     </React.Fragment>
                   )}
                 </Grid.Column>
-                <Grid.Column
-                  textAlign="right"
-                  style={{ lineHeight: "0.93rem" }}
-                >
+                <Grid.Column textAlign="right">
                   <TeamStat
                     icon={ICONS.coin}
                     stat={`${(match.rosters[1].gold / 1000).toFixed(1)}k`}
@@ -367,7 +364,7 @@ export default function MatchDetailView({
                               marginBottom: "1px",
                               marginTop: "1px",
                               filter: "grayscale(40%)",
-                              width: "30px",
+                              width: "24px",
                               border: "1px solid hsla(0, 0%, 100%, 0.25)"
                             }}
                             src={`/static/img/heroes/c/${b.toLowerCase()}.jpg`}
