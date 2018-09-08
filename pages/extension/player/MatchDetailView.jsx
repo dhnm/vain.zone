@@ -499,11 +499,14 @@ export default function MatchDetailView({
           <Grid.Column>
             <div
               style={{
-                fontSize: "0.9rem",
+                fontSize: "0.85rem",
+                lineHeight: "0.9rem",
                 color: "hsla(0, 100%, 100%, 0.8",
                 fontStyle: "italic",
-                textAlign: "right",
-                whiteSpace: "nowrap"
+                justifyContent: "flex-end",
+                marginBottom: "6px",
+                display: "flex",
+                alignItems: "center"
               }}
             >
               {processedAverageSkillTiers[0].name} ({
@@ -511,7 +514,7 @@ export default function MatchDetailView({
               }
               {processedAverageSkillTiers[0].color.charAt(1)}){" "}
               <Image
-                style={{ width: "42px", display: "inline-block" }}
+                style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${
                   processedAverageSkillTiers[0].number
                 }${processedAverageSkillTiers[0].color}.png`}
@@ -521,15 +524,18 @@ export default function MatchDetailView({
           <Grid.Column>
             <div
               style={{
-                fontSize: "0.9rem",
+                fontSize: "0.85rem",
+                lineHeight: "0.9rem",
                 color: "hsla(0, 100%, 100%, 0.8",
                 fontStyle: "italic",
                 textAlign: "left",
-                whiteSpace: "nowrap"
+                marginBottom: "6px",
+                display: "flex",
+                alignItems: "center"
               }}
             >
               <Image
-                style={{ width: "42px", display: "inline-block" }}
+                style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${
                   processedAverageSkillTiers[1].number
                 }${processedAverageSkillTiers[1].color}.png`}
@@ -546,17 +552,20 @@ export default function MatchDetailView({
           <Grid.Column>
             <div
               style={{
-                fontSize: "0.9rem",
+                fontSize: "0.85rem",
+                lineHeight: "0.9rem",
                 color: "hsla(0, 100%, 100%, 0.8",
                 fontStyle: "italic",
-                textAlign: "right",
-                whiteSpace: "nowrap"
+                justifyContent: "flex-end",
+                marginBottom: "6px",
+                display: "flex",
+                alignItems: "center"
               }}
             >
               {highestBlueST.name} ({highestBlueST.number}
               {highestBlueST.color.charAt(1)}){" "}
               <Image
-                style={{ width: "42px", display: "inline-block" }}
+                style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${highestBlueST.number}${
                   highestBlueST.color
                 }.png`}
@@ -566,15 +575,18 @@ export default function MatchDetailView({
           <Grid.Column>
             <div
               style={{
-                fontSize: "0.9rem",
+                fontSize: "0.85rem",
+                lineHeight: "0.9rem",
                 color: "hsla(0, 100%, 100%, 0.8",
                 fontStyle: "italic",
                 textAlign: "left",
-                whiteSpace: "nowrap"
+                marginBottom: "6px",
+                display: "flex",
+                alignItems: "center"
               }}
             >
               <Image
-                style={{ width: "42px", display: "inline-block" }}
+                style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${highestRedST.number}${
                   highestRedST.color
                 }.png`}
@@ -589,17 +601,19 @@ export default function MatchDetailView({
           <Grid.Column>
             <div
               style={{
-                fontSize: "0.9rem",
+                fontSize: "0.85rem",
+                lineHeight: "0.9rem",
                 color: "hsla(0, 100%, 100%, 0.8",
                 fontStyle: "italic",
-                textAlign: "right",
-                whiteSpace: "nowrap"
+                justifyContent: "flex-end",
+                display: "flex",
+                alignItems: "center"
               }}
             >
               {lowestBlueST.name} ({lowestBlueST.number}
               {lowestBlueST.color.charAt(1)}){" "}
               <Image
-                style={{ width: "42px", display: "inline-block" }}
+                style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${lowestBlueST.number}${
                   lowestBlueST.color
                 }.png`}
@@ -609,15 +623,17 @@ export default function MatchDetailView({
           <Grid.Column>
             <div
               style={{
-                fontSize: "0.9rem",
+                fontSize: "0.85rem",
+                lineHeight: "0.9rem",
                 color: "hsla(0, 100%, 100%, 0.8",
                 fontStyle: "italic",
                 textAlign: "left",
-                whiteSpace: "nowrap"
+                display: "flex",
+                alignItems: "center"
               }}
             >
               <Image
-                style={{ width: "42px", display: "inline-block" }}
+                style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${lowestRedST.number}${
                   lowestRedST.color
                 }.png`}
