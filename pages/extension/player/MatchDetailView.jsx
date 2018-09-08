@@ -302,7 +302,7 @@ export default function MatchDetailView({
                   {!browserView && (
                     <React.Fragment>
                       <br />
-                      <Label style={{ padding: "2px 6px" }}>
+                      <Label style={{ padding: "2px 6px", fontSize: "0.8rem" }}>
                         Avg. rank{" "}
                         <Image
                           avatar
@@ -379,7 +379,7 @@ export default function MatchDetailView({
                   {!browserView && (
                     <React.Fragment>
                       <br />
-                      <Label style={{ padding: "2px 6px" }}>
+                      <Label style={{ padding: "2px 6px", fontSize: "0.8rem" }}>
                         Avg. rank{" "}
                         <Image
                           avatar
