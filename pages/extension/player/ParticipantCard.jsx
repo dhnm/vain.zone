@@ -30,7 +30,8 @@ const propTypes = {
   KDA: PropTypes.number.isRequired,
   highestKDA: PropTypes.number.isRequired,
   guildTag: PropTypes.string.isRequired,
-  browserView: PropTypes.bool.isRequired
+  browserView: PropTypes.bool.isRequired,
+  roleDetection: PropTypes.bool.isRequired
 };
 
 export default function ParticipantCard({
@@ -49,7 +50,8 @@ export default function ParticipantCard({
   KDA,
   highestKDA,
   guildTag,
-  browserView
+  browserView,
+  roleDetection
 }) {
   const items = participant.items.slice();
   items.splice(0, 2);
@@ -101,11 +103,36 @@ export default function ParticipantCard({
         <Card.Content
           style={{ padding: "1px 3px 3px 2px", color: "hsla(0, 0%, 100%, 1)" }}
         >
+          {roleDetection && (
+            <svg
+              style={{
+                display: "inline-block",
+                padding: "2px 0",
+                float: side
+              }}
+              width="29px"
+              height="29px"
+              viewBox="0 0 1024 1024"
+            >
+              <path
+                style={{ fill: "HSLA(178, 2%, 89%, 1.00)" }}
+                d={
+                  participant.role
+                    ? ICONS[participant.role.split(":")[1]]
+                    : ICONS.support
+                }
+              />
+            </svg>
+          )}
           <Image
             src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
             style={{
               borderRadius: "25%",
-              margin: "0 2px",
+              margin: roleDetection
+                ? `0 ${{ left: "1px", right: "-15px" }[side]} 0 ${
+                    { left: "-15px", right: "1px" }[side]
+                  }`
+                : "0 2px",
               filter: afkFilter,
               border: "1px solid hsla(0, 0%, 100%, 0.25)",
               boxSizing: "border-box",

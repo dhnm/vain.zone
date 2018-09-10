@@ -335,12 +335,12 @@ export default class MainView extends React.Component {
             <Grid>
               <Grid.Column
                 style={{
-                  paddingLeft: "8px",
+                  paddingLeft: "4px",
                   paddingRight:
                     this.props.screenCategory === "wide" ||
                     this.props.screenCategory === "tablet"
                       ? 0
-                      : "8px",
+                      : "4px",
                   maxHeight:
                     this.props.screenCategory === "phone"
                       ? null
@@ -440,56 +440,58 @@ export default class MainView extends React.Component {
                                   borderSpacing: 0
                                 }}
                               >
-                                <tr>
-                                  <th>Hero</th>
-                                  <th>Pick%</th>
-                                  <th>Win%</th>
-                                  <th>KDA</th>
-                                </tr>
-                                {this.props.data.aggregatedData.favorites.map(
-                                  (h, i) => (
-                                    <tr
-                                      style={
-                                        i % 2
-                                          ? {}
-                                          : {
-                                              backgroundColor:
-                                                "hsla(0, 0%, 100%, 0.05"
-                                            }
-                                      }
-                                    >
-                                      <td style={{ textAlign: "left" }}>
-                                        <Image
-                                          style={{
-                                            width: "26px",
-                                            borderRadius: "25%",
-                                            display: "inline-block",
-                                            margin: "3px"
-                                          }}
-                                          src={`/static/img/heroes/c/${h._id.toLowerCase()}.jpg`}
-                                        />{" "}
-                                        {h._id}
-                                      </td>
-                                      <td>
-                                        {Math.round(
-                                          h.count / h.totalCount * 100
-                                        )}%
-                                      </td>
-                                      <td
-                                        style={{
-                                          color: "HSLA(127, 63%, 49%, 1.00)"
-                                        }}
+                                <tbody>
+                                  <tr>
+                                    <th>Hero</th>
+                                    <th>Pick%</th>
+                                    <th>Win%</th>
+                                    <th>KDA</th>
+                                  </tr>
+                                  {this.props.data.aggregatedData.favorites.map(
+                                    (h, i) => (
+                                      <tr
+                                        style={
+                                          i % 2
+                                            ? {}
+                                            : {
+                                                backgroundColor:
+                                                  "hsla(0, 0%, 100%, 0.05"
+                                              }
+                                        }
                                       >
-                                        {Math.round(h.won / h.count * 100)}%
-                                      </td>
-                                      <td>
-                                        {Math.round(h.kills / h.count)}/{Math.round(
-                                          h.deaths / h.count
-                                        )}/{Math.round(h.assists / h.count)}
-                                      </td>
-                                    </tr>
-                                  )
-                                )}
+                                        <td style={{ textAlign: "left" }}>
+                                          <Image
+                                            style={{
+                                              width: "26px",
+                                              borderRadius: "25%",
+                                              display: "inline-block",
+                                              margin: "3px"
+                                            }}
+                                            src={`/static/img/heroes/c/${h._id.toLowerCase()}.jpg`}
+                                          />{" "}
+                                          {h._id}
+                                        </td>
+                                        <td>
+                                          {Math.round(
+                                            h.count / h.totalCount * 100
+                                          )}%
+                                        </td>
+                                        <td
+                                          style={{
+                                            color: "HSLA(127, 63%, 49%, 1.00)"
+                                          }}
+                                        >
+                                          {Math.round(h.won / h.count * 100)}%
+                                        </td>
+                                        <td>
+                                          {Math.round(h.kills / h.count)}/{Math.round(
+                                            h.deaths / h.count
+                                          )}/{Math.round(h.assists / h.count)}
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                                </tbody>
                               </table>
                             </Tab.Pane>
                           )
@@ -505,50 +507,52 @@ export default class MainView extends React.Component {
                                   borderSpacing: 0
                                 }}
                               >
-                                <tr>
-                                  <th>Hero</th>
-                                  <th>Played Against%</th>
-                                  <th>Lose%</th>
-                                </tr>
-                                {this.props.data.aggregatedData.nightmares.map(
-                                  (h, i) => (
-                                    <tr
-                                      style={
-                                        i % 2
-                                          ? {}
-                                          : {
-                                              backgroundColor:
-                                                "hsla(0, 0%, 100%, 0.05"
-                                            }
-                                      }
-                                    >
-                                      <td style={{ textAlign: "left" }}>
-                                        <Image
-                                          style={{
-                                            width: "26px",
-                                            borderRadius: "25%",
-                                            display: "inline-block",
-                                            margin: "3px"
-                                          }}
-                                          src={`/static/img/heroes/c/${h._id.toLowerCase()}.jpg`}
-                                        />{" "}
-                                        {h._id}
-                                      </td>
-                                      <td>
-                                        {Math.round(
-                                          h.count / h.totalCount * 100
-                                        )}%
-                                      </td>
-                                      <td
-                                        style={{
-                                          color: "HSLA(360, 72%, 51%, 1.00)"
-                                        }}
+                                <tbody>
+                                  <tr>
+                                    <th>Hero</th>
+                                    <th>Played Against%</th>
+                                    <th>Lose%</th>
+                                  </tr>
+                                  {this.props.data.aggregatedData.nightmares.map(
+                                    (h, i) => (
+                                      <tr
+                                        style={
+                                          i % 2
+                                            ? {}
+                                            : {
+                                                backgroundColor:
+                                                  "hsla(0, 0%, 100%, 0.05"
+                                              }
+                                        }
                                       >
-                                        {Math.round(h.lost / h.count * 100)}%
-                                      </td>
-                                    </tr>
-                                  )
-                                )}
+                                        <td style={{ textAlign: "left" }}>
+                                          <Image
+                                            style={{
+                                              width: "26px",
+                                              borderRadius: "25%",
+                                              display: "inline-block",
+                                              margin: "3px"
+                                            }}
+                                            src={`/static/img/heroes/c/${h._id.toLowerCase()}.jpg`}
+                                          />{" "}
+                                          {h._id}
+                                        </td>
+                                        <td>
+                                          {Math.round(
+                                            h.count / h.totalCount * 100
+                                          )}%
+                                        </td>
+                                        <td
+                                          style={{
+                                            color: "HSLA(360, 72%, 51%, 1.00)"
+                                          }}
+                                        >
+                                          {Math.round(h.lost / h.count * 100)}%
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                                </tbody>
                               </table>
                             </Tab.Pane>
                           )
@@ -569,48 +573,50 @@ export default class MainView extends React.Component {
                                   borderSpacing: 0
                                 }}
                               >
-                                <tr>
-                                  <th>Name</th>
-                                  <th>Played Together%</th>
-                                  <th>Win%</th>
-                                </tr>
-                                {this.props.data.aggregatedData.friends.map(
-                                  (p, i) => (
-                                    <tr
-                                      style={
-                                        i % 2
-                                          ? {}
-                                          : {
-                                              backgroundColor:
-                                                "hsla(0, 0%, 100%, 0.05"
-                                            }
-                                      }
-                                    >
-                                      <td
-                                        style={{
-                                          textAlign: "left",
-                                          height: "34px",
-                                          paddingLeft: "5px",
-                                          fontWeight: "bold"
-                                        }}
+                                <tbody>
+                                  <tr>
+                                    <th>Name</th>
+                                    <th>Played Together%</th>
+                                    <th>Win%</th>
+                                  </tr>
+                                  {this.props.data.aggregatedData.friends.map(
+                                    (p, i) => (
+                                      <tr
+                                        style={
+                                          i % 2
+                                            ? {}
+                                            : {
+                                                backgroundColor:
+                                                  "hsla(0, 0%, 100%, 0.05"
+                                              }
+                                        }
                                       >
-                                        {p._id}
-                                      </td>
-                                      <td>
-                                        {Math.round(
-                                          p.count / p.totalCount * 100
-                                        )}%
-                                      </td>
-                                      <td
-                                        style={{
-                                          color: "HSLA(127, 63%, 49%, 1.00)"
-                                        }}
-                                      >
-                                        {Math.round(p.won / p.count * 100)}%
-                                      </td>
-                                    </tr>
-                                  )
-                                )}
+                                        <td
+                                          style={{
+                                            textAlign: "left",
+                                            height: "34px",
+                                            paddingLeft: "5px",
+                                            fontWeight: "bold"
+                                          }}
+                                        >
+                                          {p._id}
+                                        </td>
+                                        <td>
+                                          {Math.round(
+                                            p.count / p.totalCount * 100
+                                          )}%
+                                        </td>
+                                        <td
+                                          style={{
+                                            color: "HSLA(127, 63%, 49%, 1.00)"
+                                          }}
+                                        >
+                                          {Math.round(p.won / p.count * 100)}%
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                                </tbody>
                               </table>
                             </Tab.Pane>
                           )
@@ -626,42 +632,44 @@ export default class MainView extends React.Component {
                                   borderSpacing: 0
                                 }}
                               >
-                                <tr>
-                                  <th>Name</th>
-                                  <th>Lose%</th>
-                                </tr>
-                                {this.props.data.aggregatedData.nemeses.map(
-                                  (p, i) => (
-                                    <tr
-                                      style={
-                                        i % 2
-                                          ? {}
-                                          : {
-                                              backgroundColor:
-                                                "hsla(0, 0%, 100%, 0.05"
-                                            }
-                                      }
-                                    >
-                                      <td
-                                        style={{
-                                          textAlign: "left",
-                                          height: "34px",
-                                          paddingLeft: "5px",
-                                          fontWeight: "bold"
-                                        }}
+                                <tbody>
+                                  <tr>
+                                    <th>Name</th>
+                                    <th>Lose%</th>
+                                  </tr>
+                                  {this.props.data.aggregatedData.nemeses.map(
+                                    (p, i) => (
+                                      <tr
+                                        style={
+                                          i % 2
+                                            ? {}
+                                            : {
+                                                backgroundColor:
+                                                  "hsla(0, 0%, 100%, 0.05"
+                                              }
+                                        }
                                       >
-                                        {p._id}
-                                      </td>
-                                      <td
-                                        style={{
-                                          color: "HSLA(360, 72%, 51%, 1.00)"
-                                        }}
-                                      >
-                                        {Math.round(p.lost / p.count * 100)}%
-                                      </td>
-                                    </tr>
-                                  )
-                                )}
+                                        <td
+                                          style={{
+                                            textAlign: "left",
+                                            height: "34px",
+                                            paddingLeft: "5px",
+                                            fontWeight: "bold"
+                                          }}
+                                        >
+                                          {p._id}
+                                        </td>
+                                        <td
+                                          style={{
+                                            color: "HSLA(360, 72%, 51%, 1.00)"
+                                          }}
+                                        >
+                                          {Math.round(p.lost / p.count * 100)}%
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                                </tbody>
                               </table>
                             </Tab.Pane>
                           )
@@ -688,9 +696,9 @@ export default class MainView extends React.Component {
                     : this.props.screenCategory === "tablet" ? 8 : 6
                 }
                 style={{
-                  paddingLeft: "8px",
+                  paddingLeft: "4px",
                   paddingRight:
-                    this.props.screenCategory === "wide" ? 0 : "8px",
+                    this.props.screenCategory === "wide" ? 0 : "4px",
                   paddingBottom: 0,
                   paddingTop: 0
                 }}

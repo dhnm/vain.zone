@@ -4,6 +4,7 @@ import cacheMW from "./../functions/cacheMW";
 
 import axios, { AxiosResponse } from "axios";
 import { IMatch } from "models/Match";
+import * as moment from "moment";
 
 import { gameModeDict, apiKey } from "./../functions/constants";
 
@@ -37,22 +38,24 @@ router.get("/", cacheMW(300), (req: Request, res: Response): void => {
       return response.data;
     })
     .then((telemetryData: any): void => {
-      const {
-        damagesData,
-        towersDamagesData,
-        banData,
-        creatures5v5,
-        draftOrder
-      } = loopThroughTelemetry(telemetryData, matchData);
-
       retrieveSingleMatch(matchData).then(singleMatchData => {
-        const output: IOutput = {
+        const {
+          damagesData,
+          towersDamagesData,
+          banData,
+          creatures5v5,
+          draftOrder,
+          testGameplayRoles
+        } = loopThroughTelemetry(telemetryData, matchData.gameMode);
+
+        const output /*: IOutput */ = {
           damagesData,
           towersDamagesData,
           banData,
           singleMatchData,
           creatures5v5,
           draftOrder,
+          testGameplayRoles,
           error: false
         };
 
@@ -267,7 +270,7 @@ export type ICreatures5v5 = {
 
 export type IDraftOrder = string[][];
 
-const loopThroughTelemetry = (telemetryData, matchData) => {
+const loopThroughTelemetry = (telemetryData, gameMode) => {
   // const awards = {}
 
   const damagesData: IDamages = { rosters: [{}, {}], highest: 0 };
@@ -275,11 +278,21 @@ const loopThroughTelemetry = (telemetryData, matchData) => {
 
   const banData: IBans = { rosters: [[], []] };
 
-  const is5v5 = matchData.gameMode.includes("5v5");
+  const is5v5 = gameMode.includes("5v5");
   const creatures5v5: ICreatures5v5 = [
     { blackclaw: 0, ghostwing: 0 },
     { blackclaw: 0, ghostwing: 0 }
   ];
+
+  const gameplayRoles = { rosters: [{}, {}] };
+  const matchTimerStartTime = moment(
+    telemetryData.find(e => e.type === "PlayerFirstSpawn").time
+  );
+  const firstTurretKillTime = moment(
+    telemetryData.find(
+      e => e.type === "KillActor" && e.payload.Killed === "*Turret5v5*"
+    )
+  );
 
   const draftOrder = [[], []];
 
@@ -331,6 +344,45 @@ const loopThroughTelemetry = (telemetryData, matchData) => {
       draftOrder[parseInt(currVa.payload.Team) - 1].push(
         currVa.payload.Hero.replace(/\*/g, "")
       );
+    } else if (
+      // currently kills counted towards points - change it! kills fucks up jungler's determination
+      moment(currVa.time).unix() <=
+        (firstTurretKillTime.unix() - matchTimerStartTime.unix() > 270
+          ? firstTurretKillTime.unix()
+          : matchTimerStartTime.unix() + 270) &&
+      currVa.type === "KillActor" &&
+      !currVa.payload.TargetIsHero &&
+      currVa.payload.Target !== "*VisionTotem*"
+    ) {
+      const reference =
+        gameplayRoles.rosters[{ Left: 0, Right: 1 }[currVa.payload.Team]];
+      const actorName = currVa.payload.Actor.replace(/\*/g, "");
+
+      if (reference[actorName]) {
+        const minionType = detectMinionType(
+          { Left: 0, Right: 1 }[currVa.payload.Team],
+          currVa.payload.Position,
+          currVa.payload.KilledTeam === "Neutral"
+        );
+        if (minionType) {
+          reference[actorName][minionType] += 1;
+        }
+      } else {
+        const minionType = detectMinionType(
+          { Left: 0, Right: 1 }[currVa.payload.Team],
+          currVa.payload.Position,
+          currVa.payload.KilledTeam === "Neutral"
+        );
+        reference[actorName] = {
+          "3:jungler": 1,
+          "1:midlane": 0,
+          "2:botlane": 0,
+          "0:toplane": 0
+        };
+        if (minionType) {
+          reference[actorName][minionType] += 1;
+        }
+      }
     }
   }
 
@@ -358,6 +410,38 @@ const loopThroughTelemetry = (telemetryData, matchData) => {
     towersDamagesData,
     banData,
     creatures5v5,
-    draftOrder
+    draftOrder,
+    testGameplayRoles: gameplayRoles
   };
+};
+
+const detectMinionType = (_, coords, jungle) => {
+  if (jungle) {
+    return "3:jungler";
+  }
+  if (
+    coords[2] >= -65.0 &&
+    coords[2] <= -47.5 &&
+    coords[0] >= -21.3 &&
+    coords[0] <= 21.3
+  ) {
+    return "0:toplane";
+  }
+  if (
+    coords[2] >= -10.0 &&
+    coords[2] <= 10.0 &&
+    coords[0] >= -17.5 &&
+    coords[0] <= 17.5
+  ) {
+    return "1:midlane";
+  }
+  if (
+    coords[2] >= 47.5 &&
+    coords[2] <= 65.0 &&
+    coords[0] >= -21.3 &&
+    coords[0] <= 21.3
+  ) {
+    return "2:botlane";
+  }
+  return undefined;
 };

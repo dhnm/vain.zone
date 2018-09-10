@@ -55,8 +55,8 @@ export default function PlayerDetailView({
     3380: "It's been a while since I had any human contact.",
     3700: "What are humans?",
     4340: "Let's waste another 6 months of my life.",
-    4980: "I don't need life. I have Vainglory.",
-    8766: "More than a year worth of time spent in the game? Check.",
+    4980: "Super Evil Overlord",
+    8766: "More than a year worth of time spent in the game? Check ✔️",
     9406: "Vainglory Royalty"
   };
   // Don't neglect your loved ones for Vainglory.

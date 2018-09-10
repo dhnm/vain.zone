@@ -1,7 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
-import { Segment, Label, Grid, Image, Button, Icon } from "semantic-ui-react";
+import {
+  Segment,
+  Label,
+  Grid,
+  Image,
+  Button,
+  Icon,
+  Message
+} from "semantic-ui-react";
 import * as moment from "moment";
 
 import VZIcon from "./../../../components/Icon";
@@ -98,6 +106,178 @@ export default function MatchDetailView({
         .filter(e => e)
     )
   ]);
+
+  const roleDetection =
+    draftOrder[0].length + draftOrder[1].length === 10 && match.duration > 540
+      ? "5v5"
+      : false;
+
+  if (roleDetection === "5v5") {
+    const gameplayRolesMaxValues = [
+      {
+        "3:jungler": 0,
+        "1:midlane": 0,
+        "2:botlane": 0,
+        "0:toplane": 0
+      },
+      {
+        "3:jungler": 0,
+        "1:midlane": 0,
+        "2:botlane": 0,
+        "0:toplane": 0
+      }
+    ];
+    for (let i in TLData.testGameplayRoles.rosters) {
+      for (let key in TLData.testGameplayRoles.rosters[i]) {
+        for (let role in gameplayRolesMaxValues[0]) {
+          if (
+            TLData.testGameplayRoles.rosters[i][key][role] >
+            gameplayRolesMaxValues[i][role]
+          ) {
+            gameplayRolesMaxValues[i][role] =
+              TLData.testGameplayRoles.rosters[i][key][role];
+          }
+        }
+      }
+    }
+    TLData.testGameplayRoles.rosters.forEach((side, sideIndex) => {
+      Object.keys(side).forEach(actor => {
+        for (let role in gameplayRolesMaxValues[0]) {
+          const actorRolesData =
+            TLData.testGameplayRoles.rosters[sideIndex][actor];
+          if (
+            actorRolesData[role] >=
+              Math.max(
+                ...Object.keys(actorRolesData)
+                  .filter(e => e !== role)
+                  .map(e => actorRolesData[e])
+              ) &&
+            actorRolesData[role] >=
+              gameplayRolesMaxValues[sideIndex][role] * (3 / 5)
+          ) {
+            draftOrder[sideIndex].find(p => p.actor === actor).role = role;
+          } else if (
+            actorRolesData[role] >=
+            gameplayRolesMaxValues[sideIndex][role] * (4 / 5)
+          ) {
+            draftOrder[sideIndex].find(p => p.actor === actor).role = role;
+          }
+        }
+      });
+    });
+    draftOrder.forEach(side =>
+      side.forEach(p => {
+        let supportPoints = 0;
+        const supportQuantifiers = {
+          heroes: [
+            "Yates",
+            "Adagio",
+            "Ardan",
+            "Catherine",
+            "Churnwalker",
+            "Flicker",
+            "Fortress",
+            "Grace",
+            "Lance",
+            "Lorelai",
+            "Lyra",
+            "Phinn"
+          ],
+          secondaryHerores: ["Glaive", "Grumpjaw", "Tony", "Baptiste"],
+          items: [
+            "Crucible",
+            "Rook's Decree",
+            "Fountain of Renewal",
+            "War Treads",
+            "Flare Gun",
+            "Contraption",
+            "Nullwave Gauntlet",
+            "Ironguard Contract",
+            "Protector Contract",
+            "Dragonblood Contract",
+            "ScoutPak",
+            "ScoutTuff",
+            "SuperScout 2000",
+            "Flare Loader",
+            "Capacitor Plate",
+            "Atlas Pauldron"
+          ],
+          secondaryItems: [
+            "Poisoned Shiv",
+            "Spellfire",
+            "Clockwork",
+            "Aftershock",
+            "Pulseweave",
+            "Stormcrown",
+            "Stormguard Banner",
+            "Shiversteel",
+            "Lifespring",
+            "Tension Bow"
+          ]
+        };
+
+        if (supportQuantifiers.heroes.indexOf(p.actor) > -1) {
+          // console.log("+3", p.actor);
+          supportPoints += 2.5;
+        } else if (supportQuantifiers.secondaryHerores.indexOf(p.actor) > -1) {
+          // console.log("+1", p.actor);
+          supportPoints += 1;
+        }
+
+        p.items.forEach(i => {
+          if (supportQuantifiers.items.indexOf(i) > -1) {
+            // console.log("+1.5", i);
+            supportPoints += 1.75;
+          } else if (supportQuantifiers.secondaryItems.indexOf(i) > -1) {
+            // console.log("+0.5", i);
+            supportPoints += 0.5;
+          }
+        });
+        if (supportPoints >= 4.4 * (p.items.length - 2 + 0.75) / 6 && !p.role) {
+          p.role = "4:captain";
+        } else if (supportPoints >= 8.4 * (p.items.length - 2 + 0.75) / 6) {
+          p.role = "4:captain";
+        }
+      })
+    );
+    for (let side in draftOrder) {
+      draftOrder[side] = draftOrder[side].sort((a, b) => {
+        if (a.role === "4:captain") {
+          if (a.role === "4:captain" && b.role === "4:captain") {
+            if (a.farm > b.farm) {
+              return -1;
+            }
+            return 1;
+          }
+          return 1;
+        }
+        if (a.role < b.role) {
+          return -1;
+        }
+        if (a.role > b.role) {
+          return 1;
+        }
+        if (!a.role) {
+          if (
+            TLData.testGameplayRoles.rosters[side][a.actor]["3:jungler"] >
+            TLData.testGameplayRoles.rosters[side][a.actor]["3:jungler"]
+          ) {
+            return -1;
+          }
+          if (
+            TLData.testGameplayRoles.rosters[side][a.actor]["3:jungler"] <
+            TLData.testGameplayRoles.rosters[side][a.actor]["3:jungler"]
+          ) {
+            return 1;
+          }
+          return 0;
+        }
+        return 0;
+      });
+    }
+  }
+  // console.log(draftOrder);
+
   const KDAs = draftOrder.map(sides =>
     sides.map(participant => {
       return (
@@ -123,6 +303,22 @@ export default function MatchDetailView({
         margin: "auto"
       }}
     >
+      {roleDetection && (
+        <Message color="blue" icon>
+          <Icon name="warning circle" />
+          <Message.Content>
+            Roles (carry, jungle, support, etc.) are in alpha. Please report to
+            us if you see something wrong.{" "}
+            <a
+              target="_blank"
+              href="https://discord.gg/wDYKFaS"
+              style={{ color: "HSLA(206, 66%, 57%, 1.00)" }}
+            >
+              We are on Discord.
+            </a>
+          </Message.Content>
+        </Message>
+      )}
       <div ref={childRef}>
         <Segment
           id="matchDetailView"
@@ -440,6 +636,7 @@ export default function MatchDetailView({
                             .guildTag
                         }
                         browserView={browserView}
+                        roleDetection={roleDetection}
                       />
                     ))}
                   </Grid.Column>

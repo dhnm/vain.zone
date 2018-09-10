@@ -113,6 +113,9 @@ class News extends React.Component {
         this.setState({ news: news });
         return Promise.all(
           news.map(n => {
+            if (!n._links["wp:featuredmedia"]) {
+              return "https://jd3sljkvzi-flywheel.netdna-ssl.com/wp-content/themes/vainglory/images/logo.png";
+            }
             return axios(
               `https://cors-anywhere.herokuapp.com/${
                 n._links["wp:featuredmedia"][0].href
@@ -281,55 +284,56 @@ class News extends React.Component {
               <small>wDYKFaS</small>
             </a>
           </div>
-          {this.state.news.length &&
-            this.state.news.length && (
-              <React.Fragment>
-                <h2>
-                  News from{" "}
-                  <a href="https://www.vainglorygame.com/news" target="_blank">
-                    vainglorygame.com
-                  </a>
-                </h2>
-                <Card.Group centered itemsPerRow={5} doubling stackable>
-                  {this.state.news.map((n, i) => (
-                    <Card
-                      href={n.link}
-                      target="_blank"
-                      link
-                      style={{ background: "HSLA(211, 11%, 22%, 1.00)" }}
-                      key={n.link}
-                    >
-                      <Image src={this.state.featuredImages[i]} />
-                      <Card.Content style={{ paddingBottom: 0 }}>
-                        <Card.Header>
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: n.title.rendered
-                            }}
-                          />
-                        </Card.Header>
-                        <Card.Meta>
-                          <span className="date">
-                            {moment(n.date_gmt).format("MMMM D")}
-                          </span>
-                        </Card.Meta>
-                        <Card.Description>
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: n.excerpt.rendered.substring(0, 120)
-                            }}
-                          />&hellip;
-                        </Card.Description>
-                      </Card.Content>
-                      <Card.Content extra style={{ paddingTop: 0 }}>
-                        <Icon name="globe" />
-                        vainglorygame.com
-                      </Card.Content>
-                    </Card>
-                  ))}
-                </Card.Group>
-              </React.Fragment>
-            )}
+          {this.state.news.length === 0 ? (
+            "..."
+          ) : (
+            <React.Fragment>
+              <h2>
+                News from{" "}
+                <a href="https://www.vainglorygame.com/news" target="_blank">
+                  vainglorygame.com
+                </a>
+              </h2>
+              <Card.Group centered itemsPerRow={5} doubling stackable>
+                {this.state.news.map((n, i) => (
+                  <Card
+                    href={n.link}
+                    target="_blank"
+                    link
+                    style={{ background: "HSLA(211, 11%, 22%, 1.00)" }}
+                    key={n.link}
+                  >
+                    <Image src={this.state.featuredImages[i]} />
+                    <Card.Content style={{ paddingBottom: 0 }}>
+                      <Card.Header>
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: n.title.rendered
+                          }}
+                        />
+                      </Card.Header>
+                      <Card.Meta>
+                        <span className="date">
+                          {moment(n.date_gmt).format("MMMM D")}
+                        </span>
+                      </Card.Meta>
+                      <Card.Description>
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: n.excerpt.rendered.substring(0, 120)
+                          }}
+                        />&hellip;
+                      </Card.Description>
+                    </Card.Content>
+                    <Card.Content extra style={{ paddingTop: 0 }}>
+                      <Icon name="globe" />
+                      vainglorygame.com
+                    </Card.Content>
+                  </Card>
+                ))}
+              </Card.Group>
+            </React.Fragment>
+          )}
         </div>
       );
     } catch (err) {
