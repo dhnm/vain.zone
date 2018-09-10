@@ -165,6 +165,7 @@ export default function MatchDetailView({
         }
       });
     });
+    console.log(TLData.testGameplayRoles);
     draftOrder.forEach(side =>
       side.forEach(p => {
         let supportPoints = 0;
@@ -236,10 +237,11 @@ export default function MatchDetailView({
         if (supportPoints >= 4.4 * (p.items.length - 2 + 0.75) / 6 && !p.role) {
           p.role = "4:captain";
         } else if (supportPoints >= 8.4 * (p.items.length - 2 + 0.75) / 6) {
-          p.role = "4:captain";
+          //p.role = "4:captain";
         }
       })
     );
+    console.log(match.matchID);
     for (let side in draftOrder) {
       draftOrder[side] = draftOrder[side].sort((a, b) => {
         if (a.role === "4:captain") {
@@ -251,26 +253,32 @@ export default function MatchDetailView({
           }
           return 1;
         }
-        if (a.role < b.role) {
-          return -1;
-        }
-        if (a.role > b.role) {
-          return 1;
-        }
-        if (!a.role) {
+        if (!a.role && !b.role) {
           if (
             TLData.testGameplayRoles.rosters[side][a.actor]["3:jungler"] >
-            TLData.testGameplayRoles.rosters[side][a.actor]["3:jungler"]
+            TLData.testGameplayRoles.rosters[side][b.actor]["3:jungler"]
           ) {
             return -1;
           }
           if (
             TLData.testGameplayRoles.rosters[side][a.actor]["3:jungler"] <
-            TLData.testGameplayRoles.rosters[side][a.actor]["3:jungler"]
+            TLData.testGameplayRoles.rosters[side][b.actor]["3:jungler"]
           ) {
             return 1;
           }
           return 0;
+        }
+        if (!a.role) {
+          return 1;
+        }
+        if (!b.role) {
+          return -1;
+        }
+        if (a.role < b.role) {
+          return -1;
+        }
+        if (a.role > b.role) {
+          return 1;
         }
         return 0;
       });
