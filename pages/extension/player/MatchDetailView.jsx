@@ -253,6 +253,9 @@ export default function MatchDetailView({
           }
           return 1;
         }
+        if (b.role === "4:captain") {
+          return -1;
+        }
         if (!a.role && !b.role) {
           if (
             TLData.testGameplayRoles.rosters[side][a.actor]["3:jungler"] >
