@@ -244,13 +244,15 @@ export default function MatchDetailView({
     console.log(match.matchID);
     for (let side in draftOrder) {
       draftOrder[side] = draftOrder[side].sort((a, b) => {
-        if (a.role === "4:captain") {
-          if (a.role === "4:captain" && b.role === "4:captain") {
-            if (a.farm > b.farm) {
-              return -1;
-            }
+        if (a.role === "4:captain" && b.role === "4:captain") {
+          if (a.farm > b.farm) {
+            return -1;
+          } else if (a.farm < b.farm) {
             return 1;
           }
+          return 0;
+        }
+        if (a.role === "4:captain") {
           return 1;
         }
         if (b.role === "4:captain") {
