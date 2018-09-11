@@ -88,7 +88,12 @@ export default function PlayerDetailView({
       <Segment
         basic
         attached={screenCategory === "wide" && browserView ? false : "top"}
-        style={{ padding: 0, margin: "1em 0 0 -1px" }}
+        style={{
+          padding: 0,
+          margin: "1em 0 0 0",
+          boxSizing: "border-box",
+          width: "100%"
+        }}
       >
         <Card fluid id="playerDetailView">
           <Card.Content>

@@ -400,7 +400,8 @@ export default class MainView extends React.Component {
                   disabled={this.props.sendLoading}
                   style={{
                     overflow: "hidden",
-                    display: this.props.browserView ? "none" : null
+                    display: this.props.browserView ? "none" : null,
+                    width: "100%"
                   }}
                 >
                   <Label color="blue">

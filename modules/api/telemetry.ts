@@ -45,9 +45,8 @@ router.get("/", cacheMW(300), (req: Request, res: Response): void => {
           banData,
           creatures5v5,
           draftOrder,
-          testGameplayRoles
-        } = loopThroughTelemetry(telemetryData, matchData.gameMode);
-
+          gameplayRoles
+        } = loopThroughTelemetry(telemetryData, matchData);
         const output /*: IOutput */ = {
           damagesData,
           towersDamagesData,
@@ -55,7 +54,7 @@ router.get("/", cacheMW(300), (req: Request, res: Response): void => {
           singleMatchData,
           creatures5v5,
           draftOrder,
-          testGameplayRoles,
+          gameplayRoles,
           error: false
         };
 
@@ -270,7 +269,7 @@ export type ICreatures5v5 = {
 
 export type IDraftOrder = string[][];
 
-const loopThroughTelemetry = (telemetryData, gameMode) => {
+const loopThroughTelemetry = (telemetryData, matchData) => {
   // const awards = {}
 
   const damagesData: IDamages = { rosters: [{}, {}], highest: 0 };
@@ -278,21 +277,27 @@ const loopThroughTelemetry = (telemetryData, gameMode) => {
 
   const banData: IBans = { rosters: [[], []] };
 
-  const is5v5 = gameMode.includes("5v5");
+  const is5v5 =
+    matchData.rosters[0].participants.length +
+      matchData.rosters[1].participants.length ===
+    10;
   const creatures5v5: ICreatures5v5 = [
     { blackclaw: 0, ghostwing: 0 },
     { blackclaw: 0, ghostwing: 0 }
   ];
 
-  const gameplayRoles = { rosters: [{}, {}] };
+  const creepKills = [{}, {}];
+
   const matchTimerStartTime = moment(
     telemetryData.find(e => e.type === "PlayerFirstSpawn").time
   );
-  const firstTurretKillTime = moment(
-    telemetryData.find(
-      e => e.type === "KillActor" && e.payload.Killed === "*Turret5v5*"
-    )
-  );
+  const first5v5TurretKillTime = is5v5
+    ? moment(
+        telemetryData.find(
+          e => e.type === "KillActor" && e.payload.Killed === "*Turret5v5*"
+        ).time
+      )
+    : undefined;
 
   const draftOrder = [[], []];
 
@@ -345,17 +350,20 @@ const loopThroughTelemetry = (telemetryData, gameMode) => {
         currVa.payload.Hero.replace(/\*/g, "")
       );
     } else if (
-      // currently kills counted towards points - change it! kills fucks up jungler's determination
-      moment(currVa.time).unix() <=
-        (firstTurretKillTime.unix() - matchTimerStartTime.unix() > 270
-          ? firstTurretKillTime.unix()
-          : matchTimerStartTime.unix() + 270) &&
+      is5v5 &&
+      moment(currVa.time).unix() - matchTimerStartTime.unix() <=
+        Math.min(
+          390,
+          Math.max(
+            270,
+            first5v5TurretKillTime.unix() - matchTimerStartTime.unix()
+          )
+        ) &&
       currVa.type === "KillActor" &&
       !currVa.payload.TargetIsHero &&
       currVa.payload.Target !== "*VisionTotem*"
     ) {
-      const reference =
-        gameplayRoles.rosters[{ Left: 0, Right: 1 }[currVa.payload.Team]];
+      const reference = creepKills[{ Left: 0, Right: 1 }[currVa.payload.Team]];
       const actorName = currVa.payload.Actor.replace(/\*/g, "");
 
       if (reference[actorName]) {
@@ -405,14 +413,181 @@ const loopThroughTelemetry = (telemetryData, gameMode) => {
     0
   );
 
+  const gameplayRoles = getRoles(matchData, creepKills);
+
   return {
     damagesData,
     towersDamagesData,
     banData,
     creatures5v5,
     draftOrder,
-    testGameplayRoles: gameplayRoles
+    gameplayRoles
   };
+};
+
+const getRoles = (matchData, creepKills) => {
+  console.log(creepKills);
+  let roleDetection: string | boolean = false;
+  if (
+    matchData.rosters[0].participants.length +
+      matchData.rosters[1].participants.length ===
+      10 &&
+    matchData.duration > 540
+  ) {
+    roleDetection = "5v5";
+  } else if (
+    matchData.rosters[0].participants.length +
+      matchData.rosters[1].participants.length ===
+      6 &&
+    ["ranked", "private_party_draft_match", "casual", "private"].indexOf(
+      matchData.gameMode
+    ) > -1
+  ) {
+    roleDetection = "3v3";
+  }
+
+  if (roleDetection === "3v3") {
+  }
+
+  if (roleDetection === "5v5") {
+    const creepKillMaxValues = [
+      {
+        "3:jungler": 0,
+        "1:midlane": 0,
+        "2:botlane": 0,
+        "0:toplane": 0
+      },
+      {
+        "3:jungler": 0,
+        "1:midlane": 0,
+        "2:botlane": 0,
+        "0:toplane": 0
+      }
+    ];
+    for (let i in creepKills) {
+      for (let key in creepKills[i]) {
+        for (let role in creepKillMaxValues[0]) {
+          if (creepKills[i][key][role] > creepKillMaxValues[i][role]) {
+            creepKillMaxValues[i][role] = creepKills[i][key][role];
+          }
+        }
+      }
+    }
+    const gameplayRoles = [{}, {}];
+    creepKills.forEach((side, sideIndex) => {
+      Object.keys(side).forEach(actor => {
+        for (let role in creepKillMaxValues[0]) {
+          const actorRolesData = side[actor];
+          if (gameplayRoles[sideIndex][actor] === "3:jungler") {
+            const currentRole = actorRolesData["3:jungler"];
+            const possibleRole = actorRolesData[role];
+            if (currentRole > possibleRole * 2.5) {
+              continue;
+            }
+          }
+          if (
+            actorRolesData[role] >=
+              Math.max(
+                ...Object.keys(actorRolesData)
+                  .filter(e => e !== role)
+                  .map(e => actorRolesData[e])
+              ) &&
+            actorRolesData[role] >=
+              creepKillMaxValues[sideIndex][role] * (3 / 5)
+          ) {
+            gameplayRoles[sideIndex][actor] = role;
+          } else if (
+            actorRolesData[role] >=
+            creepKillMaxValues[sideIndex][role] * (4 / 5)
+          ) {
+            gameplayRoles[sideIndex][actor] = role;
+          }
+        }
+      });
+    });
+
+    matchData.rosters.forEach((side, rosterIndex) =>
+      side.participants.forEach(p => {
+        let supportPoints = 0;
+        const supportQuantifiers = {
+          heroes: [
+            "Yates",
+            "Adagio",
+            "Ardan",
+            "Catherine",
+            "Churnwalker",
+            "Flicker",
+            "Fortress",
+            "Grace",
+            "Lance",
+            "Lorelai",
+            "Lyra",
+            "Phinn"
+          ],
+          secondaryHerores: ["Glaive", "Grumpjaw", "Tony", "Baptiste"],
+          items: [
+            "Crucible",
+            "Rook's Decree",
+            "Fountain of Renewal",
+            "War Treads",
+            "Flare Gun",
+            "Contraption",
+            "Nullwave Gauntlet",
+            "Ironguard Contract",
+            "Protector Contract",
+            "Dragonblood Contract",
+            "ScoutPak",
+            "ScoutTuff",
+            "SuperScout 2000",
+            "Flare Loader",
+            "Capacitor Plate",
+            "Atlas Pauldron"
+          ],
+          secondaryItems: [
+            "Poisoned Shiv",
+            "Spellfire",
+            "Clockwork",
+            "Aftershock",
+            "Pulseweave",
+            "Stormcrown",
+            "Stormguard Banner",
+            "Shiversteel",
+            "Lifespring",
+            "Tension Bow"
+          ]
+        };
+
+        if (supportQuantifiers.heroes.indexOf(p.actor) > -1) {
+          // console.log("+3", p.actor);
+          supportPoints += 2.5;
+        } else if (supportQuantifiers.secondaryHerores.indexOf(p.actor) > -1) {
+          // console.log("+1", p.actor);
+          supportPoints += 1;
+        }
+
+        p.items.forEach(i => {
+          if (supportQuantifiers.items.indexOf(i) > -1) {
+            // console.log("+1.5", i);
+            supportPoints += 1.75;
+          } else if (supportQuantifiers.secondaryItems.indexOf(i) > -1) {
+            // console.log("+0.5", i);
+            supportPoints += 0.5;
+          }
+        });
+        if (
+          supportPoints >= 4.4 * (p.items.length - 2 + 0.75) / 6 &&
+          !gameplayRoles[rosterIndex][p.actor]
+        ) {
+          gameplayRoles[rosterIndex][p.actor] = "4:captain";
+        } else if (supportPoints >= 8.4 * (p.items.length - 2 + 0.75) / 6) {
+          //p.role = "4:captain";
+        }
+      })
+    );
+    return gameplayRoles;
+  }
+
+  return undefined;
 };
 
 const detectMinionType = (_, coords, jungle) => {

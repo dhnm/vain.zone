@@ -31,7 +31,8 @@ const propTypes = {
   highestKDA: PropTypes.number.isRequired,
   guildTag: PropTypes.string.isRequired,
   browserView: PropTypes.bool.isRequired,
-  roleDetection: PropTypes.bool.isRequired
+  roleDetectionOn: PropTypes.bool.isRequired,
+  gameplayRole: PropTypes.string
 };
 
 export default function ParticipantCard({
@@ -51,7 +52,8 @@ export default function ParticipantCard({
   highestKDA,
   guildTag,
   browserView,
-  roleDetection
+  roleDetectionOn,
+  gameplayRole
 }) {
   const items = participant.items.slice();
   items.splice(0, 2);
@@ -103,7 +105,7 @@ export default function ParticipantCard({
         <Card.Content
           style={{ padding: "1px 3px 3px 2px", color: "hsla(0, 0%, 100%, 1)" }}
         >
-          {roleDetection && (
+          {roleDetectionOn && (
             <svg
               style={{
                 display: "inline-block",
@@ -117,8 +119,8 @@ export default function ParticipantCard({
               <path
                 style={{ fill: "HSLA(178, 2%, 89%, 1.00)" }}
                 d={
-                  participant.role
-                    ? ICONS[participant.role.split(":")[1]]
+                  gameplayRole
+                    ? ICONS[gameplayRole.split(":")[1]]
                     : ICONS.support
                 }
               />
@@ -128,7 +130,7 @@ export default function ParticipantCard({
             src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
             style={{
               borderRadius: "25%",
-              margin: roleDetection
+              margin: roleDetectionOn
                 ? `0 ${{ left: "1px", right: "-15px" }[side]} 0 ${
                     { left: "-15px", right: "1px" }[side]
                   }`
