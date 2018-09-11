@@ -108,47 +108,50 @@ export default function MatchDetailView({
   ]);
   // console.log(draftOrder);
   const roleDetectionOn = TLData.gameplayRoles && true;
-  for (let side in draftOrder) {
-    draftOrder[side].sort((a, b) => {
-      const aRole = TLData.gameplayRoles[side][a.actor];
-      const bRole = TLData.gameplayRoles[side][b.actor];
-      if (aRole === "4:captain" && bRole === "4:captain") {
-        if (a.farm > b.farm) {
+
+  if (roleDetectionOn) {
+    for (let side in draftOrder) {
+      draftOrder[side].sort((a, b) => {
+        const aRole = TLData.gameplayRoles[side][a.actor];
+        const bRole = TLData.gameplayRoles[side][b.actor];
+        if (aRole === "4:captain" && bRole === "4:captain") {
+          if (a.farm > b.farm) {
+            return -1;
+          } else if (a.farm < b.farm) {
+            return 1;
+          }
+          return 0;
+        }
+        if (aRole === "4:captain") {
+          return 1;
+        }
+        if (bRole === "4:captain") {
           return -1;
-        } else if (a.farm < b.farm) {
+        }
+        if (!aRole && !bRole) {
+          if (a.jungleKills > b.jungleKills) {
+            return -1;
+          }
+          if (a.jungleKills < b.jungleKills) {
+            return 1;
+          }
+          return 0;
+        }
+        if (!aRole) {
+          return 1;
+        }
+        if (!bRole) {
+          return -1;
+        }
+        if (aRole < bRole) {
+          return -1;
+        }
+        if (aRole > bRole) {
           return 1;
         }
         return 0;
-      }
-      if (aRole === "4:captain") {
-        return 1;
-      }
-      if (bRole === "4:captain") {
-        return -1;
-      }
-      if (!aRole && !bRole) {
-        if (a.jungleKills > b.jungleKills) {
-          return -1;
-        }
-        if (a.jungleKills < b.jungleKills) {
-          return 1;
-        }
-        return 0;
-      }
-      if (!aRole) {
-        return 1;
-      }
-      if (!bRole) {
-        return -1;
-      }
-      if (aRole < bRole) {
-        return -1;
-      }
-      if (aRole > bRole) {
-        return 1;
-      }
-      return 0;
-    });
+      });
+    }
   }
 
   const KDAs = draftOrder.map(sides =>
@@ -511,7 +514,9 @@ export default function MatchDetailView({
                         browserView={browserView}
                         roleDetectionOn={roleDetectionOn}
                         gameplayRole={
-                          TLData.gameplayRoles[sideIndex][participant.actor]
+                          roleDetectionOn
+                            ? TLData.gameplayRoles[sideIndex][participant.actor]
+                            : undefined
                         }
                       />
                     ))}
