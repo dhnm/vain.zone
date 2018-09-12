@@ -485,17 +485,18 @@ const getRoles = (matchData, creepKills) => {
           if (gameplayRoles[sideIndex][actor] === "3:jungler") {
             const currentRole = actorRolesData["3:jungler"];
             const possibleRole = actorRolesData[role];
-            if (currentRole > possibleRole * 2.5) {
+            if (currentRole > possibleRole * 1.7) {
               continue;
             }
           }
           if (
-            actorRolesData[role] >=
+            actorRolesData[role] >
               Math.max(
                 ...Object.keys(actorRolesData)
                   .filter(e => e !== role)
                   .map(e => actorRolesData[e])
-              ) &&
+              ) +
+                1 &&
             actorRolesData[role] >=
               creepKillMaxValues[sideIndex][role] * (3 / 5)
           ) {
@@ -566,7 +567,7 @@ const getRoles = (matchData, creepKills) => {
 
         if (supportQuantifiers.heroes.indexOf(p.actor) > -1) {
           // console.log("+3", p.actor);
-          supportHeroPoints += 2.25;
+          supportHeroPoints += 2.5;
         } else if (supportQuantifiers.secondaryHerores.indexOf(p.actor) > -1) {
           // console.log("+1", p.actor);
           supportHeroPoints += 1;
@@ -588,8 +589,9 @@ const getRoles = (matchData, creepKills) => {
         //   !gameplayRoles[rosterIndex][p.actor]
         // )
         const referencePoints =
-          4 / 6 * Math.max(p.items.length - 2, 1) +
-          Math.abs(1 - supportHeroPoints);
+          4 / 6 * Math.max(p.items.length - 2, 1) + supportHeroPoints === 1
+            ? 0.25
+            : supportHeroPoints === 0 ? 0.5 : 0;
         if (!gameplayRoles[rosterIndex][p.actor]) {
           if (supportItemPoints >= referencePoints) {
             gameplayRoles[rosterIndex][p.actor] = "4:captain";
