@@ -280,7 +280,7 @@ const loopThroughTelemetry = (telemetryData, matchData) => {
   const is5v5 =
     matchData.rosters[0].participants.length +
       matchData.rosters[1].participants.length ===
-    10;
+      10 && matchData.duration > 540;
   const creatures5v5: ICreatures5v5 = [
     { blackclaw: 0, ghostwing: 0 },
     { blackclaw: 0, ghostwing: 0 }
@@ -291,12 +291,16 @@ const loopThroughTelemetry = (telemetryData, matchData) => {
   const matchTimerStartTime = moment(
     telemetryData.find(e => e.type === "PlayerFirstSpawn").time
   );
-  const first5v5TurretKillTime = is5v5
-    ? moment(
-        telemetryData.find(
-          e => e.type === "KillActor" && e.payload.Killed === "*Turret5v5*"
-        ).time
+  const first5v5TurretKillObject = is5v5
+    ? telemetryData.find(
+        e => e.type === "KillActor" && e.payload.Killed === "*OuterTurret5v5*"
+      ) ||
+      telemetryData.find(
+        e => e.type === "KillActor" && e.payload.Killed === "*Turret5v5*"
       )
+    : undefined;
+  const first5v5TurretKillTime = is5v5
+    ? moment(first5v5TurretKillObject.time)
     : undefined;
 
   const draftOrder = [[], []];
@@ -508,7 +512,8 @@ const getRoles = (matchData, creepKills) => {
 
     matchData.rosters.forEach((side, rosterIndex) =>
       side.participants.forEach(p => {
-        let supportPoints = 0;
+        let supportItemPoints = 0;
+        let supportHeroPoints = 0;
         const supportQuantifiers = {
           heroes: [
             "Yates",
@@ -540,47 +545,59 @@ const getRoles = (matchData, creepKills) => {
             "ScoutTuff",
             "SuperScout 2000",
             "Flare Loader",
-            "Capacitor Plate",
-            "Atlas Pauldron"
+            "Capacitor Plate"
           ],
           secondaryItems: [
+            "Atlas Pauldron",
+            "Pulseweave",
+            "Shiversteel",
+            "Lifespring"
+          ],
+          tertiaryItems: [
+            "Clockwork",
             "Poisoned Shiv",
             "Spellfire",
-            "Clockwork",
             "Aftershock",
-            "Pulseweave",
-            "Stormcrown",
             "Stormguard Banner",
-            "Shiversteel",
-            "Lifespring",
+            "Stormcrown",
             "Tension Bow"
           ]
         };
 
         if (supportQuantifiers.heroes.indexOf(p.actor) > -1) {
           // console.log("+3", p.actor);
-          supportPoints += 2.5;
+          supportHeroPoints += 2.25;
         } else if (supportQuantifiers.secondaryHerores.indexOf(p.actor) > -1) {
           // console.log("+1", p.actor);
-          supportPoints += 1;
+          supportHeroPoints += 1;
         }
 
         p.items.forEach(i => {
           if (supportQuantifiers.items.indexOf(i) > -1) {
             // console.log("+1.5", i);
-            supportPoints += 1.75;
+            supportItemPoints += 1.75;
           } else if (supportQuantifiers.secondaryItems.indexOf(i) > -1) {
             // console.log("+0.5", i);
-            supportPoints += 0.5;
+            supportItemPoints += 0.7;
+          } else if (supportQuantifiers.tertiaryItems.indexOf(i) > -1) {
+            supportItemPoints += 0.35;
           }
         });
-        if (
-          supportPoints >= 4.4 * (p.items.length - 2 + 0.75) / 6 &&
-          !gameplayRoles[rosterIndex][p.actor]
-        ) {
-          gameplayRoles[rosterIndex][p.actor] = "4:captain";
-        } else if (supportPoints >= 8.4 * (p.items.length - 2 + 0.75) / 6) {
-          //p.role = "4:captain";
+        // if (
+        //   supportPoints >= 8 / Math.max(6 * (p.items.length - 2), 1) &&
+        //   !gameplayRoles[rosterIndex][p.actor]
+        // )
+        const referencePoints =
+          4 / 6 * Math.max(p.items.length - 2, 1) +
+          Math.abs(1 - supportHeroPoints);
+        if (!gameplayRoles[rosterIndex][p.actor]) {
+          if (supportItemPoints >= referencePoints) {
+            gameplayRoles[rosterIndex][p.actor] = "4:captain";
+          } else if (supportItemPoints >= referencePoints / 5) {
+            gameplayRoles[rosterIndex][p.actor] = "5:support";
+          } else if (p.items.length === 2) {
+            gameplayRoles[rosterIndex][p.actor] = "5:support";
+          }
         }
       })
     );

@@ -119,9 +119,7 @@ export default function ParticipantCard({
               <path
                 style={{ fill: "HSLA(178, 2%, 89%, 1.00)" }}
                 d={
-                  gameplayRole
-                    ? ICONS[gameplayRole.split(":")[1]]
-                    : ICONS.support
+                  gameplayRole ? ICONS[gameplayRole.split(":")[1]] : ICONS.carry
                 }
               />
             </svg>
