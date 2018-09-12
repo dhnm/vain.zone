@@ -108,7 +108,7 @@ export default function MatchDetailView({
   ]);
   // console.log(draftOrder);
   const roleDetectionOn = TLData.gameplayRoles && true;
-
+  console.log(match.matchID, draftOrder);
   if (roleDetectionOn) {
     for (let side in draftOrder) {
       draftOrder[side].sort((a, b) => {
@@ -130,10 +130,10 @@ export default function MatchDetailView({
         }
         if (!aRole && !bRole) {
           if (a.jungleKills > b.jungleKills) {
-            return -1;
+            return 1;
           }
           if (a.jungleKills < b.jungleKills) {
-            return 1;
+            return -1;
           }
           return 0;
         }
