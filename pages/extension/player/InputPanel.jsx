@@ -26,7 +26,7 @@ export default class InputPanel extends React.Component {
     this.setState({ results: [] });
 
     Router.push(
-      `/extension/player?${
+      `${this.props.browserView ? "" : "/extension"}/player?${
         this.props.browserView ? "browserView=true&" : ""
       }error=false&extension=false&IGN=${this.state.IGNInput}`,
       `${this.props.browserView ? "" : "/extension"}/player/${

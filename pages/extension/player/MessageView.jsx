@@ -51,23 +51,25 @@ export default function MessageLayout({
       </React.Fragment>
     ];
   }
-
+  console.log(browserView);
   return (
     <Segment basic>
-      <Link prefetch href={`/extension/player?browserView=true`} as="/">
-        <img
-          src="/static/img/draft/VAINZONE-logo-darkbg.png"
-          alt="VAIN.ZONE"
-          style={{
-            width: "200px",
-            display: "block",
-            margin: "auto",
-            marginTop: !errorType && browserView ? "10%" : null,
-            marginBottom: "14px",
-            cursor: "pointer"
-          }}
-        />
-      </Link>
+      {browserView && (
+        <Link prefetch href={`/extension/player?browserView=true`} as="/">
+          <img
+            src="/static/img/draft/VAINZONE-logo-darkbg.png"
+            alt="VAIN.ZONE"
+            style={{
+              width: "200px",
+              display: "block",
+              margin: "auto",
+              marginTop: !errorType && browserView ? "10%" : null,
+              marginBottom: "14px",
+              cursor: "pointer"
+            }}
+          />
+        </Link>
+      )}
       <div style={{ maxWidth: "414px", margin: "auto" }}>
         <InputPanel
           appLoading={appLoading}
@@ -91,7 +93,7 @@ export default function MessageLayout({
           </React.Fragment>
         )}
       </div>
-      <News />
+      {browserView && <News />}
     </Segment>
   );
 }

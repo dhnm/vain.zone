@@ -479,7 +479,8 @@ App.getInitialProps = async function getInitialProps({ query }) {
             TLData: null,
             extension: false,
             error: true,
-            errorMessage: data.errorMessage
+            errorMessage: data.errorMessage,
+            browserView: query.browserView
           };
         }
         if (query.matchData) {
@@ -524,7 +525,8 @@ App.getInitialProps = async function getInitialProps({ query }) {
         data: null,
         TLData: null,
         extension: true,
-        error: false
+        error: false,
+        browserView: false
       };
     }
     return {
@@ -532,7 +534,8 @@ App.getInitialProps = async function getInitialProps({ query }) {
       TLData: null,
       extension: false,
       error: true,
-      errorMessage: query.errorMessage
+      errorMessage: query.errorMessage,
+      browserView: query.browserView
     };
   } catch (err) {
     return {
@@ -540,7 +543,8 @@ App.getInitialProps = async function getInitialProps({ query }) {
       TLData: null,
       extension: false,
       error: true,
-      errorMessage: err
+      errorMessage: err,
+      browserView: query.browserView
     };
   }
 };
