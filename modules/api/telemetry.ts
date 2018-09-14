@@ -305,7 +305,7 @@ const loopThroughTelemetry = (telemetryData, matchData) => {
       "private_party_aral_match",
       "blitz_pvp_ranked",
       "private_party_blitz_match"
-    ]
+    ].indexOf(matchData.gameMode)
   ) {
     roleDetection = "brawl";
   }
