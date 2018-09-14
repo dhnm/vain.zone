@@ -107,13 +107,15 @@ export default function MatchDetailView({
     )
   ]);
   // console.log(draftOrder);
-  const roleDetectionOn = TLData.gameplayRoles && true;
-  console.log(match.matchID, draftOrder);
-  if (roleDetectionOn) {
+
+  if (
+    TLData.gameplayRoles.mode === "5v5" ||
+    TLData.gameplayRoles.mode === "3v3"
+  ) {
     for (let side in draftOrder) {
       draftOrder[side].sort((a, b) => {
-        const aRole = TLData.gameplayRoles[side][a.actor];
-        const bRole = TLData.gameplayRoles[side][b.actor];
+        const aRole = TLData.gameplayRoles.roles[side][a.actor];
+        const bRole = TLData.gameplayRoles.roles[side][b.actor];
         if (aRole === "4:captain" && bRole === "4:captain") {
           if (a.farm > b.farm) {
             return -1;
@@ -179,7 +181,8 @@ export default function MatchDetailView({
         margin: "auto"
       }}
     >
-      {roleDetectionOn && (
+      {(TLData.gameplayRoles.mode === "5v5" ||
+        TLData.gameplayRoles.mode === "3v3") && (
         <Message color="blue" icon>
           <Icon name="warning circle" />
           <Message.Content>
@@ -512,10 +515,12 @@ export default function MatchDetailView({
                             .guildTag
                         }
                         browserView={browserView}
-                        roleDetectionOn={roleDetectionOn}
+                        roleDetectionOn={TLData.gameplayRoles.mode}
                         gameplayRole={
-                          roleDetectionOn
-                            ? TLData.gameplayRoles[sideIndex][participant.actor]
+                          TLData.gameplayRoles.mode
+                            ? TLData.gameplayRoles.roles[sideIndex][
+                                participant.actor
+                              ]
                             : undefined
                         }
                       />

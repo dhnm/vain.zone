@@ -38,6 +38,179 @@ export const gameModeDict = {
   private_party_blitz_rounds_match: ["Private Onslaught", true, "blitz"]
 };
 
+export const talentsDictionary = {
+  Lance: {
+    "*Talent_Lance_Rollout*": "TalentB",
+    "*Talent_Lance_ReinforcedWalls*": "TalentA",
+    "*Talent_Lance_Striker*": "TalentC"
+  },
+  Catherine: {
+    "*Talent_Catherine_AdvancingGuard*": "TalentA",
+    "*Talent_Catherine_Shockwave*": "TalentC",
+    "*Talent_Catherine_QuickPursuit*": "TalentB"
+  },
+  Baron: {
+    "*Talent_Baron_EndlessMortars*": "TalentB",
+    "*Talent_Baron_TrionCannon*": "TalentC",
+    "*Talent_Baron_TurboJets*": "TalentA"
+  },
+  Reza: {
+    "*Talent_Reza_BurningBarrier*": "TalentA",
+    "*Talent_Reza_Firemaker*": "TalentB",
+    "*Talent_Reza_NetherRage*": "TalentC"
+  },
+  Vox: {
+    "*Talent_Vox_DeepDash*": "TalentA",
+    "*Talent_Vox_SoundBarrier*": "TalentB",
+    "*Talent_Vox_EchoChamber*": "TalentC"
+  },
+  Flicker: {
+    "*Talent_Flicker_FairyHealing*": "TalentC",
+    "*Talent_Flicker_SwarmingLight*": "TalentA",
+    "*Talent_Flicker_BindingDust*": "TalentB"
+  },
+  SAW: {
+    "*Talent_SAW_RoadRage*": "TalentC",
+    "*Talent_SAW_SpeedySpinUp*": "TalentB",
+    "*Talent_SAW_PiercingBullets*": "TalentA"
+  },
+  Koshka: {
+    "*Talent_Koshka_Frenzied*": "TalentA",
+    "*Talent_Koshka_SlashyPlayTime*": "TalentC",
+    "*Talent_Koshka_TwirlyLife*": "TalentB"
+  },
+  Baptiste: {
+    "*Talent_Baptiste_ArmyOfSouls*": "TalentC",
+    "*Talent_Baptiste_TheReaper*": "TalentB",
+    "*Talent_Baptiste_BadBadMojo*": "TalentA"
+  },
+  Reim: {
+    "*Talent_Reim_Revenant*": "TalentC",
+    "*Talent_Reim_LongWinter*": "TalentB",
+    "*Talent_Reim_CreepingCold*": "TalentA"
+  },
+  Lyra: {
+    "*Talent_Lyra_GythianWard*": "TalentC",
+    "*Talent_Lyra_TwinMissiles*": "TalentA",
+    "*Talent_Lyra_MobileBulwark*": "TalentB"
+  },
+  Joule: {
+    "*Talent_Joule_ThunderingSteps*": "TalentC",
+    "*Talent_Joule_RocketLeapfrog*": "TalentA",
+    "*Talent_Joule_BackupButton*": "TalentB"
+  },
+  Grace: {
+    "*Talent_Grace_UnitedFront*": "TalentC",
+    "*Talent_Grace_SealOfRetribution*": "TalentA",
+    "*Talent_Grace_DoubleBenediction*": "TalentB"
+  },
+  Krul: {
+    "*Talent_Krul_HealingSmite*": "TalentB",
+    "*Talent_Krul_CursedBlade*": "TalentC",
+    "*Talent_Krul_DeadMansBarrier*": "TalentA"
+  },
+  Grumpjaw: {
+    "*Talent_Grumpjaw_Reconstitution*": "TalentB",
+    "*Talent_Grumpjaw_Rampage*": "TalentA",
+    "*Talent_Grumpjaw_BigAppetite*": "TalentC"
+  },
+  Ozo: {
+    "*Talent_Ozo_SecondWind*": "TalentA",
+    "*Talent_Ozo_RingLeader*": "TalentB",
+    "*Talent_Ozo_Bangarangarang*": "TalentC"
+  },
+  Phinn: {
+    "*Talent_Phinn_Phaster*": "TalentB",
+    "*Talent_Phinn_RaidBoss*": "TalentC",
+    "*Talent_Phinn_FriendlyCavil*": "TalentA"
+  },
+  Skye: {
+    "*Talent_Skye_PiercingBarrage*": "TalentC",
+    "*Talent_Skye_RainingDeath*": "TalentB",
+    "*Talent_Skye_EnhancedThrusters*": "TalentA"
+  },
+  Gwen: {
+    "*Talent_Gwen_SpeedLoader*": "TalentA",
+    "*Talent_Gwen_Skedaddling*": "TalentB",
+    "*Talent_Gwen_ThreeOfAKind*": "TalentC"
+  },
+  Ringo: {
+    "*Talent_Ringo_SpikedBrew*": "TalentC",
+    "*Talent_Ringo_LongShot*": "TalentA",
+    "*Talent_Ringo_BulletSplit*": "TalentB"
+  },
+  Fortress: {
+    "*Talent_Fortress_CriticalWounds*": "TalentB",
+    "*Talent_Fortress_FlankAttack*": "TalentC",
+    "*Talent_Fortress_Longtooth*": "TalentA"
+  },
+  Petal: {
+    "*Talent_Petal_ExplosionForce*": "TalentC",
+    "*Talent_Petal_KaboomSeeds*": "TalentB",
+    "*Talent_Petal_Bouncer*": "TalentA"
+  },
+  Taka: {
+    "*Talent_Taka_RangedKaiten*": "TalentA",
+    "*Talent_Taka_XXXRetsu*": "TalentC",
+    "*Talent_Taka_ProtectiveDecoy*": "TalentB"
+  },
+  Rona: {
+    "*Talent_Rona_FastWhirlwind*": "TalentC",
+    "*Talent_Rona_MOARRage*": "TalentA",
+    "*Talent_Rona_HeroicBrawler*": "TalentB"
+  },
+  Celeste: {
+    "*Talent_Celeste_CoreLeafClover*": "TalentB",
+    "*Talent_Celeste_GalaxyCollapse*": "TalentC",
+    "*Talent_Celeste_YoungStar*": "TalentA"
+  },
+  Alpha: {
+    "*Talent_Alpha_PrimeTime*": "TalentA",
+    "*Talent_Alpha_Acceleration*": "TalentC",
+    "*Talent_Alpha_CoreOverclock*": "TalentB"
+  },
+  Ardan: {
+    "*Talent_Ardan_KnockoutPunch*": "TalentC",
+    "*Talent_Ardan_Vanguardian*": "TalentA",
+    "*Talent_Ardan_HeavyHitter*": "TalentB"
+  },
+  Samuel: {
+    "*Talent_Samuel_PowerSiphon*": "TalentA",
+    "*Talent_Samuel_UnwakingNightmare*": "TalentB",
+    "*Talent_Samuel_ViscousDarkness*": "TalentC"
+  },
+  Blackfeather: {
+    "*Talent_Blackfeather_HummingbirdHeart*": "TalentA",
+    "*Talent_Blackfeather_Elusiveness*": "TalentC",
+    "*Talent_Blackfeather_PointGuard*": "TalentB"
+  },
+  Skaarf: {
+    "*Talent_Skaarf_FlashFire*": "TalentB",
+    "*Talent_Skaarf_Splitfire*": "TalentA",
+    "*Talent_Skaarf_FlamingSludge*": "TalentC"
+  },
+  Kestrel: {
+    "*Talent_Kestrel_GlimmerVolley*": "TalentA",
+    "*Talent_Kestrel_ActiveReload*": "TalentB",
+    "*Talent_Kestrel_PiercingShot*": "TalentC"
+  },
+  Glaive: {
+    "*Talent_Glaive_ViolentAfterburn*": "TalentA",
+    "*Talent_Glaive_TwistedPursuit*": "TalentC",
+    "*Talent_Glaive_StunningBloodsong*": "TalentB"
+  },
+  Adagio: {
+    "*Talent_Adagio_GiftOfLife*": "TalentA",
+    "*Talent_Adagio_AvengingWrath*": "TalentB",
+    "*Talent_Adagio_HealingVerse*": "TalentC"
+  },
+  Idris: {
+    "*Talent_Idris_ChaChaChakram*": "TalentB",
+    "*Talent_Idris_PathOfTheSeeker*": "TalentA",
+    "*Talent_Idris_ShimmerHeal*": "TalentC"
+  }
+};
+
 export const apiKey =
   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJhNWUxMDJkMC0yOTI1LTAxMzYtMGYyZS0wYTU4NjQ2MGI5MDciLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTI0NDg5MDQxLCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJ2YWluLXpvbmUiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0Ijo1MH0.NROqQ2-U11JTN4lDCY81XmFIcRRucRfXco8VKYFzuxI";
 export const testingApiKey =

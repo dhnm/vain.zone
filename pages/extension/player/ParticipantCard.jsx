@@ -105,7 +105,7 @@ export default function ParticipantCard({
         <Card.Content
           style={{ padding: "1px 3px 3px 2px", color: "hsla(0, 0%, 100%, 1)" }}
         >
-          {roleDetectionOn && (
+          {(roleDetectionOn === "5v5" || roleDetectionOn === "3v3") && (
             <svg
               style={{
                 display: "inline-block",
@@ -124,6 +124,41 @@ export default function ParticipantCard({
               />
             </svg>
           )}
+          {roleDetectionOn === "brawl" &&
+            gameplayRole.rarity !== "NoTalent" && (
+              <React.Fragment>
+                <Image
+                  src={`/static/img/talents/c/${participant.actor}_${
+                    gameplayRole.rarity
+                  }.png`}
+                  style={{
+                    filter: afkFilter,
+                    margin: "0",
+                    marginRight: side === "left" ? "5px" : null,
+                    marginLeft: side === "right" ? "5px" : null,
+                    boxSizing: "border-box",
+                    height: "29px",
+                    zIndex: 100,
+                    borderRadius: "50%"
+                  }}
+                  floated={side}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    right: side === "right" ? "2px" : null,
+                    zIndex: 200,
+                    height: "29px",
+                    display: "flex",
+                    alignItems: "flex-end",
+                    fontSize: "0.7rem",
+                    lineHeight: "0.75rem"
+                  }}
+                >
+                  {gameplayRole.level}
+                </div>
+              </React.Fragment>
+            )}
           <Image
             src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
             style={{

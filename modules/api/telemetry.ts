@@ -6,7 +6,11 @@ import axios, { AxiosResponse } from "axios";
 import { IMatch } from "models/Match";
 import * as moment from "moment";
 
-import { gameModeDict, apiKey } from "./../functions/constants";
+import {
+  gameModeDict,
+  apiKey,
+  talentsDictionary
+} from "./../functions/constants";
 
 export default router;
 
@@ -295,6 +299,15 @@ const loopThroughTelemetry = (telemetryData, matchData) => {
     matchData.duration > 240
   ) {
     roleDetection = "3v3";
+  } else if (
+    [
+      "casual_aral",
+      "private_party_aral_match",
+      "blitz_pvp_ranked",
+      "private_party_blitz_match"
+    ]
+  ) {
+    roleDetection = "brawl";
   }
 
   const creatures5v5: ICreatures5v5 = [
@@ -411,6 +424,19 @@ const loopThroughTelemetry = (telemetryData, matchData) => {
           reference[actorName][minionType] += 1;
         }
       }
+    } else if (roleDetection === "brawl" && currVa.type === "TalentEquipped") {
+      const heroName = currVa.payload.Actor.slice(1, -1);
+      creepKills[{ Left: 0, Right: 1 }[currVa.payload.Team]][
+        heroName
+      ] = talentsDictionary[heroName]
+        ? {
+            rarity: talentsDictionary[heroName][currVa.payload.Talent],
+            level: currVa.payload.Level
+          }
+        : {
+            rarity: currVa.payload.Talent.slice(1, -1).split("_")[2],
+            level: currVa.payload.Level
+          };
     }
   }
 
@@ -433,7 +459,10 @@ const loopThroughTelemetry = (telemetryData, matchData) => {
     0
   );
 
-  const gameplayRoles = getRoles(roleDetection, matchData, creepKills);
+  const gameplayRoles = {
+    mode: roleDetection,
+    roles: getRoles(roleDetection, matchData, creepKills)
+  };
 
   return {
     damagesData,
@@ -447,6 +476,9 @@ const loopThroughTelemetry = (telemetryData, matchData) => {
 
 const getRoles = (roleDetection, matchData, creepKills) => {
   console.log(creepKills);
+  if (roleDetection === "brawl") {
+    return creepKills;
+  }
 
   if (roleDetection === "3v3") {
     const creepKillMaxValues = [
