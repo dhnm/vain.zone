@@ -107,7 +107,7 @@ export default function MatchDetailView({
     )
   ]);
   // console.log(draftOrder);
-  console.log(TLData.gameplayRoles);
+  // console.log(TLData.gameplayRoles);
 
   if (
     TLData.gameplayRoles.mode === "5v5" ||

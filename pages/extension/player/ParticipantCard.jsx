@@ -55,6 +55,7 @@ export default function ParticipantCard({
   roleDetectionOn,
   gameplayRole
 }) {
+  console.log(roleDetectionOn, gameplayRole);
   const items = participant.items.slice();
   items.splice(0, 2);
   for (let i = 0; i < 6; i += 1) {
@@ -80,102 +81,93 @@ export default function ParticipantCard({
   }
 
   return (
-    <Link
-      prefetch
-      href={`/extension/player?${
-        browserView ? "browserView=true&" : ""
-      }error=false&extension=false&IGN=${participant.player.name}`}
-      as={`${browserView ? "" : "/extension"}/player/${
-        participant.player.name
-      }`}
+    <Card
+      // fluid
+      style={{
+        color: "initial",
+        margin: "2px 1px 2px 0",
+        background: cardBg,
+        boxShadow: "none"
+      }}
     >
-      <Card
-        as="a"
-        // fluid
-        style={{
-          color: "initial",
-          margin: "2px 1px 2px 0",
-          background: cardBg,
-          boxShadow: "none"
-        }}
+      <Dimmer active={appLoading}>
+        <Loader />
+      </Dimmer>
+      <Card.Content
+        style={{ padding: "1px 3px 3px 2px", color: "hsla(0, 0%, 100%, 1)" }}
       >
-        <Dimmer active={appLoading}>
-          <Loader />
-        </Dimmer>
-        <Card.Content
-          style={{ padding: "1px 3px 3px 2px", color: "hsla(0, 0%, 100%, 1)" }}
-        >
-          {(roleDetectionOn === "5v5" || roleDetectionOn === "3v3") && (
-            <svg
-              style={{
-                display: "inline-block",
-                padding: "2px 0",
-                float: side
-              }}
-              width="29px"
-              height="29px"
-              viewBox="0 0 1024 1024"
-            >
-              <path
-                style={{ fill: "HSLA(178, 2%, 89%, 1.00)" }}
-                d={
-                  gameplayRole ? ICONS[gameplayRole.split(":")[1]] : ICONS.carry
-                }
-              />
-            </svg>
-          )}
-          {roleDetectionOn === "brawl" &&
-            gameplayRole.rarity !== "NoTalent" && (
-              <React.Fragment>
-                <Image
-                  src={`/static/img/talents/c/${participant.actor}_${
-                    gameplayRole.rarity
-                  }.png`}
-                  style={{
-                    filter: afkFilter,
-                    margin: "0",
-                    marginRight: side === "left" ? "5px" : null,
-                    marginLeft: side === "right" ? "5px" : null,
-                    boxSizing: "border-box",
-                    height: "29px",
-                    zIndex: 100,
-                    borderRadius: "50%"
-                  }}
-                  floated={side}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    right: side === "right" ? "2px" : null,
-                    zIndex: 200,
-                    height: "29px",
-                    display: "flex",
-                    alignItems: "flex-end",
-                    fontSize: "0.7rem",
-                    lineHeight: "0.75rem"
-                  }}
-                >
-                  {gameplayRole.level}
-                </div>
-              </React.Fragment>
-            )}
-          <Image
-            src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
+        {(roleDetectionOn === "5v5" || roleDetectionOn === "3v3") && (
+          <svg
             style={{
-              borderRadius: "25%",
-              margin: roleDetectionOn
-                ? `0 ${{ left: "1px", right: "-15px" }[side]} 0 ${
-                    { left: "-15px", right: "1px" }[side]
-                  }`
-                : "0 2px",
-              filter: afkFilter,
-              border: "1px solid hsla(0, 0%, 100%, 0.25)",
-              boxSizing: "border-box",
-              height: "29px"
+              display: "inline-block",
+              padding: "2px 0",
+              float: side
             }}
-            floated={side}
-          />
-          {/*<div
+            width="29px"
+            height="29px"
+            viewBox="0 0 1024 1024"
+          >
+            <path
+              style={{ fill: "HSLA(178, 2%, 89%, 1.00)" }}
+              d={gameplayRole ? ICONS[gameplayRole.split(":")[1]] : ICONS.carry}
+            />
+          </svg>
+        )}
+        {roleDetectionOn === "brawl" && (
+          <React.Fragment>
+            <Image
+              src={
+                gameplayRole && gameplayRole.rarity
+                  ? `/static/img/talents/c/${participant.actor}_${
+                      gameplayRole.rarity
+                    }.png`
+                  : "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+              }
+              style={{
+                filter: afkFilter,
+                margin: "0",
+                marginRight: side === "left" ? "5px" : null,
+                marginLeft: side === "right" ? "5px" : null,
+                boxSizing: "border-box",
+                height: "29px",
+                zIndex: 100,
+                borderRadius: "50%"
+              }}
+              floated={side}
+            />
+            <div
+              style={{
+                position: "absolute",
+                right: side === "right" ? "2px" : null,
+                zIndex: 200,
+                height: "29px",
+                display: "flex",
+                alignItems: "flex-end",
+                fontSize: "0.7rem",
+                lineHeight: "0.75rem"
+              }}
+            >
+              {gameplayRole && gameplayRole.level}
+            </div>
+          </React.Fragment>
+        )}
+        <Image
+          src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
+          style={{
+            borderRadius: "25%",
+            margin: roleDetectionOn
+              ? `0 ${{ left: "1px", right: "-15px" }[side]} 0 ${
+                  { left: "-15px", right: "1px" }[side]
+                }`
+              : "0 2px",
+            filter: afkFilter,
+            border: "1px solid hsla(0, 0%, 100%, 0.25)",
+            boxSizing: "border-box",
+            height: "29px"
+          }}
+          floated={side}
+        />
+        {/*<div
             style={{
               position: "absolute",
               [`${{ left: "right", right: "left" }[side]}`]: {
@@ -192,13 +184,22 @@ export default function ParticipantCard({
           >
             {Math.floor(processedSkillTier.value)}
           </div>*/}
-          <Image
-            src={`/static/img/rank/c/${processedSkillTier.number}${
-              processedSkillTier.color
-            }.png`}
-            style={{ margin: "0 -6px", padding: "-5px", height: "31px" }}
-            floated={{ left: "right", right: "left" }[side]}
-          />
+        <Image
+          src={`/static/img/rank/c/${processedSkillTier.number}${
+            processedSkillTier.color
+          }.png`}
+          style={{ margin: "0 -6px", padding: "-5px", height: "31px" }}
+          floated={{ left: "right", right: "left" }[side]}
+        />
+        <Link
+          prefetch
+          href={`/extension/player?${
+            browserView ? "browserView=true&" : ""
+          }error=false&extension=false&IGN=${participant.player.name}`}
+          as={`${browserView ? "" : "/extension"}/player/${
+            participant.player.name
+          }`}
+        >
           <strong
             style={{
               overflow: "hidden",
@@ -211,97 +212,98 @@ export default function ParticipantCard({
               marginBottom: "-6px"
             }}
           >
-            {participant.player.name}
+            <a>{participant.player.name}</a>
           </strong>
-          {KDA === highestKDA && (
-            <React.Fragment>
-              <Label
-                color="teal"
-                style={{
-                  fontSize: "0.72rem",
-                  color: "white",
-                  fontWeight: "normal",
-                  padding: "2px 2px",
-                  marginLeft: 0,
-                  marginRight: 0
-                }}
-              >
-                MVP
-              </Label>&nbsp;
-            </React.Fragment>
-          )}
-          {guildTag ? (
+        </Link>
+        {KDA === highestKDA && (
+          <React.Fragment>
             <Label
+              color="teal"
               style={{
                 fontSize: "0.72rem",
                 color: "white",
                 fontWeight: "normal",
                 padding: "2px 2px",
-                marginLeft: "-1px",
-                marginRight: "-1px"
+                marginLeft: 0,
+                marginRight: 0
               }}
             >
-              {guildTag}
-            </Label>
-          ) : (
-            <React.Fragment>&nbsp;</React.Fragment>
-          )}
-          <div
+              MVP
+            </Label>&nbsp;
+          </React.Fragment>
+        )}
+        {guildTag ? (
+          <Label
             style={{
-              fontSize: "0.8rem",
-              display: "flex",
-              justifyContent: "space-between",
-              margin: "0 2px",
-              marginTop: "0px",
-              lineHeight: "0.85rem"
+              fontSize: "0.72rem",
+              color: "white",
+              fontWeight: "normal",
+              padding: "2px 2px",
+              marginLeft: "-1px",
+              marginRight: "-1px"
             }}
           >
-            <span>
-              <strong>
-                {participant.kills}/{participant.deaths}/{participant.assists}
-              </strong>
-            </span>
-            <span>
-              <VZIcon icon={ICONS.coin} color="white" size={8} />
-              {(participant.gold / 1000).toFixed(1)}k
-            </span>
-            <span>
-              <VZIcon icon={ICONS.creepscore} color="white" size={8} />
-              {participant.farm.toFixed(0)}
-            </span>
-          </div>
-          <Grid style={{ margin: 0, marginBottom: "0px" }} columns={6}>
-            <Grid.Row style={{ padding: 0 }}>
-              {items.map((item, index) => (
-                <Grid.Column
-                  key={index}
+            {guildTag}
+          </Label>
+        ) : (
+          <React.Fragment>&nbsp;</React.Fragment>
+        )}
+        <div
+          style={{
+            fontSize: "0.8rem",
+            display: "flex",
+            justifyContent: "space-between",
+            margin: "0 2px",
+            marginTop: "0px",
+            lineHeight: "0.85rem"
+          }}
+        >
+          <span>
+            <strong>
+              {participant.kills}/{participant.deaths}/{participant.assists}
+            </strong>
+          </span>
+          <span>
+            <VZIcon icon={ICONS.coin} color="white" size={8} />
+            {(participant.gold / 1000).toFixed(1)}k
+          </span>
+          <span>
+            <VZIcon icon={ICONS.creepscore} color="white" size={8} />
+            {participant.farm.toFixed(0)}
+          </span>
+        </div>
+        <Grid style={{ margin: 0, marginBottom: "0px" }} columns={6}>
+          <Grid.Row style={{ padding: 0 }}>
+            {items.map((item, index) => (
+              <Grid.Column
+                key={index}
+                style={{
+                  padding: 0,
+                  textAlign: "center"
+                }}
+              >
+                <Image
+                  fluid
+                  src={`/static/img/items/c/${item
+                    .replace(/ /g, "-")
+                    .toLowerCase()}.png`}
                   style={{
-                    padding: 0,
-                    textAlign: "center"
+                    maxWidth: "3.5rem",
+                    margin: "0",
+                    padding: "0 1.5px"
                   }}
-                >
-                  <Image
-                    fluid
-                    src={`/static/img/items/c/${item
-                      .replace(/ /g, "-")
-                      .toLowerCase()}.png`}
-                    style={{
-                      maxWidth: "3.5rem",
-                      margin: "0",
-                      padding: "0 1.5px"
-                    }}
-                  />
-                </Grid.Column>
-              ))}
-            </Grid.Row>
-          </Grid>
-          <div
-            style={{
-              marginTop: "2px",
-              marginBottom: "-2px"
-            }}
-          >
-            {/* <Progress
+                />
+              </Grid.Column>
+            ))}
+          </Grid.Row>
+        </Grid>
+        <div
+          style={{
+            marginTop: "2px",
+            marginBottom: "-2px"
+          }}
+        >
+          {/* <Progress
               value={participant.gold}
               total={maxParticipantValues.maxGold}
               size="small"
@@ -327,75 +329,74 @@ export default function ParticipantCard({
                 {(participant.farm / (matchDuration / 60)).toFixed(2)}
               </span>
             </div>*/}
-            <Progress
-              value={damage || 0}
-              total={highestDamage || 0}
-              size="small"
-              color="red"
-              style={{ height: "10px", overflow: "hidden" }}
-            />
-            <div className="progressLabelWrapper">
-              <span className="progressLabel">Dmg to Heroes</span>{" "}
-              <span className="progressLabelValue">
-                {damage ? damage.toFixed(0) : 0}
-              </span>
-            </div>
-            <Progress
-              value={towersDamage || 0}
-              total={highestTowersDamage || 0}
-              size="small"
-              color="orange"
-              style={{ height: "10px", overflow: "hidden" }}
-            />
-            <div className="progressLabelWrapper">
-              <span className="progressLabel">Dmg to Structures</span>{" "}
-              <span className="progressLabelValue">
-                {towersDamage ? towersDamage.toFixed(0) : 0}
-              </span>
-            </div>
+          <Progress
+            value={damage || 0}
+            total={highestDamage || 0}
+            size="small"
+            color="red"
+            style={{ height: "10px", overflow: "hidden" }}
+          />
+          <div className="progressLabelWrapper">
+            <span className="progressLabel">Dmg to Heroes</span>{" "}
+            <span className="progressLabelValue">
+              {damage ? damage.toFixed(0) : 0}
+            </span>
           </div>
-        </Card.Content>
-        <style jsx global>
-          {`
-            .ui.progress {
-              margin: 0 0 2px 0 !important;
-              position: relative;
-              z-index: 0;
-            }
-            .ui.progress .bar {
-              min-width: 0;
-            }
-          `}
-        </style>
-        <style jsx>
-          {`
-            .progressLabelWrapper {
-              font-size: 0.75rem;
-              font-weight: bold;
-              position: absolute;
-              width: 100%;
-              margin-top: -17.3px;
-              z-index: 1;
-              clear: both;
-            }
+          <Progress
+            value={towersDamage || 0}
+            total={highestTowersDamage || 0}
+            size="small"
+            color="orange"
+            style={{ height: "10px", overflow: "hidden" }}
+          />
+          <div className="progressLabelWrapper">
+            <span className="progressLabel">Dmg to Structures</span>{" "}
+            <span className="progressLabelValue">
+              {towersDamage ? towersDamage.toFixed(0) : 0}
+            </span>
+          </div>
+        </div>
+      </Card.Content>
+      <style jsx global>
+        {`
+          .ui.progress {
+            margin: 0 0 2px 0 !important;
+            position: relative;
+            z-index: 0;
+          }
+          .ui.progress .bar {
+            min-width: 0;
+          }
+        `}
+      </style>
+      <style jsx>
+        {`
+          .progressLabelWrapper {
+            font-size: 0.75rem;
+            font-weight: bold;
+            position: absolute;
+            width: 100%;
+            margin-top: -17.3px;
+            z-index: 1;
+            clear: both;
+          }
 
-            .progressLabel {
-              display: inline-block;
-              vertical-align: top;
-              margin-left: 1px;
-              float: left;
-            }
+          .progressLabel {
+            display: inline-block;
+            vertical-align: top;
+            margin-left: 1px;
+            float: left;
+          }
 
-            .progressLabelValue {
-              display: inline-block;
-              vertical-align: top;
-              float: right;
-              margin-right: 10px;
-            }
-          `}
-        </style>
-      </Card>
-    </Link>
+          .progressLabelValue {
+            display: inline-block;
+            vertical-align: top;
+            float: right;
+            margin-right: 10px;
+          }
+        `}
+      </style>
+    </Card>
   );
 }
 

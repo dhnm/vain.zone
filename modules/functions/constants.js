@@ -11,7 +11,7 @@
 // 3V3C 2 W250 1BOOST
 
 export const gameModeDict = {
-  // human readable mode name, private, rank points showed
+  // human readable mode name, private, rank points showed, fame
   "5v5_pvp_ranked": [
     "5v5 Ranked",
     false,
