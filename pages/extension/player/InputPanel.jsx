@@ -66,9 +66,23 @@ export default class InputPanel extends React.Component {
                 const favorites = window.localStorage.getItem("favorites");
 
                 if (favorites) {
-                  const sortedFavorites = JSON.parse(favorites).sort(
-                    (a, b) => b.count - a.count
-                  );
+                  const sortedFavorites = JSON.parse(favorites)
+                    .sort((a, b) => b.count - a.count)
+                    .slice(0, 100);
+
+                  if (sortedFavorites[0].count > 20) {
+                    sortedFavorites.forEach((fav, index, arr) => {
+                      arr[index] = {
+                        name: fav.name,
+                        count: Math.floor(fav.count / 2)
+                      };
+                    });
+
+                    window.localStorage.setItem(
+                      "favorites",
+                      JSON.stringify(sortedFavorites)
+                    );
+                  }
 
                   if (this.state.IGNInput) {
                     this.setState({

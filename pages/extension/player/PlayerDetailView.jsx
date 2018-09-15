@@ -18,11 +18,11 @@ export default function PlayerDetailView({
   browserView
 }) {
   let experienceHours =
-    (player.played_casual_5v5 * 22 +
+    (player.played_casual_5v5 * 25 +
       player.played_aral * 10 +
       player.played_blitz * 5 +
       player.played_casual * 18 +
-      player.played_ranked * 22) /
+      player.played_ranked * 20) /
     60;
   if (player.patchVersion >= "3.2") {
     experienceHours += player.played_ranked_5v5 * 28 / 60;

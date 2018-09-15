@@ -187,8 +187,8 @@ export default function MatchDetailView({
         <Message color="blue" icon>
           <Icon name="warning circle" />
           <Message.Content>
-            Roles (carry, jungle, support, etc.) are in alpha. Please report to
-            us if you see something wrong.{" "}
+            Advanced Role Detection (carry/jungle/support/etc.) is in alpha.
+            Please report to us if you see something wrong.{" "}
             <a
               target="_blank"
               href="https://discord.gg/wDYKFaS"
@@ -732,6 +732,19 @@ export default function MatchDetailView({
             </div>
           </Grid.Column>
         </Grid>
+      </Segment>
+      <Segment
+        style={{
+          marginTop: "15px"
+        }}
+      >
+        <Label attached="top">Andromeda Extremely Serious Awards</Label>
+        <div>
+          <p style={{ textAlign: "center", fontStyle: "italic" }}>
+            'Stats you won't see on stream...'
+          </p>
+          <p style={{ textAlign: "center" }}>Announcement Soon</p>
+        </div>
       </Segment>
       <Segment
         style={{

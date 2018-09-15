@@ -600,7 +600,23 @@ export default class MainView extends React.Component {
                                             fontWeight: "bold"
                                           }}
                                         >
-                                          {p._id}
+                                          <Link
+                                            prefetch
+                                            href={`/extension/player?${
+                                              this.props.browserView
+                                                ? "browserView=true&"
+                                                : ""
+                                            }error=false&extension=false&IGN=${
+                                              p._id
+                                            }`}
+                                            as={`${
+                                              this.props.browserView
+                                                ? ""
+                                                : "/extension"
+                                            }/player/${p._id}`}
+                                          >
+                                            {p._id}
+                                          </Link>
                                         </td>
                                         <td>
                                           {Math.round(
@@ -658,7 +674,23 @@ export default class MainView extends React.Component {
                                             fontWeight: "bold"
                                           }}
                                         >
-                                          {p._id}
+                                          <Link
+                                            prefetch
+                                            href={`/extension/player?${
+                                              this.props.browserView
+                                                ? "browserView=true&"
+                                                : ""
+                                            }error=false&extension=false&IGN=${
+                                              p._id
+                                            }`}
+                                            as={`${
+                                              this.props.browserView
+                                                ? ""
+                                                : "/extension"
+                                            }/player/${p._id}`}
+                                          >
+                                            {p._id}
+                                          </Link>
                                         </td>
                                         <td
                                           style={{
