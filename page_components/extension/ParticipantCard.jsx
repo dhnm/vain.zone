@@ -372,7 +372,7 @@ export default function ParticipantCard({
         {`
           .progressLabelWrapper {
             font-size: 0.75rem;
-            font-weight: bold;
+            font-weight: 600;
             position: absolute;
             width: 100%;
             margin-top: -17.3px;

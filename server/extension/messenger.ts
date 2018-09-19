@@ -132,13 +132,13 @@ const getPlayerInfo = (params: {
     })
     .catch(err => {
       console.error("messenger err", err);
-      if (err.error && typeof err.error === "string") {
-        if (err.error.indexOf("404") > -1) {
+      if (err && typeof err.message === "string") {
+        if (err.message.indexOf("404") > -1) {
           sendSystemMessage(
             params.userID,
             "Player not found :(\n\n- Please check the spelling and capitalisation of the nick.\n\n- Maybe the player has changed their nick?\n"
           );
-        } else if (err.error.indexOf("veryold") > -1) {
+        } else if (err.message.indexOf("veryold") > -1) {
           sendSystemMessage(
             params.userID,
             "Long time no see :(\n\nThe player hasn't played Vainglory for a long time. We don't have data for them.\n"
@@ -557,7 +557,6 @@ const setIGN = (instructions: string, userID: string) => {
           .catch(err => Promise.reject(err));
       } else {
         const newSaveData = instructions.split(",,,");
-        console.log(newSaveData, instructions);
         if (newSaveData.length !== 3) {
           return Promise.reject(new Error("Save data has suspicious length."));
         }
