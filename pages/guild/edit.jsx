@@ -3,7 +3,7 @@ import axios from "axios";
 import { Message, Form, Button, Icon } from "semantic-ui-react";
 import Link from "next/link";
 
-import Head from "./components/Head";
+import Head from "./../../page_components/guild/Head";
 
 class GuildEdit extends React.Component {
   constructor(props) {

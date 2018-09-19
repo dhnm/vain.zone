@@ -1,3 +1,6 @@
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
+
 import Document, { Head, Main, NextScript } from "next/document";
 
 export default class MyDocument extends Document {
@@ -7,7 +10,7 @@ export default class MyDocument extends Document {
         <Head>
           <script
             async
-            src="https://www.googletagmanager.com/gtag/js?id=UA-125429066-1"
+            src={`https://www.googletagmanager.com/gtag/js?id=${publicRuntimeConfig.googleTag}`}
           />
           <script
             dangerouslySetInnerHTML={{
@@ -16,7 +19,7 @@ export default class MyDocument extends Document {
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
 
-              gtag('config', 'UA-125429066-1');
+              gtag('config', '${publicRuntimeConfig.googleTag}');
               `
             }}
           />
@@ -28,6 +31,10 @@ export default class MyDocument extends Document {
           />
           <script src="https://cdn.polyfill.io/v2/polyfill.min.js" />
           <link rel="icon" type="image/png" href="/static/img/draft/logo.png" />
+          <link
+        rel="stylesheet"
+        href="/static/fonts/stylesheet.css"
+      />
         </Head>
         <body style={{ margin: 0 }}>
           <Main />

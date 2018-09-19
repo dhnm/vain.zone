@@ -4,7 +4,7 @@ import { Table, Grid, Button, Icon } from "semantic-ui-react";
 import Link from "next/link";
 import * as moment from "moment";
 
-import Head from "./components/Head";
+import Head from "./../../page_components/guild/Head";
 
 const Guild = ({ data, error }) => {
   return (
@@ -23,24 +23,24 @@ const Guild = ({ data, error }) => {
           }}
         />
       </Link>
+      <Link href="/guild/apply">
+        <Button
+          size="huge"
+          color="orange"
+          style={{
+            display: "block",
+            margin: "auto",
+            marginBottom: "28px"
+          }}
+        >
+          <Icon name="numbered list" />
+          Track My Guild
+        </Button>
+      </Link>
       {error ? (
-        <div>Error: {JSON.stringify(error)}</div>
+        <div />
       ) : (
         <React.Fragment>
-          <Link href="/guild/apply">
-            <Button
-              size="huge"
-              color="orange"
-              style={{
-                display: "block",
-                margin: "auto",
-                marginBottom: "28px"
-              }}
-            >
-              <Icon name="numbered list" />
-              Track My Guild
-            </Button>
-          </Link>
           <Grid columns="equal" stackable>
             <Grid.Column>
               <h1>Blue Oyster Bar</h1>
@@ -152,33 +152,24 @@ const Guild = ({ data, error }) => {
 
 export default Guild;
 
-Guild.getInitialProps = async function getInitialProps({ query }) {
-  try {
-    // const { query } = context;
+Guild.getInitialProps = ({ query }) => {
+  // const { query } = context;
 
-    let urlPath = "https://vain.zone";
-    if (process.env.NODE_ENV !== "production") {
-      urlPath = "http://localhost:3000";
-    }
-
-    const requestData = await axios(`${urlPath}/api/fame`, {
-      params: {
-        clearCache: query.clearCache
-      }
-    });
-    const data = await requestData.data;
-    if (data.error) {
-      return {
-        error: data.error
-      };
-    }
-
-    return {
-      data
-    };
-  } catch (error) {
-    return {
-      error
-    };
+  let urlPath = "https://vain.zone";
+  if (process.env.NODE_ENV !== "production") {
+    urlPath = "http://localhost:3000";
   }
+
+  return axios(`${urlPath}/api/fame`, {
+    params: {
+      clearCache: query.clearCache
+    }
+  })
+    .then(response => {
+      return { data: response.data };
+    })
+    .catch(err => {
+      console.log(err.response, "kum2");
+      return err.response.data;
+    });
 };

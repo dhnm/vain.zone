@@ -31,20 +31,20 @@ const dev = process.env.NODE_ENV !== "production";
 
 const nextApp = require("next")({ dev });
 const nextHandler = nextApp.getRequestHandler();
+import getConfig from "next/config";
+const { serverRuntimeConfig } = getConfig();
 
 import axios from "axios";
 
-import extension from "./../modules/extension";
-import draft from "./../modules/draft";
-import api from "./../modules/api";
+import extension from "./extension";
+import draft from "./draft";
+import api from "./api";
 
 // import { Match } from "./../models/Match";
 // import { Player } from "./../models/Player";
 // import { CzSk } from './../models/CzSk';
 
-mongoose.connect(
-  "mongodb://user_thisBoy:r8LspGn5jpZJIfCP@vainzone-shard-00-00-jem9k.mongodb.net:27017,vainzone-shard-00-01-jem9k.mongodb.net:27017,vainzone-shard-00-02-jem9k.mongodb.net:27017/VAINZONE?ssl=true&replicaSet=VAINZONE-shard-0&authSource=admin"
-);
+mongoose.connect(serverRuntimeConfig.mongodbURL);
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
   console.log("We're connected!");
@@ -152,12 +152,12 @@ nextApp
     });
 
     app.get("/", (req, res) => {
-      nextApp.render(req, res, "/extension/player", {
+      nextApp.render(req, res, "/extension", {
         browserView: true
       });
     });
     app.get("/player/:IGN", (req, res) => {
-      nextApp.render(req, res, "/extension/player", {
+      nextApp.render(req, res, "/extension", {
         IGN: req.params.IGN,
         browserView: true
       });

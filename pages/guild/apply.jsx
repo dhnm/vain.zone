@@ -3,7 +3,7 @@ import axios from "axios";
 import { Grid, Message, Form } from "semantic-ui-react";
 import Link from "next/link";
 
-import Head from "./components/Head";
+import Head from "./../../page_components/guild/Head";
 
 export default class GuildApplication extends React.Component {
   constructor(props) {

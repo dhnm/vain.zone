@@ -1,9 +1,9 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document } from "mongoose";
 
 const playerSchema = new Schema({
   exists: Boolean,
   retrieval: { type: Date, default: Date.now },
-  playerID: { type: String, unique: true },
+  playerID: { type: String, required: true, unique: true },
   name: { type: String, unique: true, sparse: true },
   IGNHistory: [String],
   shardId: String,
@@ -23,12 +23,11 @@ const playerSchema = new Schema({
   rank_blitz: Number,
   skillTier: Number,
   wins: Number,
-  matchRefs: [{ type: String, ref: 'matches' }],
   czSk: {
     retrieval: Date,
     of_month: Number,
-    first_of_month: Number,
-  },
+    first_of_month: Number
+  }
 });
 
 type czSk = {
@@ -60,8 +59,7 @@ export type IPlayer = Document & {
   rank_blitz: number;
   skillTier: number;
   wins: number;
-  matchRefs: string[];
   czSk: czSk;
 };
 
-export const Player = model<IPlayer>('players', playerSchema);
+export const Player = model<IPlayer>("players", playerSchema);
