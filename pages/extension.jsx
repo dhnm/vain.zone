@@ -408,7 +408,7 @@ function App(props) {
           href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css"
         />
         <link rel="stylesheet" href="/static/css/semantic.slate.min.css" />
-        <link rel="stylesheet" href="/static/css/backgroundStyle.css" />
+        <link rel="stylesheet" href="/static/css/backgroundStyle.css?flush=1" />
 
         <meta property="fb:app_id" content="617200295335676" />
         <meta property="og:type" content="website" />
