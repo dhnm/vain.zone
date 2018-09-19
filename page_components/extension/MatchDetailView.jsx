@@ -599,7 +599,7 @@ export default function MatchDetailView({
               {processedAverageSkillTiers[0].name} ({
                 processedAverageSkillTiers[0].number
               }{" "}
-              {processedAverageSkillTiers[0].color.charAt(1)}){" "}
+              {processedAverageSkillTiers[0].shortColor}){" "}
               <Image
                 style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${
@@ -630,7 +630,7 @@ export default function MatchDetailView({
               {processedAverageSkillTiers[1].name} ({
                 processedAverageSkillTiers[1].number
               }{" "}
-              {processedAverageSkillTiers[1].color.charAt(1)})
+              {processedAverageSkillTiers[1].shortColor})
             </div>
           </Grid.Column>
         </Grid>
@@ -651,7 +651,7 @@ export default function MatchDetailView({
               }}
             >
               {highestBlueST.name} ({highestBlueST.number}{" "}
-              {highestBlueST.color.charAt(1)}){" "}
+              {highestBlueST.shortColor}){" "}
               <Image
                 style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${highestBlueST.number} ${
@@ -680,7 +680,7 @@ export default function MatchDetailView({
                 }.png`}
               />{" "}
               {highestRedST.name} ({highestRedST.number}{" "}
-              {highestRedST.color.charAt(1)})
+              {highestRedST.shortColor})
             </div>
           </Grid.Column>
         </Grid>
@@ -700,7 +700,7 @@ export default function MatchDetailView({
               }}
             >
               {lowestBlueST.name} ({lowestBlueST.number}{" "}
-              {lowestBlueST.color.charAt(1)}){" "}
+              {lowestBlueST.shortColor}){" "}
               <Image
                 style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${lowestBlueST.number} ${
@@ -727,8 +727,7 @@ export default function MatchDetailView({
                   lowestRedST.color
                 }.png`}
               />&nbsp;
-              {lowestRedST.name} ({lowestRedST.number}{" "}
-              {lowestRedST.color.charAt(1)})
+              {lowestRedST.name} ({lowestRedST.number} {lowestRedST.shortColor})
             </div>
           </Grid.Column>
         </Grid>
