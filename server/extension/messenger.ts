@@ -557,6 +557,7 @@ const setIGN = (instructions: string, userID: string) => {
           .catch(err => Promise.reject(err));
       } else {
         const newSaveData = instructions.split(",,,");
+        console.log(newSaveData, instructions);
         if (newSaveData.length !== 3) {
           return Promise.reject(new Error("Save data has suspicious length."));
         }

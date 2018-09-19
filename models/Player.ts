@@ -2,7 +2,6 @@ import { Schema, model, Document } from "mongoose";
 
 const playerSchema = new Schema({
   exists: Boolean,
-  retrieval: { type: Date, default: Date.now },
   playerID: { type: String, required: true, unique: true },
   name: { type: String, unique: true, sparse: true },
   IGNHistory: [String],
@@ -38,7 +37,6 @@ type czSk = {
 
 export type IPlayer = Document & {
   exists: boolean;
-  retrieval: Date;
   playerID: string;
   name: string | null;
   IGNHistory?: string[];
