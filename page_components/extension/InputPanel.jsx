@@ -86,10 +86,14 @@ export default class InputPanel extends React.Component {
                   (a, b) => b.count - a.count
                 );
 
-                if (searchFavorites.list[0].count > 10) {
+                if (
+                  searchFavorites.list[0] &&
+                  searchFavorites.list[0].count > 20
+                ) {
                   searchFavorites.list = searchFavorites.list
                     .map(fav => {
-                      fav.count = Math.floor(fav.count / 2);
+                      fav.count = Math.round(fav.count / 1.2);
+                      return fav;
                     })
                     .filter(fav => fav.count > 0);
 
