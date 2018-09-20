@@ -384,7 +384,7 @@ export default function MatchDetailView({
                           avatar
                           src={`/static/img/rank/c/${
                             processedAverageSkillTiers[0].number
-                          } ${processedAverageSkillTiers[0].color}.png`}
+                          }${processedAverageSkillTiers[0].color}.png`}
                         />
                         {Math.round(processedAverageSkillTiers[0].value)}
                       </Label>
@@ -461,7 +461,7 @@ export default function MatchDetailView({
                           avatar
                           src={`/static/img/rank/c/${
                             processedAverageSkillTiers[1].number
-                          } ${processedAverageSkillTiers[1].color}.png`}
+                          }${processedAverageSkillTiers[1].color}.png`}
                         />
                         {Math.round(processedAverageSkillTiers[1].value)}
                       </Label>
@@ -598,13 +598,13 @@ export default function MatchDetailView({
             >
               {processedAverageSkillTiers[0].name} ({
                 processedAverageSkillTiers[0].number
-              }{" "}
+              }
               {processedAverageSkillTiers[0].shortColor}){" "}
               <Image
                 style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${
                   processedAverageSkillTiers[0].number
-                } ${processedAverageSkillTiers[0].color}.png`}
+                }${processedAverageSkillTiers[0].color}.png`}
               />
             </div>
           </Grid.Column>
@@ -625,11 +625,11 @@ export default function MatchDetailView({
                 style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${
                   processedAverageSkillTiers[1].number
-                } ${processedAverageSkillTiers[1].color}.png`}
+                }${processedAverageSkillTiers[1].color}.png`}
               />{" "}
               {processedAverageSkillTiers[1].name} ({
                 processedAverageSkillTiers[1].number
-              }{" "}
+              }
               {processedAverageSkillTiers[1].shortColor})
             </div>
           </Grid.Column>
@@ -650,11 +650,11 @@ export default function MatchDetailView({
                 textAlign: "right"
               }}
             >
-              {highestBlueST.name} ({highestBlueST.number}{" "}
+              {highestBlueST.name} ({highestBlueST.number}
               {highestBlueST.shortColor}){" "}
               <Image
                 style={{ width: "40px", display: "inline-block" }}
-                src={`/static/img/rank/c/${highestBlueST.number} ${
+                src={`/static/img/rank/c/${highestBlueST.number}${
                   highestBlueST.color
                 }.png`}
               />
@@ -675,11 +675,11 @@ export default function MatchDetailView({
             >
               <Image
                 style={{ width: "40px", display: "inline-block" }}
-                src={`/static/img/rank/c/${highestRedST.number} ${
+                src={`/static/img/rank/c/${highestRedST.number}${
                   highestRedST.color
                 }.png`}
               />{" "}
-              {highestRedST.name} ({highestRedST.number}{" "}
+              {highestRedST.name} ({highestRedST.number}
               {highestRedST.shortColor})
             </div>
           </Grid.Column>
@@ -699,11 +699,11 @@ export default function MatchDetailView({
                 textAlign: "right"
               }}
             >
-              {lowestBlueST.name} ({lowestBlueST.number}{" "}
+              {lowestBlueST.name} ({lowestBlueST.number}
               {lowestBlueST.shortColor}){" "}
               <Image
                 style={{ width: "40px", display: "inline-block" }}
-                src={`/static/img/rank/c/${lowestBlueST.number} ${
+                src={`/static/img/rank/c/${lowestBlueST.number}${
                   lowestBlueST.color
                 }.png`}
               />
@@ -723,11 +723,12 @@ export default function MatchDetailView({
             >
               <Image
                 style={{ width: "40px", display: "inline-block" }}
-                src={`/static/img/rank/c/${lowestRedST.number} ${
+                src={`/static/img/rank/c/${lowestRedST.number}${
                   lowestRedST.color
                 }.png`}
               />&nbsp;
-              {lowestRedST.name} ({lowestRedST.number} {lowestRedST.shortColor})
+              {lowestRedST.name} ({lowestRedST.number}
+              {lowestRedST.shortColor})
             </div>
           </Grid.Column>
         </Grid>

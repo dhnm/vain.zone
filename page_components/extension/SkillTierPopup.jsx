@@ -25,7 +25,7 @@ export default function SkillTierPopup({ rankPoints, mode }) {
         >
           <Image
             size="tiny"
-            src={`/static/img/rank/c/${skillTierInfo.number} ${
+            src={`/static/img/rank/c/${skillTierInfo.number}${
               skillTierInfo.color
             }.png`}
             style={{
@@ -47,8 +47,7 @@ export default function SkillTierPopup({ rankPoints, mode }) {
       }
     >
       <Popup.Header>
-        {skillTierInfo.name}
-        {skillTierInfo.color}
+        {skillTierInfo.name} {skillTierInfo.color}
       </Popup.Header>
       <Progress percent={skillTierInfo.progress} size="tiny">
         {skillTierInfo.value.toFixed(2)}

@@ -184,7 +184,7 @@ export default function ParticipantCard({
             {Math.floor(processedSkillTier.value)}
           </div>*/}
         <Image
-          src={`/static/img/rank/c/${processedSkillTier.number} ${
+          src={`/static/img/rank/c/${processedSkillTier.number}${
             processedSkillTier.color
           }.png`}
           style={{ margin: "0 -6px", padding: "-5px", height: "31px" }}
