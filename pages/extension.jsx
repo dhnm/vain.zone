@@ -483,15 +483,15 @@ App.getInitialProps = async function getInitialProps({ query }) {
         if (!query.IGN && !query.playerID) {
           return { error: true, browserView: true };
         }
-        const requestMatches = await axios({
+        const requestData = await axios({
           method: "get",
-          url: `${urlPath}/api/matches`,
+          url: `${urlPath}/api/playerdata`,
           params: {
             IGN: query.IGN,
             playerID: query.playerID
           }
         });
-        const data = await requestMatches.data;
+        const data = await requestData.data;
         if (data.error) {
           return {
             dxata: null,

@@ -16,7 +16,9 @@ export default function getData(params: {
         let matchesFromAPI;
 
         Player.findOne(
-            params.IGN ? { name: params.IGN } : { playerID: params.playerID }
+            params.playerID
+                ? { playerID: params.playerID }
+                : { name: params.IGN }
         )
             .exec()
             .then(player => {

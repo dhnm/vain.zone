@@ -13,7 +13,8 @@ router.get("/", cacheMW(60), (req, res) => {
             if (botUser) {
                 res.json({
                     currentUser: true,
-                    defaultIGN: botUser.defaultIGN
+                    defaultIGN: botUser.defaultIGN,
+                    playerID: botUser.playerID
                 });
             } else {
                 res.json({ currentUser: false });

@@ -477,7 +477,9 @@ const sendPlayerInfo = (userID: string, player: any) => {
           buttons: [
             {
               type: "web_url",
-              url: "https://vain.zone/extension/player/" + player.name,
+              url: `https://vain.zone/extension/player/${
+                player.name
+              }?playerID=${player.playerID}`,
               title: "See more",
               webview_height_ratio: "full",
               webview_share_button: "hide",

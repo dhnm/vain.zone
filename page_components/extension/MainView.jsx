@@ -50,7 +50,10 @@ const propTypes = {
 
 export default class MainView extends React.Component {
   static identifyExtensionUser() {
-    const genericUsername = "L3oN";
+    const genericUser = {
+      defaultIGN: "L3oN",
+      playerID: "a84deea2-c360-11e4-ad12-06eb725f8a76"
+    };
     return new Promise((resolve, reject) => {
       window.MessengerExtensions.getContext(
         "617200295335676",
@@ -67,10 +70,10 @@ export default class MainView extends React.Component {
             .then(user => {
               if (user.currentUser) {
                 // window.document.getElementById("FBButton").style.display = "inline-block";
-                if (user.defaultIGN) {
-                  resolve(user.defaultIGN);
+                if (user.playerID) {
+                  resolve(user);
                 } else {
-                  resolve(genericUsername);
+                  resolve(genericUser);
                 }
               } else {
                 reject(new Error("User has not yet interacted with the bot."));
@@ -78,12 +81,12 @@ export default class MainView extends React.Component {
             })
             .catch(err => {
               console.log("err", err);
-              resolve(genericUsername);
+              resolve(genericUser);
             });
         },
         err => {
           console.log("Couldn't get context:", err);
-          resolve(genericUsername);
+          resolve(genericUser);
         }
       );
     });
@@ -223,10 +226,12 @@ export default class MainView extends React.Component {
     const FBLoaded = () => {
       if (this.props.extension) {
         MainView.identifyExtensionUser()
-          .then(IGN => {
+          .then(user => {
             Router.replace(
-              `/extension/player?error=false&extension=false&IGN=${IGN}`,
-              `/extension/player/${IGN}`
+              `/extension/player?error=false&extension=false&playerID=${
+                user.playerID
+              }`,
+              `/extension/player/${user.defaultIGN}`
             );
           })
           .catch(() => {
