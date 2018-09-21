@@ -29,7 +29,8 @@ module.exports = (phase, { defaultConfig }) => {
     publicRuntimeConfig: {
       currentSeasonPatch: "3.7",
       googleTag: "UA-125429066-1",
-      storageVersion: 1.1
+      storageVersion: 1.1,
+      discordInviteLink: "https://discord.gg/ZpkaDqt"
     }
   };
   const config = {

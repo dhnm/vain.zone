@@ -18,6 +18,9 @@ import ParticipantCard from "./ParticipantCard";
 
 import skillTierCalculator from "./../../functions/skillTierCalculator";
 
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
+
 const TeamStatPropTypes = {
   icon: PropTypes.string.isRequired,
   stat: PropTypes.string.isRequired
@@ -191,7 +194,7 @@ export default function MatchDetailView({
             Please report to us if you see something wrong.{" "}
             <a
               target="_blank"
-              href="https://discord.gg/wDYKFaS"
+              href={publicRuntimeConfig.discordInviteLink}
               style={{ color: "HSLA(206, 66%, 57%, 1.00)" }}
             >
               We are on Discord.

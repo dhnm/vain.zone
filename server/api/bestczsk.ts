@@ -50,8 +50,7 @@ router.get("/", cacheMW(64800), (_, res): void => {
     .exec()
     .then(czSkPlayers =>
       Player.find({
-        name: { $in: czSkPlayers.map(p => p.name) },
-        exists: true
+        name: { $in: czSkPlayers.map(p => p.name) }
       }).exec()
     )
     .then(players => {

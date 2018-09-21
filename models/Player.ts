@@ -2,9 +2,10 @@ import { Schema, model, Document } from "mongoose";
 
 const playerSchema = new Schema({
   exists: Boolean,
-  playerID: { type: String, required: true, unique: true },
+  playerID: { type: String, unique: true, sparse: true }, // if playerID doesn't exists, it's a deleted record
+  oldPlayerID: String,
   name: { type: String, unique: true, sparse: true },
-  IGNHistory: [String],
+  IGNHistory: { type: [String], default: [] },
   shardId: String,
   createdAt: Date,
   patchVersion: String,
@@ -38,6 +39,7 @@ type czSk = {
 export type IPlayer = Document & {
   exists: boolean;
   playerID: string;
+  oldPlayerID?: string;
   name: string | null;
   IGNHistory?: string[];
   shardId: string;

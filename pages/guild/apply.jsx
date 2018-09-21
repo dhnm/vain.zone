@@ -5,6 +5,9 @@ import Link from "next/link";
 
 import Head from "./../../page_components/guild/Head";
 
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
+
 export default class GuildApplication extends React.Component {
   constructor(props) {
     super(props);
@@ -174,7 +177,10 @@ export default class GuildApplication extends React.Component {
                 <Message.Content>
                   We'll reach out to you once we review your application. In the
                   meantime you can leave a message on our{" "}
-                  <a target="_blank" href="https://discord.gg/wDYKFaS">
+                  <a
+                    target="_blank"
+                    href={publicRuntimeConfig.discordInviteLink}
+                  >
                     Discord Server (wDYKFaS)
                   </a>.
                 </Message.Content>
@@ -183,7 +189,10 @@ export default class GuildApplication extends React.Component {
                 <Message.Header>Error!</Message.Header>
                 <Message.Content>
                   Something went wrong :( Please message us on our{" "}
-                  <a target="_blank" href="https://discord.gg/wDYKFaS">
+                  <a
+                    target="_blank"
+                    href={publicRuntimeConfig.discordInviteLink}
+                  >
                     Discord Server (wDYKFaS)
                   </a>{" "}
                   or try again later.

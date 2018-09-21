@@ -8,6 +8,9 @@ import ProfileItem from "./ProfileItem";
 import VZIcon from "./../Icon";
 import { ICONS } from "./../../functions/constants";
 
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
+
 const InteractiveElement = ({ children, overrideStyle, action }) => (
   <div
     className="outerIE"
@@ -670,7 +673,7 @@ export default class DraftBuilder extends React.Component {
             <a
               style={{ color: "white" }}
               target="_blank"
-              href="https://discord.gg/wDYKFaS"
+              href={publicRuntimeConfig.discordInviteLink}
             >
               Join us on Discord (wDYKFaS)
             </a>.

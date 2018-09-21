@@ -5,6 +5,9 @@ import Link from "next/link";
 
 import Head from "./../../page_components/guild/Head";
 
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
+
 class GuildEdit extends React.Component {
   constructor(props) {
     super(props);
@@ -217,7 +220,10 @@ class GuildEdit extends React.Component {
               {this.state.formError === 404 && (
                 <React.Fragment>
                   Guild not found. Please message us on our{" "}
-                  <a target="_blank" href="https://discord.gg/wDYKFaS">
+                  <a
+                    target="_blank"
+                    href={publicRuntimeConfig.discordInviteLink}
+                  >
                     Discord Server (wDYKFaS)
                   </a>{" "}
                   or try again later.
@@ -228,7 +234,10 @@ class GuildEdit extends React.Component {
                 this.state.formError !== 404 && (
                   <React.Fragment>
                     Something went wrong :( Please message us on our{" "}
-                    <a target="_blank" href="https://discord.gg/wDYKFaS">
+                    <a
+                      target="_blank"
+                      href={publicRuntimeConfig.discordInviteLink}
+                    >
                       Discord Server (wDYKFaS)
                     </a>{" "}
                     or try again later.

@@ -27,6 +27,18 @@ export default function getData(params: {
                     return getPlayerFromAPI({
                         playerID: player.playerID,
                         shardId: player.shardId
+                    }).catch(err => {
+                        if (err.message == "404") {
+                            player.IGNHistory.push(player.name);
+                            player.name = undefined;
+                            player.oldPlayerID = player.playerID;
+                            player.playerID = undefined;
+                            player.save();
+                        }
+                        if (params.IGN) {
+                            return getPlayerFromAPI({ IGN: params.IGN });
+                        }
+                        return err;
                     });
                 }
                 return getPlayerFromAPI(

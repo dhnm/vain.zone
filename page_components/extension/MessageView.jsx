@@ -8,6 +8,9 @@ import * as moment from "moment";
 
 import InputPanel from "./InputPanel";
 
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
+
 const propTypes = {
   appLoading: PropTypes.bool.isRequired,
   appLoadingOn: PropTypes.func.isRequired,
@@ -43,7 +46,7 @@ export default function MessageLayout({
         If you have a minute, please tell me about this{" "}
         <a
           target="_blank"
-          href="https://discord.gg/wDYKFaS"
+          href={publicRuntimeConfig.discordInviteLink}
           style={{ color: "black" }}
         >
           on Discord (wDYKFaS)
@@ -299,7 +302,7 @@ class News extends React.Component {
             </a>
             <a
               target="_blank"
-              href="https://discord.gg/wDYKFaS"
+              href={publicRuntimeConfig.discordInviteLink}
               {...css({
                 width: "320px",
                 height: "120px",

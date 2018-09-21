@@ -5,6 +5,7 @@ import { Router } from "express";
 const router = Router();
 
 import { BotUser } from "./../../models/BotUser";
+import { Player } from "./../../models/Player";
 
 import getData from "./../../functions/getData";
 import skillTierCalculator from "./../../functions/skillTierCalculator";
@@ -138,19 +139,58 @@ const getPlayerInfo = (params: {
             params.userID,
             "Player not found :(\n\n- Please check the spelling and capitalisation of the nick.\n\n- Maybe the player has changed their nick?\n"
           );
+          if (params.IGN) {
+            Player.find({ IGNHistory: params.IGN, name: { $exists: true } })
+              .exec()
+              .then(players => {
+                if (players && players.length) {
+                  if (players.length === 1) {
+                    callSendAPI({
+                      messaging_type: "RESPONSE",
+                      recipient: {
+                        id: params.userID
+                      },
+                      message: {
+                        text: `${players[0].name} was previously known as ${
+                          params.IGN
+                        }. Maybe you wanted to search ${
+                          players[0].name
+                        } instead?`
+                      },
+                      buttons: [
+                        {
+                          title: "Search",
+                          type: "postback",
+                          payload: `playerdetails ${players[0].name}`
+                        }
+                      ]
+                    });
+                  } else {
+                    sendTextMessage(
+                      params.userID,
+                      `The following players were previously known as ${
+                        params.IGN
+                      }. Maybe you wanted to search one of them?\n\n${players
+                        .map(p => p.name)
+                        .join("\n")}`
+                    );
+                  }
+                }
+              });
+          }
         } else if (err.message.indexOf("veryold") > -1) {
-          sendSystemMessage(
+          sendTextMessage(
             params.userID,
             "Long time no see :(\n\nThe player hasn't played Vainglory for a long time. We don't have data for them.\n"
           );
         } else {
-          sendSystemMessage(
+          sendTextMessage(
             params.userID,
             "Something went wrong.\n\nThere is probably an issue with SEMC (developers of Vainglory), try again later.\n"
           );
         }
       } else {
-        sendSystemMessage(
+        sendTextMessage(
           params.userID,
           "2 Something went wrong.\n\nThere is probably an issue with SEMC (developers of Vainglory), try again later.\n"
         );

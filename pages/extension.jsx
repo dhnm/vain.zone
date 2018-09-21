@@ -352,9 +352,9 @@ class Extension extends React.Component {
         this.props.errorMessage &&
         typeof this.props.errorMessage == "string"
       ) {
-        if (this.props.errorMessage.indexOf("veryold") > -1) {
+        if (this.props.errorMessage == "veryold") {
           errorType = "veryold";
-        } else if (this.props.errorMessage.indexOf("404") > -1) {
+        } else if (this.props.errorMessage == "404") {
           errorType = "404";
         } else {
           errorType = "SEMC";
