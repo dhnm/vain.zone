@@ -18,7 +18,7 @@ const propTypes = {
   matchDuration: PropTypes.number.isRequired,
   participant: PropTypes.object.isRequired,
   side: PropTypes.string.isRequired,
-  maxParticipantValues: PropTypes.object.isRequired,
+  //participantValues: PropTypes.object.isRequired,
   appLoading: PropTypes.bool.isRequired,
   highestDamage: PropTypes.number.isRequired,
   highestTowersDamage: PropTypes.number.isRequired,
@@ -39,7 +39,7 @@ export default function ParticipantCard({
   matchDuration,
   participant,
   side,
-  maxParticipantValues,
+  //participantValues,
   appLoading,
   highestDamage,
   highestTowersDamage,
@@ -304,7 +304,7 @@ export default function ParticipantCard({
         >
           {/* <Progress
               value={participant.gold}
-              total={maxParticipantValues.maxGold}
+              total={participantValues.maxGold}
               size="small"
               color="yellow"
               style={{minWidth: 0}}
@@ -317,7 +317,7 @@ export default function ParticipantCard({
             </div>
             <Progress
               value={participant.farm}
-              total={maxParticipantValues.maxFarm}
+              total={participantValues.maxFarm}
               size="small"
               color="teal"
               style={{minWidth: 0}}

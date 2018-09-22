@@ -151,19 +151,26 @@ const getPlayerInfo = (params: {
                         id: params.userID
                       },
                       message: {
-                        text: `${players[0].name} was previously known as ${
-                          params.IGN
-                        }. Maybe you wanted to search ${
-                          players[0].name
-                        } instead?`
-                      },
-                      buttons: [
-                        {
-                          title: "Search",
-                          type: "postback",
-                          payload: `playerdetails ${players[0].name}`
+                        attachment: {
+                          type: "template",
+                          payload: {
+                            template_type: "button",
+                            text: `${players[0].name} was previously known as ${
+                              params.IGN
+                            }. Maybe you wanted to search ${
+                              players[0].name
+                            } instead?`,
+
+                            buttons: [
+                              {
+                                title: "Search",
+                                type: "postback",
+                                payload: `playerdetails ${players[0].name}`
+                              }
+                            ]
+                          }
                         }
-                      ]
+                      }
                     });
                   } else {
                     sendTextMessage(
@@ -176,7 +183,8 @@ const getPlayerInfo = (params: {
                     );
                   }
                 }
-              });
+              })
+              .catch(err => console.error(err));
           }
         } else if (err.message.indexOf("veryold") > -1) {
           sendTextMessage(

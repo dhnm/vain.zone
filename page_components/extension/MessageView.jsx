@@ -15,6 +15,8 @@ const propTypes = {
   appLoading: PropTypes.bool.isRequired,
   appLoadingOn: PropTypes.func.isRequired,
   errorType: PropTypes.string,
+  errorData: PropTypes.any,
+  query: PropTypes.string,
   browserView: PropTypes.bool
 };
 
@@ -22,6 +24,8 @@ export default function MessageLayout({
   appLoading,
   appLoadingOn,
   errorType,
+  errorData,
+  query,
   browserView
 }) {
   let msgHeader = "Player not found";
@@ -57,22 +61,93 @@ export default function MessageLayout({
   console.log(browserView);
   return (
     <Segment basic>
-      {browserView && (
-        <Link prefetch href={`/extension/player?browserView=true`} as="/">
-          <img
-            src="/static/img/draft/VAINZONE-logo-darkbg.png"
-            alt="VAIN.ZONE"
-            style={{
-              width: "200px",
-              display: "block",
-              margin: "auto",
-              marginTop: !errorType && browserView ? "10%" : null,
-              marginBottom: "14px",
-              cursor: "pointer"
-            }}
-          />
-        </Link>
-      )}
+      <div
+        style={{
+          maxWidth: "480px",
+          margin: "calc(1% + 5px) auto"
+        }}
+      >
+        {new Date() > new Date("2018-09-22T16:00:00.000Z") ? (
+          <a href="https://twitch.tv/lookforward" target="_blank">
+            <h3>
+              Join us on Sunday 9/23 on stream and win new hero and skins!
+              Stream starts{" "}
+              <span style={{ color: "HSLA(72, 96%, 54%, 1.00)" }}>
+                {moment("2018-09-23T12:50:00.000Z").fromNow()}
+              </span>{" "}
+              on{" "}
+              <span style={{ textDecoration: "underline" }}>
+                twitch.tv/lookforward
+              </span>
+            </h3>
+            <img
+              src="/static/img/promo/social_vaingloryautumn_vainzone_promo.jpg"
+              style={{
+                maxWidth: "480px",
+                display: "block",
+                borderRadius: "15px"
+              }}
+            />
+          </a>
+        ) : new Date() > new Date("2018-09-23T02:00:01.000Z") ? (
+          <a href="https://twitch.tv/lookforward" target="_blank">
+            <h3>
+              Join us on Sunday 9/23 on stream and win new hero and skins!
+              Stream starts{" "}
+              <span style={{ color: "HSLA(72, 96%, 54%, 1.00)" }}>
+                {moment("2018-09-23T12:50:00.000Z").fromNow()}
+              </span>{" "}
+              on{" "}
+              <span style={{ textDecoration: "underline" }}>
+                twitch.tv/lookforward
+              </span>
+            </h3>
+            <img
+              src="/static/img/promo/today_social_vaingloryautumn_vainzone_promo.jpg"
+              style={{
+                maxWidth: "480px",
+                display: "block",
+                borderRadius: "15px"
+              }}
+            />
+          </a>
+        ) : new Date() > new Date("2018-09-23T12:50:00.000Z") &&
+        new Date() < new Date("2018-09-23T15:50:00.000Z") ? (
+          <a href="https://twitch.tv/lookforward" target="_blank">
+            <h3>
+              Join us on NOW on stream and win new hero and skins! Stream is on{" "}
+              <span style={{ textDecoration: "underline" }}>
+                twitch.tv/lookforward
+              </span>
+            </h3>
+            <img
+              src="/static/img/promo/now_social_vaingloryautumn_vainzone_promo.jpg"
+              style={{
+                maxWidth: "480px",
+                display: "block",
+                borderRadius: "15px"
+              }}
+            />
+          </a>
+        ) : (
+          browserView && (
+            <Link prefetch href={`/extension/player?browserView=true`} as="/">
+              <img
+                src="/static/img/draft/VAINZONE-logo-darkbg.png"
+                alt="VAIN.ZONE"
+                style={{
+                  width: "200px",
+                  display: "block",
+                  margin: "auto",
+                  marginTop: !errorType && browserView ? "10%" : null,
+                  marginBottom: "14px",
+                  cursor: "pointer"
+                }}
+              />
+            </Link>
+          )
+        )}
+      </div>
       <div style={{ maxWidth: "414px", margin: "auto" }}>
         <InputPanel
           appLoading={appLoading}
@@ -80,15 +155,50 @@ export default function MessageLayout({
           browserView={browserView}
         />
         {errorType || !browserView ? (
-          <Message color={msgColor} icon>
-            <Icon name="frown outline" />
-            <Message.Content>
-              <Message.Header>{msgHeader}</Message.Header>
-              <Message.List as="ol">
-                {messages.map(msg => <Message.Item content={msg} />)}
-              </Message.List>
-            </Message.Content>
-          </Message>
+          <React.Fragment>
+            <Message color={msgColor} icon>
+              <Icon name="frown outline" />
+              <Message.Content>
+                <Message.Header>{msgHeader}</Message.Header>
+                <Message.List as="ol">
+                  {messages.map(msg => <Message.Item content={msg} />)}
+                </Message.List>
+              </Message.Content>
+            </Message>
+            {errorData && (
+              <Message>
+                <Message.Content>
+                  <Message.Header>An old nick?</Message.Header>
+                  <p>
+                    {errorData.length === 1
+                      ? `The following player was previously known as ${query}.
+                    Maybe you'd like to search them instead?`
+                      : `The following players were previously known as ${query}. Maybe you'd like to search them instead?`}
+                  </p>
+                  <ul>
+                    {errorData.map(p => (
+                      <li>
+                        <Link
+                          prefetch
+                          href={`/extension/player?${
+                            browserView ? "browserView=true&" : ""
+                          }error=false&extension=false&playerID=${p.playerID}`}
+                          as={`${
+                            browserView ? "" : "/extension"
+                          }/player/${p.name || query}`}
+                        >
+                          <a>
+                            {p.name ||
+                              `Unknown (previously known as ${query}).`}
+                          </a>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </Message.Content>
+              </Message>
+            )}
+          </React.Fragment>
         ) : (
           <React.Fragment>
             <p>
@@ -96,8 +206,9 @@ export default function MessageLayout({
               Enter.
             </p>
             <p style={{ textAlign: "center" }}>
-              NEW: Enjoy our beautiful Autumn Season 2018 update. We implemented massive behind-the-scene improvements that
-              will allow us to make VAIN.ZONE even better in the future!
+              NEW: Enjoy our beautiful Autumn Season 2018 update. We implemented
+              massive behind-the-scene improvements that will allow us to make
+              VAIN.ZONE even better in the future!
             </p>
           </React.Fragment>
         )}

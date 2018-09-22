@@ -764,6 +764,33 @@ export function formatMatch(match, included) {
                 (e: any) => e.id === participant.relationships.player.data.id
             );
 
+            const itemSells = {};
+            Object.keys(participant.attributes.stats.itemSells).forEach(i => {
+                if (["*Item_ScoutPak*", "*Item_ScoutTuff*"].indexOf(i) > -1) {
+                    itemSells[i.slice(6, -1)] =
+                        participant.attributes.stats.itemSells[i];
+                } else if (i === "*Item_SuperScout2000") {
+                    itemSells[i.slice(6, -1)] = "SuperScout 2000";
+                }
+                itemSells[
+                    i
+                        .slice(6, -1)
+                        .replace(/([A-Z])/g, " $1")
+                        .trim()
+                ] =
+                    participant.attributes.stats.itemSells[i];
+            });
+            const itemUses = {};
+            Object.keys(participant.attributes.stats.itemUses).forEach(i => {
+                itemUses[
+                    i
+                        .slice(6, -1)
+                        .replace(/([A-Z])/g, " $1")
+                        .trim()
+                ] =
+                    participant.attributes.stats.itemUses[i];
+            });
+
             const customParticipantDataModel = {
                 actor: participant.attributes.actor.slice(1, -1),
                 kills: participant.attributes.stats.kills,
@@ -772,6 +799,8 @@ export function formatMatch(match, included) {
                 firstAfkTime: participant.attributes.stats.firstAfkTime,
                 gold: participant.attributes.stats.gold,
                 items: participant.attributes.stats.items,
+                itemSells,
+                itemUses,
                 jungleKills: participant.attributes.stats.jungleKills,
                 nonJungleMinionKills:
                     participant.attributes.stats.nonJungleMinionKills,
@@ -779,6 +808,7 @@ export function formatMatch(match, included) {
                 krakenCaptures: participant.attributes.stats.krakenCaptures,
                 skinKey: participant.attributes.stats.skinKey,
                 wentAfk: participant.attributes.stats.wentAfk,
+
                 player: {
                     playerID: player.id,
                     name: player.attributes.name

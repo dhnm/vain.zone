@@ -17,6 +17,7 @@ import {
 } from "semantic-ui-react";
 import axios from "axios";
 import html2canvas from "html2canvas";
+import moment from "moment";
 
 import MatchesSidebar from "./MatchesSidebar";
 import InputPanel from "./InputPanel";
@@ -390,22 +391,102 @@ export default class MainView extends React.Component {
                     : this.props.screenCategory === "tablet" ? 8 : 5
                 }
               >
-                <Link
-                  prefetch
-                  href={`/extension/player?browserView=true`}
-                  as="/"
-                >
-                  <img
-                    src="/static/img/draft/VAINZONE-logo-darkbg.png"
-                    alt="VAIN.ZONE"
-                    style={{
-                      width: "50%",
-                      display: this.props.browserView ? "block" : "none",
-                      margin: "auto",
-                      cursor: "pointer"
-                    }}
-                  />
-                </Link>
+                {new Date() > new Date("2018-09-22T16:00:00.000Z") ? (
+                  <a href="https://twitch.tv/lookforward" target="_blank">
+                    <h3>
+                      Join us on Sunday 9/23 on stream and win new hero and
+                      skins! Stream starts{" "}
+                      <span style={{ color: "HSLA(72, 96%, 54%, 1.00)" }}>
+                        {moment("2018-09-23T12:50:00.000Z").fromNow()}
+                      </span>{" "}
+                      on{" "}
+                      <span style={{ textDecoration: "underline" }}>
+                        twitch.tv/lookforward
+                      </span>
+                    </h3>
+                    {!this.props.browserView && (
+                      <img
+                        src="/static/img/promo/social_vaingloryautumn_vainzone_promo.jpg"
+                        style={{
+                          maxWidth: "100%",
+                          display: "block",
+                          borderRadius: "15px",
+                          marginBottom: "8px",
+                          marginTop: "-3px"
+                        }}
+                      />
+                    )}
+                  </a>
+                ) : new Date() > new Date("2018-09-23T02:00:01.000Z") ? (
+                  <a href="https://twitch.tv/lookforward" target="_blank">
+                    <h3>
+                      Join us on Sunday 9/23 on stream and win new hero and
+                      skins! Stream starts{" "}
+                      <span style={{ color: "HSLA(72, 96%, 54%, 1.00)" }}>
+                        {moment("2018-09-23T12:50:00.000Z").fromNow()}
+                      </span>{" "}
+                      on{" "}
+                      <span style={{ textDecoration: "underline" }}>
+                        twitch.tv/lookforward
+                      </span>
+                    </h3>
+                    {!this.props.browserView && (
+                      <img
+                        src="/static/img/promo/today_social_vaingloryautumn_vainzone_promo.jpg"
+                        style={{
+                          maxWidth: "100%",
+                          display: "block",
+                          borderRadius: "15px",
+                          marginBottom: "8px",
+                          marginTop: "-3px"
+                        }}
+                      />
+                    )}
+                  </a>
+                ) : new Date() > new Date("2018-09-23T12:50:00.000Z") &&
+                new Date() < new Date("2018-09-23T15:50:00.000Z") ? (
+                  <a href="https://twitch.tv/lookforward" target="_blank">
+                    <h3>
+                      Join us on NOW on stream and win new hero and skins!
+                      Stream is on{" "}
+                      <span style={{ textDecoration: "underline" }}>
+                        twitch.tv/lookforward
+                      </span>
+                    </h3>
+                    {!this.props.browserView && (
+                      <img
+                        src="/static/img/promo/now_social_vaingloryautumn_vainzone_promo.jpg"
+                        style={{
+                          maxWidth: "100%",
+                          display: "block",
+                          borderRadius: "15px",
+                          marginBottom: "8px",
+                          marginTop: "-3px"
+                        }}
+                      />
+                    )}
+                  </a>
+                ) : (
+                  <div />
+                )}
+                {this.props.browserView && (
+                  <Link
+                    prefetch
+                    href={`/extension/player?browserView=true`}
+                    as="/"
+                  >
+                    <img
+                      src="/static/img/draft/VAINZONE-logo-darkbg.png"
+                      alt="VAIN.ZONE"
+                      style={{
+                        width: "50%",
+                        display: this.props.browserView ? "block" : "none",
+                        margin: "auto",
+                        cursor: "pointer"
+                      }}
+                    />
+                  </Link>
+                )}
                 <InputPanel
                   appLoading={this.props.appLoading}
                   browserView={this.props.browserView}

@@ -69,36 +69,12 @@ export default function MatchDetailView({
   sendLoading,
   MatchesButton
 }) {
-  const maxParticipantValues = converter({
+  const participantValues = converter({
     rosters: match.rosters
-  }).getMaxParticipantValues();
+  }).getParticipantValues();
   const { playerInTheMatch, playerInTheMatchTeam } = converter({
     rosters: match.rosters
   }).identifyPlayerInTheMatch();
-
-  const blueSkillTiers = match.rosters[0].participants.reduce(
-    (accu, currVa) => {
-      accu.push(TLData.singleMatchData[currVa.player.name].rankPoints);
-      return accu;
-    },
-    []
-  );
-  const redSkillTiers = match.rosters[1].participants.reduce((accu, currVa) => {
-    accu.push(TLData.singleMatchData[currVa.player.name].rankPoints);
-    return accu;
-  }, []);
-  const highestBlueST = skillTierCalculator(Math.max(...blueSkillTiers));
-  const lowestBlueST = skillTierCalculator(Math.min(...blueSkillTiers));
-  const highestRedST = skillTierCalculator(Math.max(...redSkillTiers));
-  const lowestRedST = skillTierCalculator(Math.min(...redSkillTiers));
-  const processedAverageSkillTiers = [
-    skillTierCalculator(
-      blueSkillTiers.reduce((a, b) => a + b) / blueSkillTiers.length
-    ),
-    skillTierCalculator(
-      redSkillTiers.reduce((a, b) => a + b) / redSkillTiers.length
-    )
-  ];
 
   const draftOrder = TLData.draftOrder.map((sides, i) => [
     ...new Set(
@@ -386,10 +362,10 @@ export default function MatchDetailView({
                         <Image
                           avatar
                           src={`/static/img/rank/c/${
-                            processedAverageSkillTiers[0].number
-                          }${processedAverageSkillTiers[0].color}.png`}
+                            participantValues.skillTiers[0].avg.number
+                          }${participantValues.skillTiers[0].avg.color}.png`}
                         />
-                        {Math.round(processedAverageSkillTiers[0].value)}
+                        {Math.round(participantValues.skillTiers[0].avg.value)}
                       </Label>
                     </React.Fragment>
                   )}
@@ -463,10 +439,10 @@ export default function MatchDetailView({
                         <Image
                           avatar
                           src={`/static/img/rank/c/${
-                            processedAverageSkillTiers[1].number
-                          }${processedAverageSkillTiers[1].color}.png`}
+                            participantValues.skillTiers[1].avg.number
+                          }${participantValues.skillTiers[1].avg.color}.png`}
                         />
-                        {Math.round(processedAverageSkillTiers[1].value)}
+                        {Math.round(participantValues.skillTiers[1].avg.value)}
                       </Label>
                     </React.Fragment>
                   )}
@@ -492,7 +468,7 @@ export default function MatchDetailView({
                         matchDuration={match.duration}
                         participant={participant}
                         gameMode={match.gameMode}
-                        maxParticipantValues={maxParticipantValues}
+                        //participantValues={participantValues}
                         side={["left", "right"][sideIndex]}
                         key={`${sideIndex}${index}${participant.player.id}`}
                         appLoading={appLoading}
@@ -599,15 +575,15 @@ export default function MatchDetailView({
                 textAlign: "right"
               }}
             >
-              {processedAverageSkillTiers[0].name} ({
-                processedAverageSkillTiers[0].number
+              {participantValues.skillTiers[0].avg.name} ({
+                participantValues.skillTiers[0].avg.number
               }
-              {processedAverageSkillTiers[0].shortColor}){" "}
+              {participantValues.skillTiers[0].avg.shortColor}){" "}
               <Image
                 style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${
-                  processedAverageSkillTiers[0].number
-                }${processedAverageSkillTiers[0].color}.png`}
+                  participantValues.skillTiers[0].avg.number
+                }${participantValues.skillTiers[0].avg.color}.png`}
               />
             </div>
           </Grid.Column>
@@ -627,13 +603,13 @@ export default function MatchDetailView({
               <Image
                 style={{ width: "40px", display: "inline-block" }}
                 src={`/static/img/rank/c/${
-                  processedAverageSkillTiers[1].number
-                }${processedAverageSkillTiers[1].color}.png`}
+                  participantValues.skillTiers[1].avg.number
+                }${participantValues.skillTiers[1].avg.color}.png`}
               />{" "}
-              {processedAverageSkillTiers[1].name} ({
-                processedAverageSkillTiers[1].number
+              {participantValues.skillTiers[1].avg.name} ({
+                participantValues.skillTiers[1].avg.number
               }
-              {processedAverageSkillTiers[1].shortColor})
+              {participantValues.skillTiers[1].avg.shortColor})
             </div>
           </Grid.Column>
         </Grid>
@@ -653,13 +629,15 @@ export default function MatchDetailView({
                 textAlign: "right"
               }}
             >
-              {highestBlueST.name} ({highestBlueST.number}
-              {highestBlueST.shortColor}){" "}
+              {participantValues.skillTiers[0].max.name} ({
+                participantValues.skillTiers[0].max.number
+              }
+              {participantValues.skillTiers[0].max.shortColor}){" "}
               <Image
                 style={{ width: "40px", display: "inline-block" }}
-                src={`/static/img/rank/c/${highestBlueST.number}${
-                  highestBlueST.color
-                }.png`}
+                src={`/static/img/rank/c/${
+                  participantValues.skillTiers[0].max.number
+                }${participantValues.skillTiers[0].max.color}.png`}
               />
             </div>
           </Grid.Column>
@@ -678,12 +656,14 @@ export default function MatchDetailView({
             >
               <Image
                 style={{ width: "40px", display: "inline-block" }}
-                src={`/static/img/rank/c/${highestRedST.number}${
-                  highestRedST.color
-                }.png`}
+                src={`/static/img/rank/c/${
+                  participantValues.skillTiers[1].max.number
+                }${participantValues.skillTiers[1].max.color}.png`}
               />{" "}
-              {highestRedST.name} ({highestRedST.number}
-              {highestRedST.shortColor})
+              {participantValues.skillTiers[1].max.name} ({
+                participantValues.skillTiers[1].max.number
+              }
+              {participantValues.skillTiers[1].max.shortColor})
             </div>
           </Grid.Column>
         </Grid>
@@ -702,13 +682,15 @@ export default function MatchDetailView({
                 textAlign: "right"
               }}
             >
-              {lowestBlueST.name} ({lowestBlueST.number}
-              {lowestBlueST.shortColor}){" "}
+              {participantValues.skillTiers[0].min.name} ({
+                participantValues.skillTiers[0].min.number
+              }
+              {participantValues.skillTiers[0].min.shortColor}){" "}
               <Image
                 style={{ width: "40px", display: "inline-block" }}
-                src={`/static/img/rank/c/${lowestBlueST.number}${
-                  lowestBlueST.color
-                }.png`}
+                src={`/static/img/rank/c/${
+                  participantValues.skillTiers[0].min.number
+                }${participantValues.skillTiers[0].min.color}.png`}
               />
             </div>
           </Grid.Column>
@@ -726,30 +708,47 @@ export default function MatchDetailView({
             >
               <Image
                 style={{ width: "40px", display: "inline-block" }}
-                src={`/static/img/rank/c/${lowestRedST.number}${
-                  lowestRedST.color
-                }.png`}
+                src={`/static/img/rank/c/${
+                  participantValues.skillTiers[1].min.number
+                }${participantValues.skillTiers[1].min.color}.png`}
               />&nbsp;
-              {lowestRedST.name} ({lowestRedST.number}
-              {lowestRedST.shortColor})
+              {participantValues.skillTiers[1].min.name} ({
+                participantValues.skillTiers[1].min.number
+              }
+              {participantValues.skillTiers[1].min.shortColor})
             </div>
           </Grid.Column>
         </Grid>
       </Segment>
-      <Segment
-        style={{
-          marginTop: "15px",
-          display: "none"
-        }}
-      >
-        <Label attached="top">Andromeda Extremely Serious Awards</Label>
-        <div>
-          <p style={{ textAlign: "center", fontStyle: "italic" }}>
-            'Stats you won't see on stream...'
-          </p>
-          <p style={{ textAlign: "center" }}>Announcement Soon</p>
-        </div>
-      </Segment>
+      {false && (
+        <Segment
+          style={{
+            marginTop: "15px"
+          }}
+        >
+          <Label attached="top">Andromeda Extremely Serious Awards</Label>
+          <div>
+            <p style={{ textAlign: "center", fontStyle: "italic" }}>
+              'Stats you won't see on stream...'
+            </p>
+            {participantValues.andromedaAwards.map(category => (
+              <p>
+                <b>{category.name}</b>
+                <br />
+                {category.values
+                  .filter(
+                    v =>
+                      v.value === category.referenceValue ||
+                      (category.name === "Ashamed" && v.name)
+                  )
+                  .map(v => v.name)
+                  .join(", ")}{" "}
+                ({category.referenceValue})
+              </p>
+            ))}
+          </div>
+        </Segment>
+      )}
       <Segment
         style={{
           marginTop: "17px"

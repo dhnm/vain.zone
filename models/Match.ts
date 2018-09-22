@@ -28,6 +28,8 @@ const matchSchema = new Schema({
                     firstAfkTime: Number,
                     gold: Number,
                     items: [String],
+                    itemSells: Schema.Types.Mixed,
+                    itemUses: Schema.Types.Mixed,
                     jungleKills: Number,
                     nonJungleMinionKills: Number,
                     farm: Number,
@@ -68,6 +70,8 @@ export type IMatch = Document & {
             firstAfkTime: number;
             gold: number;
             items: string[];
+            itemSells: any;
+            itemUses: any;
             jungleKills: number;
             nonJungleMinionKills: number;
             farm: number;
