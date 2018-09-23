@@ -744,7 +744,7 @@ App.getInitialProps = async function getInitialProps({ query }) {
             browserView: query.browserView
           };
         }
-
+        console.log("gg12");
         const requestProcessedTelemetry = await axios({
           method: "get",
           url: `${urlPath}/api/telemetry`,
@@ -753,7 +753,7 @@ App.getInitialProps = async function getInitialProps({ query }) {
           }
         });
         const processedTelemetry = await requestProcessedTelemetry.data;
-
+        console.log("gg13");
         return {
           data,
           TLData: processedTelemetry,
@@ -779,7 +779,7 @@ App.getInitialProps = async function getInitialProps({ query }) {
       browserView: query.browserView
     };
   } catch (err) {
-    console.log("gg12");
+    console.log("gg12", err.message);
     return {
       data: null,
       TLData: null,

@@ -24,13 +24,18 @@ export type IOutput = {
 };
 
 router.get("/", cacheMW(3600), (req: Request, res: Response): void => {
+  console.log("gg14", req.query.match);
+  console.log(typeof JSON.parse(req.query.match));
+  console.log("gg15");
   const matchData = JSON.parse(req.query.match);
   axios(matchData.telemetryURL)
     .then((response): any => {
+      console.log("gg16");
       console.log("obtaining telemetry with status", response.status);
       return response.data;
     })
     .then((telemetryData: any): void => {
+      console.log("gg17");
       retrieveSingleMatch(matchData).then(singleMatchData => {
         const {
           damagesData,
@@ -50,11 +55,12 @@ router.get("/", cacheMW(3600), (req: Request, res: Response): void => {
           gameplayRoles,
           error: false
         };
-
+        console.log("gg18");
         res.json(output);
       });
     })
     .catch(error => {
+      console.log("gg19");
       const output: IOutput = {
         error: true
       };
