@@ -348,6 +348,9 @@ class Extension extends React.Component {
         { name: "Underfunded", values: [], description: "gold" },
         { name: "Friend to Minions", values: [], description: "minions killed" }
       ];
+
+      const showAndromedaAwards = Math.floor(Math.random() * 4 + 1) === 1;
+
       for (
         let rosterIndex = 0;
         rosterIndex < data.rosters.length;
@@ -368,165 +371,167 @@ class Extension extends React.Component {
             this.state.TLData.singleMatchData[playerName].rankPoints
           );
 
-          andromedaAwards[0].values.push({
-            name: playerName,
-            value: participantRef.deaths
-          });
-          if (
-            participantRef.deaths > 10 &&
-            (andromedaAwards[0].referenceValue < participantRef.deaths ||
-              !andromedaAwards[0].referenceValue)
-          ) {
-            andromedaAwards[0].referenceValue = participantRef.deaths;
-          }
-
-          andromedaAwards[1].values.push({
-            name: playerName,
-            value: participantRef.assists
-          });
-          if (
-            participantRef.assists > 12 &&
-            (andromedaAwards[1].referenceValue < participantRef.assists ||
-              !andromedaAwards[1].referenceValue)
-          ) {
-            andromedaAwards[1].referenceValue = participantRef.assists;
-          }
-
-          if (
-            participantRef.items
-              .slice(2)
-              .every((val, i, arr) => val === arr[0]) &&
-            Object.keys(participantRef.itemSells).length >= 3
-          ) {
-            andromedaAwards[2].values.push({
-              name: playerName
+          if (showAndromedaAwards) {
+            andromedaAwards[0].values.push({
+              name: playerName,
+              value: participantRef.deaths
             });
-          }
+            if (
+              participantRef.deaths > 10 &&
+              (andromedaAwards[0].referenceValue < participantRef.deaths ||
+                !andromedaAwards[0].referenceValue)
+            ) {
+              andromedaAwards[0].referenceValue = participantRef.deaths;
+            }
 
-          const drunken = participantRef.itemUses["Healing Flask"] || 0;
-          andromedaAwards[3].values.push({
-            name: playerName,
-            value: drunken
-          });
-          if (
-            drunken > 8 &&
-            (andromedaAwards[3].referenceValue < drunken ||
-              !andromedaAwards[3].referenceValue)
-          ) {
-            andromedaAwards[3].referenceValue = drunken;
-          }
+            andromedaAwards[1].values.push({
+              name: playerName,
+              value: participantRef.assists
+            });
+            if (
+              participantRef.assists > 12 &&
+              (andromedaAwards[1].referenceValue < participantRef.assists ||
+                !andromedaAwards[1].referenceValue)
+            ) {
+              andromedaAwards[1].referenceValue = participantRef.assists;
+            }
 
-          const bootsActivations = [
-            "Sprint Boots",
-            "Travel Boots",
-            "Journey Boots",
-            "War Treads",
-            "Halcyon Chargers",
-            "Teleport Boots"
-          ].reduce((accu, currVa) => {
-            return accu + (participantRef.itemUses[currVa] || 0);
-          }, 0);
-          andromedaAwards[4].values.push({
-            name: playerName,
-            value: bootsActivations
-          });
-          if (
-            bootsActivations > 8 &&
-            (andromedaAwards[4].referenceValue < bootsActivations ||
-              !andromedaAwards[4].referenceValue)
-          ) {
-            andromedaAwards[4].referenceValue = bootsActivations;
-          }
+            if (
+              participantRef.items
+                .slice(2)
+                .every((val, i, arr) => val === arr[0]) &&
+              Object.keys(participantRef.itemSells).length >= 3
+            ) {
+              andromedaAwards[2].values.push({
+                name: playerName
+              });
+            }
 
-          const fountainsGiven =
-            participantRef.itemUses["Fountain of Reneewal"] || 0;
-          andromedaAwards[5].values.push({
-            name: playerName,
-            value: fountainsGiven
-          });
-          if (
-            fountainsGiven > 4 &&
-            (andromedaAwards[5].referenceValue < fountainsGiven ||
-              !andromedaAwards[5].referenceValue)
-          ) {
-            andromedaAwards[5].referenceValue = fountainsGiven;
-          }
+            const drunken = participantRef.itemUses["Healing Flask"] || 0;
+            andromedaAwards[3].values.push({
+              name: playerName,
+              value: drunken
+            });
+            if (
+              drunken > 8 &&
+              (andromedaAwards[3].referenceValue < drunken ||
+                !andromedaAwards[3].referenceValue)
+            ) {
+              andromedaAwards[3].referenceValue = drunken;
+            }
 
-          const infused =
-            (participantRef.itemUses["Weapon Infusion"] || 0) +
-            (participantRef.itemUses["Crystal Infusion"] || 0);
-          andromedaAwards[6].values.push({
-            name: playerName,
-            value: infused
-          });
-          if (
-            infused > 3 &&
-            (andromedaAwards[6].referenceValue < infused ||
-              !andromedaAwards[6].referenceValue)
-          ) {
-            andromedaAwards[6].referenceValue = infused;
-          }
+            const bootsActivations = [
+              "Sprint Boots",
+              "Travel Boots",
+              "Journey Boots",
+              "War Treads",
+              "Halcyon Chargers",
+              "Teleport Boots"
+            ].reduce((accu, currVa) => {
+              return accu + (participantRef.itemUses[currVa] || 0);
+            }, 0);
+            andromedaAwards[4].values.push({
+              name: playerName,
+              value: bootsActivations
+            });
+            if (
+              bootsActivations > 8 &&
+              (andromedaAwards[4].referenceValue < bootsActivations ||
+                !andromedaAwards[4].referenceValue)
+            ) {
+              andromedaAwards[4].referenceValue = bootsActivations;
+            }
 
-          const candiesEaten = participantRef.itemUses["Minion Candy"] || 0;
-          andromedaAwards[7].values.push({
-            name: playerName,
-            value: candiesEaten
-          });
-          if (
-            candiesEaten > 0 &&
-            (andromedaAwards[7].referenceValue < candiesEaten ||
-              !andromedaAwards[7].referenceValue)
-          ) {
-            andromedaAwards[7].referenceValue = candiesEaten;
-          }
+            const fountainsGiven =
+              participantRef.itemUses["Fountain of Reneewal"] || 0;
+            andromedaAwards[5].values.push({
+              name: playerName,
+              value: fountainsGiven
+            });
+            if (
+              fountainsGiven > 4 &&
+              (andromedaAwards[5].referenceValue < fountainsGiven ||
+                !andromedaAwards[5].referenceValue)
+            ) {
+              andromedaAwards[5].referenceValue = fountainsGiven;
+            }
 
-          const visionProvided = [
-            "Vision Totem",
-            "Flare",
-            "Scout Trap",
-            "Flare Gun",
-            "Contraption",
-            "Flare Loader",
-            "ScoutTuff",
-            "SuperScout 2000"
-          ].reduce((accu, currVa) => {
-            return accu + (participantRef.itemUses[currVa] || 0);
-          }, 0);
-          andromedaAwards[8].values.push({
-            name: playerName,
-            value: visionProvided
-          });
-          if (
-            visionProvided > 10 &&
-            (andromedaAwards[8].referenceValue < visionProvided ||
-              !andromedaAwards[8].referenceValue)
-          ) {
-            andromedaAwards[8].referenceValue = visionProvided;
-          }
+            const infused =
+              (participantRef.itemUses["Weapon Infusion"] || 0) +
+              (participantRef.itemUses["Crystal Infusion"] || 0);
+            andromedaAwards[6].values.push({
+              name: playerName,
+              value: infused
+            });
+            if (
+              infused > 3 &&
+              (andromedaAwards[6].referenceValue < infused ||
+                !andromedaAwards[6].referenceValue)
+            ) {
+              andromedaAwards[6].referenceValue = infused;
+            }
 
-          andromedaAwards[9].values.push({
-            name: playerName,
-            value: participantRef.gold
-          });
-          if (
-            // divide this by game duration
-            participantRef.gold < 12000 &&
-            (andromedaAwards[9].referenceValue > participantRef.gold ||
-              !andromedaAwards[9].referenceValue)
-          ) {
-            andromedaAwards[9].referenceValue = participantRef.gold;
-          }
+            const candiesEaten = participantRef.itemUses["Minion Candy"] || 0;
+            andromedaAwards[7].values.push({
+              name: playerName,
+              value: candiesEaten
+            });
+            if (
+              candiesEaten > 0 &&
+              (andromedaAwards[7].referenceValue < candiesEaten ||
+                !andromedaAwards[7].referenceValue)
+            ) {
+              andromedaAwards[7].referenceValue = candiesEaten;
+            }
 
-          andromedaAwards[10].values.push({
-            name: playerName,
-            value: participantRef.farm
-          });
-          if (
-            participantRef.farm < 10 &&
-            (andromedaAwards[10].referenceValue > participantRef.farm ||
-              !andromedaAwards[10].referenceValue)
-          ) {
-            andromedaAwards[10].referenceValue = participantRef.farm;
+            const visionProvided = [
+              "Vision Totem",
+              "Flare",
+              "Scout Trap",
+              "Flare Gun",
+              "Contraption",
+              "Flare Loader",
+              "ScoutTuff",
+              "SuperScout 2000"
+            ].reduce((accu, currVa) => {
+              return accu + (participantRef.itemUses[currVa] || 0);
+            }, 0);
+            andromedaAwards[8].values.push({
+              name: playerName,
+              value: visionProvided
+            });
+            if (
+              visionProvided > 10 &&
+              (andromedaAwards[8].referenceValue < visionProvided ||
+                !andromedaAwards[8].referenceValue)
+            ) {
+              andromedaAwards[8].referenceValue = visionProvided;
+            }
+
+            andromedaAwards[9].values.push({
+              name: playerName,
+              value: participantRef.gold
+            });
+            if (
+              // divide this by game duration
+              participantRef.gold < 12000 &&
+              (andromedaAwards[9].referenceValue > participantRef.gold ||
+                !andromedaAwards[9].referenceValue)
+            ) {
+              andromedaAwards[9].referenceValue = participantRef.gold;
+            }
+
+            andromedaAwards[10].values.push({
+              name: playerName,
+              value: participantRef.farm
+            });
+            if (
+              participantRef.farm < 10 &&
+              (andromedaAwards[10].referenceValue > participantRef.farm ||
+                !andromedaAwards[10].referenceValue)
+            ) {
+              andromedaAwards[10].referenceValue = participantRef.farm;
+            }
           }
         }
       }

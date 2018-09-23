@@ -74,7 +74,7 @@ export default function MessageLayout({
               Join us on Sunday 9/23 on stream and win new hero and skins!
               Stream starts{" "}
               <span style={{ color: "HSLA(72, 96%, 54%, 1.00)" }}>
-                {moment("2018-09-23T12:50:00.000Z").fromNow()}
+                {moment("2018-09-23T13:00:00.000Z").fromNow()}
               </span>{" "}
               on{" "}
               <span style={{ textDecoration: "underline" }}>
@@ -97,7 +97,7 @@ export default function MessageLayout({
               Join us on Sunday 9/23 on stream and win new hero and skins!
               Stream starts{" "}
               <span style={{ color: "HSLA(72, 96%, 54%, 1.00)" }}>
-                {moment("2018-09-23T12:50:00.000Z").fromNow()}
+                {moment("2018-09-23T13:00:00.000Z").fromNow()}
               </span>{" "}
               on{" "}
               <span style={{ textDecoration: "underline" }}>
@@ -115,7 +115,7 @@ export default function MessageLayout({
             />
           </a>
         ) : new Date() > new Date("2018-09-23T12:50:00.000Z") &&
-        new Date() < new Date("2018-09-23T15:50:00.000Z") ? (
+        new Date() < new Date("2018-09-23T15:20:00.000Z") ? (
           <a href="https://twitch.tv/lookforward" target="_blank">
             <h3>
               Join us on NOW on stream and win new hero and skins! Stream is on{" "}

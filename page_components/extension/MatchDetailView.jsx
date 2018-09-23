@@ -720,68 +720,65 @@ export default function MatchDetailView({
           </Grid.Column>
         </Grid>
       </Segment>
-      {participantValues.andromedaAwards.length > 0 &&
-        (Math.floor(Math.random() * 4 + 1) === 1 ? (
-          <Segment
-            style={{
-              marginTop: "15px"
-            }}
-          >
-            <Label attached="top">Andromeda Extremely Serious Awards</Label>
-            <div>
-              <p style={{ textAlign: "center", fontStyle: "italic" }}>
-                'Stats you won't see on stream...'
-              </p>
-              <div
-                style={{
-                  display: "Flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textAlign: "center"
-                }}
-              >
-                {participantValues.andromedaAwards.map(category => (
-                  <p>
-                    <div
+      {participantValues.andromedaAwards.length > 0 && (
+        <Segment
+          style={{
+            marginTop: "15px"
+          }}
+        >
+          <Label attached="top">Andromeda Extremely Serious Awards</Label>
+          <div>
+            <p style={{ textAlign: "center", fontStyle: "italic" }}>
+              'Stats you won't see on stream...'
+            </p>
+            <div
+              style={{
+                display: "Flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center"
+              }}
+            >
+              {participantValues.andromedaAwards.map(category => (
+                <p>
+                  <div
+                    style={{
+                      display: "block",
+                      margin: "0 auto",
+                      borderRadius: "50%",
+                      backgroundColor: "HSLA(0, 100%, 100%, 0.1)",
+                      width: "45px",
+                      height: "45px"
+                    }}
+                  >
+                    <img
+                      src={`/static/img/trophies/${category.name}.png`}
                       style={{
+                        height: "45px",
                         display: "block",
-                        margin: "0 auto",
-                        borderRadius: "50%",
-                        backgroundColor: "HSLA(0, 100%, 100%, 0.1)",
-                        width: "45px",
-                        height: "45px"
+                        margin: "0"
                       }}
-                    >
-                      <img
-                        src={`/static/img/trophies/${category.name}.png`}
-                        style={{
-                          height: "45px",
-                          display: "block",
-                          margin: "0"
-                        }}
-                      />
-                    </div>
-                    <b>{category.name}</b>
-                    <br />
-                    {category.values
-                      .filter(
-                        v =>
-                          v.value === category.referenceValue ||
-                          (category.name === "Ashamed" && v.name)
-                      )
-                      .map(v => v.name)
-                      .join(", ")}{" "}
-                    – {`${category.referenceValue} `}
-                    {category.description}
-                  </p>
-                ))}
-              </div>
+                    />
+                  </div>
+                  <b>{category.name}</b>
+                  <br />
+                  {category.values
+                    .filter(
+                      v =>
+                        v.value === category.referenceValue ||
+                        (category.name === "Ashamed" && v.name)
+                    )
+                    .map(v => v.name)
+                    .join(", ")}{" "}
+                  – {`${category.referenceValue} `}
+                  {category.description}
+                </p>
+              ))}
             </div>
-          </Segment>
-        ) : (
-          <div />
-        ))}
+          </div>
+        </Segment>
+      )}
       <Segment
         style={{
           marginTop: "17px"

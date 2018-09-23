@@ -1,7 +1,8 @@
 import getConfig from "next/config";
 const { serverRuntimeConfig } = getConfig();
+import * as mcache from "memory-cache";
 
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 const router: Router = Router();
 // import cacheMW from "./../../functions/cacheMW";
 
@@ -23,76 +24,95 @@ export type IOutput = {
   error: boolean;
 };
 
-router.post("/", (req: Request, res: Response): void => {
-  console.log("gg14", req.body.match);
-  const matchData = req.body.match;
-  axios(matchData.telemetryURL)
-    .then((response): any => {
-      console.log("gg16");
-      console.log("obtaining telemetry with status", response.status);
-      return response.data;
-    })
-    .then((telemetryData: any): void => {
-      console.log("gg17");
-      retrieveSingleMatch(matchData).then(singleMatchData => {
-        const {
-          damagesData,
-          towersDamagesData,
-          banData,
-          creatures5v5,
-          draftOrder,
-          gameplayRoles
-        } = loopThroughTelemetry(telemetryData, matchData);
-        const output: IOutput = {
-          damagesData,
-          towersDamagesData,
-          banData,
-          singleMatchData,
-          creatures5v5,
-          draftOrder,
-          gameplayRoles,
-          error: false
-        };
-        console.log("gg18");
-        res.json(output);
-      });
-    })
-    .catch(error => {
-      console.log("gg19");
-      const output: IOutput = {
-        error: true
+router.post(
+  "/",
+  (req, res: any, next) => {
+    const key = "__telemetry__" + req.body.match.matchID;
+    const cachedBody = mcache.get(key);
+    if (cachedBody) {
+      console.log("Sending cached telemetry & SMD");
+      res.send(cachedBody);
+      return;
+    } else {
+      res.sendResponse = res.send;
+      res.send = body => {
+        mcache.put(key, body, 3600 * 1000);
+        res.sendResponse(body);
       };
-      res.status(404).json(output);
+      next();
+    }
+  },
+  (req, res): void => {
+    console.log("gg14");
+    const matchData = req.body.match;
+    axios(matchData.telemetryURL)
+      .then((response): any => {
+        console.log("gg16");
+        console.log("obtaining telemetry with status", response.status);
+        return response.data;
+      })
+      .then((telemetryData: any): void => {
+        console.log("gg17");
+        retrieveSingleMatch(matchData).then(singleMatchData => {
+          const {
+            damagesData,
+            towersDamagesData,
+            banData,
+            creatures5v5,
+            draftOrder,
+            gameplayRoles
+          } = loopThroughTelemetry(telemetryData, matchData);
+          const output: IOutput = {
+            damagesData,
+            towersDamagesData,
+            banData,
+            singleMatchData,
+            creatures5v5,
+            draftOrder,
+            gameplayRoles,
+            error: false
+          };
+          console.log("gg18");
+          res.json(output);
+        });
+      })
+      .catch(error => {
+        console.log("gg19");
+        const output: IOutput = {
+          error: true
+        };
+        res.status(404).json(output);
 
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
 
-        if (error.response.status == 404) {
+          if (error.response.status == 404) {
+            console.log(
+              `${JSON.stringify(error.response.data)} ${
+                error.response.status
+              } ${JSON.stringify(error.response.headers)}`
+            );
+          }
+
           console.log(
             `${JSON.stringify(error.response.data)} ${
               error.response.status
             } ${JSON.stringify(error.response.headers)}`
           );
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log("Error", error.message);
         }
-
-        console.log(
-          `${JSON.stringify(error.response.data)} ${
-            error.response.status
-          } ${JSON.stringify(error.response.headers)}`
-        );
-      } else if (error.request) {
-        // The request was made but no response was received
-        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-        // http.ClientRequest in node.js
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log("Error", error.message);
-      }
-      console.log(error.config);
-    });
-});
+        console.log(error.config);
+      });
+  }
+);
 
 // const calculateDamagesFromTelemetry = (
 //   telemetry: any,
