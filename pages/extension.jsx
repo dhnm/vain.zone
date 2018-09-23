@@ -328,17 +328,25 @@ class Extension extends React.Component {
       const farmArray = [];
       const skillTiers = [[], []];
       const andromedaAwards = [
-        { name: "Feeding Frenzy", values: [] },
-        { name: "Faithful Sidekick", values: [] },
-        { name: "Friend to Minions", values: [] },
-        { name: "Underfunded", values: [] },
-        { name: "Fly, you fools", values: [] },
-        { name: "Giver of Life", values: [] },
-        { name: "Pumped up", values: [] },
-        { name: "Sweet Tooth", values: [] },
-        { name: "Visionary", values: [] },
-        { name: "Drinking Problem", values: [] },
-        { name: "Ashamed", values: [] }
+        { name: "Feeding Frenzy", values: [], description: "deaths" },
+        { name: "Faithful Sidekick", values: [], description: "assists" },
+        { name: "Ashamed", values: [], description: "" },
+        {
+          name: "Drinking Problem",
+          values: [],
+          description: "flasks consumed"
+        },
+        {
+          name: "Fly, you fools",
+          values: [],
+          description: "boots activations"
+        },
+        { name: "Giver of Life", values: [], description: "fountains" },
+        { name: "Pumped up", values: [], description: "infusions" },
+        { name: "Sweet Tooth", values: [], description: "minion candies" },
+        { name: "Visionary", values: [], description: "vision items used" },
+        { name: "Underfunded", values: [], description: "gold" },
+        { name: "Friend to Minions", values: [], description: "minions killed" }
       ];
       for (
         let rosterIndex = 0;
@@ -365,8 +373,9 @@ class Extension extends React.Component {
             value: participantRef.deaths
           });
           if (
-            andromedaAwards[0].referenceValue < participantRef.deaths ||
-            !andromedaAwards[0].referenceValue
+            participantRef.deaths > 10 &&
+            (andromedaAwards[0].referenceValue < participantRef.deaths ||
+              !andromedaAwards[0].referenceValue)
           ) {
             andromedaAwards[0].referenceValue = participantRef.deaths;
           }
@@ -376,32 +385,35 @@ class Extension extends React.Component {
             value: participantRef.assists
           });
           if (
-            andromedaAwards[1].referenceValue < participantRef.assists ||
-            !andromedaAwards[1].referenceValue
+            participantRef.assists > 12 &&
+            (andromedaAwards[1].referenceValue < participantRef.assists ||
+              !andromedaAwards[1].referenceValue)
           ) {
             andromedaAwards[1].referenceValue = participantRef.assists;
           }
 
-          andromedaAwards[2].values.push({
-            name: playerName,
-            value: participantRef.farm
-          });
           if (
-            andromedaAwards[2].referenceValue > participantRef.farm ||
-            !andromedaAwards[2].referenceValue
+            participantRef.items
+              .slice(2)
+              .every((val, i, arr) => val === arr[0]) &&
+            Object.keys(participantRef.itemSells).length >= 3
           ) {
-            andromedaAwards[2].referenceValue = participantRef.farm;
+            andromedaAwards[2].values.push({
+              name: playerName
+            });
           }
 
+          const drunken = participantRef.itemUses["Healing Flask"] || 0;
           andromedaAwards[3].values.push({
             name: playerName,
-            value: participantRef.gold
+            value: drunken
           });
           if (
-            andromedaAwards[3].referenceValue > participantRef.gold ||
-            !andromedaAwards[3].referenceValue
+            drunken > 8 &&
+            (andromedaAwards[3].referenceValue < drunken ||
+              !andromedaAwards[3].referenceValue)
           ) {
-            andromedaAwards[3].referenceValue = participantRef.gold;
+            andromedaAwards[3].referenceValue = drunken;
           }
 
           const bootsActivations = [
@@ -419,8 +431,9 @@ class Extension extends React.Component {
             value: bootsActivations
           });
           if (
-            andromedaAwards[4].referenceValue < bootsActivations ||
-            !andromedaAwards[4].referenceValue
+            bootsActivations > 8 &&
+            (andromedaAwards[4].referenceValue < bootsActivations ||
+              !andromedaAwards[4].referenceValue)
           ) {
             andromedaAwards[4].referenceValue = bootsActivations;
           }
@@ -432,8 +445,9 @@ class Extension extends React.Component {
             value: fountainsGiven
           });
           if (
-            andromedaAwards[5].referenceValue < fountainsGiven ||
-            !andromedaAwards[5].referenceValue
+            fountainsGiven > 4 &&
+            (andromedaAwards[5].referenceValue < fountainsGiven ||
+              !andromedaAwards[5].referenceValue)
           ) {
             andromedaAwards[5].referenceValue = fountainsGiven;
           }
@@ -446,8 +460,9 @@ class Extension extends React.Component {
             value: infused
           });
           if (
-            andromedaAwards[6].referenceValue < infused ||
-            !andromedaAwards[6].referenceValue
+            infused > 3 &&
+            (andromedaAwards[6].referenceValue < infused ||
+              !andromedaAwards[6].referenceValue)
           ) {
             andromedaAwards[6].referenceValue = infused;
           }
@@ -458,8 +473,9 @@ class Extension extends React.Component {
             value: candiesEaten
           });
           if (
-            andromedaAwards[7].referenceValue < candiesEaten ||
-            !andromedaAwards[7].referenceValue
+            candiesEaten > 0 &&
+            (andromedaAwards[7].referenceValue < candiesEaten ||
+              !andromedaAwards[7].referenceValue)
           ) {
             andromedaAwards[7].referenceValue = candiesEaten;
           }
@@ -481,35 +497,42 @@ class Extension extends React.Component {
             value: visionProvided
           });
           if (
-            andromedaAwards[8].referenceValue < visionProvided ||
-            !andromedaAwards[8].referenceValue
+            visionProvided > 10 &&
+            (andromedaAwards[8].referenceValue < visionProvided ||
+              !andromedaAwards[8].referenceValue)
           ) {
             andromedaAwards[8].referenceValue = visionProvided;
           }
 
-          const drunken = participantRef.itemUses["Healing Flask"] || 0;
           andromedaAwards[9].values.push({
             name: playerName,
-            value: drunken
+            value: participantRef.gold
           });
           if (
-            andromedaAwards[9].referenceValue < drunken ||
-            !andromedaAwards[9].referenceValue
+            // divide this by game duration
+            participantRef.gold < 12000 &&
+            (andromedaAwards[9].referenceValue > participantRef.gold ||
+              !andromedaAwards[9].referenceValue)
           ) {
-            andromedaAwards[9].referenceValue = drunken;
+            andromedaAwards[9].referenceValue = participantRef.gold;
           }
 
+          andromedaAwards[10].values.push({
+            name: playerName,
+            value: participantRef.farm
+          });
           if (
-            participantRef.items
-              .slice(2)
-              .every((val, i, arr) => val === arr[0]) &&
-            Object.keys(participantRef.itemSells).length >= 3
+            participantRef.farm < 10 &&
+            (andromedaAwards[10].referenceValue > participantRef.farm ||
+              !andromedaAwards[10].referenceValue)
           ) {
-            andromedaAwards[0].values.push({
-              name: playerName
-            });
+            andromedaAwards[10].referenceValue = participantRef.farm;
           }
         }
+      }
+
+      if (andromedaAwards[2].values.length > 0) {
+        andromedaAwards[2].referenceValue = "sold entire build";
       }
       console.log("aa", andromedaAwards);
       return {
@@ -531,7 +554,9 @@ class Extension extends React.Component {
             )
           }
         ],
-        andromedaAwards
+        andromedaAwards: andromedaAwards
+          .filter(aa => typeof aa.referenceValue !== "undefined")
+          .slice(0, 3)
       };
     }
   });
