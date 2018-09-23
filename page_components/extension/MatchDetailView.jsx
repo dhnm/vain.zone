@@ -721,7 +721,7 @@ export default function MatchDetailView({
         </Grid>
       </Segment>
       {participantValues.andromedaAwards.length > 0 &&
-        (Math.floor(Math.random() * 5 + 1) === 1 ? (
+        (Math.floor(Math.random() * 4 + 1) === 1 ? (
           <Segment
             style={{
               marginTop: "15px"
