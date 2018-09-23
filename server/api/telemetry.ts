@@ -3,7 +3,7 @@ const { serverRuntimeConfig } = getConfig();
 
 import { Router, Request, Response } from "express";
 const router: Router = Router();
-import cacheMW from "./../../functions/cacheMW";
+// import cacheMW from "./../../functions/cacheMW";
 
 import axios from "axios";
 import * as moment from "moment";
@@ -23,7 +23,7 @@ export type IOutput = {
   error: boolean;
 };
 
-router.post("/", cacheMW(3600), (req: Request, res: Response): void => {
+router.post("/", (req: Request, res: Response): void => {
   console.log("gg14", req.body.match);
   const matchData = req.body.match;
   axios(matchData.telemetryURL)
