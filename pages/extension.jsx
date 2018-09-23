@@ -690,16 +690,18 @@ export default App;
 
 App.getInitialProps = async function getInitialProps({ query }) {
   try {
+    console.log("gg8");
     let urlPath = "https://vain.zone";
     if (process.env.NODE_ENV !== "production") {
       urlPath = "http://localhost:3000";
     }
-
+    console.log("gg9");
     if (!query.error || query.error === "false") {
       if (!query.extension || query.extension === "false") {
         if (!query.IGN && !query.playerID) {
           return { error: true, browserView: true };
         }
+        console.log("gg10");
         const requestData = await axios({
           method: "get",
           url: `${urlPath}/api/playerdata`,
@@ -709,6 +711,7 @@ App.getInitialProps = async function getInitialProps({ query }) {
           }
         });
         const data = await requestData.data;
+        console.log("gg11");
         if (data.error) {
           return {
             data: null,
@@ -776,6 +779,7 @@ App.getInitialProps = async function getInitialProps({ query }) {
       browserView: query.browserView
     };
   } catch (err) {
+    console.log("gg12");
     return {
       data: null,
       TLData: null,

@@ -22,6 +22,7 @@ export default function getData(params: {
         )
             .exec()
             .then(player => {
+                console.log("gg1");
                 if (player) {
                     playerDataFromDB = player;
                     return getPlayerFromAPI({
@@ -48,6 +49,7 @@ export default function getData(params: {
                 );
             })
             .then(player => {
+                console.log("gg2");
                 playerDataFromAPI = player;
                 if (playerDataFromDB) {
                     if (playerDataFromDB.name !== playerDataFromAPI.name) {
@@ -86,23 +88,27 @@ export default function getData(params: {
                         return Promise.resolve();
                     });
             })
-            .then(() =>
-                getUnfilteredMatchesData(
+            .then(() => {
+                console.log("gg3");
+                return getUnfilteredMatchesData(
                     playerDataFromAPI.playerID,
                     playerDataFromAPI.shardId
-                )
-            )
+                );
+            })
             .then(matches => {
+                console.log("gg4");
                 matchesFromAPI = matches;
                 return insertMatchesToDB(matches);
             })
             .then(() => {
+                console.log("gg5");
                 if (params.messenger) {
                     return Promise.resolve();
                 }
                 return aggregateData(playerDataFromAPI.playerID);
             })
             .then(playerMeta => {
+                console.log("gg6");
                 resolve({
                     player: {
                         ...playerDataFromAPI,
@@ -115,6 +121,7 @@ export default function getData(params: {
                 updatePlayerDB(playerDataFromDB, playerDataFromAPI);
             })
             .catch(err => {
+                console.log("gg7");
                 console.error(err);
                 reject(err);
             });
