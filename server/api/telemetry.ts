@@ -23,11 +23,9 @@ export type IOutput = {
   error: boolean;
 };
 
-router.get("/", cacheMW(3600), (req: Request, res: Response): void => {
-  console.log("gg14", req.query.match);
-  console.log(typeof JSON.parse(req.query.match));
-  console.log("gg15");
-  const matchData = JSON.parse(req.query.match);
+router.post("/", cacheMW(3600), (req: Request, res: Response): void => {
+  console.log("gg14", req.body.match);
+  const matchData = req.body.match;
   axios(matchData.telemetryURL)
     .then((response): any => {
       console.log("gg16");

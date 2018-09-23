@@ -63,6 +63,7 @@ export default function MessageLayout({
     <Segment basic>
       <div
         style={{
+          width: "100%",
           maxWidth: "480px",
           margin: "calc(1% + 5px) auto"
         }}
@@ -85,7 +86,8 @@ export default function MessageLayout({
               style={{
                 maxWidth: "480px",
                 display: "block",
-                borderRadius: "15px"
+                borderRadius: "15px",
+                maxWidth: "100%"
               }}
             />
           </a>
@@ -107,7 +109,8 @@ export default function MessageLayout({
               style={{
                 maxWidth: "480px",
                 display: "block",
-                borderRadius: "15px"
+                borderRadius: "15px",
+                maxWidth: "100%"
               }}
             />
           </a>
@@ -125,7 +128,8 @@ export default function MessageLayout({
               style={{
                 maxWidth: "480px",
                 display: "block",
-                borderRadius: "15px"
+                borderRadius: "15px",
+                maxWidth: "100%"
               }}
             />
           </a>

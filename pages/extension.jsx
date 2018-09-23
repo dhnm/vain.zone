@@ -140,9 +140,9 @@ class Extension extends React.Component {
       this.setState({ appLoading: true });
       const that = this;
       axios({
-        method: "get",
+        method: "post",
         url: "/api/telemetry",
-        params: {
+        data: {
           match: this.state.data.matches[index]
         }
       })
@@ -745,13 +745,12 @@ App.getInitialProps = async function getInitialProps({ query }) {
           };
         }
         console.log("gg12");
-        const requestProcessedTelemetry = await axios({
-          method: "get",
-          url: `${urlPath}/api/telemetry`,
-          params: {
+        const requestProcessedTelemetry = await axios.post(
+          `${urlPath}/api/telemetry`,
+          {
             match: data.matches[0]
           }
-        });
+        );
         const processedTelemetry = await requestProcessedTelemetry.data;
         console.log("gg13");
         return {
