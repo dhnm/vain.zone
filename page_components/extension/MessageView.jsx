@@ -68,88 +68,21 @@ export default function MessageLayout({
           margin: "calc(1% + 5px) auto"
         }}
       >
-        {new Date() > new Date("2018-09-22T16:00:00.000Z") ? (
-          <a href="https://twitch.tv/lookforward" target="_blank">
-            <h3>
-              Join us on Sunday 9/23 on stream and win new hero and skins!
-              Stream starts{" "}
-              <span style={{ color: "HSLA(72, 96%, 54%, 1.00)" }}>
-                {moment("2018-09-23T13:00:00.000Z").fromNow()}
-              </span>{" "}
-              on{" "}
-              <span style={{ textDecoration: "underline" }}>
-                twitch.tv/lookforward
-              </span>
-            </h3>
+        {browserView && (
+          <Link prefetch href={`/extension/player?browserView=true`} as="/">
             <img
-              src="/static/img/promo/social_vaingloryautumn_vainzone_promo.jpg"
+              src="/static/img/draft/VAINZONE-logo-darkbg.png"
+              alt="VAIN.ZONE"
               style={{
-                maxWidth: "480px",
+                width: "200px",
                 display: "block",
-                borderRadius: "15px",
-                maxWidth: "100%"
+                margin: "auto",
+                marginTop: !errorType && browserView ? "10%" : null,
+                marginBottom: "14px",
+                cursor: "pointer"
               }}
             />
-          </a>
-        ) : new Date() > new Date("2018-09-23T02:00:01.000Z") ? (
-          <a href="https://twitch.tv/lookforward" target="_blank">
-            <h3>
-              Join us on Sunday 9/23 on stream and win new hero and skins!
-              Stream starts{" "}
-              <span style={{ color: "HSLA(72, 96%, 54%, 1.00)" }}>
-                {moment("2018-09-23T13:00:00.000Z").fromNow()}
-              </span>{" "}
-              on{" "}
-              <span style={{ textDecoration: "underline" }}>
-                twitch.tv/lookforward
-              </span>
-            </h3>
-            <img
-              src="/static/img/promo/today_social_vaingloryautumn_vainzone_promo.jpg"
-              style={{
-                maxWidth: "480px",
-                display: "block",
-                borderRadius: "15px",
-                maxWidth: "100%"
-              }}
-            />
-          </a>
-        ) : new Date() > new Date("2018-09-23T12:50:00.000Z") &&
-        new Date() < new Date("2018-09-23T15:20:00.000Z") ? (
-          <a href="https://twitch.tv/lookforward" target="_blank">
-            <h3>
-              Join us on NOW on stream and win new hero and skins! Stream is on{" "}
-              <span style={{ textDecoration: "underline" }}>
-                twitch.tv/lookforward
-              </span>
-            </h3>
-            <img
-              src="/static/img/promo/now_social_vaingloryautumn_vainzone_promo.jpg"
-              style={{
-                maxWidth: "480px",
-                display: "block",
-                borderRadius: "15px",
-                maxWidth: "100%"
-              }}
-            />
-          </a>
-        ) : (
-          browserView && (
-            <Link prefetch href={`/extension/player?browserView=true`} as="/">
-              <img
-                src="/static/img/draft/VAINZONE-logo-darkbg.png"
-                alt="VAIN.ZONE"
-                style={{
-                  width: "200px",
-                  display: "block",
-                  margin: "auto",
-                  marginTop: !errorType && browserView ? "10%" : null,
-                  marginBottom: "14px",
-                  cursor: "pointer"
-                }}
-              />
-            </Link>
-          )
+          </Link>
         )}
       </div>
       <div style={{ maxWidth: "414px", margin: "auto" }}>
