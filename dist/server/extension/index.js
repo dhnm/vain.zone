@@ -15,6 +15,7 @@ exports.default = (nextApp) => {
     router.get("/player/:IGN", (req, res) => {
         nextApp.render(req, res, "/extension", {
             IGN: req.params.IGN,
+            playerID: req.query.playerID,
             error: false,
             extension: false
         });
@@ -38,6 +39,7 @@ exports.default = (nextApp) => {
             .then(axiosData => {
             nextApp.render(req, res, "/extension", {
                 IGN: req.params.IGN,
+                playerID: req.query.playerID,
                 error: false,
                 extension: false,
                 matchData: {
@@ -50,6 +52,7 @@ exports.default = (nextApp) => {
             console.error(err.message);
             nextApp.render(req, res, "/extension", {
                 IGN: req.params.IGN,
+                playerID: req.query.playerID,
                 error: false,
                 extension: false
             });

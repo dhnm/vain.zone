@@ -42,8 +42,7 @@ router.get("/", cacheMW_1.default(64800), (_, res) => {
     CzSk_1.CzSk.find({})
         .exec()
         .then(czSkPlayers => Player_1.Player.find({
-        name: { $in: czSkPlayers.map(p => p.name) },
-        exists: true
+        name: { $in: czSkPlayers.map(p => p.name) }
     }).exec())
         .then(players => {
         if (players && players.length > 0) {

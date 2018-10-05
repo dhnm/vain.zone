@@ -5,6 +5,7 @@ const { serverRuntimeConfig } = config_1.default();
 const express_1 = require("express");
 const router = express_1.Router();
 const BotUser_1 = require("./../../models/BotUser");
+const Player_1 = require("./../../models/Player");
 const getData_1 = require("./../../functions/getData");
 const skillTierCalculator_1 = require("./../../functions/skillTierCalculator");
 const axios_1 = require("axios");
@@ -106,19 +107,57 @@ const getPlayerInfo = (params) => {
     })
         .catch(err => {
         console.error("messenger err", err);
-        if (err.error && typeof err.error === "string") {
-            if (err.error.indexOf("404") > -1) {
+        if (err && typeof err.message === "string") {
+            if (err.message.indexOf("404") > -1) {
                 sendSystemMessage(params.userID, "Player not found :(\n\n- Please check the spelling and capitalisation of the nick.\n\n- Maybe the player has changed their nick?\n");
+                if (params.IGN) {
+                    Player_1.Player.find({ IGNHistory: params.IGN, name: { $exists: true } })
+                        .exec()
+                        .then(players => {
+                        if (players && players.length) {
+                            if (players.length === 1) {
+                                callSendAPI({
+                                    messaging_type: "RESPONSE",
+                                    recipient: {
+                                        id: params.userID
+                                    },
+                                    message: {
+                                        attachment: {
+                                            type: "template",
+                                            payload: {
+                                                template_type: "button",
+                                                text: `${players[0].name} was previously known as ${params.IGN}. Maybe you wanted to search ${players[0].name} instead?`,
+                                                buttons: [
+                                                    {
+                                                        title: "Search",
+                                                        type: "postback",
+                                                        payload: `playerdetails ${players[0].name}`
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                sendTextMessage(params.userID, `The following players were previously known as ${params.IGN}. Maybe you wanted to search one of them?\n\n${players
+                                    .map(p => p.name)
+                                    .join("\n")}`);
+                            }
+                        }
+                    })
+                        .catch(err => console.error(err));
+                }
             }
-            else if (err.error.indexOf("veryold") > -1) {
-                sendSystemMessage(params.userID, "Long time no see :(\n\nThe player hasn't played Vainglory for a long time. We don't have data for them.\n");
+            else if (err.message.indexOf("veryold") > -1) {
+                sendTextMessage(params.userID, "Long time no see :(\n\nThe player hasn't played Vainglory for a long time. We don't have data for them.\n");
             }
             else {
-                sendSystemMessage(params.userID, "Something went wrong.\n\nThere is probably an issue with SEMC (developers of Vainglory), try again later.\n");
+                sendTextMessage(params.userID, "Something went wrong.\n\nThere is probably an issue with SEMC (developers of Vainglory), try again later.\n");
             }
         }
         else {
-            sendSystemMessage(params.userID, "2 Something went wrong.\n\nThere is probably an issue with SEMC (developers of Vainglory), try again later.\n");
+            sendTextMessage(params.userID, "2 Something went wrong.\n\nThere is probably an issue with SEMC (developers of Vainglory), try again later.\n");
         }
     });
 };
@@ -403,7 +442,7 @@ const sendPlayerInfo = (userID, player) => {
                     buttons: [
                         {
                             type: "web_url",
-                            url: "https://vain.zone/extension/player/" + player.name,
+                            url: `https://vain.zone/extension/player/${player.name}?playerID=${player.playerID}`,
                             title: "See more",
                             webview_height_ratio: "full",
                             webview_share_button: "hide",

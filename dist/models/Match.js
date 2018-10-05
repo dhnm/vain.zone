@@ -29,6 +29,8 @@ const matchSchema = new mongoose_1.Schema({
                     firstAfkTime: Number,
                     gold: Number,
                     items: [String],
+                    itemSells: mongoose_1.Schema.Types.Mixed,
+                    itemUses: mongoose_1.Schema.Types.Mixed,
                     jungleKills: Number,
                     nonJungleMinionKills: Number,
                     farm: Number,

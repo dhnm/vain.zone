@@ -10,14 +10,29 @@ function getData(params) {
         let playerDataFromDB;
         let playerDataFromAPI;
         let matchesFromAPI;
-        Player_1.Player.findOne(params.IGN ? { name: params.IGN } : { playerID: params.playerID })
+        Player_1.Player.findOne(params.playerID
+            ? { playerID: params.playerID }
+            : { name: params.IGN })
             .exec()
             .then(player => {
+            console.log("gg1");
             if (player) {
                 playerDataFromDB = player;
                 return getPlayerFromAPI({
                     playerID: player.playerID,
                     shardId: player.shardId
+                }).catch(err => {
+                    if (err.message == "404") {
+                        player.IGNHistory.push(player.name);
+                        player.name = undefined;
+                        player.oldPlayerID = player.playerID;
+                        player.playerID = undefined;
+                        player.save();
+                    }
+                    if (params.IGN) {
+                        return getPlayerFromAPI({ IGN: params.IGN });
+                    }
+                    return err;
                 });
             }
             return getPlayerFromAPI(params.playerID
@@ -25,6 +40,7 @@ function getData(params) {
                 : { IGN: params.IGN });
         })
             .then(player => {
+            console.log("gg2");
             playerDataFromAPI = player;
             if (playerDataFromDB) {
                 if (playerDataFromDB.name !== playerDataFromAPI.name) {
@@ -57,18 +73,24 @@ function getData(params) {
                 return Promise.resolve();
             });
         })
-            .then(() => getUnfilteredMatchesData(playerDataFromAPI.playerID, playerDataFromAPI.shardId))
+            .then(() => {
+            console.log("gg3");
+            return getUnfilteredMatchesData(playerDataFromAPI.playerID, playerDataFromAPI.shardId);
+        })
             .then(matches => {
+            console.log("gg4");
             matchesFromAPI = matches;
             return insertMatchesToDB(matches);
         })
             .then(() => {
+            console.log("gg5");
             if (params.messenger) {
                 return Promise.resolve();
             }
             return aggregateData(playerDataFromAPI.playerID);
         })
             .then(playerMeta => {
+            console.log("gg6");
             resolve({
                 player: {
                     ...playerDataFromAPI,
@@ -81,6 +103,7 @@ function getData(params) {
             updatePlayerDB(playerDataFromDB, playerDataFromAPI);
         })
             .catch(err => {
+            console.log("gg7");
             console.error(err);
             reject(err);
         });
@@ -673,6 +696,29 @@ function formatMatch(match, included) {
             const participant = included.find((e) => e.id ===
                 roster.relationships.participants.data[participantIndex].id);
             const player = included.find((e) => e.id === participant.relationships.player.data.id);
+            const itemSells = {};
+            Object.keys(participant.attributes.stats.itemSells).forEach(i => {
+                if (["*Item_ScoutPak*", "*Item_ScoutTuff*"].indexOf(i) > -1) {
+                    itemSells[i.slice(6, -1)] =
+                        participant.attributes.stats.itemSells[i];
+                }
+                else if (i === "*Item_SuperScout2000") {
+                    itemSells[i.slice(6, -1)] = "SuperScout 2000";
+                }
+                itemSells[i
+                    .slice(6, -1)
+                    .replace(/([A-Z])/g, " $1")
+                    .trim()] =
+                    participant.attributes.stats.itemSells[i];
+            });
+            const itemUses = {};
+            Object.keys(participant.attributes.stats.itemUses).forEach(i => {
+                itemUses[i
+                    .slice(6, -1)
+                    .replace(/([A-Z])/g, " $1")
+                    .trim()] =
+                    participant.attributes.stats.itemUses[i];
+            });
             const customParticipantDataModel = {
                 actor: participant.attributes.actor.slice(1, -1),
                 kills: participant.attributes.stats.kills,
@@ -681,6 +727,8 @@ function formatMatch(match, included) {
                 firstAfkTime: participant.attributes.stats.firstAfkTime,
                 gold: participant.attributes.stats.gold,
                 items: participant.attributes.stats.items,
+                itemSells,
+                itemUses,
                 jungleKills: participant.attributes.stats.jungleKills,
                 nonJungleMinionKills: participant.attributes.stats.nonJungleMinionKills,
                 farm: participant.attributes.stats.farm,

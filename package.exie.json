@@ -2,18 +2,19 @@
   "name": "vain.zone",
   "version": "2.0.0",
   "engines": {
-    "node": "10.11.0",
-    "npm": "6.4.1"
+    "node": "9.11.1",
+    "npm": "6.1.0"
   },
   "description": "",
   "main": "dist/server/index.js",
   "scripts": {
     "dev": "nodemon server/index.ts",
     "build":
-      "NODE_ENV=production next build && tsc --project tsconfig.server.json",
+      "NODE_ENV=production ./node_modules/next/dist/bin/next-build && ./node_modules/typescript/bin/tsc --project tsconfig.server.json",
     "export": "next export",
     "postinstall": "npm run build",
-    "start": "NODE_ENV=production node dist/server/index.js"
+    "start":
+      "NODE_ENV=production /container/home/local/bin/node dist/server/index.js"
   },
   "keywords": [],
   "author": "Dinh Huy Nhat Minh",

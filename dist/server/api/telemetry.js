@@ -2,21 +2,41 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = require("next/config");
 const { serverRuntimeConfig } = config_1.default();
+const mcache = require("memory-cache");
 const express_1 = require("express");
 const router = express_1.Router();
-const cacheMW_1 = require("./../../functions/cacheMW");
+// import cacheMW from "./../../functions/cacheMW";
 const axios_1 = require("axios");
 const moment = require("moment");
 const constants_1 = require("./../../functions/constants");
 exports.default = router;
-router.get("/", cacheMW_1.default(3600), (req, res) => {
-    const matchData = JSON.parse(req.query.match);
+router.post("/", (req, res, next) => {
+    const key = "__telemetry__" + req.body.match.matchID;
+    const cachedBody = mcache.get(key);
+    if (cachedBody) {
+        console.log("Sending cached telemetry & SMD");
+        res.send(cachedBody);
+        return;
+    }
+    else {
+        res.sendResponse = res.send;
+        res.send = body => {
+            mcache.put(key, body, 3600 * 1000);
+            res.sendResponse(body);
+        };
+        next();
+    }
+}, (req, res) => {
+    console.log("gg14");
+    const matchData = req.body.match;
     axios_1.default(matchData.telemetryURL)
         .then((response) => {
+        console.log("gg16");
         console.log("obtaining telemetry with status", response.status);
         return response.data;
     })
         .then((telemetryData) => {
+        console.log("gg17");
         retrieveSingleMatch(matchData).then(singleMatchData => {
             const { damagesData, towersDamagesData, banData, creatures5v5, draftOrder, gameplayRoles } = loopThroughTelemetry(telemetryData, matchData);
             const output = {
@@ -29,10 +49,12 @@ router.get("/", cacheMW_1.default(3600), (req, res) => {
                 gameplayRoles,
                 error: false
             };
+            console.log("gg18");
             res.json(output);
         });
     })
         .catch(error => {
+        console.log("gg19");
         const output = {
             error: true
         };

@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const playerSchema = new mongoose_1.Schema({
     exists: Boolean,
-    retrieval: { type: Date, default: Date.now },
-    playerID: { type: String, required: true, unique: true },
+    playerID: { type: String, unique: true, sparse: true },
+    oldPlayerID: String,
     name: { type: String, unique: true, sparse: true },
-    IGNHistory: [String],
+    IGNHistory: { type: [String], default: [] },
     shardId: String,
     createdAt: Date,
     patchVersion: String,
