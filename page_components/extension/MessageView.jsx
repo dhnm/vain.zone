@@ -142,11 +142,6 @@ export default function MessageLayout({
               Welcome to VAIN.ZONE Beta! Type your nick in the box above and hit
               Enter.
             </p>
-            <p style={{ textAlign: "center" }}>
-              NEW: Enjoy our beautiful Autumn Season 2018 update. We implemented
-              massive behind-the-scene improvements that will allow us to make
-              VAIN.ZONE even better in the future!
-            </p>
           </React.Fragment>
         )}
       </div>
