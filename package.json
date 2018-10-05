@@ -1,6 +1,6 @@
 {
   "name": "vain.zone",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "engines": {
     "node": "10.11.0",
     "npm": "6.4.1"
