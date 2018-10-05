@@ -140,7 +140,7 @@ export default function MessageLayout({
           <React.Fragment>
             <p>
               Welcome to VAIN.ZONE Beta! Type your nick in the box above and hit
-              Enter.
+              Enter
             </p>
           </React.Fragment>
         )}
