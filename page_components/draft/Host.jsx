@@ -12,7 +12,7 @@ import DraftBuilder from "./DraftBuilder";
 import ProfileItem from "./ProfileItem";
 
 const defaultHeroes = [
-  { name: "Yates" },
+  { name: "Inara" },
   { name: "Adagio" },
   { name: "Alpha" },
   { name: "Anka" },
@@ -55,7 +55,8 @@ const defaultHeroes = [
   { name: "Taka" },
   { name: "Tony" },
   { name: "Varya" },
-  { name: "Vox" }
+  { name: "Vox" },
+  { name: "Yates" }
 ];
 
 const draftProfiles = [

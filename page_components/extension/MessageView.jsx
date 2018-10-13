@@ -140,7 +140,7 @@ export default function MessageLayout({
           <React.Fragment>
             <p>
               Welcome to VAIN.ZONE Beta! Type your nick in the box above and hit
-              Enter
+              Enter.
             </p>
           </React.Fragment>
         )}
@@ -266,7 +266,8 @@ class News extends React.Component {
                   boxSizing: "border-box",
                   ":hover": {
                     transform: "translateY(-3px)"
-                  }
+                  },
+                  display: "none"
                 })}
               >
                 <h3
