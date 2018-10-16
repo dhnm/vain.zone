@@ -253,7 +253,8 @@ class News extends React.Component {
                 {...css({
                   width: "320px",
                   height: "120px",
-                  display: "flex",
+                  // display: "flex",
+                  display: "none",
                   alignItems: "center",
                   justifyContent: "center",
                   flexDirection: "column",
@@ -266,8 +267,7 @@ class News extends React.Component {
                   boxSizing: "border-box",
                   ":hover": {
                     transform: "translateY(-3px)"
-                  },
-                  display: "none"
+                  }
                 })}
               >
                 <h3
