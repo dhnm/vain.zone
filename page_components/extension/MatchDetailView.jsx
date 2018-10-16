@@ -161,23 +161,6 @@ export default function MatchDetailView({
         margin: "auto"
       }}
     >
-      {(TLData.gameplayRoles.mode === "5v5" ||
-        TLData.gameplayRoles.mode === "3v3") && (
-        <Message color="blue" icon>
-          <Icon name="warning circle" />
-          <Message.Content>
-            Advanced Role Detection (carry/jungle/support/etc.) is in alpha.
-            Please report to us if you see something wrong.{" "}
-            <a
-              target="_blank"
-              href={publicRuntimeConfig.discordInviteLink}
-              style={{ color: "HSLA(206, 66%, 57%, 1.00)" }}
-            >
-              We are on Discord.
-            </a>
-          </Message.Content>
-        </Message>
-      )}
       <div ref={childRef}>
         <Segment
           id="matchDetailView"
