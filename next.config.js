@@ -24,7 +24,7 @@ module.exports = (phase, { defaultConfig }) => {
       fbAppID: "617200295335676",
       fbMessengerVerifyToken: "vgeuverify",
       fbMessengerAccessToken:
-        "EAAIxVyRb1vwBAHhU8w9UNT7G5mv9CR7oPra44BXAHS6PwVkf7OOwR5bKZCCXbZB0l2IJ01b7HxonqYrtUyg9d7w2ykbW5dlhZCbkZCxRxThgJQ9nZAhHHwBTH8CxPhyl2ftVi8UNv36EwLKPyOpDtuKmhDQgfoaNclpMjxf1ZCoAZDZD"
+        "EAAIxVyRb1vwBANuDITendkDbFYKffvdKC4qcHuz8iWdusIX5hiWCPc9ILq6n96Q3XXzC53S9Wi8gtzONZCycVcZBO9nJNsC1fonE5154EnC1a8zdz2TkJ9XgfP1kUGjyrIQ10XRjhRCxeF9exE8fZCDGDzAFacrEWJoPuNZBBwZDZD"
     },
     publicRuntimeConfig: {
       currentSeasonPatch: "3.7",
