@@ -89,7 +89,7 @@ export default function ParticipantCard({
       </Dimmer>
       <Card.Content style={{ padding: "1px 3px 3px 2px", color: "hsla(0, 0%, 100%, 1)" }}>
         {(roleDetectionOn === "5v5" || roleDetectionOn === "3v3") && <svg style={{ display: "inline-block", padding: "2px 0", float: side }} width="29px" height="29px" viewBox="0 0 1024 1024">
-            <path style={{ fill: "HSLA(178, 2%, 89%, 1.00)" }} d={gameplayRole ? ICONS[gameplayRole.split(":")[1]] : ICONS.carry} />
+            <path style={{ fill: gloryGuide === "light" ? "hsl(0, 15%, 13%)" : "hsl(178, 2%, 89%)" }} d={gameplayRole ? ICONS[gameplayRole.split(":")[1]] : ICONS.carry} />
           </svg>}
         {roleDetectionOn === "brawl" && <React.Fragment>
             <Image src={gameplayRole && gameplayRole.rarity ? `/static/img/talents/c/${participant.actor}_${gameplayRole.rarity}.png` : "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="} style={{ filter: afkFilter, margin: "0", marginRight: side === "left" ? "5px" : null, marginLeft: side === "right" ? "5px" : null, boxSizing: "border-box", height: "29px", zIndex: 100, borderRadius: "50%" }} floated={side} />
