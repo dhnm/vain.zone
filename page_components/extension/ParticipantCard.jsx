@@ -130,7 +130,7 @@ export default function ParticipantCard({
         {guildTag ? <Label style={{ fontSize: "0.72rem", color: uiFontColor, fontWeight: "normal", padding: "2px 2px", marginLeft: "-1px", marginRight: "-1px" }}>
             {guildTag}
           </Label> : <React.Fragment>&nbsp;</React.Fragment>}
-        <div style={{ fontSize: "0.8rem", display: "flex", justifyContent: "space-between", margin: "0 2px", marginTop: "0px", lineHeight: "0.85rem" }}>
+        <div style={{ fontSize: "0.8rem", display: "flex", justifyContent: "space-between", margin: "0 2px", marginTop: "0px", lineHeight: "0.85rem", color: uiFontColor }}>
           <span>
             <strong>
               {participant.kills}/{participant.deaths}/{participant.assists}

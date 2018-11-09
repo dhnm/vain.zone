@@ -512,17 +512,18 @@ class Extension extends React.Component {
               andromedaAwards[8].referenceValue = visionProvided;
             }
 
+            const participantGoldFloored = Math.floor(participantRef.gold);
             andromedaAwards[9].values.push({
               name: playerName,
-              value: participantRef.gold
+              value: participantGoldFloored
             });
             if (
               // divide this by game duration
-              participantRef.gold < 12000 &&
-              (andromedaAwards[9].referenceValue > participantRef.gold ||
+              participantGoldFloored < 12000 &&
+              (andromedaAwards[9].referenceValue > participantGoldFloored ||
                 !andromedaAwards[9].referenceValue)
             ) {
-              andromedaAwards[9].referenceValue = participantRef.gold;
+              andromedaAwards[9].referenceValue = participantGoldFloored;
             }
 
             andromedaAwards[10].values.push({
@@ -543,7 +544,7 @@ class Extension extends React.Component {
       if (andromedaAwards[2].values.length > 0) {
         andromedaAwards[2].referenceValue = "sold entire build";
       }
-      console.log("aa", andromedaAwards);
+
       return {
         maxGold: Math.max(...goldArray),
         maxFarm: Math.max(...farmArray),
