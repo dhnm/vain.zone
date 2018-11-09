@@ -84,7 +84,7 @@ export default function ParticipantCard({
 
   return <Card style={{ color: "initial", margin: "2px 1px 2px 0", background: cardBg, boxShadow: "none" } // fluid
       }>
-      <Dimmer active={appLoading}>
+      <Dimmer active={appLoading} inverted={gloryGuide === "light"}>
         <Loader />
       </Dimmer>
       <Card.Content style={{ padding: "1px 3px 3px 2px", color: "hsla(0, 0%, 100%, 1)" }}>
@@ -93,7 +93,7 @@ export default function ParticipantCard({
           </svg>}
         {roleDetectionOn === "brawl" && <React.Fragment>
             <Image src={gameplayRole && gameplayRole.rarity ? `/static/img/talents/c/${participant.actor}_${gameplayRole.rarity}.png` : "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="} style={{ filter: afkFilter, margin: "0", marginRight: side === "left" ? "5px" : null, marginLeft: side === "right" ? "5px" : null, boxSizing: "border-box", height: "29px", zIndex: 100, borderRadius: "50%" }} floated={side} />
-            <div style={{ position: "absolute", right: side === "right" ? "2px" : null, zIndex: 200, height: "29px", display: "flex", alignItems: "flex-end", fontSize: "0.7rem", lineHeight: "0.75rem" }}>
+            <div style={{ position: "absolute", right: side === "right" ? "2px" : null, zIndex: 200, height: "29px", display: "flex", alignItems: "flex-end", fontSize: "0.7rem", lineHeight: "0.75rem", color: uiFontColor }}>
               {gameplayRole && gameplayRole.level}
             </div>
           </React.Fragment>}
