@@ -163,7 +163,8 @@ export default function ParticipantCard({
                   style={{
                     maxWidth: "3.5rem",
                     margin: "0",
-                    padding: "0 1.5px"
+                    padding: "0 1.5px",
+                    opacity: item === "empty" ? "0.1" : "1"
                   }}
                 />
               </Grid.Column>

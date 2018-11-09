@@ -311,7 +311,8 @@ class News extends React.Component {
                 transition: "100ms linear",
                 ":hover": {
                   transform: "translateY(-3px)"
-                }
+                },
+                display: "none"
               })}
             >
               <h3

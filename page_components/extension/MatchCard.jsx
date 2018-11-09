@@ -80,9 +80,9 @@ export default function MatchCard({
   );
 
   const uiFontColor = uiLight ? "black" : "white";
-  const menuItemBg = uiLight ? "white" : "hsla(0, 0%, 10%, 1.0)";
+  const menuItemBg = uiLight ? "hsl(0, 0%, 100%)" : "hsla(0, 0%, 10%, 1.0)";
   const activeMenuItemBg = uiLight
-    ? "hsl(0, 0%, 0.91);"
+    ? "hsl(0, 0%, 91%)"
     : "hsla(0, 0%, 10%, 0.6)";
 
   return (
@@ -394,7 +394,8 @@ export default function MatchCard({
                           width: "35px",
                           height: "35px",
                           margin: 0,
-                          margin: "1px 1px 0 1px"
+                          margin: "1px 1px 0 1px",
+                          opacity: item === "empty" ? "0.1" : "1"
                         }}
                         key={index}
                       />

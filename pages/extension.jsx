@@ -632,7 +632,7 @@ function App(props) {
   return (
     <div id="container">
       <Head>
-        <title>VAIN.ZONE</title>
+        <title>vain.zone</title>
         <link
           rel="stylesheet"
           href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css"
