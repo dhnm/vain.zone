@@ -88,7 +88,7 @@ function MatchesSidebar({
           floating
           labeled
           button
-          className={`icon${uiLight ? "white" : " black"}`}
+          className={`icon${uiLight ? " white" : " black"}`}
           style={{
             verticalAlign: "top",
             width: screenCategory === "wide" ? "100%" : "calc(50% - 4px)",

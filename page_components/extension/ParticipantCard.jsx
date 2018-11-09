@@ -82,93 +82,22 @@ export default function ParticipantCard({
 
   const uiFontColor = gloryGuide === "light" ? "black" : "white";
 
-  return (
-    <Card
-      // fluid
-      style={{
-        color: "initial",
-        margin: "2px 1px 2px 0",
-        background: cardBg,
-        boxShadow: "none"
-      }}
-    >
+  return <Card style={{ color: "initial", margin: "2px 1px 2px 0", background: cardBg, boxShadow: "none" } // fluid
+      }>
       <Dimmer active={appLoading}>
         <Loader />
       </Dimmer>
-      <Card.Content
-        style={{ padding: "1px 3px 3px 2px", color: "hsla(0, 0%, 100%, 1)" }}
-      >
-        {(roleDetectionOn === "5v5" || roleDetectionOn === "3v3") && (
-          <svg
-            style={{
-              display: "inline-block",
-              padding: "2px 0",
-              float: side
-            }}
-            width="29px"
-            height="29px"
-            viewBox="0 0 1024 1024"
-          >
-            <path
-              style={{ fill: "HSLA(178, 2%, 89%, 1.00)" }}
-              d={gameplayRole ? ICONS[gameplayRole.split(":")[1]] : ICONS.carry}
-            />
-          </svg>
-        )}
-        {roleDetectionOn === "brawl" && (
-          <React.Fragment>
-            <Image
-              src={
-                gameplayRole && gameplayRole.rarity
-                  ? `/static/img/talents/c/${participant.actor}_${
-                      gameplayRole.rarity
-                    }.png`
-                  : "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
-              }
-              style={{
-                filter: afkFilter,
-                margin: "0",
-                marginRight: side === "left" ? "5px" : null,
-                marginLeft: side === "right" ? "5px" : null,
-                boxSizing: "border-box",
-                height: "29px",
-                zIndex: 100,
-                borderRadius: "50%"
-              }}
-              floated={side}
-            />
-            <div
-              style={{
-                position: "absolute",
-                right: side === "right" ? "2px" : null,
-                zIndex: 200,
-                height: "29px",
-                display: "flex",
-                alignItems: "flex-end",
-                fontSize: "0.7rem",
-                lineHeight: "0.75rem"
-              }}
-            >
+      <Card.Content style={{ padding: "1px 3px 3px 2px", color: "hsla(0, 0%, 100%, 1)" }}>
+        {(roleDetectionOn === "5v5" || roleDetectionOn === "3v3") && <svg style={{ display: "inline-block", padding: "2px 0", float: side }} width="29px" height="29px" viewBox="0 0 1024 1024">
+            <path style={{ fill: "HSLA(178, 2%, 89%, 1.00)" }} d={gameplayRole ? ICONS[gameplayRole.split(":")[1]] : ICONS.carry} />
+          </svg>}
+        {roleDetectionOn === "brawl" && <React.Fragment>
+            <Image src={gameplayRole && gameplayRole.rarity ? `/static/img/talents/c/${participant.actor}_${gameplayRole.rarity}.png` : "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="} style={{ filter: afkFilter, margin: "0", marginRight: side === "left" ? "5px" : null, marginLeft: side === "right" ? "5px" : null, boxSizing: "border-box", height: "29px", zIndex: 100, borderRadius: "50%" }} floated={side} />
+            <div style={{ position: "absolute", right: side === "right" ? "2px" : null, zIndex: 200, height: "29px", display: "flex", alignItems: "flex-end", fontSize: "0.7rem", lineHeight: "0.75rem" }}>
               {gameplayRole && gameplayRole.level}
             </div>
-          </React.Fragment>
-        )}
-        <Image
-          src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`}
-          style={{
-            borderRadius: "25%",
-            margin: roleDetectionOn
-              ? `0 ${{ left: "1px", right: "-15px" }[side]} 0 ${
-                  { left: "-15px", right: "1px" }[side]
-                }`
-              : "0 2px",
-            filter: afkFilter,
-            border: "1px solid hsla(0, 0%, 100%, 0.25)",
-            boxSizing: "border-box",
-            height: "29px"
-          }}
-          floated={side}
-        />
+          </React.Fragment>}
+        <Image src={`/static/img/heroes/c/${participant.actor.toLowerCase()}.jpg`} style={{ borderRadius: "25%", margin: roleDetectionOn ? `0 ${{ left: "1px", right: "-15px" }[side]} 0 ${{ left: "-15px", right: "1px" }[side]}` : "0 2px", filter: afkFilter, border: "1px solid hsla(0, 0%, 100%, 0.25)", boxSizing: "border-box", height: "29px" }} floated={side} />
         {/*<div
             style={{
               position: "absolute",
@@ -186,81 +115,22 @@ export default function ParticipantCard({
           >
             {Math.floor(processedSkillTier.value)}
           </div>*/}
-        <Image
-          src={`/static/img/rank/c/${processedSkillTier.number}${
-            processedSkillTier.color
-          }.png`}
-          style={{ margin: "0 -6px", padding: "-5px", height: "31px" }}
-          floated={{ left: "right", right: "left" }[side]}
-        />
-        <Link
-          prefetch
-          href={`/extension/player?${browserView ? "browserView=true&" : ""}${
-            gloryGuide ? `setting=gloryguide&ui=${gloryGuide}&` : ""
-          }error=false&extension=false&playerID=${participant.player.playerID}`}
-          as={`${browserView ? "" : "/extension"}/player/${
-            participant.player.name
-          }${gloryGuide ? `?setting=gloryguide&ui=${gloryGuide}` : ""}`}
-        >
-          <strong
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              fontSize: "0.95rem",
-              display: "block",
-              whiteSpace: "nowrap",
-              textDecoration: afkTextDecoration,
-              marginTop: "-1px",
-              marginBottom: "-6px"
-            }}
-          >
+        <Image src={`/static/img/rank/c/${processedSkillTier.number}${processedSkillTier.color}.png`} style={{ margin: "0 -6px", padding: "-5px", height: "31px" }} floated={{ left: "right", right: "left" }[side]} />
+        <Link prefetch href={`/extension/player?${browserView ? "browserView=true&" : ""}${gloryGuide ? `setting=gloryguide&ui=${gloryGuide}&` : ""}error=false&extension=false&playerID=${participant.player.playerID}`} as={`${browserView ? "" : "/extension"}/player/${participant.player.name}${gloryGuide ? `?setting=gloryguide&ui=${gloryGuide}` : ""}`}>
+          <strong style={{ overflow: "hidden", textOverflow: "ellipsis", fontSize: "0.95rem", display: "block", whiteSpace: "nowrap", textDecoration: afkTextDecoration, marginTop: "-1px", marginBottom: "-6px" }}>
             <a>{participant.player.name}</a>
           </strong>
         </Link>
-        {KDA === highestKDA && (
-          <React.Fragment>
-            <Label
-              color="teal"
-              style={{
-                fontSize: "0.72rem",
-                color: "white",
-                fontWeight: "normal",
-                padding: "2px 2px",
-                marginLeft: 0,
-                marginRight: 0
-              }}
-            >
+        {KDA === highestKDA && <React.Fragment>
+            <Label color="teal" style={{ fontSize: "0.72rem", color: "white", fontWeight: "normal", padding: "2px 2px", marginLeft: 0, marginRight: 0 }}>
               MVP
             </Label>
             &nbsp;
-          </React.Fragment>
-        )}
-        {guildTag ? (
-          <Label
-            style={{
-              fontSize: "0.72rem",
-              color: uiFontColor,
-              fontWeight: "normal",
-              padding: "2px 2px",
-              marginLeft: "-1px",
-              marginRight: "-1px"
-            }}
-          >
+          </React.Fragment>}
+        {guildTag ? <Label style={{ fontSize: "0.72rem", color: uiFontColor, fontWeight: "normal", padding: "2px 2px", marginLeft: "-1px", marginRight: "-1px" }}>
             {guildTag}
-          </Label>
-        ) : (
-          <React.Fragment>&nbsp;</React.Fragment>
-        )}
-        <div
-          style={{
-            fontSize: "0.8rem",
-            display: "flex",
-            justifyContent: "space-between",
-            margin: "0 2px",
-            marginTop: "0px",
-            lineHeight: "0.85rem"
-          }}
-        >
+          </Label> : <React.Fragment>&nbsp;</React.Fragment>}
+        <div style={{ fontSize: "0.8rem", display: "flex", justifyContent: "space-between", margin: "0 2px", marginTop: "0px", lineHeight: "0.85rem" }}>
           <span>
             <strong>
               {participant.kills}/{participant.deaths}/{participant.assists}
@@ -300,12 +170,7 @@ export default function ParticipantCard({
             ))}
           </Grid.Row>
         </Grid>
-        <div
-          style={{
-            marginTop: "2px",
-            marginBottom: "-2px"
-          }}
-        >
+        <div style={{ marginTop: "2px", marginBottom: "-2px" }}>
           {/* <Progress
               value={participant.gold}
               total={participantValues.maxGold}
@@ -332,29 +197,15 @@ export default function ParticipantCard({
                 {(participant.farm / (matchDuration / 60)).toFixed(2)}
               </span>
             </div>*/}
-          <Progress
-            value={damage || 0}
-            total={highestDamage || 0}
-            size="small"
-            color="red"
-            style={{ height: "10px", overflow: "hidden" }}
-          />
+          <Progress value={damage || 0} total={highestDamage || 0} size="small" color="red" style={{ height: "10px", overflow: "hidden" }} inverted={gloryGuide === "light"} />
           <div className="progressLabelWrapper">
-            <span className="progressLabel">Dmg to Heroes</span>{" "}
-            <span className="progressLabelValue">
+            <span className="progressLabel">Dmg to Heroes</span> <span className="progressLabelValue">
               {damage ? damage.toFixed(0) : 0}
             </span>
           </div>
-          <Progress
-            value={towersDamage || 0}
-            total={highestTowersDamage || 0}
-            size="small"
-            color="orange"
-            style={{ height: "10px", overflow: "hidden" }}
-          />
+          <Progress value={towersDamage || 0} total={highestTowersDamage || 0} size="small" color="orange" style={{ height: "10px", overflow: "hidden" }} inverted={gloryGuide === "light"} />
           <div className="progressLabelWrapper">
-            <span className="progressLabel">Dmg to Structures</span>{" "}
-            <span className="progressLabelValue">
+            <span className="progressLabel">Dmg to Structures</span> <span className="progressLabelValue">
               {towersDamage ? towersDamage.toFixed(0) : 0}
             </span>
           </div>
@@ -369,8 +220,7 @@ export default function ParticipantCard({
           }
           .ui.progress .bar {
             min-width: 0;
-          }
-        `}
+          }`}
       </style>
       <style jsx>
         {`
@@ -379,7 +229,7 @@ export default function ParticipantCard({
             font-weight: 600;
             position: absolute;
             width: 100%;
-            margin-top: -17.3px;
+            margin-top: -16px;
             z-index: 1;
             clear: both;
           }
@@ -397,11 +247,10 @@ export default function ParticipantCard({
             vertical-align: top;
             float: right;
             margin-right: 10px;
-          }
-        `}
+            ${gloryGuide === "light" ? "color: black;" : ""}
+          }`}
       </style>
-    </Card>
-  );
+    </Card>;
 }
 
 ParticipantCard.propTypes = propTypes;
