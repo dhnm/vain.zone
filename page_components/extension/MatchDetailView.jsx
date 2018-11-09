@@ -36,7 +36,7 @@ function TeamStat({ icon, stat, color }) {
         fontSize: "0.9rem"
       }}
     >
-      <VZIcon icon={icon} size={11 * 0.9} />
+      <VZIcon icon={icon} size={11 * 0.9} color={color} />
       &zwj;{stat}
     </span>
   );
