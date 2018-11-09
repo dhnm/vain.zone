@@ -2,15 +2,14 @@
   "name": "vain.zone",
   "version": "2.2.0",
   "engines": {
-    "node": "10.11.0",
+    "node": "11.1.0",
     "npm": "6.4.1"
   },
   "description": "",
   "main": "dist/server/index.js",
   "scripts": {
     "dev": "nodemon server/index.ts",
-    "build":
-      "NODE_ENV=production next build && tsc --project tsconfig.server.json",
+    "build": "NODE_ENV=production next build && tsc --project tsconfig.server.json",
     "export": "next export",
     "postinstall": "npm run build",
     "start": "NODE_ENV=production node dist/server/index.js"
@@ -73,10 +72,15 @@
     "ts-node": "^6.0.3"
   },
   "babel": {
-    "presets": ["next/babel", "@zeit/next-typescript/babel"]
+    "presets": [
+      "next/babel",
+      "@zeit/next-typescript/babel"
+    ]
   },
   "nodemonConfig": {
-    "watch": ["server/**/*.ts"],
+    "watch": [
+      "server/**/*.ts"
+    ],
     "execMap": {
       "ts": "ts-node --compilerOptions '{\"module\":\"commonjs\"}'"
     }

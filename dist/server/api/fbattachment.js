@@ -28,7 +28,7 @@ router.post("/", upload.single("blob"), (req, res) => {
         method: "post",
         url: "https://graph.facebook.com/v2.6/me/message_attachments",
         params: {
-            access_token: serverRuntimeConfig.fbAccessToken
+            access_token: serverRuntimeConfig.fbMessengerAccessToken
         },
         data: fd,
         headers: fd.getHeaders()
@@ -47,6 +47,7 @@ router.post("/", upload.single("blob"), (req, res) => {
     })
         .catch(err => {
         console.error("Unable to send image with error: %s", err);
+        console.error(err.response);
         res.status(500).json({
             error: true
         });

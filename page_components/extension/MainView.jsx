@@ -316,6 +316,8 @@ export default class MainView extends React.Component {
     }
   }
   render() {
+    const browserNotGlory = this.props.browserView && !this.props.gloryGuide;
+
     if (this.props.extension || !this.props.screenCategory) {
       return (
         <Message icon>
@@ -359,6 +361,7 @@ export default class MainView extends React.Component {
             filterFailed={this.props.filterFailed}
             appLoading={this.props.appLoading}
             screenCategory={this.props.screenCategory}
+            gloryGuide={this.props.gloryGuide}
           />
         )}
         <Sidebar.Pusher
@@ -388,10 +391,12 @@ export default class MainView extends React.Component {
                 width={
                   this.props.screenCategory === "phone"
                     ? 16
-                    : this.props.screenCategory === "tablet" ? 8 : 5
+                    : this.props.screenCategory === "tablet"
+                    ? 8
+                    : 5
                 }
               >
-                {this.props.browserView && (
+                {browserNotGlory && (
                   <Link
                     prefetch
                     href={`/extension/player?browserView=true`}
@@ -412,6 +417,7 @@ export default class MainView extends React.Component {
                 <InputPanel
                   appLoading={this.props.appLoading}
                   browserView={this.props.browserView}
+                  gloryGuide={this.props.gloryGuide}
                 />
                 {/* <Message warning>
               <strong>Alpha disclaimer:</strong> Only EU is supported right now.
@@ -440,13 +446,15 @@ export default class MainView extends React.Component {
                     }}
                   >
                     <Label color="blue">
-                      <Icon name="send" />Share in Chat
+                      <Icon name="send" />
+                      Share in Chat
                     </Label>
                   </Button>
                 )}
                 <PlayerMeta
                   data={this.props.data.player.playerMeta}
                   browserView={this.props.browserView}
+                  gloryGuide={this.props.gloryGuide}
                 />
                 <textarea
                   id="debugConsole"
@@ -463,7 +471,9 @@ export default class MainView extends React.Component {
                 width={
                   this.props.screenCategory === "phone"
                     ? 16
-                    : this.props.screenCategory === "tablet" ? 8 : 6
+                    : this.props.screenCategory === "tablet"
+                    ? 8
+                    : 6
                 }
                 style={{
                   paddingLeft: "4px",
@@ -498,7 +508,8 @@ export default class MainView extends React.Component {
                         this.props.screenCategory === "wide" ? "none" : null
                     }}
                   >
-                    Matches&nbsp;&nbsp;<Icon name="sidebar" />
+                    Matches&nbsp;&nbsp;
+                    <Icon name="sidebar" />
                   </Button>
                   {(() => {
                     if (this.props.selectedMatch) {
@@ -513,6 +524,7 @@ export default class MainView extends React.Component {
                           }}
                           screenCategory={this.props.screenCategory}
                           browserView={this.props.browserView}
+                          gloryGuide={this.props.gloryGuide}
                           toggleSendLoading={this.props.toggleSendLoading}
                           generateImage={MainView.generateImage}
                           sendLoading={this.props.sendLoading}
@@ -531,7 +543,8 @@ export default class MainView extends React.Component {
                                     : null
                               }}
                             >
-                              Matches&nbsp;&nbsp;<Icon name="sidebar" />
+                              Matches&nbsp;&nbsp;
+                              <Icon name="sidebar" />
                             </Button>
                           }
                         />
@@ -568,6 +581,7 @@ export default class MainView extends React.Component {
                     scrollPosition={this.props.scrollPosition}
                     appLoading={this.props.appLoading}
                     screenCategory={this.props.screenCategory}
+                    gloryGuide={this.props.gloryGuide}
                   />
                 </Grid.Column>
               )}

@@ -7,7 +7,7 @@ import { Label, Segment, Progress, Image, Tab, Table } from "semantic-ui-react";
 import axios from "axios";
 import html2canvas from "html2canvas";
 
-export default ({ data, browserView }) => {
+export default ({ data, browserView, gloryGuide }) => {
   if (!data) {
     return <div />;
   }
@@ -17,7 +17,7 @@ export default ({ data, browserView }) => {
         <Label attached="top"> Win Rate (Autumn Season 2018) </Label>
         <Progress
           style={{ marginBottom: 0 }}
-          percent={(data.winrate.won * 100 / data.winrate.of_matches).toFixed(
+          percent={((data.winrate.won * 100) / data.winrate.of_matches).toFixed(
             1
           )}
           progress
@@ -68,18 +68,21 @@ export default ({ data, browserView }) => {
                             />
                             {h._id}
                           </td>
-                          <td> {Math.round(h.count / h.totalCount * 100)} %</td>
+                          <td>
+                            {" "}
+                            {Math.round((h.count / h.totalCount) * 100)} %
+                          </td>
                           <td
                             style={{
                               color: "HSLA(127, 63%, 49%, 1.00)"
                             }}
                           >
-                            {Math.round(h.won / h.count * 100)} %
+                            {Math.round((h.won / h.count) * 100)} %
                           </td>
                           <td>
-                            {Math.round(h.kills / h.count)}
-                            /{Math.round(h.deaths / h.count)}
-                            /{Math.round(h.assists / h.count)}
+                            {Math.round(h.kills / h.count)}/
+                            {Math.round(h.deaths / h.count)}/
+                            {Math.round(h.assists / h.count)}
                           </td>
                         </tr>
                       ))}
@@ -126,13 +129,16 @@ export default ({ data, browserView }) => {
                             />
                             {h._id}
                           </td>
-                          <td> {Math.round(h.count / h.totalCount * 100)} %</td>
+                          <td>
+                            {" "}
+                            {Math.round((h.count / h.totalCount) * 100)} %
+                          </td>
                           <td
                             style={{
                               color: "HSLA(360, 72%, 51%, 1.00)"
                             }}
                           >
-                            {Math.round(h.lost / h.count * 100)} %
+                            {Math.round((h.lost / h.count) * 100)} %
                           </td>
                         </tr>
                       ))}
@@ -187,21 +193,32 @@ export default ({ data, browserView }) => {
                               prefetch
                               href={`/extension/player?${
                                 browserView ? "browserView=true&" : ""
+                              }${
+                                gloryGuide
+                                  ? `setting=gloryguide&ui=${gloryGuide}&`
+                                  : ""
                               }error=false&extension=false&playerID=${p._id}`}
                               as={`${browserView ? "" : "/extension"}/player/${
                                 p.name
+                              }${
+                                gloryGuide
+                                  ? `?setting=gloryguide&ui=${gloryGuide}`
+                                  : ""
                               }`}
                             >
                               {p.name}
                             </Link>
                           </td>
-                          <td> {Math.round(p.count / p.totalCount * 100)} %</td>
+                          <td>
+                            {" "}
+                            {Math.round((p.count / p.totalCount) * 100)} %
+                          </td>
                           <td
                             style={{
                               color: "HSLA(127, 63%, 49%, 1.00)"
                             }}
                           >
-                            {Math.round(p.won / p.count * 100)} %
+                            {Math.round((p.won / p.count) * 100)} %
                           </td>
                         </tr>
                       ))}
@@ -247,9 +264,17 @@ export default ({ data, browserView }) => {
                               prefetch
                               href={`/extension/player?${
                                 browserView ? "browserView=true&" : ""
+                              }${
+                                gloryGuide
+                                  ? `setting=gloryguide&ui=${gloryGuide}&`
+                                  : ""
                               }error=false&extension=false&playerID=${p._id}`}
                               as={`${browserView ? "" : "/extension"}/player/${
                                 p.name
+                                }${
+                                gloryGuide
+                                  ? `?setting=gloryguide&ui=${gloryGuide}`
+                                  : ""
                               }`}
                             >
                               {p.name}
@@ -260,7 +285,7 @@ export default ({ data, browserView }) => {
                               color: "HSLA(360, 72%, 51%, 1.00)"
                             }}
                           >
-                            {Math.round(p.lost / p.count * 100)} %
+                            {Math.round((p.lost / p.count) * 100)} %
                           </td>
                         </tr>
                       ))}

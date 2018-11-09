@@ -52,6 +52,7 @@ export default function ParticipantCard({
   highestKDA,
   guildTag,
   browserView,
+  gloryGuide,
   roleDetectionOn,
   gameplayRole
 }) {
@@ -78,6 +79,8 @@ export default function ParticipantCard({
     afkFilter = "grayscale(100%)";
     afkTextDecoration = "line-through";
   }
+
+  const uiFontColor = gloryGuide === "light" ? "black" : "white";
 
   return (
     <Card
@@ -192,12 +195,12 @@ export default function ParticipantCard({
         />
         <Link
           prefetch
-          href={`/extension/player?${
-            browserView ? "browserView=true&" : ""
+          href={`/extension/player?${browserView ? "browserView=true&" : ""}${
+            gloryGuide ? `setting=gloryguide&ui=${gloryGuide}&` : ""
           }error=false&extension=false&playerID=${participant.player.playerID}`}
           as={`${browserView ? "" : "/extension"}/player/${
             participant.player.name
-          }`}
+          }${gloryGuide ? `?setting=gloryguide&ui=${gloryGuide}` : ""}`}
         >
           <strong
             style={{
@@ -228,14 +231,15 @@ export default function ParticipantCard({
               }}
             >
               MVP
-            </Label>&nbsp;
+            </Label>
+            &nbsp;
           </React.Fragment>
         )}
         {guildTag ? (
           <Label
             style={{
               fontSize: "0.72rem",
-              color: "white",
+              color: uiFontColor,
               fontWeight: "normal",
               padding: "2px 2px",
               marginLeft: "-1px",
@@ -263,11 +267,11 @@ export default function ParticipantCard({
             </strong>
           </span>
           <span>
-            <VZIcon icon={ICONS.coin} color="white" size={8} />
+            <VZIcon icon={ICONS.coin} color={uiFontColor} size={8} />
             {(participant.gold / 1000).toFixed(1)}k
           </span>
           <span>
-            <VZIcon icon={ICONS.creepscore} color="white" size={8} />
+            <VZIcon icon={ICONS.creepscore} color={uiFontColor} size={8} />
             {participant.farm.toFixed(0)}
           </span>
         </div>
@@ -385,6 +389,7 @@ export default function ParticipantCard({
             vertical-align: top;
             margin-left: 1px;
             float: left;
+            ${gloryGuide === "light" ? "color: black;" : ""}
           }
 
           .progressLabelValue {

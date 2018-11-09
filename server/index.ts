@@ -153,13 +153,17 @@ nextApp
 
     app.get("/", (req, res) => {
       nextApp.render(req, res, "/extension", {
-        browserView: true
+        browserView: true,
+        setting: req.query.setting,
+        ui: req.query.ui
       });
     });
     app.get("/player/:IGN", (req, res) => {
       nextApp.render(req, res, "/extension", {
         IGN: req.params.IGN,
-        browserView: true
+        browserView: true,
+        setting: req.query.setting,
+        ui: req.query.ui
       });
     });
 

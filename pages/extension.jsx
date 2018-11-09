@@ -45,7 +45,9 @@ class Extension extends React.Component {
       selectedMatch:
         props.selectedMatch ||
         (props.data
-          ? props.data.matches ? props.data.matches[0] : undefined
+          ? props.data.matches
+            ? props.data.matches[0]
+            : undefined
           : undefined),
       TLData: props.TLData,
       appLoading: false,
@@ -120,7 +122,9 @@ class Extension extends React.Component {
         },
         filterFailed: false,
         selectedMatch: nextProps.data
-          ? nextProps.data.matches ? nextProps.data.matches[0] : undefined
+          ? nextProps.data.matches
+            ? nextProps.data.matches[0]
+            : undefined
           : undefined,
         TLData: nextProps.TLData,
         appLoading: false
@@ -349,7 +353,7 @@ class Extension extends React.Component {
         { name: "Friend to Minions", values: [], description: "minions killed" }
       ];
 
-      const showAndromedaAwards = Math.floor(Math.random() * 4 + 1) === 1;
+      const showAndromedaAwards = true
 
       for (
         let rosterIndex = 0;
@@ -586,6 +590,7 @@ class Extension extends React.Component {
           appLoading={this.state.appLoading}
           appLoadingOn={this.appLoadingOn}
           browserView={this.props.browserView}
+          gloryGuide={this.props.gloryGuide}
           errorType={errorType}
           errorData={this.props.errorData}
           query={this.props.query}
@@ -611,6 +616,7 @@ class Extension extends React.Component {
         sendLoading={this.state.sendLoading}
         toggleSendLoading={this.toggleSendLoading}
         browserView={this.props.browserView}
+        gloryGuide={this.props.gloryGuide}
         screenCategory={this.state.screenCategory}
       />
     );
@@ -621,6 +627,7 @@ Extension.propTypes = propTypes;
 Extension.defaultProps = defaultProps;
 
 function App(props) {
+  console.log("gloryGuide", props.gloryGuide);
   return (
     <div id="container">
       <Head>
@@ -629,9 +636,10 @@ function App(props) {
           rel="stylesheet"
           href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css"
         />
-        <link rel="stylesheet" href="/static/css/semantic.slate.min.css" />
-        <link rel="stylesheet" href="/static/css/backgroundStyle.css?flush=1" />
-
+        <link
+          rel="stylesheet"
+          href="/static/css/backgroundStyleLight.css?flush=1"
+        />
         <meta property="fb:app_id" content="617200295335676" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="VAIN.ZONE for Vainglory" />
@@ -649,6 +657,15 @@ function App(props) {
         <meta property="og:image:height" content="480" />
         <meta property="og:image:alt" content="VAIN.ZONE" />
       </Head>
+      {(!props.gloryGuide || props.gloryGuide === "dark") && (
+        <Head>
+          <link rel="stylesheet" href="/static/css/semantic.slate.min.css" />
+          <link
+            rel="stylesheet"
+            href="/static/css/backgroundStyle.css?flush=1"
+          />
+        </Head>
+      )}
       <Extension {...props} />
       <style jsx global>
         {`
@@ -664,7 +681,7 @@ function App(props) {
           h3,
           h4 {
             font-family: "Montserrat", sans-serif !important;
-            color: #d8d8d8 !important;
+            ${(!props.gloryGuide || props.gloryGuide === "dark") ? 'color: #d8d8d8 !important;' : ''}
           }
         `}
       </style>
@@ -694,17 +711,25 @@ function App(props) {
 export default App;
 
 App.getInitialProps = async function getInitialProps({ query }) {
+  let gloryGuideTheme = query.setting === "gloryguide";
+  if (gloryGuideTheme) {
+    gloryGuideTheme = query.ui === "dark" ? "dark" : "light";
+  }
+
   try {
-    console.log("gg8");
     let urlPath = "https://vain.zone";
     if (process.env.NODE_ENV !== "production") {
       urlPath = "http://localhost:3000";
     }
-    console.log("gg9");
+
     if (!query.error || query.error === "false") {
       if (!query.extension || query.extension === "false") {
         if (!query.IGN && !query.playerID) {
-          return { error: true, browserView: true };
+          return {
+            error: true,
+            browserView: true,
+            gloryGuide: gloryGuideTheme
+          };
         }
         console.log("gg10");
         const requestData = await axios({
@@ -716,7 +741,7 @@ App.getInitialProps = async function getInitialProps({ query }) {
           }
         });
         const data = await requestData.data;
-        console.log("gg11");
+
         if (data.error) {
           return {
             data: null,
@@ -726,7 +751,8 @@ App.getInitialProps = async function getInitialProps({ query }) {
             errorMessage: data.errorMessage,
             query: query.IGN || query.playerID,
             errorData: data.errorData,
-            browserView: query.browserView
+            browserView: query.browserView,
+            gloryGuide: gloryGuideTheme
           };
         }
         if (query.matchData) {
@@ -736,7 +762,8 @@ App.getInitialProps = async function getInitialProps({ query }) {
             TLData: query.matchData.TLData,
             extension: false,
             error: false,
-            browserView: query.browserView
+            browserView: query.browserView,
+            gloryGuide: gloryGuideTheme
           };
         }
 
@@ -746,7 +773,8 @@ App.getInitialProps = async function getInitialProps({ query }) {
             TLData: processedTelemetry,
             extension: false,
             error: false,
-            browserView: query.browserView
+            browserView: query.browserView,
+            gloryGuide: gloryGuideTheme
           };
         }
         console.log("gg12");
@@ -763,7 +791,8 @@ App.getInitialProps = async function getInitialProps({ query }) {
           TLData: processedTelemetry,
           extension: false,
           error: false,
-          browserView: query.browserView
+          browserView: query.browserView,
+          gloryGuide: gloryGuideTheme
         };
       }
       return {
@@ -771,7 +800,8 @@ App.getInitialProps = async function getInitialProps({ query }) {
         TLData: null,
         extension: true,
         error: false,
-        browserView: false
+        browserView: false,
+        gloryGuide: gloryGuideTheme
       };
     }
     return {
@@ -780,7 +810,8 @@ App.getInitialProps = async function getInitialProps({ query }) {
       extension: false,
       error: true,
       errorMessage: query.errorMessage,
-      browserView: query.browserView
+      browserView: query.browserView,
+      gloryGuide: gloryGuideTheme
     };
   } catch (err) {
     console.log("gg12", err.message);
@@ -790,7 +821,8 @@ App.getInitialProps = async function getInitialProps({ query }) {
       extension: false,
       error: true,
       errorMessage: err,
-      browserView: query.browserView
+      browserView: query.browserView,
+      gloryGuide: gloryGuideTheme
     };
   }
 };

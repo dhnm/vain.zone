@@ -26,7 +26,7 @@ const TeamStatPropTypes = {
   stat: PropTypes.string.isRequired
 };
 
-function TeamStat({ icon, stat }) {
+function TeamStat({ icon, stat, color }) {
   return (
     <span
       style={{
@@ -36,7 +36,8 @@ function TeamStat({ icon, stat }) {
         fontSize: "0.9rem"
       }}
     >
-      <VZIcon icon={icon} color="white" size={11 * 0.9} />&zwj;{stat}
+      <VZIcon icon={icon} size={11 * 0.9} />
+      &zwj;{stat}
     </span>
   );
 }
@@ -64,6 +65,7 @@ export default function MatchDetailView({
   childRef,
   screenCategory,
   browserView,
+  gloryGuide,
   toggleSendLoading,
   generateImage,
   sendLoading,
@@ -141,8 +143,8 @@ export default function MatchDetailView({
       return (
         participant.kills /
           ((participant.deaths + 2) / (participant.kills + 1) + 1) +
-        participant.assists /
-          ((participant.deaths + 3) / (participant.assists + 1) + 1) *
+        (participant.assists /
+          ((participant.deaths + 3) / (participant.assists + 1) + 1)) *
           0.6
       );
     })
@@ -155,12 +157,11 @@ export default function MatchDetailView({
       ),
     0
   );
+
+  const uiFontColor = gloryGuide === "light" ? "black" : "white";
+
   return (
-    <div
-      style={{
-        margin: "auto"
-      }}
-    >
+    <div style={{ margin: "auto" }}>
       <div ref={childRef}>
         <Segment
           id="matchDetailView"
@@ -175,19 +176,13 @@ export default function MatchDetailView({
         >
           <Label attached="top">
             <div
-              style={{
-                marginBottom: "2px",
-                padding: 0,
-                textAlign: "center"
-              }}
+              style={{ marginBottom: "2px", padding: 0, textAlign: "center" }}
             >
               {converter({ gameMode: match.gameMode })
                 .humanGameMode()
                 .toUpperCase()}
             </div>
-            {`${converter({
-              duration: match.duration
-            }).humanDuration()}min`}
+            {`${converter({ duration: match.duration }).humanDuration()}min`}
             <span style={{ float: "right" }}>
               {moment(match.createdAt).fromNow()}
             </span>
@@ -237,7 +232,7 @@ export default function MatchDetailView({
               }}
             >
               {match.rosters[0].heroKills}{" "}
-              <VZIcon icon={ICONS.swords} color="white" size={1.4 * 11} />{" "}
+              <VZIcon icon={ICONS.swords} color={uiFontColor} size={1.4 * 11} />{" "}
               {match.rosters[1].heroKills}
             </div>
             <Label
@@ -278,14 +273,17 @@ export default function MatchDetailView({
                   <TeamStat
                     icon={ICONS.coin}
                     stat={`${(match.rosters[0].gold / 1000).toFixed(1)}k`}
+                    color={uiFontColor}
                   />
                   <TeamStat
                     icon={ICONS.spades}
                     stat={match.rosters[0].acesEarned}
+                    color={uiFontColor}
                   />
                   <TeamStat
                     icon={ICONS.turret}
                     stat={match.rosters[0].turretKills}
+                    color={uiFontColor}
                   />
                   {[
                     "ranked",
@@ -296,6 +294,7 @@ export default function MatchDetailView({
                     <TeamStat
                       icon={ICONS.kraken}
                       stat={match.rosters[0].krakenCaptures}
+                      color={uiFontColor}
                     />
                   )}
                   {match.gameMode.indexOf("5v5") > -1 && (
@@ -304,10 +303,12 @@ export default function MatchDetailView({
                       <TeamStat
                         icon={ICONS.blackclaw}
                         stat={TLData.creatures5v5[0].blackclaw}
+                        color={uiFontColor}
                       />
                       <TeamStat
                         icon={ICONS.ghostwing}
                         stat={TLData.creatures5v5[0].ghostwing}
+                        color={uiFontColor}
                       />
                     </React.Fragment>
                   )}
@@ -337,7 +338,7 @@ export default function MatchDetailView({
                   ) : (
                     false
                   )}
-                  {!browserView && (
+                  {(!browserView || !gloryGuide) && (
                     <React.Fragment>
                       <br />
                       <Label style={{ padding: "2px 6px", fontSize: "0.8rem" }}>
@@ -414,7 +415,7 @@ export default function MatchDetailView({
                   ) : (
                     false
                   )}
-                  {!browserView && (
+                  {(!browserView || !gloryGuide) && (
                     <React.Fragment>
                       <br />
                       <Label style={{ padding: "2px 6px", fontSize: "0.8rem" }}>
@@ -431,12 +432,7 @@ export default function MatchDetailView({
                   )}
                 </Grid.Column>
               </Grid.Row>
-              <Grid.Row
-                style={{
-                  paddingTop: "0",
-                  paddingBottom: "0"
-                }}
-              >
+              <Grid.Row style={{ paddingTop: "0", paddingBottom: "0" }}>
                 {draftOrder.map((draftSide, sideIndex) => (
                   <Grid.Column
                     textAlign={["left", "right"][sideIndex]}
@@ -478,6 +474,7 @@ export default function MatchDetailView({
                             .guildTag
                         }
                         browserView={browserView}
+                        gloryGuide={gloryGuide}
                         roleDetectionOn={TLData.gameplayRoles.mode}
                         gameplayRole={
                           TLData.gameplayRoles.mode
@@ -498,9 +495,13 @@ export default function MatchDetailView({
                       prefetch
                       href={`/extension/player?${
                         browserView ? "browserView=true&" : ""
+                      }${
+                        gloryGuide ? `setting=gloryguide&ui=${gloryGuide}&` : ""
                       }error=false&extension=false&IGN=${spectator.name}`}
                       as={`${browserView ? "" : "/extension"}/player/${
                         spectator.name
+                      }${
+                        gloryGuide ? `?setting=gloryguide&ui=${gloryGuide}` : ""
                       }`}
                     >
                       <Label
@@ -526,21 +527,16 @@ export default function MatchDetailView({
         loading={sendLoading}
         disabled={sendLoading}
         attached="bottom"
-        style={{
-          display: browserView ? "none" : null
-        }}
+        style={{ display: browserView ? "none" : null }}
       >
         <Label color="blue">
-          <Icon name="send" />Share in Chat
+          <Icon name="send" />
+          Share in Chat
         </Label>
       </Button>
 
       {MatchesButton}
-      <Segment
-        style={{
-          marginTop: "15px"
-        }}
-      >
+      <Segment style={{ marginTop: "15px" }}>
         <Label attached="top">Match-Making Quality</Label>
         <div style={{ textAlign: "center" }}>Average Ranks</div>
         <Grid columns="equal">
@@ -549,7 +545,6 @@ export default function MatchDetailView({
               style={{
                 fontSize: "0.85rem",
                 lineHeight: "0.9rem",
-                color: "hsla(0, 100%, 100%, 0.8",
                 fontStyle: "italic",
                 justifyContent: "flex-end",
                 marginBottom: "6px",
@@ -558,9 +553,8 @@ export default function MatchDetailView({
                 textAlign: "right"
               }}
             >
-              {participantValues.skillTiers[0].avg.name} ({
-                participantValues.skillTiers[0].avg.number
-              }
+              {participantValues.skillTiers[0].avg.name} (
+              {participantValues.skillTiers[0].avg.number}
               {participantValues.skillTiers[0].avg.shortColor}){" "}
               <Image
                 style={{ width: "40px", display: "inline-block" }}
@@ -575,7 +569,6 @@ export default function MatchDetailView({
               style={{
                 fontSize: "0.85rem",
                 lineHeight: "0.9rem",
-                color: "hsla(0, 100%, 100%, 0.8",
                 fontStyle: "italic",
                 textAlign: "left",
                 marginBottom: "6px",
@@ -589,9 +582,8 @@ export default function MatchDetailView({
                   participantValues.skillTiers[1].avg.number
                 }${participantValues.skillTiers[1].avg.color}.png`}
               />{" "}
-              {participantValues.skillTiers[1].avg.name} ({
-                participantValues.skillTiers[1].avg.number
-              }
+              {participantValues.skillTiers[1].avg.name} (
+              {participantValues.skillTiers[1].avg.number}
               {participantValues.skillTiers[1].avg.shortColor})
             </div>
           </Grid.Column>
@@ -603,7 +595,6 @@ export default function MatchDetailView({
               style={{
                 fontSize: "0.85rem",
                 lineHeight: "0.9rem",
-                color: "hsla(0, 100%, 100%, 0.8",
                 fontStyle: "italic",
                 justifyContent: "flex-end",
                 marginBottom: "6px",
@@ -612,9 +603,8 @@ export default function MatchDetailView({
                 textAlign: "right"
               }}
             >
-              {participantValues.skillTiers[0].max.name} ({
-                participantValues.skillTiers[0].max.number
-              }
+              {participantValues.skillTiers[0].max.name} (
+              {participantValues.skillTiers[0].max.number}
               {participantValues.skillTiers[0].max.shortColor}){" "}
               <Image
                 style={{ width: "40px", display: "inline-block" }}
@@ -629,7 +619,6 @@ export default function MatchDetailView({
               style={{
                 fontSize: "0.85rem",
                 lineHeight: "0.9rem",
-                color: "hsla(0, 100%, 100%, 0.8",
                 fontStyle: "italic",
                 textAlign: "left",
                 marginBottom: "6px",
@@ -643,9 +632,8 @@ export default function MatchDetailView({
                   participantValues.skillTiers[1].max.number
                 }${participantValues.skillTiers[1].max.color}.png`}
               />{" "}
-              {participantValues.skillTiers[1].max.name} ({
-                participantValues.skillTiers[1].max.number
-              }
+              {participantValues.skillTiers[1].max.name} (
+              {participantValues.skillTiers[1].max.number}
               {participantValues.skillTiers[1].max.shortColor})
             </div>
           </Grid.Column>
@@ -657,7 +645,6 @@ export default function MatchDetailView({
               style={{
                 fontSize: "0.85rem",
                 lineHeight: "0.9rem",
-                color: "hsla(0, 100%, 100%, 0.8",
                 fontStyle: "italic",
                 justifyContent: "flex-end",
                 display: "flex",
@@ -665,9 +652,8 @@ export default function MatchDetailView({
                 textAlign: "right"
               }}
             >
-              {participantValues.skillTiers[0].min.name} ({
-                participantValues.skillTiers[0].min.number
-              }
+              {participantValues.skillTiers[0].min.name} (
+              {participantValues.skillTiers[0].min.number}
               {participantValues.skillTiers[0].min.shortColor}){" "}
               <Image
                 style={{ width: "40px", display: "inline-block" }}
@@ -682,7 +668,6 @@ export default function MatchDetailView({
               style={{
                 fontSize: "0.85rem",
                 lineHeight: "0.9rem",
-                color: "hsla(0, 100%, 100%, 0.8",
                 fontStyle: "italic",
                 textAlign: "left",
                 display: "flex",
@@ -694,21 +679,17 @@ export default function MatchDetailView({
                 src={`/static/img/rank/c/${
                   participantValues.skillTiers[1].min.number
                 }${participantValues.skillTiers[1].min.color}.png`}
-              />&nbsp;
-              {participantValues.skillTiers[1].min.name} ({
-                participantValues.skillTiers[1].min.number
-              }
+              />
+              &nbsp;
+              {participantValues.skillTiers[1].min.name} (
+              {participantValues.skillTiers[1].min.number}
               {participantValues.skillTiers[1].min.shortColor})
             </div>
           </Grid.Column>
         </Grid>
       </Segment>
       {participantValues.andromedaAwards.length > 0 && (
-        <Segment
-          style={{
-            marginTop: "15px"
-          }}
-        >
+        <Segment style={{ marginTop: "15px" }}>
           <Label attached="top">Andromeda Extremely Serious Awards</Label>
           <div>
             <p style={{ textAlign: "center", fontStyle: "italic" }}>
@@ -737,11 +718,7 @@ export default function MatchDetailView({
                   >
                     <img
                       src={`/static/img/trophies/${category.name}.png`}
-                      style={{
-                        height: "45px",
-                        display: "block",
-                        margin: "0"
-                      }}
+                      style={{ height: "45px", display: "block", margin: "0" }}
                     />
                   </div>
                   <b>{category.name}</b>
@@ -762,15 +739,12 @@ export default function MatchDetailView({
           </div>
         </Segment>
       )}
-      <Segment
-        style={{
-          marginTop: "17px"
-        }}
-      >
+      <Segment style={{ marginTop: "17px" }}>
         More analysis coming soon.{" "}
         <a target="_blank" href="https://discord.gg/wDYKFaS">
           Send us your suggestions
-        </a>!
+        </a>
+        !
       </Segment>
     </div>
   );

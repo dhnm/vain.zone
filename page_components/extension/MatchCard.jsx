@@ -35,7 +35,8 @@ export default function MatchCard({
   setSelectedMatch,
   matchIndex,
   matchCardsLoading,
-  selectedMatchID
+  selectedMatchID,
+  uiLight
 }) {
   const { shortMatchConclusion, matchConclusionColors } = converter({
     shortMatchConclusion: playerInTheMatchWon
@@ -60,8 +61,8 @@ export default function MatchCard({
       let KDAScore =
         participant.kills /
           ((participant.deaths + 2) / (participant.kills + 1) + 1) +
-        participant.assists /
-          ((participant.deaths + 3) / (participant.assists + 1) + 1) *
+        (participant.assists /
+          ((participant.deaths + 3) / (participant.assists + 1) + 1)) *
           0.6;
       return {
         name: participant.player.name,
@@ -77,6 +78,13 @@ export default function MatchCard({
       ),
     0
   );
+
+  const uiFontColor = uiLight ? "black" : "white";
+  const menuItemBg = uiLight ? "white" : "hsla(0, 0%, 10%, 1.0)";
+  const activeMenuItemBg = uiLight
+    ? "hsl(0, 0%, 90%);"
+    : "hsla(0, 0%, 10%, 0.6)";
+
   return (
     <Menu.Item
       // style={{ padding: '10px', paddingBottom: '5px' }}
@@ -90,9 +98,7 @@ export default function MatchCard({
       fluid
       style={{
         background:
-          match.matchID === selectedMatchID
-            ? "hsla(0, 0%, 10%, 0.6)"
-            : "hsla(0, 0%, 10%, 1)",
+          match.matchID === selectedMatchID ? menuItemBg : activeMenuItemBg,
         backgroundSize: "cover",
         backgroundPositionY: "40%",
         color: "hsla(0, 0%, 90%, 1)",
@@ -113,7 +119,7 @@ export default function MatchCard({
           style={{
             borderRadius: "25%",
             marginBottom: 0,
-            border: "1px solid hsla(0, 0%, 100%, 0.25"
+            border: "1px solid hsla(0, 0%, 100%, 0.25)"
           }}
           floated="right"
         />
@@ -177,15 +183,11 @@ export default function MatchCard({
             {playerInTheMatch.kills} / {playerInTheMatch.deaths} /{" "}
             {playerInTheMatch.assists}
             <br />
-            <VZIcon icon={ICONS.coin} color="white" size={10} />&zwj;{(
-              playerInTheMatch.gold / 1000
-            ).toFixed(1)}k
+            <VZIcon icon={ICONS.coin} color={uiFontColor} size={10} />
+            &zwj;{(playerInTheMatch.gold / 1000).toFixed(1)}k
             <span style={{ display: "inline-block", width: "10px" }} />
-            <VZIcon
-              icon={ICONS.creepscore}
-              color="white"
-              size={10}
-            />&zwj;{playerInTheMatch.farm.toFixed(0)}
+            <VZIcon icon={ICONS.creepscore} color={uiFontColor} size={10} />
+            &zwj;{playerInTheMatch.farm.toFixed(0)}
             <span style={{ display: "inline-block", width: "10px" }} />
             {KDAs[playerInTheMatchTeam].find(
               e => e.name === playerInTheMatch.player.name
@@ -197,7 +199,7 @@ export default function MatchCard({
           </div>
         </Card.Header>
       </Card.Content>
-      <Card.Content style={{ padding: "11px 6px" }}>
+      <Card.Content style={{ padding: "11px 6px", color: uiFontColor }}>
         <Grid columns="equal">
           <Grid.Row style={{ paddingBottom: "5px", paddingTop: "6px" }}>
             <Grid.Column

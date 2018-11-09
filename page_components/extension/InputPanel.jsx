@@ -27,13 +27,21 @@ export default class InputPanel extends React.Component {
     // window.location.href = "${this.props.browserView ? "" : "/extension"}/player/" + this.state.IGNInput;
 
     this.setState({ searchResults: [] });
-
+    alert(gloryGuide);
     Router.push(
       `${this.props.browserView ? "" : "/extension"}/player?${
         this.props.browserView ? "browserView=true&" : ""
+      }${
+        this.props.gloryGuide
+          ? `setting=gloryguide&ui=${this.props.gloryGuide}&`
+          : ""
       }error=false&extension=false&IGN=${this.state.IGNInput}`,
       `${this.props.browserView ? "" : "/extension"}/player/${
         this.state.IGNInput
+      }${
+        this.props.gloryGuide
+          ? `?setting=gloryguide&ui=${this.props.gloryGuide}`
+          : ""
       }`,
       { shallow: false }
     );
@@ -123,9 +131,17 @@ export default class InputPanel extends React.Component {
               Router.push(
                 `${this.props.browserView ? "" : "/extension"}/player?${
                   this.props.browserView ? "browserView=true&" : ""
+                }${
+                  this.props.gloryGuide
+                    ? `setting=gloryguide&ui=${this.props.gloryGuide}&`
+                    : ""
                 }error=false&extension=false&playerID=${result.id}`,
                 `${this.props.browserView ? "" : "/extension"}/player/${
                   result.title
+                }${
+                  this.props.gloryGuide
+                    ? `?setting=gloryguide&ui=${this.props.gloryGuide}`
+                    : ""
                 }`,
                 { shallow: false }
               );

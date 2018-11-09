@@ -35,8 +35,11 @@ function MatchesSidebar({
   appLoading,
   screenCategory,
   selectedMode,
-  handleSelect
+  handleSelect,
+  gloryGuide
 }) {
+  const uiLight = gloryGuide === "light";
+
   return (
     <Sidebar
       as={Menu}
@@ -76,7 +79,8 @@ function MatchesSidebar({
             // border: '1px solid hsla(0, 0%, 0%, 0.53)',
           }}
         >
-          <Icon name="chevron left" />Back
+          <Icon name="chevron left" />
+          Back
         </Button>
         <Dropdown
           text={selectedMode}
@@ -84,7 +88,7 @@ function MatchesSidebar({
           floating
           labeled
           button
-          className="icon black"
+          className={`icon${uiLight ? "white" : " black"}`}
           style={{
             verticalAlign: "top",
             width: screenCategory === "wide" ? "100%" : "calc(50% - 4px)",
@@ -203,6 +207,7 @@ function MatchesSidebar({
             selectedMatchID={selectedMatchID}
             setSelectedMatch={setSelectedMatch}
             matchIndex={index}
+            uiLight={uiLight}
           />
         );
       })}

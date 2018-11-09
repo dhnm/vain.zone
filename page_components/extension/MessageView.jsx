@@ -17,7 +17,8 @@ const propTypes = {
   errorType: PropTypes.string,
   errorData: PropTypes.any,
   query: PropTypes.string,
-  browserView: PropTypes.bool
+  browserView: PropTypes.bool,
+  gloryGuide: PropTypes.bool
 };
 
 export default function MessageLayout({
@@ -26,7 +27,8 @@ export default function MessageLayout({
   errorType,
   errorData,
   query,
-  browserView
+  browserView,
+  gloryGuide
 }) {
   let msgHeader = "Player not found";
   let messages = [];
@@ -54,11 +56,14 @@ export default function MessageLayout({
           style={{ color: "black" }}
         >
           on Discord (wDYKFaS)
-        </a>!
+        </a>
+        !
       </React.Fragment>
     ];
   }
-  console.log(browserView);
+
+  const browserNotGlory = browserView && !gloryGuide;
+
   return (
     <Segment basic>
       <div
@@ -68,7 +73,7 @@ export default function MessageLayout({
           margin: "calc(1% + 5px) auto"
         }}
       >
-        {browserView && (
+        {browserNotGlory && (
           <Link prefetch href={`/extension/player?browserView=true`} as="/">
             <img
               src="/static/img/draft/VAINZONE-logo-darkbg.png"
@@ -90,6 +95,7 @@ export default function MessageLayout({
           appLoading={appLoading}
           appLoadingOn={appLoadingOn}
           browserView={browserView}
+          gloryGuide={gloryGuide}
         />
         {errorType || !browserView ? (
           <React.Fragment>
@@ -98,7 +104,9 @@ export default function MessageLayout({
               <Message.Content>
                 <Message.Header>{msgHeader}</Message.Header>
                 <Message.List as="ol">
-                  {messages.map(msg => <Message.Item content={msg} />)}
+                  {messages.map(msg => (
+                    <Message.Item content={msg} />
+                  ))}
                 </Message.List>
               </Message.Content>
             </Message>
@@ -138,14 +146,18 @@ export default function MessageLayout({
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <p>
+            <p
+              style={
+                gloryGuide ? { marginTop: "0.8em", fontSize: "1.2em" } : {}
+              }
+            >
               Welcome to VAIN.ZONE Beta! Type your nick in the box above and hit
               Enter.
             </p>
           </React.Fragment>
         )}
       </div>
-      {browserView && <News />}
+      {browserNotGlory && <News />}
     </Segment>
   );
 }
