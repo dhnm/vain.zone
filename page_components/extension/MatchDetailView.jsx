@@ -36,7 +36,7 @@ function TeamStat({ icon, stat, color }) {
         fontSize: "0.9rem"
       }}
     >
-      <VZIcon icon={icon} size={11 * 0.9} color={color} />
+      <VZIcon icon={icon} size={11 * 0.9} color={color || "white"} />
       &zwj;{stat}
     </span>
   );
@@ -315,7 +315,7 @@ export default function MatchDetailView({
                   {TLData.banData.rosters[0].length ? (
                     <React.Fragment>
                       <br />
-                      <TeamStat icon={ICONS.ban} />
+                      <TeamStat icon={ICONS.ban} color={uiFontColor} />
                       {TLData.banData.rosters[0].map((b, i) => (
                         <React.Fragment key={`0${b}${i}`}>
                           {<React.Fragment>&nbsp;</React.Fragment>}
@@ -358,14 +358,17 @@ export default function MatchDetailView({
                   <TeamStat
                     icon={ICONS.coin}
                     stat={`${(match.rosters[1].gold / 1000).toFixed(1)}k`}
+                    color={uiFontColor}
                   />
                   <TeamStat
                     icon={ICONS.spades}
                     stat={match.rosters[1].acesEarned}
+                    color={uiFontColor}
                   />
                   <TeamStat
                     icon={ICONS.turret}
                     stat={match.rosters[1].turretKills}
+                    color={uiFontColor}
                   />
                   {[
                     "ranked",
@@ -376,6 +379,7 @@ export default function MatchDetailView({
                     <TeamStat
                       icon={ICONS.kraken}
                       stat={match.rosters[1].krakenCaptures}
+                      color={uiFontColor}
                     />
                   )}
                   {match.gameMode.indexOf("5v5") > -1 && (
@@ -384,10 +388,12 @@ export default function MatchDetailView({
                       <TeamStat
                         icon={ICONS.blackclaw}
                         stat={TLData.creatures5v5[1].blackclaw}
+                        color={uiFontColor}
                       />
                       <TeamStat
                         icon={ICONS.ghostwing}
                         stat={TLData.creatures5v5[1].ghostwing}
+                        color={uiFontColor}
                       />
                     </React.Fragment>
                   )}
@@ -410,7 +416,7 @@ export default function MatchDetailView({
                           />{" "}
                         </React.Fragment>
                       ))}
-                      <TeamStat icon={ICONS.ban} />
+                      <TeamStat icon={ICONS.ban} color={uiFontColor} />
                     </React.Fragment>
                   ) : (
                     false

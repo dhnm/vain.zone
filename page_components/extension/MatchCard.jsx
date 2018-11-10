@@ -82,7 +82,7 @@ export default function MatchCard({
   const uiFontColor = uiLight ? "black" : "white";
   const menuItemBg = uiLight ? "hsl(0, 0%, 100%)" : "hsla(0, 0%, 10%, 1.0)";
   const activeMenuItemBg = uiLight
-    ? "hsl(0, 0%, 91%)"
+    ? "hsl(0, 0%, 92%)"
     : "hsla(0, 0%, 10%, 0.6)";
 
   return (

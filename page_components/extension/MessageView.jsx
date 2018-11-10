@@ -127,10 +127,18 @@ export default function MessageLayout({
                           prefetch
                           href={`/extension/player?${
                             browserView ? "browserView=true&" : ""
+                          }${
+                            gloryGuide
+                              ? `setting=gloryguide&ui=${gloryGuide}&`
+                              : ""
                           }error=false&extension=false&playerID=${p.playerID}`}
                           as={`${
                             browserView ? "" : "/extension"
-                          }/player/${p.name || query}`}
+                          }/player/${p.name || query}${
+                            gloryGuide
+                              ? `?setting=gloryguide&ui=${gloryGuide}`
+                              : ""
+                          }`}
                         >
                           <a>
                             {p.name ||
