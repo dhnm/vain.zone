@@ -25,7 +25,7 @@ export default function PlayerDetailView({
       player.played_ranked * 20) /
     60;
   if (player.patchVersion >= "3.2") {
-    experienceHours += player.played_ranked_5v5 * 28 / 60;
+    experienceHours += (player.played_ranked_5v5 * 28) / 60;
   }
   const addictivenessRatingDict = {
     0: "",
@@ -90,7 +90,7 @@ export default function PlayerDetailView({
         attached={screenCategory === "wide" && browserView ? false : "top"}
         style={{
           padding: 0,
-          margin: "1em 0 0 0",
+          margin: "0",
           boxSizing: "border-box",
           width: "100%"
         }}

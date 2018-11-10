@@ -154,11 +154,7 @@ export default function MessageLayout({
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <p
-              style={
-                gloryGuide ? { marginTop: "0.8em", fontSize: "1.2em" } : {}
-              }
-            >
+            <p style={gloryGuide ? { fontSize: "1.2em" } : {}}>
               Welcome to VAIN.ZONE Beta! Type your nick in the box above and hit
               Enter.
             </p>

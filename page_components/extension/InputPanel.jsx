@@ -55,7 +55,12 @@ export default class InputPanel extends React.Component {
   }
   render() {
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form
+        onSubmit={this.handleSubmit}
+        style={
+          this.props.gloryGuide ? { display: "none" } : { marginBottom: "1em" }
+        }
+      >
         <Form.Field>
           {/* <Input
             icon={<Icon name="search" />}
