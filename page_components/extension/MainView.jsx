@@ -503,13 +503,14 @@ export default class MainView extends React.Component {
                     }}
                     style={{
                       width: "100%",
+                      borderRadius: "20px",
                       marginBottom: "10px",
                       display:
                         this.props.screenCategory === "wide" ? "none" : null
                     }}
                   >
-                    Matches&nbsp;&nbsp;
-                    <Icon name="sidebar" />
+                    Select Match&nbsp;&nbsp;
+                    <Icon name="chevron right" />
                   </Button>
                   {(() => {
                     if (this.props.selectedMatch) {
@@ -536,6 +537,7 @@ export default class MainView extends React.Component {
                               }}
                               style={{
                                 width: "100%",
+                                borderRadius: "20px",
                                 marginTop: "14px",
                                 display:
                                   this.props.screenCategory === "wide"
@@ -543,8 +545,8 @@ export default class MainView extends React.Component {
                                     : null
                               }}
                             >
-                              Matches&nbsp;&nbsp;
-                              <Icon name="sidebar" />
+                              Select Match&nbsp;&nbsp;
+                              <Icon name="chevron right" />
                             </Button>
                           }
                         />

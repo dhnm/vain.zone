@@ -353,7 +353,7 @@ class Extension extends React.Component {
         { name: "Friend to Minions", values: [], description: "minions killed" }
       ];
 
-      const showAndromedaAwards = true
+      const showAndromedaAwards = true;
 
       for (
         let rosterIndex = 0;
@@ -633,14 +633,6 @@ function App(props) {
     <div id="container">
       <Head>
         <title>vain.zone</title>
-        <link
-          rel="stylesheet"
-          href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css"
-        />
-        <link
-          rel="stylesheet"
-          href="/static/css/backgroundStyleLight.css?flush=1"
-        />
         <meta property="fb:app_id" content="617200295335676" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="VAIN.ZONE for Vainglory" />
@@ -658,14 +650,28 @@ function App(props) {
         <meta property="og:image:height" content="480" />
         <meta property="og:image:alt" content="VAIN.ZONE" />
       </Head>
+
+      <link
+        rel="stylesheet"
+        href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css"
+      />
       {(!props.gloryGuide || props.gloryGuide === "dark") && (
-        <Head>
-          <link rel="stylesheet" href="/static/css/semantic.slate.min.css" />
-          <link
-            rel="stylesheet"
-            href="/static/css/backgroundStyle.css?flush=1"
-          />
-        </Head>
+        <link rel="stylesheet" href="/static/css/semantic.slate.min.css" />
+      )}
+      {!props.gloryGuide && (
+        <link rel="stylesheet" href="/static/css/backgroundStyle.css?flush=1" />
+      )}
+      {props.gloryGuide === "dark" && (
+        <link
+          rel="stylesheet"
+          href="/static/css/backgroundStyleGloryGuide_Dark.css?flush=1"
+        />
+      )}
+      {props.gloryGuide === "light" && (
+        <link
+          rel="stylesheet"
+          href="/static/css/backgroundStyleGloryGuide_Light.css?flush=1"
+        />
       )}
       <Extension {...props} />
       <style jsx global>
@@ -682,7 +688,9 @@ function App(props) {
           h3,
           h4 {
             font-family: "Montserrat", sans-serif !important;
-            ${(!props.gloryGuide || props.gloryGuide === "dark") ? 'color: #d8d8d8 !important;' : ''}
+            ${!props.gloryGuide || props.gloryGuide === "dark"
+              ? "color: #d8d8d8 !important;"
+              : ""}
           }
         `}
       </style>
