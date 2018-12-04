@@ -401,6 +401,7 @@ class Extension extends React.Component {
             }
 
             if (
+              participantRef.itemSells &&
               participantRef.items
                 .slice(2)
                 .every((val, i, arr) => val === arr[0]) &&
@@ -411,7 +412,10 @@ class Extension extends React.Component {
               });
             }
 
-            const drunken = participantRef.itemUses["Healing Flask"] || 0;
+            const drunken =
+              (participantRef.itemUses &&
+                participantRef.itemUses["Healing Flask"]) ||
+              0;
             andromedaAwards[3].values.push({
               name: playerName,
               value: drunken
@@ -424,16 +428,18 @@ class Extension extends React.Component {
               andromedaAwards[3].referenceValue = drunken;
             }
 
-            const bootsActivations = [
-              "Sprint Boots",
-              "Travel Boots",
-              "Journey Boots",
-              "War Treads",
-              "Halcyon Chargers",
-              "Teleport Boots"
-            ].reduce((accu, currVa) => {
-              return accu + (participantRef.itemUses[currVa] || 0);
-            }, 0);
+            const bootsActivations = participantRef.itemUses
+              ? [
+                  "Sprint Boots",
+                  "Travel Boots",
+                  "Journey Boots",
+                  "War Treads",
+                  "Halcyon Chargers",
+                  "Teleport Boots"
+                ].reduce((accu, currVa) => {
+                  return accu + (participantRef.itemUses[currVa] || 0);
+                }, 0)
+              : 0;
             andromedaAwards[4].values.push({
               name: playerName,
               value: bootsActivations
@@ -447,7 +453,10 @@ class Extension extends React.Component {
             }
 
             const fountainsGiven =
-              participantRef.itemUses["Fountain of Reneewal"] || 0;
+              participantRef.itemUses &&
+              participantRef.itemUses["Fountain of Reneewal"]
+                ? participantRef.itemUses["Fountain of Reneewal"]
+                : 0;
             andromedaAwards[5].values.push({
               name: playerName,
               value: fountainsGiven
@@ -461,8 +470,12 @@ class Extension extends React.Component {
             }
 
             const infused =
-              (participantRef.itemUses["Weapon Infusion"] || 0) +
-              (participantRef.itemUses["Crystal Infusion"] || 0);
+              ((participantRef.itemUses &&
+                participantRef.itemUses["Weapon Infusion"]) ||
+                0) +
+              ((participantRef.itemUses &&
+                participantRef.itemUses["Crystal Infusion"]) ||
+                0);
             andromedaAwards[6].values.push({
               name: playerName,
               value: infused
@@ -475,7 +488,10 @@ class Extension extends React.Component {
               andromedaAwards[6].referenceValue = infused;
             }
 
-            const candiesEaten = participantRef.itemUses["Minion Candy"] || 0;
+            const candiesEaten =
+              (participantRef.itemUses &&
+                participantRef.itemUses["Minion Candy"]) ||
+              0;
             andromedaAwards[7].values.push({
               name: playerName,
               value: candiesEaten
@@ -488,18 +504,20 @@ class Extension extends React.Component {
               andromedaAwards[7].referenceValue = candiesEaten;
             }
 
-            const visionProvided = [
-              "Vision Totem",
-              "Flare",
-              "Scout Trap",
-              "Flare Gun",
-              "Contraption",
-              "Flare Loader",
-              "ScoutTuff",
-              "SuperScout 2000"
-            ].reduce((accu, currVa) => {
-              return accu + (participantRef.itemUses[currVa] || 0);
-            }, 0);
+            const visionProvided = participantRef.itemUses
+              ? [
+                  "Vision Totem",
+                  "Flare",
+                  "Scout Trap",
+                  "Flare Gun",
+                  "Contraption",
+                  "Flare Loader",
+                  "ScoutTuff",
+                  "SuperScout 2000"
+                ].reduce((accu, currVa) => {
+                  return accu + (participantRef.itemUses[currVa] || 0);
+                }, 0)
+              : 0;
             andromedaAwards[8].values.push({
               name: playerName,
               value: visionProvided
