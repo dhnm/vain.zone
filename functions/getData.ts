@@ -245,6 +245,7 @@ export function insertMatchesToDB(matches) {
         ordered: false
     }).catch(err => {
         if (err.code !== 11000) {
+            console.error(err);
             throw new Error("500");
         }
         return;

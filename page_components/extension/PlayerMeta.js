@@ -14,7 +14,7 @@ export default ({ data, browserView, gloryGuide }) => {
   return (
     <React.Fragment>
       <Segment>
-        <Label attached="top"> Win Rate (Autumn Season 2018) </Label>
+        <Label attached="top"> Win Rate (Winter 2018/2019) </Label>
         <Progress
           style={{ marginBottom: 0 }}
           percent={((data.winrate.won * 100) / data.winrate.of_matches).toFixed(
@@ -271,7 +271,7 @@ export default ({ data, browserView, gloryGuide }) => {
                               }error=false&extension=false&playerID=${p._id}`}
                               as={`${browserView ? "" : "/extension"}/player/${
                                 p.name
-                                }${
+                              }${
                                 gloryGuide
                                   ? `?setting=gloryguide&ui=${gloryGuide}`
                                   : ""

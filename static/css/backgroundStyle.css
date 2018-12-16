@@ -1,19 +1,19 @@
 body {
-    background-color: black !important;
+  background-color: black !important;
 
-    background-image: linear-gradient(
-            hsla(0, 0%, 0%, 0.5),
-            hsla(0, 0%, 0%, 0.4),
-            hsla(0, 0%, 0%, 0.6),
-            hsla(227, 32%, 9%, 0.7),
-            hsla(227, 32%, 9%, 0.8)
-        ),
-        url("/static/img/backgrounds/halloween2018.jpg") !important;
-    background-repeat: no-repeat !important;
-    background-position: center center !important;
-    background-attachment: fixed !important;
-    background-size: cover !important;
-    /*background: linear-gradient(
+  background-image: linear-gradient(
+      hsla(0, 0%, 0%, 0.5),
+      hsla(0, 0%, 0%, 0.4),
+      hsla(0, 0%, 0%, 0.6),
+      hsla(227, 32%, 9%, 0.7),
+      hsla(227, 32%, 9%, 0.8)
+    ),
+    url("/static/img/backgrounds/winter2018.jpg") !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  /*background: linear-gradient(
         hsla(195, 46%, 15%, 1),
         hsla(195, 46%, 10%, 1),
         hsla(195, 46%, 15%, 1)

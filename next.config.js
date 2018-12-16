@@ -27,7 +27,7 @@ module.exports = (phase, { defaultConfig }) => {
         "EAAIxVyRb1vwBANuDITendkDbFYKffvdKC4qcHuz8iWdusIX5hiWCPc9ILq6n96Q3XXzC53S9Wi8gtzONZCycVcZBO9nJNsC1fonE5154EnC1a8zdz2TkJ9XgfP1kUGjyrIQ10XRjhRCxeF9exE8fZCDGDzAFacrEWJoPuNZBBwZDZD"
     },
     publicRuntimeConfig: {
-      currentSeasonPatch: "3.7",
+      currentSeasonPatch: "3.9",
       googleTag: "UA-125429066-1",
       storageVersion: 1.1,
       discordInviteLink: "https://discord.gg/ZpkaDqt"

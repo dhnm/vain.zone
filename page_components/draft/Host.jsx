@@ -12,7 +12,7 @@ import DraftBuilder from "./DraftBuilder";
 import ProfileItem from "./ProfileItem";
 
 const defaultHeroes = [
-  { name: "Inara" },
+  { name: "Magnus" },
   { name: "Adagio" },
   { name: "Alpha" },
   { name: "Anka" },
@@ -30,6 +30,7 @@ const defaultHeroes = [
   { name: "Grumpjaw" },
   { name: "Gwen" },
   { name: "Idris" },
+  { name: "Inara" },
   { name: "Joule" },
   { name: "Kensei" },
   { name: "Kestrel" },
