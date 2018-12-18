@@ -30,7 +30,7 @@ module.exports = (phase, { defaultConfig }) => {
       currentSeasonPatch: "3.9",
       googleTag: "UA-125429066-1",
       storageVersion: 1.1,
-      discordInviteLink: "https://discord.gg/ZpkaDqt"
+      discordInviteLink: "https://discord.gg/PBjRYsj"
     }
   };
   const config = {
