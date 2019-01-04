@@ -222,9 +222,11 @@ class GuildEdit extends React.Component {
                   Guild not found. Please message us on our{" "}
                   <a
                     target="_blank"
-                    href={publicRuntimeConfig.discordInviteLink}
+                    href={`https://discord.gg/${
+                      publicRuntimeConfig.discordInviteCode
+                    }`}
                   >
-                    Discord Server (wDYKFaS)
+                    Discord Server ({publicRuntimeConfig.discordInviteCode})
                   </a>{" "}
                   or try again later.
                 </React.Fragment>
@@ -236,9 +238,11 @@ class GuildEdit extends React.Component {
                     Something went wrong :( Please message us on our{" "}
                     <a
                       target="_blank"
-                      href={publicRuntimeConfig.discordInviteLink}
+                      href={`https://discord.gg/${
+                        publicRuntimeConfig.discordInviteCode
+                      }`}
                     >
-                      Discord Server (wDYKFaS)
+                      Discord Server ({publicRuntimeConfig.discordInviteCode})
                     </a>{" "}
                     or try again later.
                   </React.Fragment>
@@ -261,7 +265,8 @@ class GuildEdit extends React.Component {
         <br />
         <Link href={`/guild?id=${this.props.guildID}`}>
           <Button size="small">
-            <Icon name="chevron left" />Back to Guild
+            <Icon name="chevron left" />
+            Back to Guild
           </Button>
         </Link>
         <style jsx>

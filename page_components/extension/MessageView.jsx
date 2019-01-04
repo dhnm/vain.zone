@@ -52,10 +52,10 @@ export default function MessageLayout({
         If you have a minute, please tell me about this{" "}
         <a
           target="_blank"
-          href={publicRuntimeConfig.discordInviteLink}
+          href={`https://discord.gg/${publicRuntimeConfig.discordInviteCode}`}
           style={{ color: "black" }}
         >
-          on Discord (wDYKFaS)
+          on Discord ({publicRuntimeConfig.discordInviteCode})
         </a>
         !
       </React.Fragment>
@@ -363,7 +363,7 @@ class News extends React.Component {
             </a>
             <a
               target="_blank"
-              href={publicRuntimeConfig.discordInviteLink}
+              href={`https://discord.gg/${publicRuntimeConfig.discordInviteCode}`}
               {...css({
                 width: "320px",
                 height: "120px",
@@ -391,7 +391,7 @@ class News extends React.Component {
                 <Icon name="discord" />
                 Discord Server
               </h3>
-              <small>wDYKFaS</small>
+              <small>{publicRuntimeConfig.discordInviteCode}</small>
             </a>
           </div>
           {this.state.news.length === 0 ? (

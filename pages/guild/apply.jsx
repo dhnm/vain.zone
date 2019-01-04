@@ -179,9 +179,9 @@ export default class GuildApplication extends React.Component {
                   meantime you can leave a message on our{" "}
                   <a
                     target="_blank"
-                    href={publicRuntimeConfig.discordInviteLink}
+                    href={`https://discord.gg/${publicRuntimeConfig.discordInviteCode}`}
                   >
-                    Discord Server (wDYKFaS)
+                    Discord Server ({publicRuntimeConfig.discordInviteCode})
                   </a>.
                 </Message.Content>
               </Message>
@@ -191,9 +191,9 @@ export default class GuildApplication extends React.Component {
                   Something went wrong :( Please message us on our{" "}
                   <a
                     target="_blank"
-                    href={publicRuntimeConfig.discordInviteLink}
+                    href={`https://discord.gg/${publicRuntimeConfig.discordInviteCode}`}
                   >
-                    Discord Server (wDYKFaS)
+                    Discord Server ({publicRuntimeConfig.discordInviteCode})
                   </a>{" "}
                   or try again later.
                 </Message.Content>

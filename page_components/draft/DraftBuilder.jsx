@@ -341,7 +341,14 @@ export default class DraftBuilder extends React.Component {
                     </td>
                     <td style={{ textAlign: "right", width: "30px" }}>
                       <button
-                        style={{ cursor: "pointer" }}
+                        style={{
+                          background: "transparent",
+                          outline: "none",
+                          appearance: "none",
+                          border: 0,
+                          display: "inline-block",
+                          cursor: "pointer"
+                        }}
                         onClick={() => {
                           this.setState(prevState => {
                             const sliced = prevState.sequence.slice();
@@ -571,7 +578,14 @@ export default class DraftBuilder extends React.Component {
                       <td style={{ padding: 0 }}>{h.name}</td>
                       <td style={{ padding: 0, textAlign: "right" }}>
                         <button
-                          style={{ cursor: "pointer" }}
+                          style={{
+                            background: "transparent",
+                            outline: "none",
+                            appearance: "none",
+                            border: 0,
+                            display: "inline-block",
+                            cursor: "pointer"
+                          }}
                           onClick={() => {
                             this.setState(prevState => {
                               const sliced = prevState.heroes.slice();
@@ -673,10 +687,13 @@ export default class DraftBuilder extends React.Component {
             <a
               style={{ color: "white" }}
               target="_blank"
-              href={publicRuntimeConfig.discordInviteLink}
+              href={`https://discord.gg/${
+                publicRuntimeConfig.discordInviteCode
+              }`}
             >
-              Join us on Discord (wDYKFaS)
-            </a>.
+              Join us on Discord ({publicRuntimeConfig.discordInviteCode})
+            </a>
+            .
           </div>
           <button
             id="submit_button"

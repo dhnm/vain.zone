@@ -747,7 +747,7 @@ export default function MatchDetailView({
       )}
       <Segment style={{ marginTop: "17px" }}>
         More analysis coming soon.{" "}
-        <a target="_blank" href={publicRuntimeConfig.discordInviteLink}>
+        <a target="_blank" href={`https://discord.gg/${publicRuntimeConfig.discordInviteCode}`}>
           Send us your suggestions
         </a>
         !
