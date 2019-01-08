@@ -338,7 +338,7 @@ export default function MatchDetailView({
                   ) : (
                     false
                   )}
-                  {(!browserView || !gloryGuide) && (
+                  {(!browserView && !gloryGuide) && (
                     <React.Fragment>
                       <br />
                       <Label style={{ padding: "2px 6px", fontSize: "0.8rem" }}>
@@ -421,7 +421,7 @@ export default function MatchDetailView({
                   ) : (
                     false
                   )}
-                  {(!browserView || !gloryGuide) && (
+                  {(!browserView && !gloryGuide) && (
                     <React.Fragment>
                       <br />
                       <Label style={{ padding: "2px 6px", fontSize: "0.8rem" }}>

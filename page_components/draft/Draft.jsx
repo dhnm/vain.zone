@@ -228,7 +228,7 @@ class Draft extends React.Component {
                   e.action === "pick" ||
                   this.props.draftedHeroes.length <= draftPositionIndex
                     ? ""
-                    : "grayscale(75%)"
+                    : "grayscale(30%)"
                 }`,
                 transform: loading ? "scale(1.04)" : "scale(1)",
                 transition: "500ms linear"
@@ -453,10 +453,9 @@ class Draft extends React.Component {
                       : "hsla(0, 0%, 96%, 1.0)"
                   }
                 >
-                  {Math.ceil(
-                    (this.state.blueBonusLeft || this.props.blueBonusLeft) /
-                      1000
-                  )}
+                  {this.props.bonusTime !== 0 || this.state.blueBonusLeft < 0 || this.props.blueBonusLeft < 0 ? Math.ceil(
+                    (this.state.blueBonusLeft || this.props.blueBonusLeft) / 1000
+                  ) : "-"}
                 </text>
               </svg>
             </div>
@@ -484,7 +483,9 @@ class Draft extends React.Component {
                   stroke={
                     this.state.waitingTimeLeft > 0
                       ? "#f77a52"
-                      : "hsla(280, 100%, 64%, 1)"
+                      : (this.props.draftSequence[this.props.draftedHeroes.length] &&
+                          this.props.draftSequence[this.props.draftedHeroes.length]
+                            .team === 0 ? "hsla(206, 100%, 48%, 1)" : "hsla(360, 100%, 50%, 1)")
                   }
                   strokeWidth="15"
                   strokeDasharray={2 * Math.PI * 42.5}
@@ -560,9 +561,9 @@ class Draft extends React.Component {
                       : "hsla(0, 0%, 96%, 1.0)"
                   }
                 >
-                  {Math.ceil(
+                  {this.props.bonusTime !== 0 || this.state.redBonusLeft < 0 || this.props.redBonusLeft < 0 ? Math.ceil(
                     (this.state.redBonusLeft || this.props.redBonusLeft) / 1000
-                  )}
+                  ) : "-"}
                 </text>
               </svg>
             </div>
@@ -799,7 +800,7 @@ class Draft extends React.Component {
               cursor: pointer;
               outline: none;
               appearance: none;
-              border: 5px inset hsla(0, 0%, 100%, 0.5);
+              border: 4px inset hsla(0, 0%, 100%, 0.5);
               border-radius: 30px;
               padding: 0;
               box-sizing: border-box;

@@ -14,11 +14,23 @@ import {
 export default router;
 
 router.get("/", cacheMW(60), (req, res) => {
-  const filters = JSON.parse(req.query.filters);
+  let filters;
+
+  try {
+    filters = JSON.parse(req.query.filters);
+    if (!filters || !req.query.shardId || !req.query.playerID) {
+      throw new Error("Missing request arguments.");
+    }
+    filters.matches = filters.matches > 0 ? filters.matches : 12;
+  } catch (error) {
+    console.error(error);
+    res.status(400).end();
+    return;
+  }
 
   const createdAt = filters.createdAt ? new Date(filters.createdAt) : undefined;
   if (createdAt) {
-    createdAt.setMilliseconds(createdAt.getMilliseconds() - 1);
+    createdAt.setSeconds(createdAt.getSeconds() - 1);
   }
 
   axiosAPI({
@@ -26,7 +38,7 @@ router.get("/", cacheMW(60), (req, res) => {
     endPoint: "matches",
     params: {
       "filter[createdAt-end]": createdAt,
-      "page[limit]": 12,
+      "page[limit]": filters.matches,
       sort: "-createdAt",
       "filter[playerIds]": req.query.playerID,
       "filter[gameMode]": filters.gameMode

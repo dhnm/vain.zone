@@ -62,7 +62,7 @@ const defaultHeroes = [
 
 const draftProfiles = [
   {
-    name: "Vainglory Premiere League",
+    name: "Original VPL - Tripple Ban",
     banTime: 30000,
     pickTime: 30000,
     bonusTime: 0,
@@ -85,46 +85,75 @@ const draftProfiles = [
       { team: 1, action: "pick" }
     ],
     heroes: defaultHeroes,
-    customStyle: { background: "HSLA(36, 96%, 62%, 1.00)" },
-    innerStyle: {
-      background:
-        'url("/static/img/draft/profiles/vpl-c.png") no-repeat center',
-      backgroundSize: "contain",
-      width: "100%",
-      height: "100%"
-    }
+    customStyle: { 
+      backgroundColor: "#fce043",
+      backgroundImage: "linear-gradient(315deg, #fce043 0%, #fb7ba2 74%)"
+    },
+    // innerStyle: {
+    //   background:
+    //     'url("/static/img/draft/profiles/vpl-c.png") no-repeat center',
+    //   backgroundSize: "contain",
+    //   width: "100%",
+    //   height: "100%"
+    // }
   },
+  // {
+  //   name: "Vainglory.eu Brawl Masters",
+  //   banTime: 30000,
+  //   pickTime: 30000,
+  //   bonusTime: 30000,
+  //   sequence: [
+  //     { team: 0, action: "ban" },
+  //     { team: 1, action: "ban" },
+  //     { team: 0, action: "pick" },
+  //     { team: 1, action: "pick" },
+  //     { team: 1, action: "ban" },
+  //     { team: 0, action: "ban" },
+  //     { team: 1, action: "pick" },
+  //     { team: 0, action: "pick" }
+  //   ],
+  //   heroes: defaultHeroes,
+  //   customStyle: {
+  //     background:
+  //       'url("/static/img/draft/profiles/brawl-masters-bg.jpg") no-repeat bottom center',
+  //     backgroundSize: "cover"
+  //   },
+  //   innerStyle: {
+  //     background:
+  //       'url("/static/img/draft/profiles/brawl-masters-c.png") no-repeat center',
+  //     backgroundSize: "contain",
+  //     width: "100%",
+  //     height: "100%"
+  //   }
+  // },
   {
-    name: "Vainglory.eu Brawl Masters",
+    name: "Vainglory 5v5 Standard",
     banTime: 30000,
     pickTime: 30000,
-    bonusTime: 30000,
+    bonusTime: 60000,
     sequence: [
+      { team: 0, action: "ban" },
+      { team: 1, action: "ban" },
       { team: 0, action: "ban" },
       { team: 1, action: "ban" },
       { team: 0, action: "pick" },
       { team: 1, action: "pick" },
-      { team: 1, action: "ban" },
-      { team: 0, action: "ban" },
       { team: 1, action: "pick" },
-      { team: 0, action: "pick" }
+      { team: 0, action: "pick" },
+      { team: 0, action: "pick" },
+      { team: 1, action: "pick" },
+      { team: 1, action: "pick" },
+      { team: 0, action: "pick" },
+      { team: 0, action: "pick" },
+      { team: 1, action: "pick" }
     ],
     heroes: defaultHeroes,
     customStyle: {
-      background:
-        'url("/static/img/draft/profiles/brawl-masters-bg.jpg") no-repeat bottom center',
-      backgroundSize: "cover"
-    },
-    innerStyle: {
-      background:
-        'url("/static/img/draft/profiles/brawl-masters-c.png") no-repeat center',
-      backgroundSize: "contain",
-      width: "100%",
-      height: "100%"
+      background: "linear-gradient(to right, #12aee6, #3920a1)"
     }
   },
   {
-    name: "Vainglory 5v5 / 10 Bans",
+    name: "Vainglory 5v5 - 5 Bans",
     banTime: 30000,
     pickTime: 30000,
     bonusTime: 60000,

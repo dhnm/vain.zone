@@ -8,7 +8,12 @@ import getData from "./../../functions/getData";
 export default router;
 
 router.get("/", cacheMW(60), (req, res) => {
-  getData({ IGN: req.query.IGN, playerID: req.query.playerID })
+  req.query.matches = parseInt(req.query.matches) || 12;
+  getData({
+    IGN: req.query.IGN,
+    playerID: req.query.playerID,
+    returnMatches: req.query.matches
+  })
     .then(data => {
       res.json(data);
     })

@@ -197,6 +197,11 @@ export default class DraftBuilder extends React.Component {
           <div className="field">
             <div className="label">Ban Time (s)</div>
             <Radio
+              value={10}
+              link={this.state.banTime}
+              action={() => this.setState({ banTime: 10 })}
+            />
+            <Radio
               value={20}
               link={this.state.banTime}
               action={() => this.setState({ banTime: 20 })}
@@ -207,13 +212,20 @@ export default class DraftBuilder extends React.Component {
               action={() => this.setState({ banTime: 30 })}
             />
             <Radio
-              value={40}
+              value={60}
               link={this.state.banTime}
-              action={() => this.setState({ banTime: 40 })}
+              action={() => this.setState({ banTime: 60 })}
             />
+            <br />
+            <em>You can choose any option if your draft will contain no bans.</em>
           </div>
           <div className="field">
             <div className="label">Pick Time (s)</div>
+            <Radio
+              value={10}
+              link={this.state.pickTime}
+              action={() => this.setState({ pickTime: 10 })}
+            />
             <Radio
               value={20}
               link={this.state.pickTime}
@@ -225,17 +237,22 @@ export default class DraftBuilder extends React.Component {
               action={() => this.setState({ pickTime: 30 })}
             />
             <Radio
-              value={40}
+              value={60}
               link={this.state.pickTime}
-              action={() => this.setState({ pickTime: 40 })}
+              action={() => this.setState({ pickTime: 60 })}
             />
           </div>
           <div className="field">
             <div className="label">Bonus Time (s)</div>
             <Radio
-              value={0}
-              link={this.state.bonusTime}
+              value={"No Bonus Time"}
+              link={this.state.bonusTime === 0 ? "No Bonus Time" : null}
               action={() => this.setState({ bonusTime: 0 })}
+            />
+            <Radio
+              value={10}
+              link={this.state.bonusTime}
+              action={() => this.setState({ bonusTime: 10 })}
             />
             <Radio
               value={30}

@@ -117,8 +117,6 @@ nextApp
 
     app.use((req, res, next) => {
       const allowedOrigins = [
-        "http://localhost:3000",
-        "https://localhost:3000",
         "http://x.vainglory.eu",
         "https://x.vainglory.eu",
         "http://test.vainglory.eu",
@@ -132,6 +130,10 @@ nextApp
         "https://www.vainglory.eu",
         "https://vainglory.eu"
       ];
+
+      if (dev) {
+        allowedOrigins.unshift(`http://localhost:${PORT}`);
+      }
 
       const origin = `${req.protocol}://${req.headers.host}`;
 

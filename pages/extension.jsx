@@ -186,7 +186,7 @@ class Extension extends React.Component {
         () => {
           axios({
             method: "get",
-            url: "/api/applyfilter",
+            url: "/api/filtermatches",
             params: {
               playerID: this.state.data.player.playerID,
               shardId: this.state.data.player.shardId,
