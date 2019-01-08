@@ -43,7 +43,7 @@ router.get("/", cacheMW(60), (req, res) => {
       "filter[playerIds]": req.query.playerID,
       "filter[gameMode]": filters.gameMode
     },
-    key: serverRuntimeConfig.filterApiKey
+    key: req.gloryStatsKey || serverRuntimeConfig.filterApiKey
   })
     .then(matchesData => {
       if (matchesData) {

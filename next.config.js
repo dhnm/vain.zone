@@ -24,7 +24,8 @@ module.exports = (phase, { defaultConfig }) => {
       fbAppID: "617200295335676",
       fbMessengerVerifyToken: "vgeuverify",
       fbMessengerAccessToken:
-        "EAAIxVyRb1vwBANuDITendkDbFYKffvdKC4qcHuz8iWdusIX5hiWCPc9ILq6n96Q3XXzC53S9Wi8gtzONZCycVcZBO9nJNsC1fonE5154EnC1a8zdz2TkJ9XgfP1kUGjyrIQ10XRjhRCxeF9exE8fZCDGDzAFacrEWJoPuNZBBwZDZD"
+        "EAAIxVyRb1vwBANuDITendkDbFYKffvdKC4qcHuz8iWdusIX5hiWCPc9ILq6n96Q3XXzC53S9Wi8gtzONZCycVcZBO9nJNsC1fonE5154EnC1a8zdz2TkJ9XgfP1kUGjyrIQ10XRjhRCxeF9exE8fZCDGDzAFacrEWJoPuNZBBwZDZD",
+      gloryStatsKey: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyNzgyNDg1MC1mNTNmLTAxMzYtYjc0NS0wYTU4NjQ2MTRkNzMiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTQ2OTMwMDMzLCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJnbG9yeWd1aWRlLXRlc3QiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.fylM4-0DQp_jQ7XfVEBRD8O4v7XnQ57C43jphi94npg"
     },
     publicRuntimeConfig: {
       currentSeasonPatch: "3.9",

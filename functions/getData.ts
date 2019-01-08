@@ -10,6 +10,7 @@ export default function getData(params: {
   playerID?: string;
   messenger?: boolean;
   returnMatches?: number;
+  key?: string;
 }) {
   params.returnMatches =
     params.returnMatches && params.returnMatches > 0 ? params.returnMatches : 0;
@@ -29,7 +30,8 @@ export default function getData(params: {
           playerDataFromDB = player;
           return getPlayerFromAPI({
             playerID: player.playerID,
-            shardId: player.shardId
+            shardId: player.shardId,
+            key: params.key
           }).catch(err => {
             if (err.message == "404") {
               player.IGNHistory.push(player.name);
@@ -39,13 +41,13 @@ export default function getData(params: {
               player.save();
             }
             if (params.IGN) {
-              return getPlayerFromAPI({ IGN: params.IGN });
+              return getPlayerFromAPI({ IGN: params.IGN, key: params.key });
             }
             return err;
           });
         }
         return getPlayerFromAPI(
-          params.playerID ? { playerID: params.playerID } : { IGN: params.IGN }
+          params.playerID ? { playerID: params.playerID, key: params.key } : { IGN: params.IGN, key: params.key }
         );
       })
       .then(player => {
@@ -90,7 +92,8 @@ export default function getData(params: {
         console.log("gg3");
         return getUnfilteredMatchesData(
           playerDataFromAPI.playerID,
-          playerDataFromAPI.shardId
+          playerDataFromAPI.shardId,
+          params.key
         );
       })
       .then(matches => {
@@ -130,6 +133,7 @@ function getPlayerFromAPI(params: {
   IGN?: string;
   playerID?: string;
   shardId?: string;
+  key?: string;
 }) {
   return new Promise((resolve, reject) => {
     const regions = ["na", "eu", "sg", "sa", "ea", "cn"];
@@ -147,7 +151,8 @@ function getPlayerFromAPI(params: {
             }
           : {
               "filter[playerIds]": params.playerID
-            }
+            },
+        key: params.key
       })
         .then(json => {
           const data = json.data[0];
@@ -201,7 +206,7 @@ function getPlayerFromAPI(params: {
   });
 }
 
-function getUnfilteredMatchesData(playerID, shardId) {
+function getUnfilteredMatchesData(playerID, shardId, key) {
   return axiosAPI({
     shardId,
     endPoint: "matches",
@@ -210,7 +215,8 @@ function getUnfilteredMatchesData(playerID, shardId) {
       "page[limit]": 50,
       sort: "-createdAt",
       "filter[playerIds]": playerID
-    }
+    },
+    key
   })
     .then(matchesData =>
       matchesData.data.reduce((accu, m) => {

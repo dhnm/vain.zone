@@ -17,13 +17,15 @@ import uuidv4 from "./uuidv4";
 
 export default router;
 
-const gloryStatsKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyNzgyNDg1MC1mNTNmLTAxMzYtYjc0NS0wYTU4NjQ2MTRkNzMiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTQ2OTMwMDMzLCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJhcHAiOiJnbG9yeWd1aWRlLXRlc3QiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.fylM4-0DQp_jQ7XfVEBRD8O4v7XnQ57C43jphi94npg";
+import getConfig from "next/config";
+const { serverRuntimeConfig } = getConfig();
 
 router.use((req, res, next) => {
     if (res.get("Access-Control-Allow-Origin") /* && req.headers['X-SIGN-ID'] === "Z3dy7U" */) {
         return next();
-    } else if (req.get("X-Authorization") === gloryStatsKey) {
+    } else if (req.get("X-Authorization") === serverRuntimeConfig.gloryStatsKey) {
         console.log("GloryStats authorized.");
+        req.gloryStatsKey = serverRuntimeConfig.gloryStatsKey
         return next();
     }
 
