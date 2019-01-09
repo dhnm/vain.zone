@@ -13,7 +13,7 @@ import {
 
 export default router;
 
-router.get("/", cacheMW(60), (req, res) => {
+router.get("/", cacheMW(60), (req: any, res) => {
   let filters;
 
   try {

@@ -58,7 +58,7 @@ export default function MatchCard({
 
   const KDAs = match.rosters.map(roster =>
     roster.participants.map(participant => {
-      let KDAScore =
+      const KDAScore =
         participant.kills /
           ((participant.deaths + 2) / (participant.kills + 1) + 1) +
         (participant.assists /
@@ -66,7 +66,7 @@ export default function MatchCard({
           0.6;
       return {
         name: participant.player.name,
-        KDAScore
+        KDAScore,
       };
     })
   );

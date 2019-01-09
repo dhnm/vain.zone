@@ -27,6 +27,10 @@ export type IOutput = {
 router.post(
   "/",
   (req, res: any, next) => {
+    if (!req.body || !req.body.match || !req.body.match.matchID) {
+      res.status(400).end();
+      return;
+    }
     const key = "__telemetry__" + req.body.match.matchID;
     const cachedBody = mcache.get(key);
     if (cachedBody) {
@@ -46,36 +50,40 @@ router.post(
     console.log("gg14");
     const matchData = req.body.match;
     axios(matchData.telemetryURL)
-      .then((response): any => {
-        console.log("gg16");
-        console.log("obtaining telemetry with status", response.status);
-        return response.data;
-      })
-      .then((telemetryData: any): void => {
-        console.log("gg17");
-        retrieveSingleMatch(matchData).then(singleMatchData => {
-          const {
-            damagesData,
-            towersDamagesData,
-            banData,
-            creatures5v5,
-            draftOrder,
-            gameplayRoles
-          } = loopThroughTelemetry(telemetryData, matchData);
-          const output: IOutput = {
-            damagesData,
-            towersDamagesData,
-            banData,
-            singleMatchData,
-            creatures5v5,
-            draftOrder,
-            gameplayRoles,
-            error: false
-          };
-          console.log("gg18");
-          res.json(output);
-        });
-      })
+      .then(
+        (response): any => {
+          console.log("gg16");
+          console.log("obtaining telemetry with status", response.status);
+          return response.data;
+        }
+      )
+      .then(
+        (telemetryData: any): void => {
+          console.log("gg17");
+          retrieveSingleMatch(matchData).then(singleMatchData => {
+            const {
+              damagesData,
+              towersDamagesData,
+              banData,
+              creatures5v5,
+              draftOrder,
+              gameplayRoles
+            } = loopThroughTelemetry(telemetryData, matchData);
+            const output: IOutput = {
+              damagesData,
+              towersDamagesData,
+              banData,
+              singleMatchData,
+              creatures5v5,
+              draftOrder,
+              gameplayRoles,
+              error: false
+            };
+            console.log("gg18");
+            res.json(output);
+          });
+        }
+      )
       .catch(error => {
         console.log("gg19");
         const output: IOutput = {
@@ -211,10 +219,12 @@ const retrieveSingleMatch = matchData => {
       Accept: "application/vnd.api+json"
     }
   })
-    .then((response): any => {
-      console.log("obtaining single match data with status", response.status);
-      return response.data;
-    })
+    .then(
+      (response): any => {
+        console.log("obtaining single match data with status", response.status);
+        return response.data;
+      }
+    )
     .then((match: any) => {
       const singleMatchData: ISingleMatchData = {};
 
@@ -518,17 +528,17 @@ const getRoles = (roleDetection, matchData, creepKills) => {
         const carryCondition =
           p.nonJungleMinionKills > 5 &&
           (p.nonJungleMinionKills >=
-            4 / 5 * creepKillMaxValues[sideIndex]["1:carry"] ||
+            (4 / 5) * creepKillMaxValues[sideIndex]["1:carry"] ||
             (p.nonJungleMinionKills >= p.jungleKills * 1.7 &&
               p.nonJungleMinionKills >=
-                3 / 5 * creepKillMaxValues[sideIndex]["1:carry"]));
+                (3 / 5) * creepKillMaxValues[sideIndex]["1:carry"]));
         const junglerCondition =
           p.jungleKills > 5 &&
           (p.jungleKills >=
-            4 / 5 * creepKillMaxValues[sideIndex]["2:jungler"] ||
+            (4 / 5) * creepKillMaxValues[sideIndex]["2:jungler"] ||
             (p.jungleKills >= p.nonJungleMinionKills &&
               p.jungleKills >=
-                3 / 5 * creepKillMaxValues[sideIndex]["2:jungler"]));
+                (3 / 5) * creepKillMaxValues[sideIndex]["2:jungler"]));
 
         if (junglerCondition && carryCondition) {
           unsureRoles[sideIndex].push({ sideIndex, actor: p.actor });
@@ -715,7 +725,7 @@ const detectUtility = p => {
   //   !gameplayRoles[rosterIndex][p.actor]
   // )
   const referencePoints =
-    4 / 6 * Math.max(p.items.length - 2, 1) +
+    (4 / 6) * Math.max(p.items.length - 2, 1) +
     (supportHeroPoints === 1 ? 0.25 : supportHeroPoints === 0 ? 0.8 : 0);
 
   if (supportItemPoints >= referencePoints) {

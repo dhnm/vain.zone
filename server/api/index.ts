@@ -20,17 +20,22 @@ export default router;
 import getConfig from "next/config";
 const { serverRuntimeConfig } = getConfig();
 
-router.use((req, res, next) => {
-    if (res.get("Access-Control-Allow-Origin") /* && req.headers['X-SIGN-ID'] === "Z3dy7U" */) {
-        return next();
-    } else if (req.get("X-Authorization") === serverRuntimeConfig.gloryStatsKey) {
-        console.log("GloryStats authorized.");
-        req.gloryStatsKey = serverRuntimeConfig.gloryStatsKey
-        return next();
-    }
+router.use((req: any, res, next) => {
+  if (req.get("X-Authorization") === serverRuntimeConfig.gloryStatsKey) {
+    console.log("GloryStats authorized.");
+    console.log(req.headers);
+    req.gloryStatsKey = serverRuntimeConfig.gloryStatsKey;
+    return next();
+  } else if (
+    res.get(
+      "Access-Control-Allow-Origin"
+    ) /* && req.headers['X-SIGN-ID'] === "Z3dy7U" */
+  ) {
+    return next();
+  }
 
-    res.status(403).end();
-    return;
+  res.status(403).end();
+  return;
 });
 
 router.use("/fbattachment", fbattachment);
