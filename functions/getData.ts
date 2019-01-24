@@ -185,13 +185,21 @@ function getPlayerFromAPI(params: {
             return reject(new Error("veryold"));
           }
 
-          if (
-            !customPlayerDataModel.patchVersion ||
-            parseFloat(customPlayerDataModel.patchVersion) < 3.2
-          ) {
-            // 3.2 up features 5v5 ranked
+          if (typeof customPlayerDataModel.patchVersion !== "string") {
             return reject(new Error("veryold"));
+          } else {
+            const [major, minor] = customPlayerDataModel.patchVersion.split(
+              "."
+            );
+            if (
+              parseInt(major) < 3 ||
+              (parseInt(major) === 3 && parseInt(minor) < 2)
+            ) {
+              // 3.2 up features 5v5 ranked
+              return reject(new Error("veryold"));
+            }
           }
+
           return resolve(customPlayerDataModel);
         })
         .catch(err => {
