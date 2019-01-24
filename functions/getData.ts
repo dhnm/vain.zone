@@ -47,7 +47,9 @@ export default function getData(params: {
           });
         }
         return getPlayerFromAPI(
-          params.playerID ? { playerID: params.playerID, key: params.key } : { IGN: params.IGN, key: params.key }
+          params.playerID
+            ? { playerID: params.playerID, key: params.key }
+            : { IGN: params.IGN, key: params.key }
         );
       })
       .then(player => {
@@ -183,7 +185,10 @@ function getPlayerFromAPI(params: {
             return reject(new Error("veryold"));
           }
 
-          if (customPlayerDataModel.patchVersion < "3.2") {
+          if (
+            !customPlayerDataModel.patchVersion ||
+            parseFloat(customPlayerDataModel.patchVersion) < 3.2
+          ) {
             // 3.2 up features 5v5 ranked
             return reject(new Error("veryold"));
           }
