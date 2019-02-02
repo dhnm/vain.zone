@@ -24,9 +24,12 @@ export default function PlayerDetailView({
       player.played_casual * 18 +
       player.played_ranked * 20) /
     60;
-  if (player.patchVersion >= "3.2") {
+
+  const [major, minor] = player.patchVersion.split(".");
+  if (parseInt(major) > 3 || (parseInt(major) === 3 && parseInt(minor) > 2)) {
     experienceHours += (player.played_ranked_5v5 * 28) / 60;
   }
+
   const addictivenessRatingDict = {
     0: "",
     20: "There’s a new sheriff in town.",
@@ -100,7 +103,11 @@ export default function PlayerDetailView({
             <SkillTierPopup rankPoints={player.rank_blitz} mode="BRAWL" />
             <SkillTierPopup rankPoints={player.rank_3v3} mode="3v3" />
             {(() => {
-              if (player.patchVersion >= "3.2") {
+              const [major, minor] = player.patchVersion.split(".");
+              if (
+                parseInt(major) > 3 ||
+                (parseInt(major) === 3 && parseInt(minor) > 2)
+              ) {
                 return (
                   <SkillTierPopup rankPoints={player.rank_5v5} mode="5v5" />
                 );
@@ -137,7 +144,11 @@ export default function PlayerDetailView({
                   <div style={{ float: "right" }}>{player.played_ranked}×</div>
                   <br />
                   {(() => {
-                    if (player.patchVersion >= "3.2") {
+                    const [major, minor] = player.patchVersion.split(".");
+                    if (
+                      parseInt(major) > 3 ||
+                      (parseInt(major) === 3 && parseInt(minor) > 2)
+                    ) {
                       return (
                         <React.Fragment>
                           5v5 Ranked:
