@@ -12,7 +12,7 @@ import DraftBuilder from "./DraftBuilder";
 import ProfileItem from "./ProfileItem";
 
 const defaultHeroes = [
-  { name: "Ylva" },
+  { name: "San Feng" },
   { name: "Adagio" },
   { name: "Alpha" },
   { name: "Anka" },
@@ -58,7 +58,8 @@ const defaultHeroes = [
   { name: "Tony" },
   { name: "Varya" },
   { name: "Vox" },
-  { name: "Yates" }
+  { name: "Yates" },
+  { name: "Ylva" }
 ];
 
 const draftProfiles = [
@@ -86,10 +87,10 @@ const draftProfiles = [
       { team: 1, action: "pick" }
     ],
     heroes: defaultHeroes,
-    customStyle: { 
+    customStyle: {
       backgroundColor: "#fce043",
       backgroundImage: "linear-gradient(315deg, #fce043 0%, #fb7ba2 74%)"
-    },
+    }
     // innerStyle: {
     //   background:
     //     'url("/static/img/draft/profiles/vpl-c.png") no-repeat center',
