@@ -27,7 +27,7 @@ router.use((req: any, res, next) => {
     req.gloryStatsKey = serverRuntimeConfig.gloryStatsKey;
     return next();
   } else if (
-    res.get(
+    true || res.get(
       "Access-Control-Allow-Origin"
     ) /* && req.headers['X-SIGN-ID'] === "Z3dy7U" */
   ) {
