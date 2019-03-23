@@ -264,7 +264,7 @@ class News extends React.Component {
               </h3>
               <small>VAIN.ZONE/draft</small>
             </a>
-            <Link href="/guild">
+            {/*<Link href="/guild">
               <div
                 {...css({
                   width: "320px",
@@ -296,8 +296,8 @@ class News extends React.Component {
                 </h3>
                 <small>Sample & Application Form</small>
               </div>
-            </Link>
-            <a
+            </Link>*/}
+            {/*<a
               target="_blank"
               href="https://vainglory.eu"
               {...css({
@@ -328,7 +328,7 @@ class News extends React.Component {
                 Czech and Slovak Community
               </h3>
               <small>Vainglory.eu</small>
-            </a>
+            </a>*/}
             <a
               target="_blank"
               href="https://twitter.com/VAINZONE_vg"
