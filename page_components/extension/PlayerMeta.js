@@ -14,7 +14,7 @@ export default ({ data, browserView, gloryGuide }) => {
   return (
     <React.Fragment>
       <Segment>
-        <Label attached="top"> Win Rate (Winter 2018/2019) </Label>
+        <Label attached="top"> Win Rate </Label>
         <Progress
           style={{ marginBottom: 0 }}
           percent={((data.winrate.won * 100) / data.winrate.of_matches).toFixed(
