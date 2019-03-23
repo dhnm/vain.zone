@@ -6,13 +6,13 @@ const axios_1 = require("axios");
 const Player_1 = require("./../models/Player");
 const Match_1 = require("./../models/Match");
 function getData(params) {
+    params.returnMatches =
+        params.returnMatches && params.returnMatches > 0 ? params.returnMatches : 0;
     return new Promise((resolve, reject) => {
         let playerDataFromDB;
         let playerDataFromAPI;
         let matchesFromAPI;
-        Player_1.Player.findOne(params.playerID
-            ? { playerID: params.playerID }
-            : { name: params.IGN })
+        Player_1.Player.findOne(params.playerID ? { playerID: params.playerID } : { name: params.IGN })
             .exec()
             .then(player => {
             console.log("gg1");
@@ -20,7 +20,8 @@ function getData(params) {
                 playerDataFromDB = player;
                 return getPlayerFromAPI({
                     playerID: player.playerID,
-                    shardId: player.shardId
+                    shardId: player.shardId,
+                    key: params.key
                 }).catch(err => {
                     if (err.message == "404") {
                         player.IGNHistory.push(player.name);
@@ -30,14 +31,14 @@ function getData(params) {
                         player.save();
                     }
                     if (params.IGN) {
-                        return getPlayerFromAPI({ IGN: params.IGN });
+                        return getPlayerFromAPI({ IGN: params.IGN, key: params.key });
                     }
                     return err;
                 });
             }
             return getPlayerFromAPI(params.playerID
-                ? { playerID: params.playerID }
-                : { IGN: params.IGN });
+                ? { playerID: params.playerID, key: params.key }
+                : { IGN: params.IGN, key: params.key });
         })
             .then(player => {
             console.log("gg2");
@@ -75,7 +76,7 @@ function getData(params) {
         })
             .then(() => {
             console.log("gg3");
-            return getUnfilteredMatchesData(playerDataFromAPI.playerID, playerDataFromAPI.shardId);
+            return getUnfilteredMatchesData(playerDataFromAPI.playerID, playerDataFromAPI.shardId, params.key);
         })
             .then(matches => {
             console.log("gg4");
@@ -96,9 +97,9 @@ function getData(params) {
                     ...playerDataFromAPI,
                     playerMeta
                 },
-                matches: params.messenger
+                matches: !params.returnMatches
                     ? undefined
-                    : matchesFromAPI.slice(0, 12)
+                    : matchesFromAPI.slice(0, params.returnMatches)
             });
             updatePlayerDB(playerDataFromDB, playerDataFromAPI);
         })
@@ -126,7 +127,8 @@ function getPlayerFromAPI(params) {
                     }
                     : {
                         "filter[playerIds]": params.playerID
-                    }
+                    },
+                key: params.key
             })
                 .then(json => {
                 const data = json.data[0];
@@ -156,9 +158,16 @@ function getPlayerFromAPI(params) {
                     console.error(err);
                     return reject(new Error("veryold"));
                 }
-                if (customPlayerDataModel.patchVersion < "3.2") {
-                    // 3.2 up features 5v5 ranked
+                if (typeof customPlayerDataModel.patchVersion !== "string") {
                     return reject(new Error("veryold"));
+                }
+                else {
+                    const [major, minor] = customPlayerDataModel.patchVersion.split(".");
+                    if (parseInt(major) < 3 ||
+                        (parseInt(major) === 3 && parseInt(minor) < 2)) {
+                        // 3.2 up features 5v5 ranked
+                        return reject(new Error("veryold"));
+                    }
                 }
                 return resolve(customPlayerDataModel);
             })
@@ -173,7 +182,7 @@ function getPlayerFromAPI(params) {
         tryRegion(0);
     });
 }
-function getUnfilteredMatchesData(playerID, shardId) {
+function getUnfilteredMatchesData(playerID, shardId, key) {
     return axiosAPI({
         shardId,
         endPoint: "matches",
@@ -182,7 +191,8 @@ function getUnfilteredMatchesData(playerID, shardId) {
             "page[limit]": 50,
             sort: "-createdAt",
             "filter[playerIds]": playerID
-        }
+        },
+        key
     })
         .then(matchesData => matchesData.data.reduce((accu, m) => {
         const formattedMatch = formatMatch(m, matchesData.included);
@@ -204,6 +214,7 @@ function insertMatchesToDB(matches) {
         ordered: false
     }).catch(err => {
         if (err.code !== 11000) {
+            console.error(err);
             throw new Error("500");
         }
         return;
@@ -653,9 +664,7 @@ function formatMatch(match, included) {
     const findTelemetry = telemetryAssetId
         ? included.find((e) => e.id === telemetryAssetId)
         : undefined;
-    const telemetryURL = findTelemetry
-        ? findTelemetry.attributes.URL
-        : undefined;
+    const telemetryURL = findTelemetry ? findTelemetry.attributes.URL : undefined;
     if (!telemetryURL) {
         return undefined;
     }
@@ -693,14 +702,12 @@ function formatMatch(match, included) {
             participants: new Array()
         };
         for (let participantIndex = 0; participantIndex < roster.relationships.participants.data.length; participantIndex++) {
-            const participant = included.find((e) => e.id ===
-                roster.relationships.participants.data[participantIndex].id);
+            const participant = included.find((e) => e.id === roster.relationships.participants.data[participantIndex].id);
             const player = included.find((e) => e.id === participant.relationships.player.data.id);
             const itemSells = {};
             Object.keys(participant.attributes.stats.itemSells).forEach(i => {
                 if (["*Item_ScoutPak*", "*Item_ScoutTuff*"].indexOf(i) > -1) {
-                    itemSells[i.slice(6, -1)] =
-                        participant.attributes.stats.itemSells[i];
+                    itemSells[i.slice(6, -1)] = participant.attributes.stats.itemSells[i];
                 }
                 else if (i === "*Item_SuperScout2000") {
                     itemSells[i.slice(6, -1)] = "SuperScout 2000";
@@ -708,16 +715,14 @@ function formatMatch(match, included) {
                 itemSells[i
                     .slice(6, -1)
                     .replace(/([A-Z])/g, " $1")
-                    .trim()] =
-                    participant.attributes.stats.itemSells[i];
+                    .trim()] = participant.attributes.stats.itemSells[i];
             });
             const itemUses = {};
             Object.keys(participant.attributes.stats.itemUses).forEach(i => {
                 itemUses[i
                     .slice(6, -1)
                     .replace(/([A-Z])/g, " $1")
-                    .trim()] =
-                    participant.attributes.stats.itemUses[i];
+                    .trim()] = participant.attributes.stats.itemUses[i];
             });
             const customParticipantDataModel = {
                 actor: participant.attributes.actor.slice(1, -1),

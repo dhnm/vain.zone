@@ -11,6 +11,10 @@ const moment = require("moment");
 const constants_1 = require("./../../functions/constants");
 exports.default = router;
 router.post("/", (req, res, next) => {
+    if (!req.body || !req.body.match || !req.body.match.matchID) {
+        res.status(400).end();
+        return;
+    }
     const key = "__telemetry__" + req.body.match.matchID;
     const cachedBody = mcache.get(key);
     if (cachedBody) {
@@ -299,16 +303,16 @@ const getRoles = (roleDetection, matchData, creepKills) => {
             side.participants.forEach(p => {
                 const carryCondition = p.nonJungleMinionKills > 5 &&
                     (p.nonJungleMinionKills >=
-                        4 / 5 * creepKillMaxValues[sideIndex]["1:carry"] ||
+                        (4 / 5) * creepKillMaxValues[sideIndex]["1:carry"] ||
                         (p.nonJungleMinionKills >= p.jungleKills * 1.7 &&
                             p.nonJungleMinionKills >=
-                                3 / 5 * creepKillMaxValues[sideIndex]["1:carry"]));
+                                (3 / 5) * creepKillMaxValues[sideIndex]["1:carry"]));
                 const junglerCondition = p.jungleKills > 5 &&
                     (p.jungleKills >=
-                        4 / 5 * creepKillMaxValues[sideIndex]["2:jungler"] ||
+                        (4 / 5) * creepKillMaxValues[sideIndex]["2:jungler"] ||
                         (p.jungleKills >= p.nonJungleMinionKills &&
                             p.jungleKills >=
-                                3 / 5 * creepKillMaxValues[sideIndex]["2:jungler"]));
+                                (3 / 5) * creepKillMaxValues[sideIndex]["2:jungler"]));
                 if (junglerCondition && carryCondition) {
                     unsureRoles[sideIndex].push({ sideIndex, actor: p.actor });
                 }
@@ -479,7 +483,7 @@ const detectUtility = p => {
     //   supportPoints >= 8 / Math.max(6 * (p.items.length - 2), 1) &&
     //   !gameplayRoles[rosterIndex][p.actor]
     // )
-    const referencePoints = 4 / 6 * Math.max(p.items.length - 2, 1) +
+    const referencePoints = (4 / 6) * Math.max(p.items.length - 2, 1) +
         (supportHeroPoints === 1 ? 0.25 : supportHeroPoints === 0 ? 0.8 : 0);
     if (supportItemPoints >= referencePoints) {
         return "4:captain";

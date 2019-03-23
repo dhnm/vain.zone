@@ -32,7 +32,7 @@ const output = players => {
                             (Math.sqrt(p.processedRankPoints.skillTier) * 2 - // * 4 eventually
                                 Math.sqrt(26));
             }
-            growthPoints = growthPoints * 10 / 3;
+            growthPoints = (growthPoints * 10) / 3;
             return { name: p.name, growthPoints };
         })
             .sort((a, b) => b.growthPoints - a.growthPoints)
@@ -85,7 +85,7 @@ router.get("/", cacheMW_1.default(64800), (_, res) => {
                 const freshPlayerData = [].concat(...axiosData.map(e => e.data));
                 freshPlayerData.forEach(e => {
                     const relevantPlayer = toBeUpdated.find(p => p.playerID === e.id);
-                    if (e.attributes.patchVersion >= "3.7") {
+                    if (e.attributes.patchVersion >= "3.9") {
                         relevantPlayer.rank_5v5 =
                             e.attributes.stats.rankPoints.ranked_5v5;
                         if (relevantPlayer.czSk.of_month != now.getMonth() ||

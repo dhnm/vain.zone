@@ -7,7 +7,12 @@ const Player_1 = require("./../../models/Player");
 const getData_1 = require("./../../functions/getData");
 exports.default = router;
 router.get("/", cacheMW_1.default(60), (req, res) => {
-    getData_1.default({ IGN: req.query.IGN, playerID: req.query.playerID })
+    req.query.matches = parseInt(req.query.matches) || 12;
+    getData_1.default({
+        IGN: req.query.IGN,
+        playerID: req.query.playerID,
+        returnMatches: req.query.matches
+    })
         .then(data => {
         res.json(data);
     })
