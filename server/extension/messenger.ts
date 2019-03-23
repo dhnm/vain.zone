@@ -525,7 +525,7 @@ const sendPlayerInfo = (userID: string, player: any) => {
           buttons: [
             {
               type: "web_url",
-              url: `https://vain.zone/extension/player/${
+              url: `https://vz.vainglory.eu/extension/player/${
                 player.name
               }?playerID=${player.playerID}`,
               title: "See more",
@@ -687,7 +687,7 @@ const updateInfo = () => {
     ],
 
     home_url: {
-      url: "https://vain.zone/extension",
+      url: "https://vz.vainglory.eu/extension",
       webview_height_ratio: "tall",
       webview_share_button: "hide",
       in_test: false
@@ -699,7 +699,9 @@ const updateInfo = () => {
       "https://x.vainglory.eu",
       "http://localhost:3000",
       "https://test.vainglory.eu",
-      "https://vain.zone"
+      "https://vain.zone",
+      "http://obscure-meadow-82712.herokuapp.com",
+      "https://vz.vainglory.eu"
     ],
 
     persistent_menu: [

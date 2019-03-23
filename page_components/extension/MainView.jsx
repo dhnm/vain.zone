@@ -141,7 +141,7 @@ export default class MainView extends React.Component {
       })
       .then(attachmentId => {
         const url = isMatch
-          ? `https://vain.zone/extension/player/${
+          ? `https://vz.vainglory.eu/extension/player/${
               this.props.data.player.name
             }/${this.props.selectedMatch.matchID}`
           : window.location.href;
@@ -342,7 +342,7 @@ export default class MainView extends React.Component {
           />
           <meta
             property="og:url"
-            content={`https://vain.zone/player/${this.props.data.player.name}`}
+            content={`https://vz.vainglory.eu/player/${this.props.data.player.name}`}
           />
         </Head>
         {this.props.screenCategory !== "wide" && (

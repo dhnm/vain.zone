@@ -128,7 +128,10 @@ nextApp
         "http://www.vainglory.eu",
         "http://vainglory.eu",
         "https://www.vainglory.eu",
-        "https://vainglory.eu"
+        "https://vainglory.eu",
+        "http://vz.vainglory.eu",
+        "https://vz.vainglory.eu",
+        "http://obscure-meadow-82712.herokuapp.com"
       ];
 
       if (dev) {
