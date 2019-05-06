@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8481d660-c38b-454a-9d6e-e42a5bb5b4a2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/page_components/extension/PlayerMeta.js" beforeDir="false" afterPath="$PROJECT_DIR$/page_components/extension/PlayerMeta.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/backgroundStyle.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/backgroundStyle.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/extension/messenger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/extension/messenger.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/dist/" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -21,8 +19,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pages/index.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="11" column="25" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
+            <state relative-caret-position="144">
+              <caret line="8" column="18" selection-end-line="20" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -60,10 +58,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/extension/messenger.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="182">
-              <caret line="689" column="23" selection-start-line="689" selection-start-column="23" selection-end-line="689" selection-end-column="23" />
+            <state relative-caret-position="403">
+              <caret line="210" column="21" selection-start-line="210" selection-start-column="21" selection-end-line="210" selection-end-column="21" />
               <folding>
                 <element signature="e#143#192#0" expanded="true" />
+                <element signature="e#4219#6025#0" />
+                <element signature="e#6082#6280#0" />
               </folding>
             </state>
           </provider>
@@ -81,7 +81,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/page_components/extension/MessageView.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4806">
+            <state relative-caret-position="4626">
               <caret line="267" column="18" selection-start-line="267" selection-start-column="18" selection-end-line="267" selection-end-column="18" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
@@ -112,6 +112,7 @@
       <find>home_url</find>
       <find>webhook</find>
       <find>winter</find>
+      <find>something went wrong</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -131,17 +132,18 @@
         <option value="$PROJECT_DIR$/server/api/playerdata.ts" />
         <option value="$PROJECT_DIR$/pages/guild/index.jsx" />
         <option value="$PROJECT_DIR$/server/api/index.ts" />
-        <option value="$PROJECT_DIR$/server/extension/messenger.ts" />
         <option value="$PROJECT_DIR$/page_components/extension/PlayerMeta.js" />
         <option value="$PROJECT_DIR$/static/css/backgroundStyle.css" />
+        <option value="$PROJECT_DIR$/server/extension/messenger.ts" />
+        <option value="$PROJECT_DIR$/pages/new_home.jsx" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="270" />
-    <option name="y" value="156" />
+    <option name="x" value="263" />
+    <option name="y" value="23" />
     <option name="width" value="1017" />
-    <option name="height" value="737" />
+    <option name="height" value="721" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -154,28 +156,6 @@
             <path>
               <item name="next" type="b2602c69:ProjectViewProjectNode" />
               <item name="next" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="next" type="b2602c69:ProjectViewProjectNode" />
-              <item name="next" type="462c0819:PsiDirectoryNode" />
-              <item name="page_components" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="next" type="b2602c69:ProjectViewProjectNode" />
-              <item name="next" type="462c0819:PsiDirectoryNode" />
-              <item name="page_components" type="462c0819:PsiDirectoryNode" />
-              <item name="extension" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="next" type="b2602c69:ProjectViewProjectNode" />
-              <item name="next" type="462c0819:PsiDirectoryNode" />
-              <item name="pages" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="next" type="b2602c69:ProjectViewProjectNode" />
-              <item name="next" type="462c0819:PsiDirectoryNode" />
-              <item name="pages" type="462c0819:PsiDirectoryNode" />
-              <item name="guild" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="next" type="b2602c69:ProjectViewProjectNode" />
@@ -199,6 +179,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="prettierjs.PrettierConfiguration.Package" value="/usr/local/lib/node_modules/prettier" />
     <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
   </component>
@@ -214,6 +195,41 @@
       </list>
     </option>
   </component>
+  <component name="RunManager" selected="Node.js.new_home.jsx">
+    <configuration name="new_home.jsx" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Node.js.new_home.jsx" />
+      <item itemvalue="npm.dev" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.dev" />
+        <item itemvalue="Node.js.new_home.jsx" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -227,23 +243,23 @@
       <workItem from="1553337340016" duration="117000" />
       <workItem from="1553341443917" duration="4793000" />
       <workItem from="1553353719665" duration="150000" />
+      <workItem from="1557153275295" duration="1086000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5060000" />
+    <option name="totallyTimeSpent" value="6146000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="270" y="156" width="1017" height="737" extended-state="0" />
-    <editor active="true" />
+    <frame x="263" y="23" width="1017" height="721" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4987715" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="npm" order="2" side_tool="true" />
+      <window_info id="npm" order="2" sideWeight="0.5012285" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3294893" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -279,16 +295,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pages/index.jsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="25" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/api/playerdata.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
@@ -319,7 +325,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/page_components/extension/MessageView.jsx">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4806">
+        <state relative-caret-position="4626">
           <caret line="267" column="18" selection-start-line="267" selection-start-column="18" selection-end-line="267" selection-end-column="18" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
@@ -334,12 +340,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pages/index.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="8" column="18" selection-end-line="20" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/new_home.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="8" column="25" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/extension/messenger.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="689" column="23" selection-start-line="689" selection-start-column="23" selection-end-line="689" selection-end-column="23" />
+        <state relative-caret-position="403">
+          <caret line="210" column="21" selection-start-line="210" selection-start-column="21" selection-end-line="210" selection-end-column="21" />
           <folding>
             <element signature="e#143#192#0" expanded="true" />
+            <element signature="e#4219#6025#0" />
+            <element signature="e#6082#6280#0" />
           </folding>
         </state>
       </provider>

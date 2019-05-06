@@ -156,6 +156,10 @@ nextApp
       return next();
     });
 
+    app.get("/", (_req, res) => {
+      res.redirect("/draft");
+    });
+
     app.get("/", (req, res) => {
       nextApp.render(req, res, "/extension", {
         browserView: true,

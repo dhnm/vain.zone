@@ -12,7 +12,7 @@ import DraftBuilder from "./DraftBuilder";
 import ProfileItem from "./ProfileItem";
 
 const defaultHeroes = [
-  { name: "San Feng" },
+  { name: "Caine" },
   { name: "Adagio" },
   { name: "Alpha" },
   { name: "Anka" },
@@ -49,6 +49,7 @@ const defaultHeroes = [
   { name: "Reza" },
   { name: "Ringo" },
   { name: "Rona" },
+  { name: "San Feng" },
   { name: "Samuel" },
   { name: "SAW" },
   { name: "Silvernail" },

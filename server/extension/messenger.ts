@@ -200,7 +200,7 @@ const getPlayerInfo = (params: {
       } else {
         sendTextMessage(
           params.userID,
-          "2 Something went wrong.\n\nThere is probably an issue with SEMC (developers of Vainglory), try again later.\n"
+          "2 Something went wrong.\n\nThere is probably an issue with SEMC (developers of Vainglory), try again later..\n"
         );
       }
     });
