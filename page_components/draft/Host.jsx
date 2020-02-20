@@ -12,7 +12,7 @@ import DraftBuilder from "./DraftBuilder";
 import ProfileItem from "./ProfileItem";
 
 const defaultHeroes = [
-  { name: "Leo" },
+  { name: "Shin" },
   { name: "Adagio" },
   { name: "Alpha" },
   { name: "Anka" },
@@ -32,17 +32,21 @@ const defaultHeroes = [
   { name: "Gwen" },
   { name: "Idris" },
   { name: "Inara" },
+  { name: "Ishtar" },
   { name: "Joule" },
+  { name: "Karas" },
   { name: "Kensei" },
   { name: "Kestrel" },
   { name: "Kinetic" },
   { name: "Koshka" },
   { name: "Krul" },
   { name: "Lance" },
+  { name: "Leo" },
   { name: "Lorelai" },
   { name: "Lyra" },
   { name: "Magnus" },
   { name: "Malene" },
+  { name: "Miho" },
   { name: "Ozo" },
   { name: "Petal" },
   { name: "Phinn" },
@@ -50,8 +54,8 @@ const defaultHeroes = [
   { name: "Reza" },
   { name: "Ringo" },
   { name: "Rona" },
-  { name: "San Feng" },
   { name: "Samuel" },
+  { name: "San Feng" },
   { name: "SAW" },
   { name: "Silvernail" },
   { name: "Skaarf" },
@@ -59,7 +63,9 @@ const defaultHeroes = [
   { name: "Taka" },
   { name: "Tony" },
   { name: "Varya" },
+  { name: "Viola" },
   { name: "Vox" },
+  { name: "Warhawk" },
   { name: "Yates" },
   { name: "Ylva" }
 ];
@@ -669,6 +675,11 @@ class Host extends React.Component {
     }
     return (
       <Lobby>
+        <p style={{ textAlign: "right" }}>
+          <small>
+            <em>New Website Coming Soon! March 2020</em>
+          </small>
+        </p>
         <Head>
           <title>{this.state.matchName || "VAIN.ZONE Draft Builder"}</title>
         </Head>
