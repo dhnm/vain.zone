@@ -1,18 +1,18 @@
-import React from "react";
-import io from "socket.io-client";
-import Router from "next/router";
-import Head from "next/head";
+import React from "react"
+import io from "socket.io-client"
+import Router from "next/router"
+import Head from "next/head"
 
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { toast } from "react-toastify";
+import { CopyToClipboard } from "react-copy-to-clipboard"
+import { toast } from "react-toastify"
 
-import Lobby from "./Lobby";
-import Draft from "./Draft";
-import DraftBuilder from "./DraftBuilder";
-import ProfileItem from "./ProfileItem";
+import Lobby from "./Lobby"
+import Draft from "./Draft"
+import DraftBuilder from "./DraftBuilder"
+import ProfileItem from "./ProfileItem"
 
 const defaultHeroes = [
-  { name: "Shin" },
+  { name: "Amael" },
   { name: "Adagio" },
   { name: "Alpha" },
   { name: "Anka" },
@@ -57,6 +57,7 @@ const defaultHeroes = [
   { name: "Samuel" },
   { name: "San Feng" },
   { name: "SAW" },
+  { name: "Shin" },
   { name: "Silvernail" },
   { name: "Skaarf" },
   { name: "Skye" },
@@ -67,8 +68,8 @@ const defaultHeroes = [
   { name: "Vox" },
   { name: "Warhawk" },
   { name: "Yates" },
-  { name: "Ylva" }
-];
+  { name: "Ylva" },
+]
 
 const draftProfiles = [
   {
@@ -92,13 +93,13 @@ const draftProfiles = [
       { team: 0, action: "ban" },
       { team: 1, action: "ban" },
       { team: 0, action: "pick" },
-      { team: 1, action: "pick" }
+      { team: 1, action: "pick" },
     ],
     heroes: defaultHeroes,
     customStyle: {
       backgroundColor: "#fce043",
-      backgroundImage: "linear-gradient(315deg, #fce043 0%, #fb7ba2 74%)"
-    }
+      backgroundImage: "linear-gradient(315deg, #fce043 0%, #fb7ba2 74%)",
+    },
     // innerStyle: {
     //   background:
     //     'url("/static/img/draft/profiles/vpl-c.png") no-repeat center',
@@ -155,12 +156,12 @@ const draftProfiles = [
       { team: 1, action: "pick" },
       { team: 0, action: "pick" },
       { team: 0, action: "pick" },
-      { team: 1, action: "pick" }
+      { team: 1, action: "pick" },
     ],
     heroes: defaultHeroes,
     customStyle: {
-      background: "linear-gradient(to right, #12aee6, #3920a1)"
-    }
+      background: "linear-gradient(to right, #12aee6, #3920a1)",
+    },
   },
   {
     name: "Vainglory 5v5 - 5 Bans",
@@ -187,20 +188,20 @@ const draftProfiles = [
       { team: 1, action: "pick" },
       { team: 0, action: "pick" },
       { team: 0, action: "pick" },
-      { team: 1, action: "pick" }
+      { team: 1, action: "pick" },
     ],
     heroes: defaultHeroes,
     customStyle: {
-      background: "linear-gradient(to right, #0575e6, #021b79)"
-    }
-  }
-];
+      background: "linear-gradient(to right, #0575e6, #021b79)",
+    },
+  },
+]
 
 const SharingLink = ({ lobby, roomID, teamID }) => {
   if (lobby) {
     const link = `${window.location.protocol}//${
       window.location.host
-    }/draft/${encodeURIComponent(roomID)}/${teamID}`;
+    }/draft/${encodeURIComponent(roomID)}/${teamID}`
     return (
       <React.Fragment>
         <CopyToClipboard
@@ -210,15 +211,15 @@ const SharingLink = ({ lobby, roomID, teamID }) => {
               position: toast.POSITION.TOP_CENTER,
               autoClose: 1500,
               closeButton: false,
-              hideProgressBar: true
-            });
+              hideProgressBar: true,
+            })
           }}
         >
           <input
             type="text"
             className="link"
             value={link}
-            onClick={e => e.target.select()}
+            onClick={(e) => e.target.select()}
             readOnly
           />
         </CopyToClipboard>
@@ -246,14 +247,14 @@ const SharingLink = ({ lobby, roomID, teamID }) => {
           `}
         </style>
       </React.Fragment>
-    );
+    )
   }
-  return null;
-};
+  return null
+}
 
 class Host extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       blueSockets: new Set(),
       redSockets: new Set(),
@@ -282,72 +283,81 @@ class Host extends React.Component {
       draftedHeroes: [],
       timeLeft: new Date(),
       redBonusLeft: 0,
-      blueBonusLeft: 0
-    };
+      blueBonusLeft: 0,
+    }
   }
   componentDidMount() {
-    this.socket = io("/draft");
+    this.socket = io("/draft")
     this.socket.on("connect", () => {
-      this.setState({ roomID: this.socket.id });
-    });
-    this.socket.on("verify", data => {
+      this.setState({ roomID: this.socket.id })
+    })
+    this.socket.on("verify", (data) => {
       if (data.keys.roomID === this.state.roomID) {
         if (data.keys.teamID === this.props.blueID) {
           this.setState(
-            prevState => ({
+            (prevState) => ({
               blueState: this.state.draftLaunched ? 2 : 1,
               blueSockets: new Set([
                 ...prevState.blueSockets,
-                data.keys.socketID
-              ])
+                data.keys.socketID,
+              ]),
             }),
             () =>
-              this.socket.emit("data transfer", this.stateWithKeys({ team: 0 }))
-          );
+              this.socket.emit(
+                "data transfer",
+                this.stateWithKeys({ team: 0 }),
+              ),
+          )
         } else if (data.keys.teamID === this.props.redID) {
           this.setState(
-            prevState => ({
+            (prevState) => ({
               redState: this.state.draftLaunched ? 2 : 1,
-              redSockets: new Set([...prevState.redSockets, data.keys.socketID])
+              redSockets: new Set([
+                ...prevState.redSockets,
+                data.keys.socketID,
+              ]),
             }),
             () =>
-              this.socket.emit("data transfer", this.stateWithKeys({ team: 1 }))
-          );
+              this.socket.emit(
+                "data transfer",
+                this.stateWithKeys({ team: 1 }),
+              ),
+          )
         } else if (data.keys.teamID) {
           this.socket.emit(
             "data transfer",
             this.stateWithKeys({
               failed: "Wrong link.",
-              recipientID: data.keys.socketID
-            })
-          );
+              recipientID: data.keys.socketID,
+            }),
+          )
         } else {
           this.setState(
-            prevState => ({
+            (prevState) => ({
               spectatorSockets: new Set([
                 ...prevState.spectatorSockets,
-                data.keys.socketID
-              ])
+                data.keys.socketID,
+              ]),
             }),
             () =>
               this.socket.emit(
                 "data transfer",
                 this.stateWithKeys({
                   spectator: true,
-                  recipientID: data.keys.socketID
-                })
-              )
-          );
+                  recipientID: data.keys.socketID,
+                }),
+              ),
+          )
         }
       } else {
         this.socket.emit(
           "data transfer",
-          this.stateWithKeys({ failed: true, recipientID: data.keys.socketID })
-        );
+          this.stateWithKeys({ failed: true, recipientID: data.keys.socketID }),
+        )
       }
-    });
+    })
 
-    this.socket.on("host update", data => {
+    this.socket.on("host update", (data) => {
       if (
         data.keys.teamID === this.props.blueID ||
         data.keys.teamID === this.props.redID
@@ -355,20 +365,20 @@ class Host extends React.Component {
         console.log(
           new Date().getTime(),
           new Date(this.state.timeLeft).getTime(),
-          this.state.waitingTime
-        );
+          this.state.waitingTime,
+        )
         if (data.state.redState || data.state.blueState) {
           this.setState(data.state, () => {
-            this.socket.emit("data transfer", this.stateWithKeys());
+            this.socket.emit("data transfer", this.stateWithKeys())
             if (this.state.redState === 2 && this.state.blueState === 2) {
               toast.success("Both teams are ready!", {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 2500,
                 closeButton: false,
-                hideProgressBar: true
-              });
+                hideProgressBar: true,
+              })
             }
-          });
+          })
         } else if (
           this.state.draftedHeroes.length > 0 ||
           (this.state.draftedHeroes.length === 0 &&
@@ -379,8 +389,8 @@ class Host extends React.Component {
                   : this.state.banTime))
         ) {
           this.setState(
-            prevState => {
-              const draftPositionIndex = prevState.draftedHeroes.length;
+            (prevState) => {
+              const draftPositionIndex = prevState.draftedHeroes.length
               if (
                 data.state.draftedHeroes &&
                 data.state.draftedHeroes.length ===
@@ -388,98 +398,98 @@ class Host extends React.Component {
               ) {
                 return {
                   ...data.state,
-                  draftFinished: true
-                };
+                  draftFinished: true,
+                }
               } else if (
                 data.state.draftedHeroes &&
                 data.state.draftedHeroes.length > prevState.draftSequence.length
               ) {
-                return null;
+                return null
               }
 
-              const teamTurn = prevState.draftSequence[draftPositionIndex].team;
+              const teamTurn = prevState.draftSequence[draftPositionIndex].team
               const requestFromTeam =
-                data.keys.teamID === this.props.blueID ? 0 : 1;
+                data.keys.teamID === this.props.blueID ? 0 : 1
               if (teamTurn === requestFromTeam) {
                 const sideBonusLeft = teamTurn
                   ? "redBonusLeft"
-                  : "blueBonusLeft";
+                  : "blueBonusLeft"
                 const draftActionTime =
                   prevState.draftSequence[draftPositionIndex].action === "pick"
                     ? prevState.pickTime
-                    : prevState.banTime;
+                    : prevState.banTime
                 const timeUsed =
                   new Date().getTime() -
-                  (new Date(prevState.timeLeft).getTime() - draftActionTime);
+                  (new Date(prevState.timeLeft).getTime() - draftActionTime)
                 const bonusTimeLeft =
                   timeUsed > draftActionTime
                     ? draftActionTime + prevState[sideBonusLeft] - timeUsed
-                    : prevState[sideBonusLeft];
+                    : prevState[sideBonusLeft]
 
                 const nextDraftAction =
-                  prevState.draftSequence[draftPositionIndex + 1].action;
+                  prevState.draftSequence[draftPositionIndex + 1].action
                 const nextTimeLeft =
                   nextDraftAction === "pick"
                     ? new Date(new Date().getTime() + prevState.pickTime + 400)
-                    : new Date(new Date().getTime() + prevState.banTime + 400);
+                    : new Date(new Date().getTime() + prevState.banTime + 400)
 
                 return {
                   ...data.state,
                   timeLeft: nextTimeLeft,
-                  [sideBonusLeft]: bonusTimeLeft
-                };
+                  [sideBonusLeft]: bonusTimeLeft,
+                }
               }
-              return null;
+              return null
             },
-            () => this.socket.emit("data transfer", this.stateWithKeys())
-          );
+            () => this.socket.emit("data transfer", this.stateWithKeys()),
+          )
         }
       } else {
         this.socket.emit(
           "data transfer",
           this.stateWithKeys({
             failed: "Wrong session.",
-            recipientID: data.keys.socketID
-          })
-        );
+            recipientID: data.keys.socketID,
+          }),
+        )
       }
-    });
+    })
 
-    this.socket.on("socket disconnected", socketID => {
-      this.setState(prevState => {
-        const newState = Object.assign({}, prevState);
+    this.socket.on("socket disconnected", (socketID) => {
+      this.setState((prevState) => {
+        const newState = Object.assign({}, prevState)
         if (newState.blueSockets.delete(socketID)) {
           if (!newState.blueSockets.size) {
-            newState.blueState = 0;
+            newState.blueState = 0
           }
           this.socket.emit("data transfer", {
             state: { blueState: 0 },
-            keys: { recipientID: prevState.roomID }
-          });
+            keys: { recipientID: prevState.roomID },
+          })
           return {
             blueSockets: newState.blueSockets,
-            blueState: newState.blueState
-          };
+            blueState: newState.blueState,
+          }
         } else if (newState.redSockets.delete(socketID)) {
           if (!newState.redSockets.size) {
-            newState.redState = 0;
+            newState.redState = 0
           }
           this.socket.emit("data transfer", {
             state: { redState: 0 },
-            keys: { recipientID: prevState.roomID }
-          });
+            keys: { recipientID: prevState.roomID },
+          })
           return {
             redSockets: newState.redSockets,
-            redState: newState.redState
-          };
+            redState: newState.redState,
+          }
         } else if (newState.spectatorSockets.delete(socketID)) {
           return {
-            spectatorSockets: newState.spectatorSockets
-          };
+            spectatorSockets: newState.spectatorSockets,
+          }
         }
-        return null;
-      });
-    });
+        return null
+      })
+    })
 
     this.socket.on("disconnect", () => {
       toast.error("Connection lost.", {
@@ -487,30 +497,30 @@ class Host extends React.Component {
         autoClose: 4500,
         closeButton: false,
         hideProgressBar: true,
-        onOpen: () => Router.replace("/draft")
-      });
-    });
+        onOpen: () => Router.replace("/draft"),
+      })
+    })
 
-    const LSUserProfiles = window.localStorage.getItem("userProfiles");
+    const LSUserProfiles = window.localStorage.getItem("userProfiles")
     if (LSUserProfiles) {
       try {
-        const parsed = JSON.parse(LSUserProfiles);
+        const parsed = JSON.parse(LSUserProfiles)
         this.setState({
-          userProfiles: parsed
-        });
+          userProfiles: parsed,
+        })
       } catch (err) {
-        console.error(err);
+        console.error(err)
       }
     }
 
     const LSLastSelectedProfile = window.localStorage.getItem(
-      "lastSelectedProfile"
-    );
+      "lastSelectedProfile",
+    )
     if (LSLastSelectedProfile) {
       try {
-        const parsed_lastSelected = JSON.parse(LSLastSelectedProfile);
-        this.setState(prevState => {
-          const profiles = [...draftProfiles, ...prevState.userProfiles];
+        const parsed_lastSelected = JSON.parse(LSLastSelectedProfile)
+        this.setState((prevState) => {
+          const profiles = [...draftProfiles, ...prevState.userProfiles]
           if (parsed_lastSelected < profiles.length) {
             return {
               selectedProfileIndex: parsed_lastSelected,
@@ -518,57 +528,57 @@ class Host extends React.Component {
               pickTime: profiles[parsed_lastSelected].pickTime,
               bonusTime: profiles[parsed_lastSelected].bonusTime,
               draftSequence: profiles[parsed_lastSelected].sequence,
-              heroes: profiles[parsed_lastSelected].heroes
-            };
+              heroes: profiles[parsed_lastSelected].heroes,
+            }
           }
-          return { selectedProfileIndex: 0 };
-        });
+          return { selectedProfileIndex: 0 }
+        })
       } catch (err) {
-        console.error(err);
+        console.error(err)
         this.setState({
-          selectedProfileIndex: 0
-        });
+          selectedProfileIndex: 0,
+        })
       }
     } else {
       this.setState({
-        selectedProfileIndex: 0
-      });
+        selectedProfileIndex: 0,
+      })
     }
   }
   componentWillUnmount() {
-    this.socket.close();
+    this.socket.close()
   }
-  stateWithKeys = data => {
-    const keys = data || {};
+  stateWithKeys = (data) => {
+    const keys = data || {}
     const {
       blueSockets,
       redSockets,
       spectatorSockets,
       spectator,
       ...sharedState
-    } = this.state;
+    } = this.state
     const newState = keys.failed
       ? { state: null }
       : {
-          state: sharedState
-        };
+          state: sharedState,
+        }
     return Object.assign({}, newState, {
       keys: {
         recipientID: this.state.roomID,
-        ...keys
-      }
-    });
-  };
-  handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-  handleSelect = index => {
-    window.localStorage.setItem("lastSelectedProfile", index);
-    this.setState(prevState => {
+        ...keys,
+      },
+    })
+  }
+  handleChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value })
+  }
+  handleSelect = (index) => {
+    window.localStorage.setItem("lastSelectedProfile", index)
+    this.setState((prevState) => {
       const profiles = [
         ...draftProfiles.slice(),
-        ...prevState.userProfiles.slice()
-      ];
+        ...prevState.userProfiles.slice(),
+      ]
       return {
         choosingProfile: false,
         selectedProfileIndex: index,
@@ -576,20 +586,20 @@ class Host extends React.Component {
         pickTime: profiles[index].pickTime,
         bonusTime: profiles[index].bonusTime,
         draftSequence: profiles[index].sequence,
-        heroes: profiles[index].heroes
-      };
-    });
-  };
-  addNewProfile = profile => {
-    this.setState(prevState => {
-      const sliced = prevState.userProfiles.slice();
-      sliced.push(profile);
+        heroes: profiles[index].heroes,
+      }
+    })
+  }
+  addNewProfile = (profile) => {
+    this.setState((prevState) => {
+      const sliced = prevState.userProfiles.slice()
+      sliced.push(profile)
 
       window.localStorage.setItem(
         "lastSelectedProfile",
-        draftProfiles.length - 1 + sliced.length
-      );
-      window.localStorage.setItem("userProfiles", JSON.stringify(sliced));
+        draftProfiles.length - 1 + sliced.length,
+      )
+      window.localStorage.setItem("userProfiles", JSON.stringify(sliced))
       return {
         userProfiles: sliced,
         choosingProfile: false,
@@ -598,62 +608,62 @@ class Host extends React.Component {
         pickTime: profile.pickTime,
         bonusTime: profile.bonusTime,
         draftSequence: profile.sequence,
-        heroes: profile.heroes
-      };
-    });
-  };
-  removeUserProfile = index => {
-    this.setState(prevState => {
-      const sliced = prevState.userProfiles.slice();
-      sliced.splice(index, 1);
+        heroes: profile.heroes,
+      }
+    })
+  }
+  removeUserProfile = (index) => {
+    this.setState((prevState) => {
+      const sliced = prevState.userProfiles.slice()
+      sliced.splice(index, 1)
 
-      window.localStorage.setItem("userProfiles", JSON.stringify(sliced));
+      window.localStorage.setItem("userProfiles", JSON.stringify(sliced))
       return {
-        userProfiles: sliced
-      };
-    });
-  };
-  generateLinks = event => {
-    event.preventDefault();
-    this.setState(prevState => ({
+        userProfiles: sliced,
+      }
+    })
+  }
+  generateLinks = (event) => {
+    event.preventDefault()
+    this.setState((prevState) => ({
       lobby: true,
       matchName: prevState.matchName.trim(),
       blueName: prevState.blueName.trim(),
-      redName: prevState.redName.trim()
-    }));
-  };
-  startDraft = event => {
-    event.preventDefault();
+      redName: prevState.redName.trim(),
+    }))
+  }
+  startDraft = (event) => {
+    event.preventDefault()
 
-    const draftPositionIndex = this.state.draftedHeroes.length;
-    const draftAction = this.state.draftSequence[draftPositionIndex].action;
+    const draftPositionIndex = this.state.draftedHeroes.length
+    const draftAction = this.state.draftSequence[draftPositionIndex].action
     const timeLeft =
       draftAction === "pick"
         ? new Date(
             new Date().getTime() +
               this.state.pickTime +
               this.state.waitingTime +
-              400
+              400,
           )
         : new Date(
             new Date().getTime() +
               this.state.banTime +
               this.state.waitingTime +
-              400
-          );
+              400,
+          )
     this.setState(
       {
         hostState: 2,
         draftLaunched: true,
         timeLeft,
         blueBonusLeft: this.state.bonusTime,
-        redBonusLeft: this.state.bonusTime
+        redBonusLeft: this.state.bonusTime,
       },
-      () => this.socket.emit("data transfer", this.stateWithKeys())
-    );
-  };
+      () => this.socket.emit("data transfer", this.stateWithKeys()),
+    )
+  }
   render() {
-    const profiles = [...draftProfiles, ...this.state.userProfiles];
+    const profiles = [...draftProfiles, ...this.state.userProfiles]
     if (this.state.choosingProfile) {
       return (
         <React.Fragment>
@@ -669,17 +679,12 @@ class Host extends React.Component {
             removeUserProfile={this.removeUserProfile}
           />
         </React.Fragment>
-      );
+      )
     } else if (this.state.draftLaunched) {
-      return <Draft {...this.state} />;
+      return <Draft {...this.state} />
     }
     return (
       <Lobby>
-        <p style={{ textAlign: "right" }}>
-          <small>
-            <em>New Website Coming Soon! March 2020</em>
-          </small>
-        </p>
         <Head>
           <title>{this.state.matchName || "VAIN.ZONE Draft Builder"}</title>
         </Head>
@@ -722,7 +727,7 @@ class Host extends React.Component {
                         ],
                         boxShadow: `0 0 1px 1px ${
                           ["red", "orange", "green"][this.state.blueState]
-                        }`
+                        }`,
                       }}
                       className="indicator"
                     />
@@ -761,7 +766,7 @@ class Host extends React.Component {
                         ],
                         boxShadow: `0 0 1px 1px ${
                           ["red", "orange", "green"][this.state.redState]
-                        }`
+                        }`,
                       }}
                       className="indicator"
                     />
@@ -788,7 +793,7 @@ class Host extends React.Component {
                 textAlign: "center",
                 width: "100%",
                 boxSizing: "border-box",
-                marginLeft: 0
+                marginLeft: 0,
               }}
             >
               Draft Profile
@@ -797,7 +802,7 @@ class Host extends React.Component {
               style={{
                 textAlign: "center",
                 width: "100%",
-                boxSizing: "border-box"
+                boxSizing: "border-box",
               }}
             >
               {profiles[this.state.selectedProfileIndex] && (
@@ -808,16 +813,16 @@ class Host extends React.Component {
                     cursor: this.state.lobby ? "default" : null,
                     opacity: this.state.lobby ? "1" : null,
                     boxSizing: "border-box",
-                    boxShadow: this.state.lobby ? "none" : null
+                    boxShadow: this.state.lobby ? "none" : null,
                   }}
                   innerStyle={
                     profiles[this.state.selectedProfileIndex].innerStyle
                   }
                   text={profiles[this.state.selectedProfileIndex].name}
                   action={() =>
-                    this.setState(prevState => {
-                      if (!this.state.lobby) return { choosingProfile: true };
-                      return null;
+                    this.setState((prevState) => {
+                      if (!this.state.lobby) return { choosingProfile: true }
+                      return null
                     })
                   }
                 />
@@ -843,7 +848,7 @@ class Host extends React.Component {
                   href="/draft"
                   style={{
                     fontSize: "0.8rem",
-                    color: "hsla(0, 0%, 65%, 1)"
+                    color: "hsla(0, 0%, 65%, 1)",
                   }}
                 >
                   Reset
@@ -958,8 +963,8 @@ class Host extends React.Component {
           `}
         </style>
       </Lobby>
-    );
+    )
   }
 }
 
-export default Host;
+export default Host
